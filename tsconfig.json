@@ -1,4 +1,13 @@
 {
   // https://nuxt.com/docs/guide/concepts/typescript
-  "extends": "./.nuxt/tsconfig.json"
+  "extends": "./.nuxt/tsconfig.json",
+  "lib": [
+    "dom"
+  ],
+  "compilerOptions": {
+    "types": [
+      "@pinia/nuxt",
+      "@nuxt/types",
+    ]
+  }
 }

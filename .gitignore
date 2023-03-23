@@ -7,3 +7,8 @@ node_modules
 .env
 dist
 .DS_Store
+.idea/*
+.idea/sonarlint/issuestore/index.pb
+.idea/sonarlint/securityhotspotstore/index.pb
+.idea/sonarlint/issuestore/index.pb
+.gitignore
