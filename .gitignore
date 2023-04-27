@@ -12,3 +12,5 @@ dist
 .idea/sonarlint/securityhotspotstore/index.pb
 .idea/sonarlint/issuestore/index.pb
 .gitignore
+yarn-error.log
+
