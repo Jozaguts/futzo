@@ -2,7 +2,7 @@ import HttpFactory from "~/repositories/factory";
 export class AuthModule extends HttpFactory {
 
   async register(data: any) {
-    return await this.call('POST','register', data);
+    return await this.call('POST','/register', data);
   }
   async login(data: any) {
     await this.csrf()
