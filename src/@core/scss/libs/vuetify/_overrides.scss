@@ -56,10 +56,6 @@ h6,
 
 /*
   👉 Checkbox & Radio Ripple
-
-  TODO Checkbox and switch component. Remove it when vuetify resolve the extra spacing: https://github.com/vuetifyjs/vuetify/issues/15519
-  We need this because form elements likes checkbox and switches are by default set to height of textfield height which is way big than we want
-  Tested with checkbox & switches
 */
 .v-checkbox.v-input,
 .v-switch.v-input {
