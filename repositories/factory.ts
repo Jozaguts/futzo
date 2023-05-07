@@ -1,9 +1,10 @@
-import {$Fetch} from "ofetch";
+import {$Fetch, ofetch} from "ofetch";
 import {useRuntimeConfig} from "#app";
+import {FetchContext, FetchOptions} from "ofetch/dist/node";
+import Cookies from "js-cookie";
 
 class HttpFactory  {
   private readonly $fetch: $Fetch;
-
   constructor(fetcher: $Fetch) {
     this.$fetch = fetcher;
   }
@@ -12,12 +13,19 @@ class HttpFactory  {
     return await this.$fetch(url, {
       method,
       body: data,
+      // @ts-ignore
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-XSRF-TOKEN': useCookie('XSRF-TOKEN').value,
+        'Authorization': 'Bearer ' + useCookie('XSRF-TOKEN').value,
+      },
       ...extras,
-    }) as T;
+      }) as T;
   }
 
   protected async csrf() {
-    return await this.$fetch(useRuntimeConfig().public.baseURLBackend +'/sanctum/csrf-cookie',{credentials: 'include', method: 'GET'});
+    await this.$fetch(useRuntimeConfig().public.baseURLBackend +'/sanctum/csrf-cookie',{credentials: 'include'});
   }
 
 }
