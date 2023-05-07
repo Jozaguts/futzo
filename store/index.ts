@@ -1,1 +1,1 @@
-export { useLoaderStore } from '@/store/useLoader'
+export { useGlobalStore } from '@/store/useGlobalStore'
