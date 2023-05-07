@@ -1,7 +1,6 @@
 <template>
 <div>
-    <shared-loader v-if="useGlobalStore().isLoading"/>
-    <v-app v-else class="layout-wrapper layout-nav-type-vertical">
+    <v-app class="layout-wrapper layout-nav-type-vertical">
         <v-app-bar ></v-app-bar>
         <v-navigation-drawer >
             <v-btn @click="$router.push('/login')"> login</v-btn>
@@ -19,11 +18,7 @@
 </div>
 </template>
 <script setup lang="ts">
-import { useGlobalStore } from "~/store";
-useGlobalStore().$state.isLoading = true
-onMounted(() => {
-    useGlobalStore().$state.isLoading = false
-})
+
 </script>
 <style lang="scss">
 @use "src/@layouts/styles/default-layout";

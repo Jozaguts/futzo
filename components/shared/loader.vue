@@ -1,16 +1,14 @@
 <template>
-    <Teleport to="body">
-            <div id="loading-bg" v-if="useGlobalStore().isLoading">
-            <div class="loading-logo">
-                <img src="/logo.png" height="50" alt="Logo" />
-            </div>
-            <div class="loading">
-                <div class="effect-1 effects"></div>
-                <div class="effect-2 effects"></div>
-                <div class="effect-3 effects"></div>
-            </div>
+    <div id="loading-bg">
+        <div class="loading-logo">
+            <img src="/logo.png" height="50" alt="Logo" />
         </div>
-    </Teleport>
+        <div class="loading">
+            <div class="effect-1 effects"></div>
+            <div class="effect-2 effects"></div>
+            <div class="effect-3 effects"></div>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">

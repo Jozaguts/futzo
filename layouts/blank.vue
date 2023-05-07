@@ -1,16 +1,17 @@
 <template>
     <v-app class="layout-wrapper layout-nav-type-vertical">
-        <shared-loader v-if="useGlobalStore().isLoading"/>
-        <v-main class="layout-wrapper layout-blank" v-else>
+        <shared-loader v-if="isLoading"/>
+        <v-main v-else class="layout-wrapper layout-blank">
             <slot />
         </v-main>
     </v-app>
 </template>
-<script setup lang="ts" >
-import { useGlobalStore } from "~/store";
-
+<script setup lang="ts">
+const isLoading = ref(true)
 onMounted(() => {
-    useGlobalStore().isLoading = false
+    setTimeout(() => {
+        isLoading.value = false
+    }, 1000)
 })
 </script>
 <style>

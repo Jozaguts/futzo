@@ -13,6 +13,7 @@ html {
   background: var(--initial-loader-bg, #fff);
   block-size: 100%;
   inline-size: 100%;
+  z-index: 200;
 }
 
 .loading-logo {

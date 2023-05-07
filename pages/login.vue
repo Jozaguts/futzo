@@ -66,6 +66,8 @@
                             <VBtn
                                 block
                                 type="submit"
+                                :loading="isLoading"
+                                :disabled="isLoading"
                             >
                                 Login
                             </VBtn>
@@ -131,7 +133,7 @@ useAuth
 import {useGlobalStore} from "~/store";
 
 definePageMeta({
-    // layout: "blank",
+    layout: "blank",
     middleware: ["guest"],
 });
 import {computed, ref} from "#imports";
@@ -159,10 +161,11 @@ const authThemeMask = computed(() => {
 })
 
 const isPasswordVisible = ref(false)
-
+const isLoading = ref(false)
 const signInHandler = async () => {
+    isLoading.value = true
     await useNuxtApp().$api.auth.login(form.value)
-    useGlobalStore().isLoading = false
+    isLoading.value = false
     navigateTo({ name: 'index' })
 }
 </script>

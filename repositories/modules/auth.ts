@@ -31,6 +31,6 @@ export class AuthModule extends HttpFactory {
     auth.value.user = null
     useCookie('XSRF-TOKEN').value  = null
     useCookie('futzo_session').value  = null
-    window.location.replace('/login')
+    navigateTo('/login')
   }
 }
