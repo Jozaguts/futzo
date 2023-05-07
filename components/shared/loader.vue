@@ -1,6 +1,6 @@
 <template>
     <Teleport to="body">
-        <div id="loading-bg">
+            <div id="loading-bg" v-if="useGlobalStore().isLoading">
             <div class="loading-logo">
                 <img src="/logo.png" height="50" alt="Logo" />
             </div>
@@ -15,11 +15,11 @@
 
 <script setup lang="ts">
 import {useLocalStorage} from "@vueuse/core";
+import {useGlobalStore} from "~/store";
 
 const loaderColor = useLocalStorage('Materio-initial-loader-bg', '#FFFFFF')
 const primaryColor = useLocalStorage('Materio-initial-loader-color', '#9155FD')
 
-//--initial-loader-bg:#FFFFFF; --initial-loader-color:#9155FD;
 useHead({
     htmlAttrs:{
         style: `--initial-loader-bg: ${loaderColor.value}; --initial-loader-color: ${primaryColor.value};`,

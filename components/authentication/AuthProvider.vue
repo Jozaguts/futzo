@@ -13,11 +13,11 @@ const authProviders = [
     color: '#1da1f2',
     colorInDark: '#1da1f2',
   },
-  {
-    icon: 'mdi-github',
-    color: '#272727',
-    colorInDark: '#fff',
-  },
+  // {
+  //   icon: 'mdi-github',
+  //   color: '#272727',
+  //   colorInDark: '#fff',
+  // },
   {
     icon: 'mdi-google',
     color: '#db4437',
