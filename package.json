@@ -8,17 +8,21 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@sidebase/nuxt-auth": "^0.6.0-alpha.2",
+    "@mdi/font": "^7.2.96",
     "@types/js-cookie": "^3.0.3",
     "@types/node": "^18.15.3",
+    "@vueuse/nuxt": "^10.1.0",
     "nuxt": "^3.3.1",
     "nuxt-typed-router": "^3.0.6",
     "sass": "^1.62.1"
   },
   "dependencies": {
     "@invictus.codes/nuxt-vuetify": "^0.2.20",
+    "@nuxtjs/google-fonts": "^3.0.0",
+    "@pinia/nuxt": "^0.4.9",
+    "@vueuse/core": "^10.1.0",
     "js-cookie": "^3.0.1",
-    "next-auth": "4.21.1",
-    "nuxt-icon": "^0.4.0"
+    "nuxt-icon": "^0.4.0",
+    "vue3-perfect-scrollbar": "^1.6.1"
   }
 }
