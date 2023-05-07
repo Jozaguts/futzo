@@ -1,4 +1,4 @@
-import {defineStore, skipHydrate} from "pinia";
+import {defineStore} from "pinia";
 
 export const useGlobalStore = defineStore('global', () => {
   const isLoading = ref(true)

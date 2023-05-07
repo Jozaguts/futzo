@@ -1,7 +1,7 @@
 import {defineNuxtPlugin} from '#app';
 import {AuthModule} from "~/repositories/modules/auth";
-import {Auth, IApiInstance} from "~/interfaces";
-import {FetchContext, FetchOptions} from "ofetch/dist/node";
+import { IApiInstance} from "~/interfaces";
+import { FetchOptions} from "ofetch/dist/node";
 import Cookies from "js-cookie";
 import {$fetch } from 'ofetch'
 export default defineNuxtPlugin((nuxtApp) => {

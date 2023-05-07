@@ -1,7 +1,5 @@
-import {$Fetch, ofetch} from "ofetch";
+import {$Fetch} from "ofetch";
 import {useRuntimeConfig} from "#app";
-import {FetchContext, FetchOptions} from "ofetch/dist/node";
-import Cookies from "js-cookie";
 
 class HttpFactory  {
   private readonly $fetch: $Fetch;
