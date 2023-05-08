@@ -12,13 +12,13 @@
                 </template>
 
                 <VCardTitle class="font-weight-semibold text-2xl text-uppercase">
-                    Materio
+                    Futzo
                 </VCardTitle>
             </VCardItem>
 
             <VCardText class="pt-2">
                 <h5 class="text-h5 font-weight-semibold mb-1">
-                    Welcome to Materio! 👋🏻
+                    Welcome to Futzo! 👋🏻
                 </h5>
                 <p class="mb-0">
                     Please sign-in to your account and start the adventure

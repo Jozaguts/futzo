@@ -14,6 +14,8 @@ export interface Redirects {
   logout: string
 }
 
+
+export {};
 export interface ModuleOptions {
   csrf: CSRFSpec
   token: boolean
@@ -21,7 +23,11 @@ export interface ModuleOptions {
   endpoints: Endpoints
   redirects: Redirects
 }
-
+declare global {
+  interface Window {
+    FB: any;
+  }
+}
 export interface Auth {
   user: any | null
   loggedIn: boolean

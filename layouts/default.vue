@@ -19,6 +19,8 @@
 </template>
 <script setup lang="ts">
 
+
+
 </script>
 <style lang="scss">
 @use "src/@layouts/styles/default-layout";

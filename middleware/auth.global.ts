@@ -1,6 +1,5 @@
 export default defineNuxtRouteMiddleware((to) => {
-  const token =  useCookie('XSRF-TOKEN')
-  if(!token.value && to.name !== 'login'){
+  if(!useCookie('XSRF-TOKEN').value && to.name !== 'login'){
     return navigateTo('/login')
   }
 })

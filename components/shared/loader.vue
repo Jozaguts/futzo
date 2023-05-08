@@ -15,8 +15,8 @@
 import {useLocalStorage} from "@vueuse/core";
 import {useGlobalStore} from "~/store";
 
-const loaderColor = useLocalStorage('Materio-initial-loader-bg', '#FFFFFF')
-const primaryColor = useLocalStorage('Materio-initial-loader-color', '#9155FD')
+const loaderColor = useLocalStorage('futzo-initial-loader-bg', '#FFFFFF')
+const primaryColor = useLocalStorage('futzo-initial-loader-color', '#9155FD')
 
 useHead({
     htmlAttrs:{
