@@ -2,6 +2,7 @@
 
 # abort on errors
 set -e
+npm run build
 cp ecosystem.config.js .output/
 cd .output/
 
