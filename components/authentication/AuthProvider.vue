@@ -32,8 +32,8 @@ const launchProvider = (provider: string) => {
       try {
           window?.FB.login(function(response) {
               console.log({response})
-              // if (response.authResponse) {
-              //     useNuxtApp()?.$api.auth.loginWithFacebook(response.authResponse)
+              if (response.authResponse) {
+                  useNuxtApp()?.$api.auth.loginWithFacebook(response.authResponse)
               //     console.log('Welcome!  Fetching your information.... ');
               //     window?.FB.api('/me', function(response) {
               //         console.log({response})
@@ -41,7 +41,7 @@ const launchProvider = (provider: string) => {
               //     });
               // } else {
               //     console.log('User cancelled login or did not fully authorize.');
-              // }
+              }
           });
       }catch (error) {
           console.log(error)
