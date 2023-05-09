@@ -16,7 +16,7 @@ export class AuthModule extends HttpFactory {
     return await this.call('POST','/login', data);
   }
   async loginWithFacebook(data: any) {
-    return await this.call('POST','/auth/facebook/callback', data);
+    return await this.call('GET','/auth/facebook/callback', data);
   }
   async user () {
     const data =  await this.call('GET','/api/v1/user');
