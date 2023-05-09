@@ -4,7 +4,7 @@ module.exports = {
             name: "futzo",
             exec_mode: "cluster",
             instances: "max",
-            script: "./.output/server/index.mjs",
+            script: "./server/index.mjs",
         },
     ],
 };
