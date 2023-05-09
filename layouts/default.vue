@@ -1,18 +1,18 @@
 <template>
 <div>
     <v-app class="layout-wrapper layout-nav-type-vertical">
-        <v-app-bar ></v-app-bar>
-        <v-navigation-drawer >
+        <v-app-bar app></v-app-bar>
+        <v-navigation-drawer app>
             <v-btn @click="$router.push('/login')"> login</v-btn>
             <v-btn @click="$router.push('/')"> home</v-btn>
            <v-btn   @click="useNuxtApp().$api.auth.logout()">logout</v-btn>
         </v-navigation-drawer>
-        <v-main>
+        <v-main app>
             default layout
             <slot />
         </v-main>
-        <v-footer>
-            footer
+        <v-footer app>
+           <v-btn to="/legales">legales</v-btn>
         </v-footer>
     </v-app>
 </div>
