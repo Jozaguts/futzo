@@ -11,7 +11,7 @@ git init
 git add -A
 git commit -m 'deploy'
 
-git push https://github.com/Jozaguts/futzo.git master:web
+git push -f https://github.com/Jozaguts/futzo.git master:web
 
 cd -
 rm -rf /.output
