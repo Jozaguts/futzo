@@ -30,19 +30,20 @@ const PROVIDERS = {
 const launchProvider = (provider: string) => {
   if (provider === PROVIDERS.facebook){
       try {
-          window?.FB.login(function(response) {
-              console.log({response})
-              if (response.authResponse) {
-                  useNuxtApp()?.$api.auth.loginWithFacebook(response.authResponse)
-              //     console.log('Welcome!  Fetching your information.... ');
-              //     window?.FB.api('/me', function(response) {
-              //         console.log({response})
-              //         console.log('Good to see you, ' + response.name + '.');
-              //     });
-              // } else {
-              //     console.log('User cancelled login or did not fully authorize.');
-              }
-          });
+          window.location.href = useRuntimeConfig().public.baseURLBackend + '/auth/facebook/redirect'
+          // window?.FB.login(function(response) {
+          //     console.log({response})
+          //     if (response.authResponse) {
+          //         useNuxtApp()?.$api.auth.loginWithFacebook(response.authResponse)
+          //     //     console.log('Welcome!  Fetching your information.... ');
+          //     //     window?.FB.api('/me', function(response) {
+          //     //         console.log({response})
+          //     //         console.log('Good to see you, ' + response.name + '.');
+          //     //     });
+          //     // } else {
+          //     //     console.log('User cancelled login or did not fully authorize.');
+          //     }
+          // });
       }catch (error) {
           console.log(error)
       }
