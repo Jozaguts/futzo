@@ -1,5 +1,7 @@
+import {useLocalStorage} from "@vueuse/core";
+
 export default defineNuxtRouteMiddleware((to) => {
-  if(!useCookie('XSRF-TOKEN').value && to.name !== 'login'){
+  if(!useLocalStorage('futzo_token',null).value && to.name !== 'login'){
     return navigateTo('/login')
   }
 })

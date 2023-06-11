@@ -1,16 +1,16 @@
 <template>
   <div>
-      <v-btn @click="getUser"> get user</v-btn>
-    <pre v-if="user">
-        {{user}}
+      <v-btn @click="useNuxtApp().$api?.auth.user()"> get user</v-btn>
+    <pre v-if="auth">dasd
+        {{auth}}
     </pre>
   </div>
 </template>
 
 <script setup lang="ts">
 
-const user = ref(null)
-const getUser = async () =>{
- user.value = await useNuxtApp().$api?.auth.user()
-}
+import {Auth} from "~/interfaces";
+
+const auth =  useState<Auth>(`futzo_auth`)
+console.log(auth.value)
 </script>

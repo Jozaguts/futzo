@@ -5,9 +5,11 @@ import { FetchOptions} from "ofetch/dist/node";
 import Cookies from "js-cookie";
 import {$fetch } from 'ofetch'
 export default defineNuxtPlugin((nuxtApp) => {
+  const config = nuxtApp.$config.public
   const fetchOption = (): FetchOptions => {
+    console.log(`${config.baseURLBackend}/${config.backendPrefix}`,)
     return {
-      baseURL: nuxtApp.$config.public.baseURLBackend,
+      baseURL: `${config.baseURLBackend}/${config.backendPrefix}`,
       credentials: 'include',
       // @ts-ignore
       headers: {

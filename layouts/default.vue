@@ -5,7 +5,7 @@
         <v-navigation-drawer app>
             <v-btn @click="$router.push('/login')"> login</v-btn>
             <v-btn @click="$router.push('/')"> home</v-btn>
-           <v-btn   @click="useNuxtApp().$api.auth.logout()">logout</v-btn>
+           <v-btn  @click.prevent="useNuxtApp().$api.auth.logout()">logout</v-btn>
         </v-navigation-drawer>
         <v-main app>
             default layout

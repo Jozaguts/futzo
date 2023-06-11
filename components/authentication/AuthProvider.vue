@@ -30,6 +30,7 @@ const PROVIDERS = {
 const launchProvider = (provider: string) => {
   if (provider === PROVIDERS.facebook){
       try {
+          useCookie('XSRF-TOKEN').value = null
           window.location.href = useRuntimeConfig().public.baseURLBackend + '/auth/facebook/redirect'
           // window?.FB.login(function(response) {
           //     console.log({response})

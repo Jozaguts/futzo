@@ -1,5 +1,7 @@
 import {$Fetch} from "ofetch";
 import {useRuntimeConfig} from "#app";
+import Cookies from "js-cookie";
+import {useLocalStorage} from "@vueuse/core";
 
 class HttpFactory  {
   private readonly $fetch: $Fetch;
@@ -14,16 +16,10 @@ class HttpFactory  {
       // @ts-ignore
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'X-XSRF-TOKEN': useCookie('XSRF-TOKEN').value,
-        'Authorization': 'Bearer ' + useCookie('XSRF-TOKEN').value,
+        'Authorization': 'Bearer ' + useLocalStorage('futzo_token',null).value ,
       },
       ...extras,
       }) as T;
-  }
-
-  protected async csrf() {
-    await this.$fetch(useRuntimeConfig().public.baseURLBackend +'/sanctum/csrf-cookie',{credentials: 'include'});
   }
 
 }
