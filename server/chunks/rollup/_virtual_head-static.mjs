@@ -1,0 +1,4 @@
+const _virtual__headStatic = {"headTags":"<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<link rel=\"stylesheet\" href=\"/loader.css\">\n<script>\n        window.fbAsyncInit = function() {\n        FB.init({\n          appId      : '',\n          cookie     : true,\n          xfbml      : true,\n          version    : 'v16.0'\n        });\n        FB.AppEvents.logPageView();\n      };\n      (function(d, s, id) {\n        var js, fjs = d.getElementsByTagName(s)[0];\n        if (d.getElementById(id)) {return;}\n        js = d.createElement(s); js.id = id;\n        js.src = \"https://connect.facebook.net/en_US/sdk.js\";\n        fjs.parentNode.insertBefore(js, fjs);\n      } (document, 'script', 'facebook-jssdk'));</script>","bodyTags":"","bodyTagsOpen":"","htmlAttrs":"","bodyAttrs":""};
+
+export { _virtual__headStatic as default };
+//# sourceMappingURL=_virtual_head-static.mjs.map
