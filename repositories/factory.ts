@@ -1,7 +1,6 @@
-import {$Fetch} from "ofetch";
-import {useRuntimeConfig} from "#app";
-import Cookies from "js-cookie";
+import {$Fetch, FetchContext, FetchResponse} from "ofetch";
 import {useLocalStorage} from "@vueuse/core";
+import Cookies from "js-cookie";
 
 class HttpFactory  {
   private readonly $fetch: $Fetch;
@@ -13,13 +12,18 @@ class HttpFactory  {
     return await this.$fetch(url, {
       method,
       body: data,
-      // @ts-ignore
+      ...extras,
+      credentials: 'include',
       headers: {
         'Accept': 'application/json',
-        'Authorization': 'Bearer ' + useLocalStorage('futzo_token',null).value ,
+        'Authorization': 'Bearer ' + useLocalStorage('token',null).value,
       },
-      ...extras,
-      }) as T;
+
+      onResponse: async (response) => {
+      },
+      onResponseError(context: FetchContext & { response: FetchResponse<R> }): Promise<void> | void {
+      }
+    }) as T;
   }
 
 }
