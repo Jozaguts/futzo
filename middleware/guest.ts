@@ -1,7 +1,8 @@
 import {useLocalStorage} from "@vueuse/core";
+import {useAuthStore} from "~/store";
 
 export default defineNuxtRouteMiddleware((to) => {
-  if(useLocalStorage('futzo_token',null).value && to.name === 'login'){
+  if(useAuthStore().token && to.name === 'login') {
     return navigateTo('/')
   }
 })
