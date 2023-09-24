@@ -27,24 +27,17 @@ const PROVIDERS = {
     twitter: 'twitter',
     google: 'google',
 }
-const launchProvider = (provider: string) => {
+const launchProvider = async (provider: string) => {
+
   if (provider === PROVIDERS.facebook){
       try {
-          useCookie('XSRF-TOKEN').value = null
-          window.location.href = useRuntimeConfig().public.baseURLBackend + '/auth/facebook/redirect'
-          // window?.FB.login(function(response) {
-          //     console.log({response})
-          //     if (response.authResponse) {
-          //         useNuxtApp()?.$api.auth.loginWithFacebook(response.authResponse)
-          //     //     console.log('Welcome!  Fetching your information.... ');
-          //     //     window?.FB.api('/me', function(response) {
-          //     //         console.log({response})
-          //     //         console.log('Good to see you, ' + response.name + '.');
-          //     //     });
-          //     // } else {
-          //     //     console.log('User cancelled login or did not fully authorize.');
-          //     }
-          // });
+            const data = await useNuxtApp().$api.auth.redirect(provider)
+
+            let url = data.url;
+
+            if (url) {
+              window.location.href = url;
+            }
       }catch (error) {
           console.log(error)
       }
