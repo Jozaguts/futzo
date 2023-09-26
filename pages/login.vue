@@ -127,7 +127,6 @@
         />
     </div>
 </template>
-useAuth
 <script setup lang="ts">
 import {useAuthStore} from "~/store";
 import {computed, ref} from "#imports";
@@ -140,8 +139,8 @@ import authV1Tree2 from '@/assets/images/pages/auth-v1-tree-2.png'
 import authV1Tree from '@/assets/images/pages/auth-v1-tree.png'
 
 definePageMeta({
-    layout: "blank",
-    middleware: ["guest"],
+  layout: "blank",
+  middleware: ['guest']
 });
 
 const form = ref({
