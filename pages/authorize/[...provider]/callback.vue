@@ -6,12 +6,19 @@
   </div>
 </template>
 <script setup lang="ts">
+import {definePageMeta} from "#imports";
 
-onMounted(async () => {
- const response = await  useNuxtApp().$api.auth.callback('facebook', useRoute().query.code)
- if (response.success) {
-   useLocalStorage('token',response.token)
-   useRouter().push('/')
- }
+definePageMeta({
+  layout: "blank",
+});
+
+onMounted(() => {
+  useNuxtApp().$api.auth.callback('facebook', useRoute().query.code)
+      .then(response =>{
+        if (response.success) {
+          useLocalStorage('token', response.token)
+          useRouter().push('/')
+        }
+      }).catch(error => console.error(error))
 })
 </script>

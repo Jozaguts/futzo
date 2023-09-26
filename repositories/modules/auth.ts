@@ -16,7 +16,7 @@ export class AuthModule extends HttpFactory {
   async user () {
     const data =  await this.call('GET','/me');
     if (data){
-      useAuthStore().auth.loggedIn = true
+      console.log(data)
       useAuthStore().auth.user = data
     }
   }

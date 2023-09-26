@@ -1,3 +1,13 @@
+<template>
+    <VBtn
+            v-for="link in authProviders"
+            :key="link.icon"
+            :icon="link.icon"
+            variant="text"
+            @click="launchProvider(link.provider)"
+            :color="vuetifyTheme.global.name.value === 'dark' ? link.colorInDark : link.color"
+    />
+</template>
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
 const vuetifyTheme = useTheme()
@@ -23,35 +33,24 @@ const authProviders = [
   },
 ]
 const PROVIDERS = {
-    facebook: 'facebook',
-    twitter: 'twitter',
-    google: 'google',
+  facebook: 'facebook',
+  twitter: 'twitter',
+  google: 'google',
 }
 const launchProvider = async (provider: string) => {
 
   if (provider === PROVIDERS.facebook){
-      try {
-            const data = await useNuxtApp().$api.auth.redirect(provider)
+    try {
+      const data = await useNuxtApp().$api.auth.redirect(provider)
 
-            let url = data.url;
+      let url = data.url;
 
-            if (url) {
-              window.location.href = url;
-            }
-      }catch (error) {
-          console.log(error)
+      if (url) {
+        window.location.href = url;
       }
+    }catch (error) {
+      console.log(error)
+    }
   }
 }
 </script>
-
-<template>
-    <VBtn
-            v-for="link in authProviders"
-            :key="link.icon"
-            :icon="link.icon"
-            variant="text"
-            @click="launchProvider(link.provider)"
-            :color="vuetifyTheme.global.name.value === 'dark' ? link.colorInDark : link.color"
-    />
-</template>
