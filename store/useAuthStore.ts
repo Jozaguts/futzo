@@ -1,8 +1,9 @@
 import {Auth} from "~/interfaces";
-import {defineStore} from "pinia";
+import {defineStore, skipHydrate} from "pinia";
 import {logger} from "@nuxt/kit";
 export const useAuthStore = defineStore('authStore', () => {
    const auth = ref<Auth>({user: null, loggedIn: false, token: null})
+
     const initToken = (token: string) => {
         useLocalStorage('token', token)
     }
@@ -18,10 +19,16 @@ export const useAuthStore = defineStore('authStore', () => {
         auth.value.user = null
         window.location.reload()
     }
+
+    const isLogged = computed(() => !!token.value)
+    const user = computed(() => { return auth.value.user })
+
     return {
         auth,
         token,
         initToken,
         destroySession,
+        isLogged,
+        user
     }
 })
