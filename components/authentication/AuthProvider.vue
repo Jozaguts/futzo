@@ -20,26 +20,16 @@ const authProviders = [
     provider: 'facebook',
   },
   {
-    icon: 'mdi-twitter',
-    color: '#1da1f2',
-    colorInDark: '#1da1f2',
-    provider: 'twitter',
-  },
-  {
     icon: 'mdi-google',
     color: '#db4437',
     colorInDark: '#db4437',
     provider: 'google',
   },
 ]
-const PROVIDERS = {
-  facebook: 'facebook',
-  twitter: 'twitter',
-  google: 'google',
-}
+const PROVIDERS = ['facebook','google']
 const launchProvider = async (provider: string) => {
 
-  if (provider === PROVIDERS.facebook){
+  if (PROVIDERS.includes(provider)) {
     try {
       const data = await useNuxtApp().$api.auth.redirect(provider)
 
