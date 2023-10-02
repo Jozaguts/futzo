@@ -139,12 +139,11 @@ import authV1Tree2 from '@/assets/images/pages/auth-v1-tree-2.png'
 import authV1Tree from '@/assets/images/pages/auth-v1-tree.png'
 
 definePageMeta({
-  layout: "blank",
   middleware: ['guest']
 });
 
 const form = ref({
-    email: 'admin@sls.com',
+    email: 'admin1@sls.com',
     password: 'password',
     remember: false,
 })
@@ -157,10 +156,17 @@ const authThemeMask = computed(() => {
 const isPasswordVisible = ref(false)
 const isLoading = ref(false)
 const signInHandler = async () => {
-    isLoading.value = true
-    await useNuxtApp().$api.auth.login(form.value)
-    isLoading.value = false
-    useRouter().go(null)
+   try {
+     isLoading.value = true
+     const response = await useNuxtApp().$api.auth.login(form.value)
+     useLocalStorage('token', response.token)
+     isLoading.value = false
+     useRouter().go(null)
+   }catch (e) {
+     console.error(e)
+   }finally {
+     isLoading.value = false
+   }
 }
 
 </script>
