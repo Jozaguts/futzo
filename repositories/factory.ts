@@ -1,6 +1,6 @@
 import {$Fetch, FetchContext, FetchResponse} from "ofetch";
 import {useLocalStorage} from "@vueuse/core";
-import Cookies from "js-cookie";
+import {useGlobalStore} from "~/store";
 
 class HttpFactory  {
   private readonly $fetch: $Fetch;
@@ -22,6 +22,10 @@ class HttpFactory  {
       onResponse: async (response) => {
       },
       onResponseError(context: FetchContext & { response: FetchResponse<R> }): Promise<void> | void {
+        useGlobalStore().setAlert('error',{
+            message: context.response._data.message,
+            code: context.response.status,
+        })
       }
     }) as T;
   }
