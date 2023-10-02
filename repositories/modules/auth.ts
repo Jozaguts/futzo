@@ -11,12 +11,11 @@ export class AuthModule extends HttpFactory {
     await this.call('GET',`${backedUrl}/sanctum/csrf-cookie`).catch((e) => {
         console.log(e)
     } );
-    return await this.call('POST','/login', data);
+    return await this.call('POST','/auth/login', data);
   }
   async user () {
     const data =  await this.call('GET','/me');
     if (data){
-      console.log(data)
       useAuthStore().auth.user = data
     }
   }
