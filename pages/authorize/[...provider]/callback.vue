@@ -6,6 +6,12 @@
   </div>
 </template>
 <script setup lang="ts">
+import {definePageMeta} from "#imports";
+
+definePageMeta({
+  layout: "blank",
+});
+
 onMounted(() => {
   const provider = useRoute().params.provider[0]
   if ( provider === 'google' || provider === 'facebook') {
