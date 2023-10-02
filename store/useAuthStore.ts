@@ -21,6 +21,7 @@ export const useAuthStore = defineStore('authStore', () => {
     }
 
     const isLogged = computed(() => !!token.value)
+
     const user = computed(() => { return auth.value.user })
 
     return {
