@@ -1,9 +1,9 @@
 <template>
   <div>
       <v-btn @click="getUser"> get user</v-btn>
-    <pre v-if="authStore">
+      <pre v-if="authStore">
         {{authStore.auth.user}}
-    </pre>
+      </pre>
   </div>
 </template>
 
