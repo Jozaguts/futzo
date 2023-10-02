@@ -9,5 +9,6 @@
       "@pinia/nuxt",
       "@nuxt/types",
     ]
-  }
+  },
+  "include": ["types/*.d.ts"]
 }

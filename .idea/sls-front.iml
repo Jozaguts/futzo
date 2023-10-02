@@ -9,5 +9,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="laravel" />
+    <orderEntry type="module" module-name="materio-vuetify-vuejs-admin-template-free" />
   </component>
 </module>
