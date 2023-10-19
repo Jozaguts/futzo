@@ -1,4 +1,3 @@
-
 <script lang="ts">
 import logo from '@/assets/logo.svg?raw'
 import {useGlobalStore} from "~/store";
