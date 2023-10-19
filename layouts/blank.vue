@@ -1,9 +1,9 @@
 <template>
-<VApp>
+<v-app>
     <DefaultLayoutWithVerticalNav>
-      <router-view></router-view>
+     <slot/>
     </DefaultLayoutWithVerticalNav>
-  </VApp>
+  </v-app>
 </template>
 <script setup lang="ts">
 import { useGlobalStore } from "~/store";

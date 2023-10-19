@@ -30,7 +30,7 @@ const upgradeBanner = computed(() => {
             @click="toggleVerticalOverlayNavActive(true)"
         >
           <VIcon icon="mdi-menu" />
-        </IconBtn>Account Settings
+        </IconBtn>
 
         <!-- 👉 Search -->
         <div

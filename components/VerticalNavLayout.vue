@@ -24,73 +24,83 @@ export default defineComponent({
     syncRefs(isOverlayNavActive, isLayoutOverlayVisible)
 
     return () => {
+      // 👉 Vertical nav
       const verticalNav = h(
           VerticalNav,
-          {isOverlayNavActive: isOverlayNavActive.value, toggleIsOverlayNavActive},
+          { isOverlayNavActive: isOverlayNavActive.value, toggleIsOverlayNavActive },
           {
             'nav-header': () => slots['vertical-nav-header']?.(),
-            'before-nav-items': () => slots['vertical-nav-before-nav-items']?.(),
+            'before-nav-items': () => slots['before-vertical-nav-items']?.(),
             'default': () => slots['vertical-nav-content']?.(),
-            'after-nav-items': () => slots['vertical-nav-after-nav-items']?.(),
-          }
+            'after-nav-items': () => slots['after-vertical-nav-items']?.(),
+          },
       )
+
+      // 👉 Navbar
       const navbar = h(
           'header',
-          {class: ['layout-navbar navbar-blur']},
+          { class: ['layout-navbar navbar-blur'] },
           [
-              h(
-                  'div',
-                  {class:['navbar-content-container']},
-                  slots.navbar?.({
-                    toggleVerticalOverlayNavActive: toggleIsOverlayNavActive,
-                  })
-              ),
+            h(
+                'div',
+                { class: 'navbar-content-container' },
+                slots.navbar?.({
+                  toggleVerticalOverlayNavActive: toggleIsOverlayNavActive,
+                }),
+            ),
           ],
       )
-      const main  = h(
+
+      const main = h(
           'main',
-          {class: 'layout-page-content'},
-          h('div',{class:'page-content-container'}, slots.default?.()),
+          { class: 'layout-page-content' },
+          h('div', { class: 'page-content-container' }, slots.default?.()),
       )
+
+      // 👉 Footer
       const footer = h(
           'footer',
-          {class:'layout-footer'},
+          { class: 'layout-footer' },
           [
-              h(
-                  'div',
-                  {class: 'footer-content-container'},
-                  slots.footer?.()
-              )
-          ]
+            h(
+                'div',
+                { class: 'footer-content-container' },
+                slots.footer?.(),
+            ),
+          ],
       )
+
+      // 👉 Overlay
       const layoutOverlay = h(
           'div',
           {
-            class: ['layout-overlay', {visible: isLayoutOverlayVisible.value}],
-            onClick: () => {isLayoutOverlayVisible.value = !isLayoutOverlayVisible.value}
-          }
+            class: ['layout-overlay', { visible: isLayoutOverlayVisible.value }],
+            onClick: () => { isLayoutOverlayVisible.value = !isLayoutOverlayVisible.value },
+          },
       )
+
       return h(
           'div',
           {
-            class:[
+            class: [
               'layout-wrapper layout-nav-type-vertical layout-navbar-static layout-footer-static layout-content-width-fluid',
               mdAndDown.value && 'layout-overlay-nav',
               route.meta.layoutWrapperClasses,
-            ]
+            ],
           },
           [
-              verticalNav,
-              h(
-                  'div',
-                  [
-                      navbar,
-                      main,
-                      footer,
-                  ]
-              ),
-              layoutOverlay
-          ]
+            verticalNav,
+            h(
+                'div',
+                { class: 'layout-content-wrapper' },
+                [
+                  navbar,
+                  main,
+                  footer,
+                ],
+            ),
+            layoutOverlay,
+          ],
       )
     }
   }
