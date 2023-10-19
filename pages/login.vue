@@ -129,6 +129,8 @@
 </template>
 
 <script setup lang="ts">
+import {useGlobalStore} from "~/store";
+
 definePageMeta({
   layout: "blank",
   middleware: ['guest']
@@ -169,6 +171,15 @@ const signInHandler = async () => {
      isLoading.value = false
    }
 }
+onMounted(()=> {
+  console.log('mounted')
+  useGlobalStore().isLoading = false
+})
+
+onBeforeMount(() => {
+  console.log('before mount')
+  useGlobalStore().isLoading = true
+})
 </script>
 <style lang="scss">
 @use "src/@core/scss/pages/page-auth.scss";

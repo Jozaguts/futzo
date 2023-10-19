@@ -10,5 +10,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="laravel" />
     <orderEntry type="module" module-name="materio-vuetify-vuejs-admin-template-free" />
+    <orderEntry type="module" module-name="Projects" />
   </component>
 </module>

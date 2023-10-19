@@ -1,12 +1,19 @@
 <template>
-  <div>
-      <v-btn @click="getUser"> get user</v-btn>
-      <pre v-if="authStore">
-        {{authStore.auth.user}}
-      </pre>
-  </div>
+    <VRow class="match-height">
+      <VCol
+          cols="12"
+          md="4"
+      >
+        test
+      </VCol>
+    </VRow>
 </template>
-
+<!--  <div>-->
+<!--      <v-btn @click="getUser"> get user</v-btn>-->
+<!--      <pre v-if="authStore">-->
+<!--        {{authStore.auth.user}}-->
+<!--      </pre>-->
+<!--  </div>-->
 <script setup lang="ts">
 definePageMeta({
   middleware: ['auth'],

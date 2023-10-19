@@ -1,46 +1,81 @@
+<!--<template>-->
+<!--    <v-app>-->
+<!--      <v-navigation-drawer-->
+<!--          :floating="true"-->
+<!--          :sticky="true"-->
+<!--          :absolute="false"-->
+<!--          style="background: rgb(var(&#45;&#45;v-theme-background))"-->
+<!--          class="layout-vertical-nav position-fixed"-->
+<!--          v-model="useGlobalStore().drawer"-->
+<!--          :model-value="useAuthStore().isLogged"-->
+<!--      >-->
+<!--        <vertical-nav>-->
+
+<!--        </vertical-nav>-->
+<!--      </v-navigation-drawer>-->
+<!--      <v-app-bar-->
+<!--          app-->
+<!--          flat-->
+<!--          class="px-6 layout-navbar"-->
+<!--          style="background: transparent"-->
+<!--      >-->
+<!--        <template-->
+<!--            v-if="mdAndDown"-->
+<!--            #prepend-->
+<!--        >-->
+<!--          <v-app-bar-nav-icon-->
+<!--              class="d-block d-lg-none me-2 ms-n3"-->
+<!--              color="inherit"-->
+<!--              @click="useGlobalStore().drawer = true"-->
+<!--          />-->
+<!--        </template>-->
+<!--      </v-app-bar>-->
+<!--      <v-main>-->
+<!--        <v-alert-->
+<!--            position="absolute"-->
+<!--            width="100%"-->
+<!--            :closable="true"-->
+<!--            :color="useGlobalStore().computedAlert.value.color"-->
+<!--            :min-height="80"-->
+<!--            :model-value="!!useGlobalStore().computedAlert.value.message"-->
+<!--            :title="useGlobalStore().computedAlert.value.title"-->
+<!--            :type="useGlobalStore().computedAlert.value.type"-->
+<!--            @click:close="useGlobalStore().resetAlert()"-->
+<!--        >-->
+<!--          {{useGlobalStore().computedAlert.value.message}}-->
+<!--        </v-alert>-->
+<!--        <slot />-->
+<!--      </v-main>-->
+<!--      <v-footer app v-if="useAuthStore().isLogged" >-->
+<!--        <v-btn to="/legales">legales</v-btn>-->
+<!--      </v-footer>-->
+<!--    </v-app>-->
+<!--</template>-->
+<!--<script setup lang="ts">-->
+<!--import {useDisplay} from "vuetify";-->
+<!--const { mdAndDown } = useDisplay()-->
+<!--import {useAuthStore,useGlobalStore} from "~/store";-->
+<!--import VerticalNav from "~/components/VerticalNavLayout.vue";-->
+<!--</script>-->
+<!--<style lang="scss">-->
+<!--@use "src/@layouts/styles/default-layout";-->
+<!--</style>-->
 <template>
-<div id="app-layout">
-    <v-app class="layout-wrapper layout-nav-type-vertical">
-      <VAlert
-          v-if="!!errorMessage"
-          :color="colorErrorMessage"
-      >
-        {{errorMessage}}
-      </VAlert>
-        <v-app-bar app v-if="useAuthStore().isLogged"></v-app-bar>
-        <v-navigation-drawer app v-if="useAuthStore().isLogged">
-            <v-btn @click="$router.push('/login')"> login</v-btn>
-            <v-btn @click="$router.push('/')"> home</v-btn>
-           <v-btn  @click.prevent="useNuxtApp().$api.auth.logout()">logout</v-btn>
-        </v-navigation-drawer>
-        <v-main
-            :style="[loginClasses]"
-            app
-        >
-          <slot />
-        </v-main>
-        <v-footer
-            v-if="useAuthStore().isLogged"
-            :app="true">
-           <v-btn to="/legales">legales</v-btn>
-        </v-footer>
-    </v-app>
-</div>
+  <!--    <v-app class="layout-wrapper layout-nav-type-vertical">-->
+  <!--        <v-main class="layout-wrapper layout-blank">-->
+  <!--            <slot />-->
+  <!--        </v-main>-->
+  <!--    </v-app>-->
+  <DefaultLayoutWithVerticalNav>
+    <slot/>
+  </DefaultLayoutWithVerticalNav>
 </template>
 <script setup lang="ts">
-import {useAuthStore,useGlobalStore} from "~/store";
-
-const errorMessage = computed(()=>{
-  return useGlobalStore().computedError.value.message
-})
-const colorErrorMessage = computed(()=>{
-  return useGlobalStore().computedError.value.color
-})
-const loginClasses = computed(()=>{
-  return useRoute().name === 'login' ? 'flex-direction: column' : ''
-})
+import { useGlobalStore } from "~/store";
+import DefaultLayoutWithVerticalNav from "~/layouts/components/defaultLayoutWithVerticalNav.vue";
 </script>
-<style lang="scss">
-@use "src/@layouts/styles/default-layout";
+<style>
+.layout-wrapper.layout-blank {
+  flex-direction: column;
+}
 </style>
-

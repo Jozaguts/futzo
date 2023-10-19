@@ -1,4 +1,4 @@
-@use "./placeholders";
+@use "../scss/placeholders";
 @use "../../../src/styles/variables/_template.scss" as variables;
 @use "../../@core/scss/mixins" as mixins;
 @use "vuetify/lib/styles/tools/states" as vuetifyStates;
