@@ -1,4 +1,9 @@
 export default {
+  IconBtn: {
+    icon: true,
+    color: 'default',
+    variant: 'text',
+  },
   VAlert: {
     density: 'comfortable',
   },
