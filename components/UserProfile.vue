@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import avatar1 from '~/assets/images/avatars/avatar-1.png';
+const logout = () => {
+  useNuxtApp().$api.auth.logout();
+}
 </script>
 
 <template>
@@ -48,6 +51,7 @@ import avatar1 from '~/assets/images/avatars/avatar-1.png';
             </template>
 
             <VListItemTitle class="font-weight-semibold">
+<!--             todo add username-->
               John Doe
             </VListItemTitle>
             <VListItemSubtitle>Admin</VListItemSubtitle>
@@ -110,7 +114,7 @@ import avatar1 from '~/assets/images/avatars/avatar-1.png';
           <VDivider class="my-2" />
 
           <!-- 👉 Logout -->
-          <VListItem to="/login">
+          <VListItem @click="logout()">
             <template #prepend>
               <VIcon
                   class="me-2"

@@ -1,8 +1,8 @@
 <template>
 <v-app>
-    <DefaultLayoutWithVerticalNav>
+  <div class="layout-wrapper layout-blank">
      <slot/>
-    </DefaultLayoutWithVerticalNav>
+  </div>
   </v-app>
 </template>
 <script setup lang="ts">
