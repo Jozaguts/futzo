@@ -1,15 +1,10 @@
 <template>
-    <VRow class="match-height">
-      <VCol
-          cols="12"
-          md="4"
-      >
-        test
-      </VCol>
-    </VRow>
+ <AuthForm />
 </template>
 <script setup lang="ts">
+import  AuthForm from "@/components/authentication/AuthForm.vue";
 definePageMeta({
-  middleware: ['auth'],
+  layout: "blank",
+  middleware: ['guest']
 });
 </script>

@@ -29,11 +29,15 @@ declare global {
   }
 }
 export interface Auth {
-  user: any | null
+  user: User | null
   loggedIn: boolean
   token: string | null
 }
-
+export interface User {
+  id: number
+  name: string
+  email: string
+}
 export interface CSRFSpec {
   headerKey: string
   cookieKey: string
