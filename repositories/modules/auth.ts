@@ -4,7 +4,7 @@ import {useAuthStore} from "~/store";
 
 export class AuthModule extends HttpFactory {
   async register(data: any) {
-    return await this.call('POST','/register', data);
+    return await this.call('POST','/auth/register', data);
   }
   async login(data: any) {
     const backedUrl = useRuntimeConfig().public.baseURLBackend
