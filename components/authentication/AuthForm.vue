@@ -18,21 +18,38 @@
 
       <VCardText class="pt-2">
         <h5 class="text-h5 font-weight-semibold mb-1">
-          Welcome to Futzo! 👋🏻
+          Bienvenido a Futzo! 👋🏻
         </h5>
         <p class="mb-0">
-          Please sign-in to your account and start the adventure
+          Por faaor inicia sesion para continuar con la aventura
         </p>
       </VCardText>
 
       <VCardText>
         <VForm @submit.prevent="signInHandler()">
-          <VRow>
+          <VRow v-auto-animate="{duration:600}">
+          <!-- name -->
+            <VCol cols="6" v-if="showRegisterForm">
+              <VTextField
+                  v-model="form.name"
+                  label="Nombre"
+                  type="text"
+              />
+            </VCol>
+            <!-- lastname -->
+            <VCol cols="6" v-if="showRegisterForm">
+              <VTextField
+                  v-model="form.lastname"
+                  label="Apellidos"
+                  type="text"
+              />
+            </VCol>
             <!-- email -->
+
             <VCol cols="12">
               <VTextField
                   v-model="form.email"
-                  label="Email"
+                  label="Correo electronico"
                   type="email"
               />
             </VCol>
@@ -41,24 +58,24 @@
             <VCol cols="12">
               <VTextField
                   v-model="form.password"
-                  label="Password"
+                  label="Contraseña"
                   :type="isPasswordVisible ? 'text' : 'password'"
                   :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
               />
 
               <!-- remember me checkbox -->
-              <div class="d-flex align-center justify-space-between flex-wrap mt-1 mb-4">
+              <div class="d-flex align-center justify-space-between flex-wrap mt-1 mb-4" v-auto-animate="{duration:600}">
                 <VCheckbox
                     v-model="form.remember"
-                    label="Remember me"
+                    label="Recuerdame"
                 />
 
                 <a
                     class="ms-2 mb-1"
                     href="javascript:void(0)"
                 >
-                  Forgot Password?
+                 Olvidaste tu contraseña ?
                 </a>
               </div>
 
@@ -69,8 +86,11 @@
                   :loading="isLoading"
                   :disabled="isLoading"
               >
-                Login
+              {{showRegisterForm ? 'Registrar' : 'Iniciar sesion'}}
               </VBtn>
+            </VCol>
+            <VCol class="d-flex align-content-center justify-start py-0">
+              <small class="text-red pl-2 font-weight-bold" v-if="error"> * {{ error }}</small>
             </VCol>
 
             <!-- create account -->
@@ -78,13 +98,13 @@
                 cols="12"
                 class="text-center text-base"
             >
-              <span>New on our platform?</span>
-              <RouterLink
+              <span>Nuevo en nuestra plataforma?</span>
+              <a href="#"
                   class="text-primary ms-2"
-                  :to="{ name: 'register' }"
+                  @click="showRegisterFormHandler"
               >
-                Create an account
-              </RouterLink>
+               Crea una cuenta
+              </a>
             </VCol>
 
             <VCol
@@ -92,7 +112,7 @@
                 class="d-flex align-center"
             >
               <VDivider />
-              <span class="mx-4">or</span>
+              <span class="mx-4">o</span>
               <VDivider />
             </VCol>
 
@@ -129,12 +149,6 @@
 </template>
 
 <script setup lang="ts">
-import {useGlobalStore} from "~/store";
-
-definePageMeta({
-  layout: "blank",
-  middleware: ['guest']
-});
 import { useTheme } from 'vuetify'
 import logo from '@/assets/logo.svg?raw'
 import AuthProvider from '@/components/authentication/AuthProvider.vue'
@@ -142,45 +156,56 @@ import authV1MaskDark from '@/assets/images/pages/auth-v1-mask-dark.png'
 import authV1MaskLight from '@/assets/images/pages/auth-v1-mask-light.png'
 import authV1Tree2 from '@/assets/images/pages/auth-v1-tree-2.png'
 import authV1Tree from '@/assets/images/pages/auth-v1-tree.png'
-
+const [parent] = useAutoAnimate({ duration: 300 })
 const form = ref({
-    email: 'admin@sls.com',
-    password: 'password',
-    remember: false,
+  name: '',
+  lastname: '',
+  email: 'admin@sls.com',
+  password: 'password',
+  remember: false,
 })
+const showRegisterForm = ref(false)
+const showRegisterFormHandler = () => {
+  error.value = ''
+  showRegisterForm.value = !showRegisterForm.value
+}
 const vuetifyTheme = useTheme()
 const authThemeMask = computed(() => {
-    return vuetifyTheme.global.name.value === 'light'
-        ? authV1MaskLight
-        : authV1MaskDark
+  return vuetifyTheme.global.name.value === 'light'
+      ? authV1MaskLight
+      : authV1MaskDark
 })
 const isPasswordVisible = ref(false)
 const isLoading = ref(false)
+const error = ref('')
 const signInHandler = async () => {
-   try {
-     isLoading.value = true
-     const response = await useNuxtApp().$api.auth.login(form.value)
-     if (response.success){
-       useLocalStorage('token', response.token)
-       useRouter().go(null)
-     }
-     isLoading.value = false
-   }catch (e) {
-     console.error(e)
-   }finally {
-     isLoading.value = false
-   }
-}
-onMounted(()=> {
-  console.log('mounted')
-  useGlobalStore().isLoading = false
-})
+  try {
+    error.value =  ''
+    isLoading.value = true
+    const response =
+        showRegisterForm.value
+            ? await useNuxtApp().$api.auth.register(form.value)
+            : await useNuxtApp().$api.auth.login(form.value)
 
-onBeforeMount(() => {
-  console.log('before mount')
-  useGlobalStore().isLoading = true
-})
+    if (response.success){
+      useLocalStorage('token', response.token)
+      isLoading.value = false
+      form.value = {
+        name: '',
+        lastname: '',
+        email: '',
+        password: '',
+        remember: false,
+      }
+      useRouter().go(null)
+    }
+  }catch (e) {
+    error.value = e.data.message
+  }finally {
+    isLoading.value = false
+  }
+}
 </script>
 <style lang="scss">
-@use "src/@core/scss/pages/page-auth.scss";
+@use "@/assets/scss/pages/page-auth.scss";
 </style>

@@ -17,6 +17,7 @@
     "sass": "^1.68.0"
   },
   "dependencies": {
+    "@formkit/auto-animate": "^0.8.0",
     "@invictus.codes/nuxt-vuetify": "^0.3.0",
     "@nuxtjs/google-fonts": "^3.0.2",
     "@pinia/nuxt": "^0.4.11",

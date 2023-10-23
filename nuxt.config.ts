@@ -35,6 +35,7 @@ export default defineNuxtConfig({
     '@nuxtjs/google-fonts',
     '@pinia/nuxt',
     '@vueuse/nuxt',
+    '@formkit/auto-animate/nuxt',
   ],
   runtimeConfig: {
     public: {
