@@ -1,4 +1,4 @@
-import {Auth} from "~/interfaces";
+import {Auth, User} from "~/interfaces";
 import {defineStore, skipHydrate} from "pinia";
 import {logger} from "@nuxt/kit";
 export const useAuthStore = defineStore('authStore', () => {
@@ -41,11 +41,14 @@ export const useAuthStore = defineStore('authStore', () => {
 
     const isLogged = computed(() => !!token.value)
 
-    const user = computed(() => { return auth.value.user })
-
+    const roles = computed(() => {
+        return auth.value.user.roles.map((role: string) => role).join(' | ') ?? 'No role assigned'
+    })
     return {
         auth,
         token,
+        isLogged,
+        roles,
         initToken,
         destroySession,
         logout,
