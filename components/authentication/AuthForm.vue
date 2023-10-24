@@ -1,5 +1,5 @@
 <template>
-  <div class="auth-wrapper d-flex align-center justify-center pa-4">
+  <div class="auth-wrapper d-flex  align-center justify-center pa-4">
     <VCard
         class="auth-card pa-4 pt-7"
         max-width="448"
@@ -165,19 +165,15 @@ const form = ref({
   remember: false,
 })
 const showRegisterForm = ref(false)
-const showRegisterFormHandler = () => {
-  error.value = ''
-  showRegisterForm.value = !showRegisterForm.value
-}
+const isPasswordVisible = ref(false)
+const isLoading = ref(false)
+const error = ref('')
 const vuetifyTheme = useTheme()
 const authThemeMask = computed(() => {
   return vuetifyTheme.global.name.value === 'light'
       ? authV1MaskLight
       : authV1MaskDark
 })
-const isPasswordVisible = ref(false)
-const isLoading = ref(false)
-const error = ref('')
 const signInHandler = async () => {
   try {
     error.value =  ''
@@ -186,10 +182,8 @@ const signInHandler = async () => {
         showRegisterForm.value
             ? await useNuxtApp().$api.auth.register(form.value)
             : await useNuxtApp().$api.auth.login(form.value)
-
     if (response.success){
       useLocalStorage('token', response.token)
-      isLoading.value = false
       form.value = {
         name: '',
         lastname: '',
@@ -197,14 +191,21 @@ const signInHandler = async () => {
         password: '',
         remember: false,
       }
-      useRouter().go(null)
+      window.location.reload()
+      isLoading.value = false
     }
   }catch (e) {
-    error.value = e.data.message
+    error.value = e.data?.message
+    console.log(e)
   }finally {
     isLoading.value = false
   }
 }
+const showRegisterFormHandler = () => {
+  error.value = ''
+  showRegisterForm.value = !showRegisterForm.value
+}
+
 </script>
 <style lang="scss">
 @use "@/assets/scss/pages/page-auth.scss";

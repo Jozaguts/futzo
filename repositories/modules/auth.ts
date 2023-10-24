@@ -1,6 +1,5 @@
 import HttpFactory from "~/repositories/factory";
-import {Auth} from "~/interfaces";
-import {useAuthStore} from "~/store";
+import {Auth, User} from "~/interfaces";
 
 export class AuthModule extends HttpFactory {
   async register(data: any) {
@@ -13,16 +12,11 @@ export class AuthModule extends HttpFactory {
     } );
     return await this.call('POST','/auth/login', data);
   }
-  async user () {
-    const data =  await this.call('GET','/me');
-    if (data){
-      useAuthStore().auth.user = data
-    }
+  async user () : Promise<User>{
+    return await this.call<Promise<User>>('GET','/me');
   }
   async logout () {
-    await this.call('POST','/logout').then(() => {
-        useAuthStore().destroySession()
-    });
+    await this.call('POST','/logout');
   }
   async redirect(provider: string) {
     return await this.call('GET',`/auth/${provider}/redirect`);

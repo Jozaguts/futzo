@@ -1,9 +1,11 @@
 <template>
-  <v-app>
-    <DefaultLayoutWithVerticalNav>
-     <slot/>
-    </DefaultLayoutWithVerticalNav>
-  </v-app>
+  <client-only>
+    <v-app>
+        <DefaultLayoutWithVerticalNav>
+         <slot/>
+        </DefaultLayoutWithVerticalNav>
+    </v-app>
+  </client-only>
 </template>
 
 <script setup lang="ts">
