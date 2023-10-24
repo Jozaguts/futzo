@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import avatar1 from '~/assets/images/avatars/avatar-1.png';
-const logout = () => {
-  useNuxtApp().$api.auth.logout();
-}
+import {useAuthStore} from "~/store";
+const authSore  = useAuthStore()
+onMounted(() => {
+  authSore.getUser()
+})
 </script>
 
 <template>
@@ -51,10 +53,9 @@ const logout = () => {
             </template>
 
             <VListItemTitle class="font-weight-semibold">
-<!--             todo add username-->
-              John Doe
+              {{authSore.auth.user.name}}
             </VListItemTitle>
-            <VListItemSubtitle>Admin</VListItemSubtitle>
+            <VListItemSubtitle>{{authSore?.roles}}</VListItemSubtitle>
           </VListItem>
           <VDivider class="my-2" />
 
@@ -114,7 +115,7 @@ const logout = () => {
           <VDivider class="my-2" />
 
           <!-- 👉 Logout -->
-          <VListItem @click="logout()">
+          <VListItem @click="authSore.logout()">
             <template #prepend>
               <VIcon
                   class="me-2"

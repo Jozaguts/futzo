@@ -19,6 +19,25 @@ export const useAuthStore = defineStore('authStore', () => {
         auth.value.user = null
         window.location.reload()
     }
+    const logout = () =>{
+        useNuxtApp().$api.auth.logout()
+                    .then(() => {
+                        destroySession()
+                    })
+    }
+
+    const getUser = () => {
+        if (isLogged.value) {
+            if (auth.value.user === null){
+                useNuxtApp().$api.auth.user()
+                    .then((user: User) => {
+                        auth.value.user = user
+                    })
+            }
+        }
+        console.log(auth.value.user)
+        return auth.value.user
+    }
 
     const isLogged = computed(() => !!token.value)
 
@@ -29,7 +48,7 @@ export const useAuthStore = defineStore('authStore', () => {
         token,
         initToken,
         destroySession,
-        isLogged,
-        user
+        logout,
+        getUser,
     }
 })
