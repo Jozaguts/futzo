@@ -108,6 +108,31 @@ export default defineComponent({
 <style scoped lang="scss">
 @use "@/assets/scss/variables" as variables;
 @use "@/assets/scss/mixins";
+html,
+body {
+  min-block-size: 100%;
+}
+
+.layout-page-content {
+  flex-grow: 1;
+}
+
+.layout-footer {
+  .footer-content-container {
+    block-size: variables.$layout-vertical-nav-footer-height;
+  }
+
+  .layout-footer-sticky & {
+    position: sticky;
+    inset-block-end: 0;
+    will-change: transform;
+  }
+
+  .layout-footer-hidden & {
+    display: none;
+  }
+}
+
 .layout-vertical-nav {
   position: fixed;
   z-index: variables.$layout-vertical-nav-z-index;
