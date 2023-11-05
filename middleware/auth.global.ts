@@ -5,6 +5,8 @@ export default defineNuxtRouteMiddleware((to,from) => {
       if (process.client) {
           if (isLogged && to.name === 'index' ) {
               return navigateTo('/dashboard')
+          }else if (!isLogged && to.name !== 'index'){
+              return navigateTo('/')
           }
       }
 })
