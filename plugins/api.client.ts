@@ -1,8 +1,7 @@
 import {defineNuxtPlugin} from '#app';
 import {AuthModule} from "~/repositories/modules/auth";
+import {AdminModule} from "~/repositories/modules/admin";
 import { IApiInstance} from "~/interfaces";
-import { FetchOptions} from "ofetch/dist/node";
-import Cookies from "js-cookie";
 import {$fetch } from 'ofetch'
 import {useLocalStorage} from "@vueuse/core";
 export default defineNuxtPlugin((nuxtApp) => {
@@ -26,8 +25,9 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   const apiFetcher =  $fetch.create(fetchOption());
 
-  const modules: IApiInstance = {
+  const modules: { auth: AuthModule; admin: AdminModule } = {
     auth: new AuthModule(apiFetcher),
+    admin: new AdminModule(apiFetcher),
       }
 
   return {
