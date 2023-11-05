@@ -4,7 +4,7 @@
         cols="12"
         md="4"
     >
-
+dashboard
     </VCol>
   </VRow>
 </template>

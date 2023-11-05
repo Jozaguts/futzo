@@ -36,6 +36,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vueuse/nuxt',
     '@formkit/auto-animate/nuxt',
+    'nuxt-lodash'
   ],
   runtimeConfig: {
     public: {
