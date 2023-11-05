@@ -1,6 +1,6 @@
 import {$Fetch, FetchContext, FetchResponse} from "ofetch";
 import {useLocalStorage} from "@vueuse/core";
-import {useGlobalStore} from "~/store";
+import {useAuthStore} from "~/store";
 
 class HttpFactory  {
   private readonly $fetch: $Fetch;
@@ -16,16 +16,17 @@ class HttpFactory  {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
+        'content-type': 'application/json',
         'Authorization': 'Bearer ' + useLocalStorage('token',null).value,
       },
 
       onResponse: async (response) => {
       },
       onResponseError(context: FetchContext & { response: FetchResponse<R> }): Promise<void> | void {
-        useGlobalStore().setAlert('error',{
-            message: context.response._data.message,
-            code: context.response.status,
-        })
+        const HTTP_STATUS_UNAUTHORIZED = 401;
+       if(context.response.status  === HTTP_STATUS_UNAUTHORIZED){
+           useAuthStore().destroySession()
+       }
       }
     }) as T;
   }
