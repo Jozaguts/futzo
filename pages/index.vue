@@ -1,9 +1,9 @@
 <template>
- <AuthForm />
+ <v-app>
+   <div>
+     index
+   </div>
+ </v-app>
 </template>
 <script setup lang="ts">
-import  AuthForm from "@/components/authentication/AuthForm.vue";
-definePageMeta({
-  layout: "blank",
-});
 </script>

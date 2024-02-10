@@ -1,11 +1,11 @@
 <template>
     <VBtn
-            v-for="link in authProviders"
-            :key="link.icon"
-            :icon="link.icon"
-            variant="text"
-            @click="launchProvider(link.provider)"
-            :color="vuetifyTheme.global.name.value === 'dark' ? link.colorInDark : link.color"
+      v-for="link in authProviders"
+      :key="link.icon"
+      :icon="link.icon"
+      variant="text"
+      @click="launchProvider(link.provider)"
+      :color="vuetifyTheme.global.name.value === 'dark' ? link.colorInDark : link.color"
     />
 </template>
 <script setup lang="ts">
