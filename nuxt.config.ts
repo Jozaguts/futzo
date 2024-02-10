@@ -20,8 +20,6 @@ export default defineNuxtConfig({
   build: {transpile: ['vuetify']},
   css: [
     'vuetify/lib/styles/main.sass',
-    '@/src/styles/styles.scss',
-    '@/src/@core/scss/index.scss'
   ],
   googleFonts: {
     display: 'swap',
