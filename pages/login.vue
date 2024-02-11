@@ -159,6 +159,7 @@ import authV1Tree from '@/assets/images/pages/auth-v1-tree.png'
 const { login } = useSanctumAuth();
 definePageMeta({
   middleware: ['sanctum:guest'],
+  layout: 'blank',
 });
 const [parent] = useAutoAnimate({ duration: 300 })
 const form = ref({
@@ -184,34 +185,27 @@ const signInHandler = async () => {
     isLoading.value = true
     let response
     if (!showRegisterForm.value) {
-      response = await login(form.value);
+
+      response = await login({
+        email: form.value.email,
+        password: form.value.password,
+        remember: true,
+      });
     } else {
        response  = await useNuxtApp().$api.auth.register(form.value)
     }
-    if (response.success){
-      // useLocalStorage('token', response.token)
-      // form.value = {
-      //   name: '',
-      //   lastname: '',
-      //   email: '',
-      //   password: '',
-      //   remember: false,
-      // }
-      // window.location.reload()
-      isLoading.value = false
-    }
   }catch (e) {
-    error.value = e.data?.message
-    console.log(e)
+    const error = useApiError(e);
+    if (error.isValidationError) {
+      // form.setErrors(error.bag);
+
+      return;
+    }
+    console.error('Request failed not because of a validation', error);
   }finally {
     isLoading.value = false
   }
 }
-
-
-// await login(form.value);
-
-
 const showRegisterFormHandler = () => {
   error.value = ''
   showRegisterForm.value = !showRegisterForm.value

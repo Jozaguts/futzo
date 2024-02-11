@@ -40,7 +40,7 @@ export default defineNuxtConfig({
   // nuxt-auth-sanctum options (also configurable via environment variables)
   sanctum: {
     baseUrl: process.env.NUXT_PUBLIC_URL_BACKEND, // Laravel API
-    origin: 'http://futzo.test', // Nuxt app, by default will be used 'useRequestURL().origin'
+    // origin: 'http://futzo.test', // Nuxt app, by default will be used 'useRequestURL().origin'
     userStateKey: 'sanctum.user.identity', // user state key for Vue `useState` composable
     redirectIfAuthenticated: false, // Redirect to onLogin if already authenticated
     csrf: {
@@ -61,7 +61,7 @@ export default defineNuxtConfig({
       csrf: '/sanctum/csrf-cookie', // CSRF cookie endpoint
       login: '/login', // Endpoint that accepts user credentials
       logout: '/logout', // Endpoint to destroy the current session
-      user: '/me', // Endpoint that return current user information
+      user: '/api/v1/me', // Endpoint that return current user information
     },
   },
   runtimeConfig: {
