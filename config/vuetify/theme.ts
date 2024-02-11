@@ -1,7 +1,7 @@
 import type { VuetifyOptions } from 'vuetify'
 
 const theme: VuetifyOptions['theme'] = {
-  defaultTheme: 'light',
+  defaultTheme: 'dark',
   themes: {
     light: {
       dark: false,

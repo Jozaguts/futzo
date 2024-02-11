@@ -1,5 +1,7 @@
 import {defineStore} from "pinia";import {Ref} from "vue";
 
+import { useDisplay } from 'vuetify'
+
 interface IAlertMessage {
     message: string,
     color: string,
@@ -8,12 +10,17 @@ interface IAlertMessage {
     title: string
 }
 export const useGlobalStore = defineStore('global', () => {
-  const isLoading = ref(true)
-  const alert = ref({} as IAlertMessage)
-  const computedAlert = computed(()=> alert)
-    const appName = useNuxtApp().$config.public.appName
+
+    const { mobile } = useDisplay()
+
+    const isMobile = computed(() => mobile.value)
+    const isLoading = ref(true)
+    const alert = ref({} as IAlertMessage)
+    const computedAlert = computed(()=> alert)
+    const appName = ref(useNuxtApp().$config.public.appName)
+
     const drawer = ref(false)
-  const setAlert = (type ='error', _alert: {message: string, code: number | string}) => {
+    const setAlert = (type ='error', _alert: {message: string, code: number | string}) => {
     switch (type) {
         case 'error':
             alert.value.color = 'error'
@@ -43,5 +50,5 @@ export const useGlobalStore = defineStore('global', () => {
     alert.value = {} as IAlertMessage
   }
 
-  return { isLoading, computedAlert,setAlert,resetAlert,drawer,appName}
+  return { isLoading, computedAlert, setAlert, resetAlert, drawer,appName, isMobile }
 })
