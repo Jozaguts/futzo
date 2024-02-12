@@ -6,8 +6,7 @@
       color="background"
       elevation="0"
       :border="false"
-
-      app >
+      app>
       <template #prepend>
        <v-container>
          <v-row >

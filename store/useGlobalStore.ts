@@ -1,5 +1,4 @@
-import {defineStore} from "pinia";import {Ref} from "vue";
-
+import {defineStore} from "pinia"
 import { useDisplay } from 'vuetify'
 
 interface IAlertMessage {
