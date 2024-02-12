@@ -4,7 +4,6 @@ const route = useRoute()
 
 const activeTab = ref(route.params.tab)
 
-// tabs
 const tabs = [
   { title: 'Roles y permisos', icon: 'mdi-account-outline', tab: 'roles-permissions' },
 ]
@@ -12,34 +11,59 @@ const tabs = [
 
 <template>
   <div>
-    <VTabs
-        v-model="activeTab"
-        show-arrows
-    >
-      <VTab
-          v-for="item in tabs"
-          :key="item.icon"
-          :value="item.tab"
-      >
+   <VTabs v-model="activeTab">
+     <VTab
+         v-for="tab in tabs"
+         :key="tab.icon"
+          :value="tab.tab"
+     >
         <VIcon
             size="20"
             start
-            :icon="item.icon"
+            :icon="tab.icon"
         />
-        {{ item.title }}
-      </VTab>
-    </VTabs>
-    <VDivider />
-
+        {{ tab.title }}
+     </VTab>
+   </VTabs>
+    <v-divider></v-divider>
     <VWindow
         v-model="activeTab"
         class="mt-5 disable-tab-transition"
     >
-      <!-- Roles & permissions -->
       <VWindowItem value="roles-permissions">
-        <RolesPermissions />
+      <RolesPermissions />
       </VWindowItem>
-
     </VWindow>
   </div>
+<!--  <div>-->
+<!--    <VTabs-->
+<!--        v-model="activeTab"-->
+<!--        show-arrows-->
+<!--    >-->
+<!--      <VTab-->
+<!--          v-for="item in tabs"-->
+<!--          :key="item.icon"-->
+<!--          :value="item.tab"-->
+<!--      >-->
+<!--        <VIcon-->
+<!--            size="20"-->
+<!--            start-->
+<!--            :icon="item.icon"-->
+<!--        />-->
+<!--        {{ item.title }}-->
+<!--      </VTab>-->
+<!--    </VTabs>-->
+<!--    <VDivider />-->
+
+<!--    <VWindow-->
+<!--        v-model="activeTab"-->
+<!--        class="mt-5 disable-tab-transition"-->
+<!--    >-->
+      <!-- Roles & permissions -->
+<!--      <VWindowItem value="roles-permissions">-->
+<!--        <RolesPermissions />-->
+<!--      </VWindowItem>-->
+
+<!--    </VWindow>-->
+<!--  </div>-->
 </template>

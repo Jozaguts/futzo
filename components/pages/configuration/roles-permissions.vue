@@ -1,7 +1,7 @@
 <template>
   <VRow>
     <VCol cols="12">
-      <VCard title="Roles y permisos" >
+      <VCard>
         <VCardItem >
          <VCardTitle>
           <InputSearchComponent @onSearch="filterModel" />
@@ -9,9 +9,9 @@
          <div class="d-flex">
            <VSpacer />
            <VCardSubtitle>
-             <VBtn class="mt-2">
-               +
-             </VBtn>
+<!--             <VBtn class="mt-2">-->
+<!--               +-->
+<!--             </VBtn>-->
            </VCardSubtitle>
          </div>
         </VCardItem>
@@ -35,12 +35,8 @@
                   color="primary"
                   @click="toggleDialog(role)"
                   :size=" mobile ? 'small' : 'default'"
-              >Editar
-              </VBtn>
-              <VBtn   class="my-auto my-lg-0"
-                      color="error"
-                      :size=" mobile ? 'small' : 'default'"
-              >Eliminar
+              >
+                Editar
               </VBtn>
             </td>
           </tr>
@@ -92,16 +88,23 @@
   </VRow>
 </template>
 <script setup lang="ts">
-import InputSearchComponent from "~/components/shared/InputSearchComponent.vue";
-import Modal from '~/components/shared/Modal.vue'
-import {useAdminStore} from "~/store";
-import {storeToRefs} from "pinia";
 import {useDisplay} from "vuetify";
-import {Role, Permission} from "~/interfaces";
-await useAdminStore().getRolesAndPermissions()
+import Modal from '~/components/shared/Modal.vue'
+import InputSearchComponent from "~/components/shared/InputSearchComponent.vue";
+interface Permission {
+  id: number;
+  name: string;
+}
+interface Role {
+  id: number;
+  name: string;
+  permissions: Permission[];
+
+}
+const client = useSanctumClient();
+const roles = ref([]);
+const permissions = ref([]);
 const {mobile} = useDisplay()
-const adminStore = storeToRefs(useAdminStore())
-const {roles,permissions} = adminStore
 const dialog = ref(null)
 const formData = ref({} as Role)
 const toggleDialog = (role: Role) => {
@@ -115,16 +118,12 @@ const closeDialog = () => {
 }
 const filterModel = async (value) => {
   if (value === '') {
-    await getRolesFromAdminStore();
+    const rolesAndPermissions = await getRolesAndPermissions()
+    updateRolesAndPermissions(rolesAndPermissions.value)
   } else {
     filterRolesByName(value);
   }
 }
-
-const getRolesFromAdminStore = async () => {
-  await useAdminStore().getRolesAndPermissions();
-}
-
 const filterRolesByName = (value) => {
   roles.value = roles.value.filter(role => role.name.toLowerCase().includes(value.toLowerCase()));
 }
@@ -132,8 +131,26 @@ const removePermission = (permissionId: number) => {
   formData.value.permissions = formData.value.permissions.filter(permission => permission.id !== permissionId)
 }
 const updatePermissions = async () => {
-  await useAdminStore().updateRole(formData.value)
-  await getRolesFromAdminStore();
+   await useAsyncData('roles-permissions-update', () =>  client(`/api/v1/admin/roles/${formData.value.id}`,{
+     method: 'POST',
+    body: { permissions: formData.value.permissions, _method: 'PUT' }
+   }))
+  const rolesAndPermissions =  await getRolesAndPermissions()
+  updateRolesAndPermissions(rolesAndPermissions.value)
   dialog.value.toggle()
 }
+const getRolesAndPermissions = async () => {
+  const { data } = await useAsyncData('roles-permissions', () =>  client('/api/v1/admin/roles'))
+
+  return data
+}
+const updateRolesAndPermissions =  (rolesAndPermissions) => {
+  roles.value = rolesAndPermissions.roles
+  permissions.value = rolesAndPermissions.permissions
+}
+
+onBeforeMount( async () => {
+  const rolesAndPermissions = await getRolesAndPermissions()
+  updateRolesAndPermissions(rolesAndPermissions.value)
+})
 </script>
