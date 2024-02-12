@@ -1,11 +1,11 @@
-import {Auth, User} from "~/interfaces";
-import {defineStore, skipHydrate} from "pinia";
-import {logger} from "@nuxt/kit";
+
+import {defineStore} from "pinia";
+import type {User} from "~/models/user";
 export const useAuthStore = defineStore('authStore', () => {
+    const user = useSanctumUser<User>();
+    const role = computed (() => user.value?.roles[0])
 
-    const canAccess = (route: string, role: string) => {
-
-    }
     return {
+        role
     }
 })

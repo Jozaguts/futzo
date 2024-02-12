@@ -1,9 +1,11 @@
 <template>
- <v-app>
-   <div>
-     index
-   </div>
- </v-app>
+  <v-container fluid>
+    <v-row>
+      <v-col>
+        <h1>Dashboard</h1>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 <script setup lang="ts">
 definePageMeta({

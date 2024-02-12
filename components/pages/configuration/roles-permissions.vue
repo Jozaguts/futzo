@@ -15,7 +15,7 @@
            </VCardSubtitle>
          </div>
         </VCardItem>
-        <VTable hover="true">
+        <VTable :hover="true">
           <thead>
           <tr>
             <th class="text-uppercase text-center">

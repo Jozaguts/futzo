@@ -3,9 +3,7 @@
    <Navigation > </Navigation>
    <AppBar > </AppBar>
    <v-main>
-      <v-container>
-        <slot></slot>
-      </v-container>
+     <slot></slot>
    </v-main>
    <v-footer app></v-footer>
  </v-app>
@@ -20,6 +18,7 @@ import AppBar from  '~/components/layout/app-bar.vue'
   background: linear-gradient(-72.47deg, rgb(145, 85, 253) 22.16%, rgba(145, 85, 253, 0.7) 76.47%) !important;
 }
 .v-list-item:hover, .v-list-item--active {
-  border-radius: 25px;
+  border-bottom-right-radius: 25px;
+  border-top-right-radius: 25px;
 }
 </style>

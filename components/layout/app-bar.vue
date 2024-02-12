@@ -1,7 +1,7 @@
 <template>
   <v-app-bar color="background" density="comfortable" :border="false" elevation="0" app>
     <v-app-bar-nav-icon v-if="isMobile" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-    <v-container>
+    <v-container fluid>
       <v-row>
         <v-col class="d-flex justify-end">
           <v-btn icon="mdi-bell"  color="on-background"></v-btn>
