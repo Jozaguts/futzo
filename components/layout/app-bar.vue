@@ -1,7 +1,6 @@
 <template>
   <v-app-bar color="background" density="comfortable" :border="false" elevation="0" app>
     <v-app-bar-nav-icon v-if="isMobile" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-
     <v-container>
       <v-row>
         <v-col class="d-flex justify-end">
