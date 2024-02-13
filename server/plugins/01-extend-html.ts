@@ -6,7 +6,8 @@ export default defineNitroPlugin((nitroApp) => {
         // const primaryColor = window.localStorage('futzo-initial-loader-color') ?? '#9155FD'
         html.bodyPrepend.push(`<div id="loading-bg">
             <div class="loading-logo">
-                <img src="/logo.png" height="50" alt="Logo" />
+                <img src="/logo.png" height="80" alt="Logo" />
+                <h1 class="text-center">Futzo</h1>  
             </div>
             <div class="loading">
                 <div class="effect-1 effects"></div>

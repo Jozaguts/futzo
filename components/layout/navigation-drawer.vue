@@ -10,10 +10,9 @@
       <template #prepend>
        <v-container>
          <v-row >
-           <v-col cols="12">
-              <h1 class="text-h5">
-                {{appName}}
-              </h1>
+           <v-col cols="12" class="d-flex align-center">
+             <v-img max-width="40" width="100%" height="40" src="/logo.png"></v-img>
+              <h1 class="text-h5 ml-1">{{appName}}</h1>
            </v-col>
            <v-col cols="12">
               <v-list color="white" nav>

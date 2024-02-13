@@ -1,3 +1,8 @@
+root {
+  --initial-loader-bg: #9155FD;
+  --initial-loader-color: #9155FD;
+}
+
 body {
   margin: 0;
 }
@@ -10,10 +15,10 @@ html {
 #loading-bg {
   position: absolute;
   display: block;
-  background: var(--initial-loader-bg, #fff);
+  background-color: var(--initial-loader-bg);
   block-size: 100%;
   inline-size: 100%;
-  z-index: 200;
+  z-index: 9999;
 }
 
 .loading-logo {
