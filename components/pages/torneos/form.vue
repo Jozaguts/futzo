@@ -1,114 +1,145 @@
 <script  lang="ts" setup>
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
-import type {Tournament} from "~/models/tournament";
-const tournament = ref<Tournament>({
-  id: 1,
-  name: '',
-  location: '',
-  start_date: new Date(),
-  end_date: new Date(),
-  prize: '',
-  winner: '',
-  description: '',
-  logo: [],
-  banner: [],
-  status: ''
-});
-const date = ref();
+import {useSanctumClient} from "#imports";
 const flow = ref(['month', 'year', 'calendar']);
+const client = useSanctumClient();
 const {
   fields,
   handleSubmit,
   resetForm,
 } = useSchemas( 'create-tournament')
-const createTournament = handleSubmit((values) => {
-  console.log('Submitted with', values);
+const dialog = ref(false);
+const createTournament = handleSubmit(async (values) => {
+
+  if (values.start_date instanceof Date) {
+    values.start_date = values.start_date.toISOString();
+  }
+  if (values.end_date instanceof Date) {
+    values.end_date = values.end_date.toISOString();
+  }
+  const formData = new FormData();
+  for (const key in values) {
+   // validate if is an image and if is true append to formdata
+    if (values[key][0] instanceof File) {
+      formData.append(key, values[key][0]);
+    } else {
+      formData.append(key, values[key]);
+    }
+  }
+  const {data, error, pending} = await useAsyncData('store-tournament', async () =>{
+      await client('api/v1/admin/tournaments', {
+        method: 'POST',
+        body: formData,
+
+      });
+      pending.value = false;
+      dialog.value = false;
+  });
 });
 
+watch(() => dialog.value, (value) => {
+  if (!value) {
+    resetForm();
+  }
+});
 </script>
 <template>
-  <v-dialog width="500">
-
-    <template v-slot:activator="{ props }">
-
-      <v-btn v-bind="props"  icon size="30" class="position-absolute top-0.5">
-        <v-icon size="">mdi-plus</v-icon>
-      </v-btn>
-    </template>
-    <template v-slot:default="{ isActive }">
-      <v-card title="Crear Torneo">
-        <v-card-text>
-         <v-form>
-            <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field
-                      v-model="fields.name.fieldValue"
-                      v-bind="fields.name.fieldPropsValue"
-                      label="Nombre del torneo"
-                  >
-                  </v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                      v-model="fields.location.fieldValue"
-                      v-bind="fields.location.fieldPropsValue"
-                      label="Ubicación"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="6">
-                  <small>Inicia</small>
-                  <VueDatePicker
-                      v-model="fields.start_date.fieldValue"
-                      v-bind="fields.start_date.fieldPropsValue"
-                      :flow="flow"
-                      :dark="true"
-                  />
-                  {{fieldPropsValue}}
-                </v-col>
-                <v-col cols="6">
-                  <small>Termina</small>
-                  <VueDatePicker v-model="date" :flow="flow"  :dark="true" />
-                </v-col>
-                <v-col cols="12">
-                  <v-textarea
-                      v-model="tournament.description"
-                      label="Descripción"
-                  ></v-textarea>
-                </v-col>
-                <v-col cols="12">
-                  <v-file-input
-                      :model-value="tournament.logo"
-                      clearable
-                      accept="image/*"
-                      label="Logo"
-                  ></v-file-input>
-                </v-col>
-                <v-col cols="12">
-                  <v-file-input
-                      :model-value="tournament.banner"
-                      clearable
-                      accept="image/*"
-                      label="Banner"
-                  ></v-file-input>
-                </v-col>
-              </v-row>
-            </v-container>
-         </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-              block
-              text="Crear"
-              @click="createTournament"
-              variant="elevated"
-          ></v-btn>
-        </v-card-actions>
-      </v-card>
-    </template>
-  </v-dialog>
+  <v-btn  size="30" :icon="true" class="position-absolute top-0.5">
+    <v-icon>mdi-plus</v-icon>
+    <v-dialog width="500"  v-model="dialog"
+              activator="parent">
+      <template #default>
+        <v-card title="Crear Torneo">
+          <v-card-text>
+            <v-form>
+              <v-container>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field
+                        v-model="fields.name.fieldValue"
+                        v-bind="fields.name.fieldPropsValue"
+                        label="Nombre del torneo"
+                    >
+                    </v-text-field>
+                  </v-col>
+                  <v-col cols="12" md="6" lg="6">
+                    <small>Inicia</small>
+                    <VueDatePicker
+                        vertical
+                        :min-date="new Date()"
+                        timezone="America/Mexico_City"
+                        format="dd/MM/yyyy"
+                        v-model="fields.start_date.fieldValue"
+                        v-bind="fields.start_date.fieldPropsValue"
+                        :dark="true"
+                    />
+                  </v-col>
+                  <v-col cols="12" md="6" lg="6">
+                    <small>Termina</small>
+                    <VueDatePicker
+                        vertical
+                        format="dd/MM/yyyy"
+                        :min-date="new Date()"
+                        v-model="fields.end_date.fieldValue"
+                        v-bind="fields.end_date.fieldPropsValue"
+                        :dark="true"
+                    />
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                        v-model="fields.location.fieldValue"
+                        v-bind="fields.location.fieldPropsValue"
+                        label="Ubicación"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-textarea
+                        timezone="America/Mexico_City"
+                        format="MM/dd/yyyy HH:mm"
+                        v-model="fields.description.fieldValue"
+                        v-bind="fields.description.fieldPropsValue"
+                        label="Descripción"
+                        max-rows="5"
+                        rows="3"
+                    ></v-textarea>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-file-input
+                        v-model="fields.logo.fieldValue"
+                        v-bind="fields.logo.fieldPropsValue"
+                        clearable
+                        accept="image/*"
+                        label="Logo"
+                    ></v-file-input>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-file-input
+                        v-model="fields.banner.fieldValue"
+                        v-bind="fields.banner.fieldPropsValue"
+                        clearable
+                        accept="image/*"
+                        label="Banner"
+                    ></v-file-input>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-form>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+                block
+                text="Crear"
+                :disabled="pending"
+                @click="createTournament"
+                variant="elevated"
+            ></v-btn>
+          </v-card-actions>
+        </v-card>
+      </template>
+    </v-dialog>
+  </v-btn>
 </template>
 <style >
 .dp__theme_dark {
