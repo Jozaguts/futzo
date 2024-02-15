@@ -20,10 +20,9 @@ const createTournament = handleSubmit(async (values) => {
   }
   const formData = new FormData();
   for (const key in values) {
-   // validate if is an image and if is true append to formdata
-    if (values[key][0] instanceof File) {
+    if (values[key].length && values[key][0] instanceof File) {
       formData.append(key, values[key][0]);
-    } else {
+    } else if (values[key]) {
       formData.append(key, values[key]);
     }
   }

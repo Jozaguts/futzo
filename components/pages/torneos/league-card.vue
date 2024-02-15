@@ -61,64 +61,25 @@
 <script lang="ts" setup>
 import tournamentForm from '~/components/pages/torneos/form.vue'
 const selectedLeagueId = ref(1);
-const leagueModel = ref({
-  id: 1,
-  name: 'English Premier League',
-  teams: 18,
-  players: 450,
-  matches: 102,
-  image: 'https://ligasoccer.merku.love/static/media/english_premier.e6ab54e0a7667f2d1287.webp'
-})
+const leagueModel = ref({} );
+const leagues = ref([])
 
-const leagues = ref([
-  {
-    id: 1,
-    name: 'English Premier League',
-    teams: 18,
-    players: 450,
-    matches: 102,
-    image: 'https://ligasoccer.merku.love/static/media/english_premier.e6ab54e0a7667f2d1287.webp'
-  },
-  {
-    id: 2,
-    name: 'La Liga',
-    teams: 20,
-    players: 500,
-    matches: 120,
-    image: 'https://1000marcas.net/wp-content/uploads/2020/03/Spanish-La-Liga-logo-600x338.png'
-  },
-  {
-    id: 3,
-    name: 'Serie A',
-    teams: 20,
-    players: 500,
-    matches: 120,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Serie_A_logo_2022.svg/150px-Serie_A_logo_2022.svg.png'
-  },
-  {
-    id: 4,
-    name: 'Bundesliga',
-    teams: 18,
-    players: 450,
-    matches: 102,
-    image: 'https://upload.wikimedia.org/wikipedia/en/thumb/d/df/Bundesliga_logo_%282017%29.svg/170px-Bundesliga_logo_%282017%29.svg.png',
-  },
-  {
-    id: 5,
-    name: 'Ligue 1',
-    teams: 20,
-    players: 500,
-    matches: 120,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ligue_1_Uber_Eats_logo.svg/140px-Ligue_1_Uber_Eats_logo.svg.png'
-  }
-])
 const changeLeague = (id: number) => {
   const foundLeague = leagues.value.find(league => league.id === id);
   if (foundLeague) {
     leagueModel.value = { ...foundLeague };
   }
 }
+
+const client = useSanctumClient();
+
+const { pending, error} = await useAsyncData('tournaments', async () => {
+  leagues.value = await client('/api/v1/admin/tournaments');
+  leagueModel.value = leagues.value[0];
+});
+
 watch(selectedLeagueId, (newId) => {
   changeLeague(newId);
 });
+
 </script>
