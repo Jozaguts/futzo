@@ -10,7 +10,7 @@ COPY package*.json ./
 COPY . .
 
 # Instala las dependencias
-RUN npm install
+RUN yarn install
 
 ENV NUXT_HOST=0.0.0.0
 

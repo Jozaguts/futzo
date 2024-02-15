@@ -17,7 +17,7 @@ export default defineNuxtConfig({
       link: [{rel: 'stylesheet', href: '/loader.css'}],
     },
   },
-  build: {transpile: ['vuetify']},
+  build: {transpile: ['vuetify','@vuepic/vue-datepicker']},
   css: [
     'vuetify/lib/styles/main.sass',
   ],
@@ -28,6 +28,8 @@ export default defineNuxtConfig({
     }
   },
   modules: [
+    '@nuxtjs/i18n',
+    '@vee-validate/nuxt',
     'nuxt-auth-sanctum',
     'nuxt-typed-router',
     'nuxt-icon',
@@ -37,6 +39,9 @@ export default defineNuxtConfig({
     '@formkit/auto-animate/nuxt',
     'nuxt-lodash',
   ],
+  // i18n: {
+  //   vueI18n: './i18n.config.ts' // if you are using custom path, default
+  // },
   // nuxt-auth-sanctum options (also configurable via environment variables)
   sanctum: {
     baseUrl: process.env.NUXT_PUBLIC_URL_BACKEND, // Laravel API
