@@ -1,10 +1,13 @@
 <template>
-  <v-card  rounded elevation="10">
+  <v-card  rounded elevation="10" width="100%">
     <v-card-item>
+      <div class="d-flex justify-end position-relative">
+        <tournamentForm ></tournamentForm>
+      </div>
       <template #prepend>
         <v-img width="80" height="80" :src="leagueModel.image" ></v-img>
       </template>
-      <v-card-title>{{leagueModel.name}}</v-card-title>
+      <v-card-title> <span class="d-inline-block text-truncate"  :style="[$vuetify.display.mobile ? 'max-width: 180px': '']">{{leagueModel.name}}</span></v-card-title>
     </v-card-item>
     <v-card-text>
       <v-container fluid class="pa-0">
@@ -48,7 +51,7 @@
             ></v-pagination>
           </v-col>
           <v-col cols="12">
-            <v-btn color="primary" dark >Ver Torneo</v-btn>
+            <tournamentForm ></tournamentForm>
           </v-col>
         </v-row>
       </v-container>
@@ -56,6 +59,7 @@
   </v-card>
 </template>
 <script lang="ts" setup>
+import tournamentForm from '~/components/pages/torneos/form.vue'
 const selectedLeagueId = ref(1);
 const leagueModel = ref({
   id: 1,
