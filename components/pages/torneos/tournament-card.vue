@@ -4,10 +4,10 @@
       <div class="d-flex justify-end position-relative">
         <tournamentForm ></tournamentForm>
       </div>
-      <template #prepend>
-        <v-img width="80" height="80" :src="leagueModel.image" ></v-img>
-      </template>
-      <v-card-title> <span class="d-inline-block text-truncate"  :style="[$vuetify.display.mobile ? 'max-width: 180px': '']">{{leagueModel.name}}</span></v-card-title>
+      <v-card-title>
+        <span class="d-inline-block text-truncate text-subtitle-1"  :style="[$vuetify.display.mobile ? 'max-width: 180px': '']">{{leagueName}}</span>
+      </v-card-title>
+      <v-card-subtitle class="text-subtitle-2"><h2 class="text-body-1">{{tournament?.name}}</h2></v-card-subtitle>
     </v-card-item>
     <v-card-text>
       <v-container fluid class="pa-0">
@@ -16,7 +16,7 @@
            <p class="text-subtitle-2 text-capitalize">equipos</p>
           </v-col>
           <v-col class="d-flex justify-end" cols="6" >
-            <p class="text-subtitle-2 text-capitalize">{{leagueModel.teams}}</p>
+            <p class="text-subtitle-2 text-capitalize">{{tournament?.teams}}</p>
           </v-col>
         </v-row>
         <v-divider></v-divider>
@@ -25,7 +25,7 @@
             <p class="text-subtitle-2 text-capitalize">jugadores</p>
           </v-col>
           <v-col class="d-flex justify-end" cols="6">
-            <p class="text-subtitle-2 text-capitalize">{{leagueModel.players}}</p>
+            <p class="text-subtitle-2 text-capitalize">{{tournament?.players}}</p>
           </v-col>
         </v-row>
         <v-divider></v-divider>
@@ -34,7 +34,7 @@
             <p class="text-subtitle-2 text-capitalize">partidos jugados</p>
           </v-col>
           <v-col class="d-flex justify-end" cols="6" >
-            <p class="text-subtitle-2 text-capitalize">{{leagueModel.matches}}</p>
+            <p class="text-subtitle-2 text-capitalize">{{tournament?.matches}}</p>
           </v-col>
         </v-row>
         <v-divider></v-divider>
@@ -45,13 +45,10 @@
         <v-row no-gutters>
           <v-col cols="12">
             <v-pagination
-                v-model="selectedLeagueId"
-                :length="leagues.length"
-                @update:model-value="changeLeague"
+                :model-value="page"
+                :length="tournaments.length"
+                @update:modelValue="changePage"
             ></v-pagination>
-          </v-col>
-          <v-col cols="12">
-            <tournamentForm ></tournamentForm>
           </v-col>
         </v-row>
       </v-container>
@@ -59,27 +56,24 @@
   </v-card>
 </template>
 <script lang="ts" setup>
-import tournamentForm from '~/components/pages/torneos/form.vue'
-const selectedLeagueId = ref(1);
-const leagueModel = ref({} );
-const leagues = ref([])
-
-const changeLeague = (id: number) => {
-  const foundLeague = leagues.value.find(league => league.id === id);
-  if (foundLeague) {
-    leagueModel.value = { ...foundLeague };
+import tournamentForm from '~/components/pages/torneos/tournament-form.vue'
+const page = ref(1);
+import {useTournamentStore} from "~/store";
+import {storeToRefs} from "pinia";
+const tournamentStore = useTournamentStore();
+const { tournaments, tournament} = storeToRefs(tournamentStore);
+const changePage = (nextPage: number) => {
+  if (nextPage > 0 && nextPage <= tournaments.value.length) {
+    tournament.value = tournaments.value[nextPage - 1];
+    page.value = nextPage;
   }
 }
-
-const client = useSanctumClient();
-
-const { pending, error} = await useAsyncData('tournaments', async () => {
-  leagues.value = await client('/api/v1/admin/tournaments');
-  leagueModel.value = leagues.value[0];
+const leagueName = computed(() => {
+  return tournament.value?.league ? `Partidos de Liga ${tournament.value?.league}`:'Crea tu primer torneo';
+});
+watch(page, (newId) => {
+  changePage(newId);
 });
 
-watch(selectedLeagueId, (newId) => {
-  changeLeague(newId);
-});
 
 </script>

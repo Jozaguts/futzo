@@ -1,11 +1,12 @@
 export interface Tournament {
-  id: number;
-  league_id: number;
+  id?: number | null;
+  league_id?: number| null;
   name: string;
-  start_date: Date;
-  end_date: Date;
-  prize: string;
-  winner: string;
-  description: string;
-  status: string;
+  start_date?: Date | null;
+  end_date?: Date | null;
+  prize?: string | null;
+  winner?: string | null;
+  description?: string | null;
+  status?: string | null;
+  league?: string | null;
 }
