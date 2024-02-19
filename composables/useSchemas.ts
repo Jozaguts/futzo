@@ -33,7 +33,6 @@ function getSchemaByName(name) {
     let schemaFields = {};
     const {t} = useI18n();
     switch (name) {
-        // todo modifcar los campos de este esquema para que coincidan con los campos de la interfaz
         case 'create-tournament':
             schemaFields.name = yup.string().min(6, t('tournament_min')).required(t('forms.required'));
             schemaFields.start_date = yup.date().nullable();
