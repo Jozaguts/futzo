@@ -6,7 +6,8 @@ interface IAlertMessage {
     color: string,
     code: string | number,
     type:  "error" | "success" | "warning" | "info" | undefined,
-    title: string
+    title: string,
+    isActive?: boolean | null
 }
 export const useGlobalStore = defineStore('global', () => {
 
@@ -15,7 +16,6 @@ export const useGlobalStore = defineStore('global', () => {
     const isMobile = computed(() => mobile.value)
     const isLoading = ref(true)
     const alert = ref({} as IAlertMessage)
-    const computedAlert = computed(()=> alert)
     const appName = ref(useNuxtApp().$config.public.appName)
 
     const drawer = ref(false)
@@ -44,10 +44,11 @@ export const useGlobalStore = defineStore('global', () => {
         }
         alert.value.message = _alert.message
         alert.value.code = _alert.code
+        alert.value.isActive = true
   }
     const resetAlert = () => {
         alert.value = {} as IAlertMessage
     }
 
-  return { isLoading, computedAlert, setAlert, resetAlert, drawer,appName, isMobile }
+  return { isLoading, alert, setAlert, resetAlert, drawer,appName, isMobile }
 })
