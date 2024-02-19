@@ -5,7 +5,7 @@ const props = defineProps({
   error: Object as () => NuxtError
 })
 
-console.log(props.error?.message)
+console.error('FROM ERROR PAGE',props.error?.message)
 const handleError = () => clearError({ redirect: '/' })
 </script>
 
