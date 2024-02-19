@@ -6,12 +6,14 @@
      <slot></slot>
    </v-main>
    <v-footer app></v-footer>
+   <CustomSnackbar />
  </v-app>
 </template>
 
 <script setup lang="ts">
 import Navigation from '~/components/layout/navigation-drawer.vue'
 import AppBar from  '~/components/layout/app-bar.vue'
+import CustomSnackbar from '~/components/snackbar.vue'
 const show = ref(false);
 onMounted(() => {
   show.value = true;
