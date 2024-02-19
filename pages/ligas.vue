@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import '@vuepic/vue-datepicker/dist/main.css'
 import VueDatePicker from "@vuepic/vue-datepicker";
+import {useDisplay} from "vuetify";
 definePageMeta({
-  middleware: ['sanctum:auth']
+  middleware: ['sanctum:auth'],
+  layout: 'blank'
 });
 
 const {
@@ -36,96 +38,112 @@ const createLeague = handleSubmit(async (values) => {
   if (!error.value && !pending.value) {
     resetForm();
   }
-  console.log(1)
   useSanctumUser().value.league = data.value;
   navigateTo('/');
 });
+const variant = computed(() =>{
+ return useDisplay().mobile ? 'elevated' : 'outlined'
+})
 </script>
 
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12" lg="6" md="6"  offset-md="3" offset-lg="3">
-        <h1 class="text-h4 text-lg-h3 ">Bienvenido!</h1>
-        <p class="text-subtitle-2 text-md-body-1">Antes de sumergirte en todas las funcionalidades que <span class="font-weight-bold">Futzo</span> tiene para ofrecer, hay un paso que necesitas completar.</p>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="6" md="6"  offset-md="3" offset-lg="3">
-         <v-card>
-            <v-card-title>
-              <h3 class="text-h5 ">Crear tu primera liga</h3>
-            </v-card-title>
-            <v-card-text>
+  <v-main>
+    <v-card class="custom-v-card" max-width="600" min-width="340" :variant="variant" >
+      <v-card-item>
+        <v-card-title>
+          <p class="title font-weight-bold text-lg-h5">¡Empieza tu Aventura Deportiva con Futzo!</p>
+        </v-card-title>
+      </v-card-item>
+      <v-card-text>
+        <v-container fluid class="px-0">
+          <v-row no-gutters>
+            <v-col cols="12">
+              <v-card-subtitle>
+                <h3 class="text-body-1 font-weight-bold">Crea tu primera liga</h3>
+              </v-card-subtitle>
+            </v-col>
+            <v-col cols="12">
               <v-form>
-               <v-container>
-                 <v-row>
-                   <v-col cols="12">
-                     <v-text-field
-                         v-model="fields.name.fieldValue"
-                         v-bind="fields.name.fieldPropsValue"
-                         label="Nombre"
-                     ></v-text-field>
-                   </v-col>
-                   <v-col>
-                     <v-text-field
-                         v-model="fields.location.fieldValue"
-                         v-bind="fields.location.fieldPropsValue"
-                         label="Locación"
-                     ></v-text-field>
-                   </v-col>
-                   <v-col cols="12">
-                     <v-textarea
-                         v-model="fields.description.fieldValue"
-                         v-bind="fields.description.fieldPropsValue"
-                         label="Descripción"
-                         max-rows="5"
-                         rows="3"
-                     ></v-textarea>
-                   </v-col>
-                   <v-col cols="12">
-                     <small>Fecha de Creación</small>
-                     <VueDatePicker
-                         vertical
-                         :teleport="true"
-                         hide-offset-dates
-                         position="right"
-                         format="dd/MM/yyyy"
-                         v-model="fields.creation_date.fieldValue"
-                         v-bind="fields.creation_date.fieldPropsValue"
-                         :dark="true"
-                     />
-                   </v-col>
-                   <v-col cols="12">
-                     <v-file-input
-                         v-model="fields.logo.fieldValue"
-                         v-bind="fields.logo.fieldPropsValue"
-                         clearable
-                         accept="image/*"
-                         label="Logo"
-                     ></v-file-input>
-                   </v-col>
-                   <v-col cols="12">
-                     <v-file-input
-                         v-model="fields.banner.fieldValue"
-                         v-bind="fields.banner.fieldPropsValue"
-                         clearable
-                         accept="image/*"
-                         label="Banner"
-                     ></v-file-input>
-                   </v-col>
-                 </v-row>
-               </v-container>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-text-field
+                          v-model="fields.name.fieldValue"
+                          v-bind="fields.name.fieldPropsValue"
+                          label="Nombre"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col>
+                      <v-text-field
+
+                          v-model="fields.location.fieldValue"
+                          v-bind="fields.location.fieldPropsValue"
+                          label="Locación"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-textarea
+                          v-model="fields.description.fieldValue"
+                          v-bind="fields.description.fieldPropsValue"
+                          label="Descripción"
+                          max-rows="5"
+                          rows="3"
+                      ></v-textarea>
+                    </v-col>
+                    <v-col cols="12">
+                      <span class="text-medium-emphasis">Fecha de Creación</span>
+                      <VueDatePicker
+                          vertical
+                          :teleport="true"
+                          hide-offset-dates
+                          format="dd/MM/yyyy"
+                          v-model="fields.creation_date.fieldValue"
+                          v-bind="fields.creation_date.fieldPropsValue"
+                          :dark="true"
+                      />
+                    </v-col>
+                    <v-col cols="12">
+                      <v-file-input
+                          v-model="fields.logo.fieldValue"
+                          v-bind="fields.logo.fieldPropsValue"
+                          clearable
+                          accept="image/*"
+                          label="Logo"
+                      ></v-file-input>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-file-input
+                          v-model="fields.banner.fieldValue"
+                          v-bind="fields.banner.fieldPropsValue"
+                          clearable
+                          accept="image/*"
+                          label="Banner"
+                      ></v-file-input>
+                    </v-col>
+                  </v-row>
+                </v-container>
               </v-form>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn @click="createLeague" variant="outlined" block  color="primary">Crear</v-btn>
-            </v-card-actions>
-          </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+      <v-card-actions class="px-5">
+        <v-btn @click="createLeague" size="50"  variant="flat" block  color="primary">Crear</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-main>
 </template>
 <style>
   @import url('~/assets/css/vue-datepicker-custom.css');
+  @media (max-width: 600px) {
+    .title {
+      font-size: 1.1rem;
+    }
+  }
+  .custom-v-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 </style>

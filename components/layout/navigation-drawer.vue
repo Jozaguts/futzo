@@ -24,7 +24,7 @@
                     {{link.title}}
                   </v-list-item-title>
                 </v-list-item>
-                <LinkSeparator name="Equipos"></LinkSeparator>
+                <LinkSeparator name="Liga"></LinkSeparator>
                 <v-list-item density="compact" v-for="link in teamsLinks" :key="link.title" link :to="link.to" :disabled="link.disabled" class="my-1">
                   <template #prepend>
                     <v-icon>{{link.icon}}</v-icon>
@@ -52,7 +52,7 @@ const adminLinks = reactive([
 ])
 const teamsLinks = reactive([
   { icon: 'mdi-trophy-variant', title: 'Torneos', to: '/torneos', disabled: false},
-  { icon: 'mdi-players', title: 'Roles y Permisos', to: '/roles-permisos', disabled: false},
+  { icon: 'mdi-kick', title: 'Jugadores', to: '/roles-permisos', disabled: false},
 ])
 
 </script>

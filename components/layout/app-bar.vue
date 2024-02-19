@@ -65,7 +65,7 @@ import { useTheme } from 'vuetify'
 import type {User} from "~/interfaces";
 const theme = useTheme()
 const isDark = computed(() => theme.global.current.value.dark)
-const { logout } = useSanctumAuth();
+const { logout} = useSanctumAuth();
 const toggleTheme =  () => {
   theme.global.name.value = isDark.value ? 'light' : 'dark'
 }
