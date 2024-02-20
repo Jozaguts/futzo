@@ -5,7 +5,7 @@ export default defineI18nConfig(() => ({
     messages: {
         es: {
             forms:{
-                required: 'Este campo es requerido',
+                required: 'Campo es requerido',
             },
             tournament_min: 'El nombre del torneo debe tener al menos 6 caracteres',
             league_min: 'El nombre de la liga debe tener al menos 6 caracteres',

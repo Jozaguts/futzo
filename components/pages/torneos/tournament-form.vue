@@ -3,8 +3,10 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import {useSanctumClient} from "#imports";
 import {useTournamentStore} from "~/store";
+import {storeToRefs} from "pinia";
 const flow = ref(['month', 'year', 'calendar']);
 const client = useSanctumClient();
+const {categories} = storeToRefs(useTournamentStore());
 const {
   fields,
   handleSubmit,
@@ -37,7 +39,6 @@ watch(() => dialog.value, (value) => {
     resetForm();
   }
 });
-
 </script>
 <template>
   <v-btn  size="30" :icon="true" class="position-absolute top-0.5">
@@ -55,6 +56,28 @@ watch(() => dialog.value, (value) => {
                       label="Nombre del torneo"
                   >
                   </v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-select
+                      clearable
+                      v-model="fields.category.fieldValue"
+                      v-bind="fields.category.fieldPropsValue"
+                      label="categoría"
+                      :items="categories"
+                      item-title="name"
+                      item-value="id"
+                  >
+                    <template #details>
+                      <LazyPagesTorneosCategoryForm />
+                    </template>
+                    <template v-slot:item="{ props,item }">
+                      <v-list-item
+                          variant="flat"
+                          v-bind="props"
+                          :subtitle="item.raw.age_range === '*' ? 'Edad libre' : item.raw.age_range ">
+                      </v-list-item>
+                    </template>
+                  </v-select>
                 </v-col>
                 <v-col cols="12">
                   <v-text-field
