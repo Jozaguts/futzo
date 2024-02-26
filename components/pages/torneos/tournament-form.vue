@@ -44,7 +44,7 @@ watch(() => dialog.value, (value) => {
   <v-btn  size="30" :icon="true" class="position-absolute top-0.5">
     <v-icon>mdi-plus</v-icon>
     <v-dialog width="500"  v-model="dialog" activator="parent">
-      <v-card title="Crear Torneo" variant="elevated">
+      <v-card class="card-in-dialog" title="Crear Torneo" variant="elevated">
         <v-card-text>
           <v-form>
             <v-container>
@@ -124,12 +124,11 @@ watch(() => dialog.value, (value) => {
             </v-container>
           </v-form>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
+        <v-card-actions class="px-10">
           <v-btn
               block
+              size="50"
               text="Crear"
-              :disabled="pending"
               @click="createTournament"
               variant="elevated"
           ></v-btn>
@@ -140,4 +139,12 @@ watch(() => dialog.value, (value) => {
 </template>
 <style>
 @import url('~/assets/css/vue-datepicker-custom.css');
+.card-in-dialog {
+  padding: 2rem 2rem 1.5rem 2rem ;
+}
+@media (max-width: 600px) {
+  .card-in-dialog {
+    padding: 2rem .5rem 1.5rem .5rem ;
+  }
+}
 </style>

@@ -21,7 +21,7 @@ const createCategory = handleSubmit(async (values) => {
       <v-btn v-bind="props" :icon="true" density="compact">
         <v-icon>mdi-plus</v-icon>
         <v-dialog max-width="400"  v-model="dialog" activator="parent">
-          <v-card>
+          <v-card class="card-in-dialog">
             <v-card-title>
               <h1 class="text-h5">{{'Agregar categoría'}}</h1>
             </v-card-title>

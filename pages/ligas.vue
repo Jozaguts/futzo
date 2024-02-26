@@ -6,7 +6,6 @@ definePageMeta({
   middleware: ['sanctum:auth'],
   layout: 'blank'
 });
-
 const {
   fields,
   handleSubmit,
@@ -137,7 +136,7 @@ const variant = computed(() =>{
   @import url('~/assets/css/vue-datepicker-custom.css');
   @media (max-width: 600px) {
     .title {
-      font-size: 1.1rem;
+      font-size: .9rem;
     }
   }
   .custom-v-card {
@@ -145,5 +144,11 @@ const variant = computed(() =>{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    padding: 4.5rem 3.5rem;
+  }
+  @media (max-width: 600px) {
+    .custom-v-card {
+      padding: 1rem 0 1.5rem 0;
+    }
   }
 </style>

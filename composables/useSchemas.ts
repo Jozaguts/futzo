@@ -10,6 +10,7 @@ export default function (schemaNAme: string) {
     };
 
     const schema = getSchemaByName(schemaNAme);
+
     const fields = Object.keys(schema.fields);
 
     const { defineField, handleSubmit, resetForm } = useForm({
@@ -32,30 +33,39 @@ export default function (schemaNAme: string) {
 function getSchemaByName(name) {
     let schemaFields = {};
     const {t} = useI18n();
+    const yusString =  () =>{
+        return yup.string().test('no-leading-space', 'No se permite espacio en blanco al inicio', value => {
+                if (value && value.startsWith(' ')) {
+                    return false;
+                }
+                return true;
+            }
+        )
+    }
     switch (name) {
         case 'create-tournament':
-            schemaFields.name = yup.string().min(6, t('tournament_min')).required(t('forms.required'));
+            schemaFields.name = yusString().min(6, t('tournament_min')).required(t('forms.required'));
             schemaFields.start_date = yup.date().nullable();
             schemaFields.end_date = yup.date().nullable();
-            schemaFields.prize =  yup.string().nullable();
-            schemaFields.winner = yup.string().nullable();
-            schemaFields.description = yup.string().nullable();
-            schemaFields.status = yup.string().nullable();
+            schemaFields.prize =  yusString().nullable();
+            schemaFields.winner = yusString().nullable();
+            schemaFields.description = yusString().nullable();
+            schemaFields.status = yusString().nullable();
             schemaFields.category = yup.number().required(t('forms.required'));
             break;
         case 'create-league':
-            schemaFields.id = yup.number().nullable();
-            schemaFields.name = yup.string().min(6, t('league_min')).required(t('forms.required'));
-            schemaFields.location = yup.string().nullable();
-            schemaFields.description = yup.string().nullable();
+            schemaFields.id = yusString().nullable();
+            schemaFields.name = yusString().min(6, t('league_min')).required(t('forms.required'));
+            schemaFields.location = yusString().nullable();
+            schemaFields.description = yusString().nullable();
             schemaFields.creation_date = yup.date().nullable();
             schemaFields.logo = yup.array().nullable();
             schemaFields.banner = yup.array().nullable();
-            schemaFields.status = yup.string().nullable();
+            schemaFields.status = yusString().nullable();
             break;
         case 'create-category':
-            schemaFields.name = yup.string().required(t('forms.required'));
-            schemaFields.age_range = yup.string()
+            schemaFields.name = yusString().required(t('forms.required'));
+            schemaFields.age_range = yusString()
                 .matches(/^(\d{2}-\d{2}|\*)$/, "El formato debe ser 'NN-NN' donde N es un dígito, o '*' para edad libre.")
                 .test('es-rango-valido-o-libre', 'El primer número debe ser menor que el segundo, o usar "*" para edad libre', (value) => {
                     if (!value) return false;
@@ -63,7 +73,18 @@ function getSchemaByName(name) {
                     const [inicio, fin] = value.split('-').map(Number);
                     return inicio < fin; // Retorna true si el primer número es menor que el segundo
                 });
-            schemaFields.gender = yup.string().required(t('forms.required'));
+            schemaFields.gender = yusString().required(t('forms.required'));
+            break;
+        case 'create-team':
+            schemaFields.name = yusString().required(t('forms.required'));
+            schemaFields.category_id = yup.number().required(t('forms.required'));
+            schemaFields.tournament_id = yup.number().required(t('forms.required'));
+            schemaFields.president_name = yusString().required(t('forms.required'));
+            schemaFields.coach_name = yusString().required(t('forms.required'));
+            schemaFields.phone = yusString().matches(/^\d{10}$/, 'Número de teléfono no es válido').required();
+            schemaFields.email = yusString().email();
+            schemaFields.address = yusString();
+            schemaFields.image = yup.array().nullable();
             break;
             default:
                 schemaFields = yup.mixed();

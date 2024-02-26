@@ -1,0 +1,374 @@
+<script setup lang="ts">
+import {useTeamStore} from "~/store/useTeamStore";
+import {storeToRefs} from "pinia";
+const {categories, tournaments} = storeToRefs(useTeamStore())
+
+const dialog = ref(false);
+const tab = ref('home')
+const step = ref(1)
+const {
+  fields,
+  handleSubmit,
+  resetForm,
+} = useSchemas( 'create-team')
+
+const uniform  = ref({
+  home: {
+    jersey: null,
+    short: null
+  },
+  away: {
+    jersey: null,
+    short: null
+  }
+})
+const openColorOptions = (e) =>{
+  if(e.target.tagName === 'path'){
+    e.target.parentElement.nextElementSibling.click()
+  }
+}
+const changeColor = (color: string, value: string, type: string) => uniform.value[type][value] = color
+const completedSteps = reactive({
+  step1: false,
+  step2: false,
+  step3: false
+})
+const nextStep = (e) => {
+  if (completedSteps.step1 && completedSteps.step2 && completedSteps.step3){
+    return
+  }
+  if(!completedSteps.step1){
+    if (
+        !fields.name.fieldPropsValue['error-messages'].length &&
+        !fields.tournament_id.fieldPropsValue['error-messages'].length &&
+        !fields.category_id.fieldPropsValue['error-messages'].length &&
+        fields.name.fieldValue && fields.tournament_id.fieldValue && fields.category_id.fieldValue
+    ) {
+      completedSteps.step1 = true
+      step.value = 2
+    }
+  }
+  if (!completedSteps.step2) {
+    if (
+        !fields.president_name.fieldPropsValue['error-messages'].length &&
+        !fields.dt.fieldPropsValue['error-messages'].length &&
+        !fields.phone.fieldPropsValue['error-messages'].length &&
+        !fields.email.fieldPropsValue['error-messages'].length &&
+        !fields.address.fieldPropsValue['error-messages'].length &&
+        fields.president_name.fieldValue && fields.dt.fieldValue && fields.phone.fieldValue && fields.email.fieldValue && fields.address.fieldValue
+    ) {
+      completedSteps.step2 = true
+      step.value = 3
+    }
+  }
+  if (!completedSteps.step3) {
+    if (
+        !fields.image.fieldPropsValue['error-messages'].length
+    ) {
+      completedSteps.step3 = true
+    }
+  }
+}
+function mergeUniformIntoValues(values, uniform) {
+  // merge uniform into values like : values.colors = {home: {jersey: 'red', short: 'blue'}, away: {jersey: 'green', short: 'yellow'}}
+
+
+}
+const createTeam = handleSubmit(async (values) => {
+
+  const formData = new FormData();
+  values.colors = uniform.value
+  for (const key in values) {
+    if (values[key]?.length && values[key][0] instanceof File) {
+      formData.append(key, values[key][0]);
+    } else if(typeof values[key] === 'object' && !(values[key] instanceof File)) {
+      formData.append(key, JSON.stringify(values[key]));
+    }else if (values[key]) {
+      formData.append(key, values[key]);
+    }
+  }
+
+  useTeamStore().createTeam(formData).then(() => {
+    resetForm();
+    dialog.value = false;
+  });
+});
+</script>
+<template>
+  <v-btn
+      variant="outlined"
+      color="primary"
+  >
+    <template #default>
+      Inscribir equipo
+      <v-dialog max-width="600"  v-model="dialog" activator="parent">
+        <v-stepper
+            :mobile="$vuetify.display.mobile"
+            v-model="step"
+        >
+          <v-stepper-header>
+            <v-stepper-item  :value="1" editable :complete="completedSteps.step1">{{$vuetify.display.mobile ? 1 : 'Información'}}</v-stepper-item>
+            <v-divider></v-divider>
+            <v-stepper-item :value="2" editable :complete="completedSteps.step2">{{$vuetify.display.mobile ? 2 : 'Representantes'}}</v-stepper-item>
+            <v-divider></v-divider>
+            <v-stepper-item editable :value="3" :complete="completedSteps.step3"> {{$vuetify.display.mobile ? 3 : 'Identidad'}}</v-stepper-item>
+          </v-stepper-header>
+          <v-stepper-window>
+            <v-stepper-window-item :value="1">
+              <v-card flat>
+                <v-card-item>
+                  <v-card-title>
+                    Información del Equipo
+                  </v-card-title>
+                </v-card-item>
+                <v-card-text>
+                  <v-container fluid>
+                    <v-row>
+                      <v-col cols="12">
+                        <v-text-field
+                            label="Nombre del equipo"
+                            v-model="fields.name.fieldValue"
+                            v-bind="fields.name.fieldPropsValue"
+                            @blur="nextStep"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-select
+                            v-model="fields.tournament_id.fieldValue"
+                            v-bind="fields.tournament_id.fieldPropsValue"
+                            item-value="id"
+                            item-title="name"
+                            @update:modelValue="nextStep"
+                            :items="tournaments"
+                        >
+                          <template v-slot:prepend>
+                            <v-list-item-title>Torneo</v-list-item-title>
+                          </template>
+                        </v-select>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-select
+                            v-model="fields.category_id.fieldValue"
+                            v-bind="fields.category_id.fieldPropsValue"
+                            @update:modelValue="nextStep"
+                            :items="categories"
+                            item-value="id"
+                            item-title="name"
+                        >
+                          <template v-slot:prepend>
+                            <v-list-item-title>Categoria</v-list-item-title>
+                          </template>
+                        </v-select>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn
+                      variant="outlined"
+                      color="primary"
+                      :disabled="true"
+                      @click="step = 1">
+                    Anterior
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                      variant="outlined"
+                      @click="step = 2">
+                    Siguiente
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-stepper-window-item>
+            <v-stepper-window-item :value="2">
+              <v-card flat>
+              <v-card-item>
+                <v-card-title>
+                  Representantes del Equipo
+                  </v-card-title>
+              </v-card-item>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12">
+                        <v-text-field
+                            v-model="fields.president_name.fieldValue"
+                            v-bind="fields.president_name.fieldPropsValue"
+                            @blur="nextStep"
+                            label="Delegado/Presidente"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field
+                            v-model="fields.coach_name.fieldValue"
+                            v-bind="fields.coach_name.fieldPropsValue"
+                            @blur="nextStep"
+                            label="DT/Entrenador"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field
+                            v-model="fields.phone.fieldValue"
+                            v-bind="fields.phone.fieldPropsValue"
+                            @keydown="fields.phone.fieldValue = $event.target.value?.replace(/[^0-9]/g, '')"
+                            @blur="nextStep"
+                            label="Telefono"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field
+                            v-model="fields.email.fieldValue"
+                            v-bind="fields.email.fieldPropsValue"
+                            @blur="nextStep"
+                            label="Correo"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field
+                            v-model="fields.address.fieldValue"
+                            v-bind="fields.address.fieldPropsValue"
+                            label="Direccion"
+                            @blur="nextStep"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn
+                      variant="outlined"
+                      color="primary"
+                      @click="step = 1">
+                    Anterior
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                      variant="outlined"
+                      @click="step = 3">
+                    Siguiente
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-stepper-window-item>
+            <v-stepper-window-item :value="3">
+              <v-card flat>
+                <v-card-item>
+                  <v-card-title>
+                    Identidad del equipo
+                  </v-card-title>
+                </v-card-item>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col>
+                        <v-file-input
+                            v-model="fields.image.fieldValue"
+                            v-bind="fields.image.fieldPropsValue"
+                            @blur="nextStep"
+                            label="Escudo"
+                        ></v-file-input>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col>
+                        <h4 class="text-h6 ml-3">Colores</h4>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-tabs
+                            v-model="tab"
+                            fixed-tabs
+                        >
+                          <v-tab value="home">Local</v-tab>
+                          <v-tab value="away">visitante</v-tab>
+                        </v-tabs>
+                        <v-window
+                            v-model="tab">
+                          <v-window-item value="home" key="home">
+                            <v-container fluid>
+                              <v-row>
+                                <v-col cols="6">
+                                  <div class="d-flex flex-column justify-center align-center">
+                                    <svg width="100" height="165" viewBox="0 0 128 165"  xmlns="http://www.w3.org/2000/svg" @click="openColorOptions($event)">
+                                      <path d="M108.934 161.51C108.894 161.61 109.064 161.8 109.104 161.87C106.314 161.49 102.204 162.62 99.4539 163.21C95.1639 164.12 91.4239 164.56 86.9439 164.77C82.1339 164.98 77.2839 164.59 72.4039 164.58C69.0939 164.58 66.0239 165.12 62.9939 164.77C59.9539 165.12 56.9039 164.58 53.5739 164.58C48.6939 164.59 43.8539 164.98 39.0339 164.77C34.5639 164.56 30.8239 164.13 26.5239 163.21C24.6139 162.8 22.0539 162.13 19.7339 161.89C18.7139 161.78 17.7339 161.76 16.8839 161.87C16.9239 161.8 17.0839 161.61 17.0439 161.51C16.7939 160.82 18.0339 157.83 18.1739 156.91C18.4739 154.97 18.8439 153.08 19.2739 151.17C20.1739 147.24 20.4439 143.43 20.8739 139.49C21.7339 131.83 21.4439 123.99 22.6239 116.32C22.6639 116.07 22.7039 115.81 22.7439 115.55C23.2939 112.03 23.8639 108.55 24.5739 105C25.4139 100.81 26.5639 96.11 26.3339 91.82C26.0239 86.14 24.6839 81.06 23.1239 75.9C22.8339 74.94 22.5439 73.99 22.2439 73.02C21.8739 71.8 21.4939 70.57 21.1139 69.32C21.0839 69.24 21.0639 69.15 21.0339 69.07C20.8539 69.41 20.2239 66.26 20.0939 66.68C19.7739 48.48 15.6739 34.66 12.3439 16.85C12.4339 16.78 12.5139 16.71 12.6039 16.64C14.0639 15.49 15.5939 14.46 17.3839 13.83C21.2839 12.46 25.2339 11.2 29.1039 9.56001C32.5139 8.12001 36.0739 7.00001 39.3639 5.42001C40.5039 4.87001 41.8739 4.28001 43.1939 3.57001C45.2839 17.2 63.4139 20.5 74.0739 14.58C78.4739 12.21 80.9939 8.14001 83.3039 3.85001C84.4639 4.44001 85.6239 4.95001 86.6139 5.43001C89.9039 7.01001 93.4639 8.12001 96.8639 9.57001C100.734 11.21 104.674 12.46 108.584 13.84C110.074 14.37 111.384 15.18 112.624 16.1C112.804 16.22 112.974 16.36 113.144 16.49C107.624 33.59 107.344 51.54 105.304 69.96C105.194 69.65 105.084 69.34 104.934 69.07C104.244 71.39 103.524 73.63 102.844 75.86C101.434 80.52 100.204 85.13 99.7439 90.15C99.6939 90.7 99.6539 91.25 99.6239 91.82C99.3939 96.11 100.544 100.81 101.384 105C102.124 108.7 102.714 112.34 103.284 116.01C103.304 116.11 103.314 116.22 103.334 116.32C104.524 123.99 104.214 131.82 105.084 139.49C105.524 143.44 105.784 147.24 106.684 151.17C107.124 153.08 107.484 154.98 107.794 156.91C107.944 157.83 109.194 160.82 108.934 161.51Z" :fill="uniform.home.jersey"/>
+                                      <path d="M43.0638 3.63998L43.7538 3.70998C43.5838 5.37998 45.7438 8.38998 46.6638 9.67998C48.5438 12.31 50.8238 14.25 53.4638 15.46C59.3838 18.17 66.3438 17.92 72.5538 14.76C74.8438 13.6 76.8438 11.94 78.3238 9.96998C78.5338 9.68998 78.7538 9.40997 78.9638 9.12997C80.2938 7.37997 81.6738 5.57998 82.5338 3.59998L83.6438 4.08997C82.7238 6.20997 81.3038 8.06997 79.9238 9.86997C79.7138 10.15 79.4938 10.42 79.2938 10.7C77.6938 12.82 75.5538 14.59 73.1038 15.84C69.5738 17.64 65.8038 18.54 62.1038 18.54C58.9438 18.54 55.8438 17.88 52.9538 16.56C50.1238 15.26 47.6738 13.19 45.6838 10.4C44.5538 8.81997 42.5238 5.99997 42.5238 3.89997L43.0638 3.63998Z" :fill="uniform.home.jersey"/>
+                                      <path d="M22.7539 66.91C22.4339 48.71 17.3839 32.83 14.0539 15.03C13.8639 15.18 13.6739 15.32 13.4839 15.48C12.6539 16.15 11.8338 16.83 10.9738 17.48C5.65385 21.48 2.35385 27.93 1.76385 34.4C1.16385 40.97 0.0138499 47 0.0138499 53.83C0.0138499 54.85 -0.0361492 61.87 0.0538508 64.33C0.113851 65.89 0.153852 67.58 0.203852 69.19C0.273852 71.17 0.523852 71.54 2.52385 71.73C5.90385 72.04 8.89385 72.34 12.0638 73.28C14.6738 74.05 18.7239 76.2 20.4339 73.88C20.8539 73.31 21.1338 72.65 21.3538 71.94L22.7539 66.91Z" :fill="uniform.home.jersey"/>
+                                      <path d="M127.664 55.63C127.664 48.8 126.524 42.77 125.924 36.2C125.334 29.73 122.034 23.28 116.714 19.28C115.654 18.48 114.634 17.61 113.584 16.8C113.444 16.68 113.294 16.58 113.154 16.47C107.644 33.57 107.364 51.52 105.314 69.94C105.914 71.72 106.064 74.08 107.234 75.66C107.594 76.15 108.064 76.44 108.604 76.59C110.604 77.13 113.554 75.67 115.604 75.06C118.774 74.12 121.774 73.83 125.144 73.52C127.154 73.33 127.404 72.97 127.464 70.98C127.524 69.36 127.554 67.68 127.614 66.11C127.754 62.66 127.664 59.12 127.664 55.63Z" :fill="uniform.home.jersey"/>
+                                      <path d="M74.0738 14.58C78.4738 12.21 80.9938 8.14 83.3038 3.84C81.3338 2.84 79.3939 1.61 78.3839 0C78.3439 0.01 78.3138 0.00999664 78.2738 0.0199966C76.2438 0.349997 73.9639 1.93 71.8139 2.46C69.1539 3.11 65.7038 2.64 62.9838 2.89C60.2638 2.64 56.8138 3.12 54.1538 2.46C51.9838 1.93 49.6838 0.319995 47.6438 0.00999451C47.6238 -5.49294e-06 47.6038 0 47.5838 0C46.6638 1.47 44.9738 2.62 43.1938 3.57C45.2938 17.2 63.4238 20.5 74.0738 14.58Z" :fill="uniform.home.jersey"/>
+                                      <path d="M50.3339 4.67999C51.1139 5.91999 51.9639 7.15999 53.0339 8.08999C55.2839 10.03 59.1639 11.52 62.1239 11.65C65.6939 11.81 69.6039 10.88 72.2039 8.29999C72.8239 7.68999 73.4139 7.05999 73.9939 6.40999C66.4639 9.84999 56.6239 9.26999 50.3339 4.67999Z" :fill="uniform.home.jersey"/>
+                                      <path d="M77.7238 1.34001C77.9438 0.940012 78.0938 0.460012 78.2738 0.0200119C76.2438 0.350012 73.9638 1.93001 71.8138 2.46001C69.1538 3.11001 65.7038 2.63001 62.9838 2.88001C60.2638 2.63001 56.8138 3.11001 54.1538 2.46001C51.9838 1.93001 49.6838 0.32001 47.6438 0.0100098C47.8938 1.03001 48.8638 2.34001 49.3338 3.08001C49.6638 3.59001 49.9838 4.13002 50.3238 4.68002C56.6038 9.27002 66.4438 9.85001 73.9938 6.40001C74.5838 5.73001 75.1538 5.05001 75.7038 4.34001C76.4538 3.40001 77.1638 2.38001 77.7238 1.34001Z" :fill="uniform.home.jersey"/>
+                                    </svg>
+                                    <input type="color"   @blur="nextStep" :value="uniform.home.jersey" @change="changeColor($event.target.value, 'jersey','home')">
+                                  </div>
+                                </v-col>
+                                <v-col cols="6">
+                                  <div class="d-flex flex-column justify-center align-center">
+                                    <svg width="100" height="165" viewBox="0 0 105 90"  xmlns="http://www.w3.org/2000/svg"  @click="openColorOptions($event)">
+                                      <path d="M85.7231 0.779999C85.7231 0.779999 39.4131 2.73 12.5631 0C12.5631 0 34.3531 11.29 50.1131 9.91998C50.1131 9.92998 79.3031 7.98 85.7231 0.779999Z" :fill="uniform.home.short"/>
+                                      <path d="M98.6531 69.86C98.5831 68.57 98.5131 67.29 98.4431 66C98.1331 59.68 97.3231 53.41 96.9431 47.15C96.5431 40.52 95.8231 33.89 94.3531 27.4C93.4131 23.23 92.3431 18.8 91.0431 14.8C90.2331 12.31 89.2231 8.80996 86.9631 7.20996L48.3731 12.56L9.78307 7.20996C7.52307 8.80996 6.51307 12.31 5.70307 14.8C4.02307 19.99 3.18307 24.8899 2.70307 30.2899C1.94307 38.7899 0.523074 47.7899 1.02307 56.3199C1.45307 63.5599 0.593075 70.43 0.383075 77.65C0.353075 78.73 -0.206924 90.1899 0.0830755 90.2599C6.29308 91.7499 12.1331 95.56 18.1531 97.44C25.8231 99.85 24.9031 99.44 32.9331 99.43C36.8431 99.43 41.4931 99.3099 45.1731 98.2299C45.9531 95.2199 45.4231 91.9 45.5931 88.7299C45.7731 85.4399 46.9131 82.46 47.3531 79.2C47.7731 76.1 48.1531 72.92 48.3831 69.71C48.6131 72.93 48.9831 76.1 49.4131 79.2C49.8531 82.46 50.9931 85.4399 51.1731 88.7299C51.3431 91.9 50.8131 95.2299 51.5931 98.2299C55.2631 99.3 59.9231 99.43 63.8331 99.43C71.8631 99.43 77.0631 99.84 84.7331 97.44C90.7531 95.55 93.3831 91.7499 99.5931 90.2599C99.3531 86.5299 99.3631 82.79 99.1831 79.06C99.0231 75.98 98.8331 72.92 98.6531 69.86Z" :fill="uniform.home.short"/>
+                                      <path d="M72.253 28.18C79.123 27.32 86.903 26.46 93.453 23.46C92.743 20.52 91.953 17.5499 91.063 14.7899C90.253 12.2999 89.243 8.79995 86.983 7.19995L48.393 12.55L9.80302 7.19995C7.54302 8.79995 6.53302 12.2999 5.72302 14.7899C4.85302 17.4799 4.21302 20.0899 3.72302 22.7299C25.393 31.29 49.333 31.53 72.253 28.18Z" :fill="uniform.home.short"/>
+                                      <path d="M9.8031 7.19998C9.8031 7.19998 45.8131 20.82 86.9831 7.19998C86.9831 7.19998 87.4831 6.42 85.7331 0.779999C85.7331 0.779999 47.0131 14.59 12.5731 0C12.5631 0 10.5331 1.16998 9.8031 7.19998Z" :fill="uniform.home.short"/>
+                                    </svg>
+                                    <input type="color"  @blur="nextStep" :value="uniform.home.short" @change="changeColor($event.target.value, 'short','home')">
+                                  </div>
+                                </v-col>
+                              </v-row>
+                            </v-container>
+                          </v-window-item>
+                          <v-window-item value="away" key="away">
+                            <v-container fluid>
+                              <v-row>
+                                <v-col cols="6">
+                                  <div class="d-flex flex-column justify-center align-center">
+                                    <svg width="100" height="165" viewBox="0 0 128 165"  xmlns="http://www.w3.org/2000/svg"  @click="openColorOptions($event)" >
+                                      <path d="M108.934 161.51C108.894 161.61 109.064 161.8 109.104 161.87C106.314 161.49 102.204 162.62 99.4539 163.21C95.1639 164.12 91.4239 164.56 86.9439 164.77C82.1339 164.98 77.2839 164.59 72.4039 164.58C69.0939 164.58 66.0239 165.12 62.9939 164.77C59.9539 165.12 56.9039 164.58 53.5739 164.58C48.6939 164.59 43.8539 164.98 39.0339 164.77C34.5639 164.56 30.8239 164.13 26.5239 163.21C24.6139 162.8 22.0539 162.13 19.7339 161.89C18.7139 161.78 17.7339 161.76 16.8839 161.87C16.9239 161.8 17.0839 161.61 17.0439 161.51C16.7939 160.82 18.0339 157.83 18.1739 156.91C18.4739 154.97 18.8439 153.08 19.2739 151.17C20.1739 147.24 20.4439 143.43 20.8739 139.49C21.7339 131.83 21.4439 123.99 22.6239 116.32C22.6639 116.07 22.7039 115.81 22.7439 115.55C23.2939 112.03 23.8639 108.55 24.5739 105C25.4139 100.81 26.5639 96.11 26.3339 91.82C26.0239 86.14 24.6839 81.06 23.1239 75.9C22.8339 74.94 22.5439 73.99 22.2439 73.02C21.8739 71.8 21.4939 70.57 21.1139 69.32C21.0839 69.24 21.0639 69.15 21.0339 69.07C20.8539 69.41 20.2239 66.26 20.0939 66.68C19.7739 48.48 15.6739 34.66 12.3439 16.85C12.4339 16.78 12.5139 16.71 12.6039 16.64C14.0639 15.49 15.5939 14.46 17.3839 13.83C21.2839 12.46 25.2339 11.2 29.1039 9.56001C32.5139 8.12001 36.0739 7.00001 39.3639 5.42001C40.5039 4.87001 41.8739 4.28001 43.1939 3.57001C45.2839 17.2 63.4139 20.5 74.0739 14.58C78.4739 12.21 80.9939 8.14001 83.3039 3.85001C84.4639 4.44001 85.6239 4.95001 86.6139 5.43001C89.9039 7.01001 93.4639 8.12001 96.8639 9.57001C100.734 11.21 104.674 12.46 108.584 13.84C110.074 14.37 111.384 15.18 112.624 16.1C112.804 16.22 112.974 16.36 113.144 16.49C107.624 33.59 107.344 51.54 105.304 69.96C105.194 69.65 105.084 69.34 104.934 69.07C104.244 71.39 103.524 73.63 102.844 75.86C101.434 80.52 100.204 85.13 99.7439 90.15C99.6939 90.7 99.6539 91.25 99.6239 91.82C99.3939 96.11 100.544 100.81 101.384 105C102.124 108.7 102.714 112.34 103.284 116.01C103.304 116.11 103.314 116.22 103.334 116.32C104.524 123.99 104.214 131.82 105.084 139.49C105.524 143.44 105.784 147.24 106.684 151.17C107.124 153.08 107.484 154.98 107.794 156.91C107.944 157.83 109.194 160.82 108.934 161.51Z" :fill="uniform.away.jersey"/>
+                                      <path d="M43.0638 3.63998L43.7538 3.70998C43.5838 5.37998 45.7438 8.38998 46.6638 9.67998C48.5438 12.31 50.8238 14.25 53.4638 15.46C59.3838 18.17 66.3438 17.92 72.5538 14.76C74.8438 13.6 76.8438 11.94 78.3238 9.96998C78.5338 9.68998 78.7538 9.40997 78.9638 9.12997C80.2938 7.37997 81.6738 5.57998 82.5338 3.59998L83.6438 4.08997C82.7238 6.20997 81.3038 8.06997 79.9238 9.86997C79.7138 10.15 79.4938 10.42 79.2938 10.7C77.6938 12.82 75.5538 14.59 73.1038 15.84C69.5738 17.64 65.8038 18.54 62.1038 18.54C58.9438 18.54 55.8438 17.88 52.9538 16.56C50.1238 15.26 47.6738 13.19 45.6838 10.4C44.5538 8.81997 42.5238 5.99997 42.5238 3.89997L43.0638 3.63998Z" :fill="uniform.away.jersey"/>
+                                      <path d="M22.7539 66.91C22.4339 48.71 17.3839 32.83 14.0539 15.03C13.8639 15.18 13.6739 15.32 13.4839 15.48C12.6539 16.15 11.8338 16.83 10.9738 17.48C5.65385 21.48 2.35385 27.93 1.76385 34.4C1.16385 40.97 0.0138499 47 0.0138499 53.83C0.0138499 54.85 -0.0361492 61.87 0.0538508 64.33C0.113851 65.89 0.153852 67.58 0.203852 69.19C0.273852 71.17 0.523852 71.54 2.52385 71.73C5.90385 72.04 8.89385 72.34 12.0638 73.28C14.6738 74.05 18.7239 76.2 20.4339 73.88C20.8539 73.31 21.1338 72.65 21.3538 71.94L22.7539 66.91Z" :fill="uniform.away.jersey"/>
+                                      <path d="M127.664 55.63C127.664 48.8 126.524 42.77 125.924 36.2C125.334 29.73 122.034 23.28 116.714 19.28C115.654 18.48 114.634 17.61 113.584 16.8C113.444 16.68 113.294 16.58 113.154 16.47C107.644 33.57 107.364 51.52 105.314 69.94C105.914 71.72 106.064 74.08 107.234 75.66C107.594 76.15 108.064 76.44 108.604 76.59C110.604 77.13 113.554 75.67 115.604 75.06C118.774 74.12 121.774 73.83 125.144 73.52C127.154 73.33 127.404 72.97 127.464 70.98C127.524 69.36 127.554 67.68 127.614 66.11C127.754 62.66 127.664 59.12 127.664 55.63Z" :fill="uniform.away.jersey"/>
+                                      <path d="M74.0738 14.58C78.4738 12.21 80.9938 8.14 83.3038 3.84C81.3338 2.84 79.3939 1.61 78.3839 0C78.3439 0.01 78.3138 0.00999664 78.2738 0.0199966C76.2438 0.349997 73.9639 1.93 71.8139 2.46C69.1539 3.11 65.7038 2.64 62.9838 2.89C60.2638 2.64 56.8138 3.12 54.1538 2.46C51.9838 1.93 49.6838 0.319995 47.6438 0.00999451C47.6238 -5.49294e-06 47.6038 0 47.5838 0C46.6638 1.47 44.9738 2.62 43.1938 3.57C45.2938 17.2 63.4238 20.5 74.0738 14.58Z" :fill="uniform.away.jersey"/>
+                                      <path d="M50.3339 4.67999C51.1139 5.91999 51.9639 7.15999 53.0339 8.08999C55.2839 10.03 59.1639 11.52 62.1239 11.65C65.6939 11.81 69.6039 10.88 72.2039 8.29999C72.8239 7.68999 73.4139 7.05999 73.9939 6.40999C66.4639 9.84999 56.6239 9.26999 50.3339 4.67999Z" :fill="uniform.away.jersey"/>
+                                      <path d="M77.7238 1.34001C77.9438 0.940012 78.0938 0.460012 78.2738 0.0200119C76.2438 0.350012 73.9638 1.93001 71.8138 2.46001C69.1538 3.11001 65.7038 2.63001 62.9838 2.88001C60.2638 2.63001 56.8138 3.11001 54.1538 2.46001C51.9838 1.93001 49.6838 0.32001 47.6438 0.0100098C47.8938 1.03001 48.8638 2.34001 49.3338 3.08001C49.6638 3.59001 49.9838 4.13002 50.3238 4.68002C56.6038 9.27002 66.4438 9.85001 73.9938 6.40001C74.5838 5.73001 75.1538 5.05001 75.7038 4.34001C76.4538 3.40001 77.1638 2.38001 77.7238 1.34001Z" :fill="uniform.away.jersey"/>
+                                    </svg>
+                                    <input type="color" :value="uniform.away.jersey" @change="changeColor($event.target.value, 'jersey','away')">
+                                  </div>
+                                </v-col>
+                                <v-col cols="6">
+                                  <div class="d-flex flex-column justify-center align-center">
+                                    <svg width="100" height="165" viewBox="0 0 105 90"  xmlns="http://www.w3.org/2000/svg"  @click="openColorOptions($event)">
+                                      <path d="M85.7231 0.779999C85.7231 0.779999 39.4131 2.73 12.5631 0C12.5631 0 34.3531 11.29 50.1131 9.91998C50.1131 9.92998 79.3031 7.98 85.7231 0.779999Z" :fill="uniform.away.short"/>
+                                      <path d="M98.6531 69.86C98.5831 68.57 98.5131 67.29 98.4431 66C98.1331 59.68 97.3231 53.41 96.9431 47.15C96.5431 40.52 95.8231 33.89 94.3531 27.4C93.4131 23.23 92.3431 18.8 91.0431 14.8C90.2331 12.31 89.2231 8.80996 86.9631 7.20996L48.3731 12.56L9.78307 7.20996C7.52307 8.80996 6.51307 12.31 5.70307 14.8C4.02307 19.99 3.18307 24.8899 2.70307 30.2899C1.94307 38.7899 0.523074 47.7899 1.02307 56.3199C1.45307 63.5599 0.593075 70.43 0.383075 77.65C0.353075 78.73 -0.206924 90.1899 0.0830755 90.2599C6.29308 91.7499 12.1331 95.56 18.1531 97.44C25.8231 99.85 24.9031 99.44 32.9331 99.43C36.8431 99.43 41.4931 99.3099 45.1731 98.2299C45.9531 95.2199 45.4231 91.9 45.5931 88.7299C45.7731 85.4399 46.9131 82.46 47.3531 79.2C47.7731 76.1 48.1531 72.92 48.3831 69.71C48.6131 72.93 48.9831 76.1 49.4131 79.2C49.8531 82.46 50.9931 85.4399 51.1731 88.7299C51.3431 91.9 50.8131 95.2299 51.5931 98.2299C55.2631 99.3 59.9231 99.43 63.8331 99.43C71.8631 99.43 77.0631 99.84 84.7331 97.44C90.7531 95.55 93.3831 91.7499 99.5931 90.2599C99.3531 86.5299 99.3631 82.79 99.1831 79.06C99.0231 75.98 98.8331 72.92 98.6531 69.86Z" :fill="uniform.away.short"/>
+                                      <path d="M72.253 28.18C79.123 27.32 86.903 26.46 93.453 23.46C92.743 20.52 91.953 17.5499 91.063 14.7899C90.253 12.2999 89.243 8.79995 86.983 7.19995L48.393 12.55L9.80302 7.19995C7.54302 8.79995 6.53302 12.2999 5.72302 14.7899C4.85302 17.4799 4.21302 20.0899 3.72302 22.7299C25.393 31.29 49.333 31.53 72.253 28.18Z" :fill="uniform.away.short"/>
+                                      <path d="M9.8031 7.19998C9.8031 7.19998 45.8131 20.82 86.9831 7.19998C86.9831 7.19998 87.4831 6.42 85.7331 0.779999C85.7331 0.779999 47.0131 14.59 12.5731 0C12.5631 0 10.5331 1.16998 9.8031 7.19998Z" :fill="uniform.away.short"/>
+                                    </svg>
+                                    <input type="color" :value="uniform.away.short" @change="changeColor($event.target.value, 'short','away')">
+                                  </div>
+                                </v-col>
+                              </v-row>
+                            </v-container>
+                          </v-window-item>
+                        </v-window>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn
+                      variant="outlined"
+                      color="primary"
+                      @click="step = 2">
+                    Anterior
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                      variant="outlined"
+                      @click="createTeam">
+                    Inscribir Equipo
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-stepper-window-item>
+          </v-stepper-window>
+        </v-stepper>
+      </v-dialog>
+    </template>
+  </v-btn>
+</template>
