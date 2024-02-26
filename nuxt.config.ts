@@ -29,6 +29,7 @@ export default defineNuxtConfig({
     }
   },
   modules: [
+    '@vite-pwa/nuxt',
     '@nuxtjs/i18n',
     '@vee-validate/nuxt',
     'nuxt-auth-sanctum',
