@@ -1,180 +1,20 @@
 <template>
   <div>
     <v-skeleton-loader v-if="!tournaments.length" type="heading,table-row-divider@3"></v-skeleton-loader>
-    <v-card v-else rounded elevation="10" width="100%" class="mt-5">
+    <v-card v-else rounded elevation="10" width="100%" height="100%">
       <v-card-item>
         <v-card-title>
-          <span class="d-inline-block text-truncate text-subtitle-1"  :style="[$vuetify.display.mobile ? 'max-width: 180px': '']">Jornada en curso</span>
+          <span class="d-inline-block text-truncate text-subtitle-1"  :style="[$vuetify.display.mobile ? 'max-width: 180px': '']">{{props.title}}</span>
         </v-card-title>
         <v-card-subtitle class="text-subtitle-2"><h2 class="text-body-1">{{tournament?.name}} Jornada 1  de 20</h2></v-card-subtitle>
       </v-card-item>
       <v-card-text>
         <v-virtual-scroll
-            :height="350"
-            :items="[{
-              id: 1,
-              away: {
-                name: 'Cruz azul',
-                img: 'https://ui-avatars.com/api/?name=Cruz azul'
-              },
-              home: {
-                name: 'Santos',
-                img: 'https://ui-avatars.com/api/?name=Santos'
-              },
-              result: null,
-              schedule: {
-                day:'Sab. 9/3',
-                hour: '19:00',
-                }
-              },
-              {
-                id: 2,
-                away: {
-                  name: 'Cruz azul',
-                  img: 'https://ui-avatars.com/api/?name=Cruz azul'
-                },
-                home: {
-                  name: 'Santos',
-                  img: 'https://ui-avatars.com/api/?name=Santos'
-                },
-                result: '1-0',
-                schedule: {
-                  day:'Sab. 9/3',
-                  hour: '19:00',
-                  }
-                },
-                {
-                  id: 3,
-                  away: {
-                    name: 'Cruz azul',
-                    img: 'https://ui-avatars.com/api/?name=Cruz azul'
-                  },
-                  home: {
-                    name: 'Santos',
-                    img: 'https://ui-avatars.com/api/?name=Santos'
-                  },
-                  result: '1-0',
-                  schedule: {
-                    day:'Sab. 9/3',
-                    hour: '19:00',
-                    }
-                  },
-                  {
-                    id: 4,
-                    away: {
-                      name: 'Cruz azul',
-                      img: 'https://ui-avatars.com/api/?name=Cruz azul'
-                    },
-                    home: {
-                      name: 'Santos',
-                      img: 'https://ui-avatars.com/api/?name=Santos'
-                    },
-                    result: '1-0',
-                    schedule: {
-                      day:'Sab. 9/3',
-                      hour: '19:00',
-                      }
-                    },
-                    {
-                      id: 5,
-                      away: {
-                        name: 'Cruz azul',
-                        img: 'https://ui-avatars.com/api/?name=Cruz azul'
-                      },
-                      home: {
-                        name: 'Santos',
-                        img: 'https://ui-avatars.com/api/?name=Santos'
-                      },
-                      result: '1-0',
-                      schedule: {
-                        day:'Sab. 9/3',
-                        hour: '19:00',
-                        }
-                      },
-                      {
-                        id: 6,
-                        away: {
-                          name: 'Cruz azul',
-                          img: 'https://ui-avatars.com/api/?name=Cruz azul'
-                        },
-                        home: {
-                          name: 'Santos',
-                          img: 'https://ui-avatars.com/api/?name=Santos'
-                        },
-                        result: '1-0',
-                        schedule: {
-                          day:'Sab. 9/3',
-                          hour: '19:00',
-                          }
-                        },
-                        {
-                          id: 7,
-                          away: {
-                            name: 'Cruz azul',
-                            img: 'https://ui-avatars.com/api/?name=Cruz azul'
-                          },
-                          home: {
-                            name: 'Santos',
-                            img: 'https://ui-avatars.com/api/?name=Santos'
-                          },
-                          result: '1-0',
-                          schedule: {
-                            day:'Sab. 9/3',
-                            hour: '19:00',
-                            }
-                          },
-                          {
-                            id: 8,
-                            away: {
-                              name: 'Cruz azul',
-                              img: 'https://ui-avatars.com/api/?name=Cruz azul'
-                            },
-                            home: {
-                              name: 'Santos',
-                              img: 'https://ui-avatars.com/api/?name=Santos'
-                            },
-                            result: '1-0',
-                            schedule: {
-                              day:'Sab. 9/3',
-                              hour: '19:00',
-                              }
-                            },
-                            {
-                              id: 9,
-                              away: {
-                                name: 'Cruz azul',
-                                img: 'https://ui-avatars.com/api/?name=Cruz azul'
-                              },
-                              home: {
-                                name: 'Santos',
-                                img: 'https://ui-avatars.com/api/?name=Santos'
-                              },
-                              result: '1-0',
-                              schedule: {
-                                day:'Sab. 9/3',
-                                hour: '19:00',
-                                }
-                              },
-                              {
-                                id: 10,
-                                away: {
-                                  name: 'Cruz azul',
-                                  img: 'https://ui-avatars.com/api/?name=Cruz azul'
-                                },
-                                home: {
-                                  name: 'Santos',
-                                  img: 'https://ui-avatars.com/api/?name=Santos'
-                                },
-                                result: '1-0',
-                                schedule: {
-                                  day:'Sab. 9/3',
-                                  hour: '19:00',
-                                  }
-                                },
-              ]"
+            :height="props.height"
+            :items="props.items"
         >
           <template v-slot:default="{ item }">
-            <v-card width="100%" height="100%" @click="test" :ripple="{class: 'circle'}">
+            <v-card width="100%" height="100%" :ripple="{class: 'circle'}">
               <v-card-text>
                 <div class="game-card">
                  <div class="teams">
@@ -198,11 +38,8 @@
               </v-card-text>
             </v-card>
           </template>
-        </v-virtual-scroll
-            :height="350">
+        </v-virtual-scroll>
       </v-card-text>
-      <v-card-actions>
-      </v-card-actions>
     </v-card>
   </div>
 </template>
@@ -211,14 +48,19 @@ import {useTournamentStore} from "~/store";
 import {storeToRefs} from "pinia";
 const tournamentStore = useTournamentStore();
 const { tournaments, tournament} = storeToRefs(tournamentStore);
-const test = () => {
-  console.log('test');
-}
+const props = defineProps<{
+  items: any[],
+  title: String,
+  height: {
+    type: String | Number | undefined,
+    default: '380'
+  }
+}>();
 </script>
 <style scoped>
 /* Estilo para todos los navegadores */
 .v-virtual-scroll::-webkit-scrollbar {
-  width: 5px;
+  width: 3px;
 }
 
 /* Track */
