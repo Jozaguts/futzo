@@ -5,7 +5,7 @@
    <v-main v-show="show">
      <slot></slot>
    </v-main>
-   <v-footer app></v-footer>
+<!--   <v-footer app></v-footer>-->
    <CustomSnackbar />
  </v-app>
 </template>

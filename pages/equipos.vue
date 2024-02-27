@@ -6,12 +6,11 @@ const teamStore = storeToRefs(useTeamStore())
 const {teams} = teamStore
 
 const noTeams = computed(() => teams.value?.length === 0)
-const tab= ref('two')
+const tab= ref(1)
 onMounted(() => {
   useTeamStore().getTeams()
 } )
-
-console.log(useNuxtApp().$pwa)
+console.log({teams: teams.value})
 </script>
 <template>
 <v-container fluid>
@@ -26,10 +25,26 @@ console.log(useNuxtApp().$pwa)
       <v-tabs
           v-model="tab"
       >
-        <v-tab value="one">Item One</v-tab>
-        <v-tab value="two">Item Two</v-tab>
-        <v-tab value="three">Item Three</v-tab>
+        <v-tab  v-for="team in teams" :value="team.id" :key="team.id">{{team.name}}</v-tab>
       </v-tabs>
+      <v-window v-model="tab">
+        <v-window-item
+            v-for="team in teams"
+            :value="team.id"
+            :key="team.id"
+        >
+          <v-card>
+            <v-card-item>
+              <v-card-title>
+                {{team.name}}
+              </v-card-title>
+            </v-card-item>
+            <v-card-text>
+              {{team}}
+            </v-card-text>
+          </v-card>
+        </v-window-item>
+      </v-window>
     </v-col>
   </v-row>
 </v-container>
