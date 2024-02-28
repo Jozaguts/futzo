@@ -1,7 +1,11 @@
 <template>
- <div>
    <v-skeleton-loader v-if="!tournaments.length" type="heading,table-row-divider@3"></v-skeleton-loader>
-   <v-card v-else rounded elevation="10" width="100%">
+   <v-card v-else rounded elevation="10"
+           :max-width="maxWidth"
+           :max-height="maxHeight"
+            width="100%"
+           height="100%"
+   >
      <v-card-item>
        <div class="d-flex justify-end position-relative">
          <tournamentForm ></tournamentForm>
@@ -56,15 +60,15 @@
        </v-container>
      </v-card-actions>
    </v-card>
- </div>
 </template>
 <script lang="ts" setup>
 import tournamentForm from '~/components/pages/torneos/tournament-form.vue'
-const page = ref(1);
 import {useTournamentStore} from "~/store";
 import {storeToRefs} from "pinia";
+const page = ref(1);
 const tournamentStore = useTournamentStore();
 const { tournaments, tournament} = storeToRefs(tournamentStore);
+defineProps<{maxHeight: number| string, maxWidth: string| number}>();
 const changePage = (nextPage: number) => {
   if (nextPage > 0 && nextPage <= tournaments.value.length) {
     tournament.value = tournaments.value[nextPage - 1];

@@ -5,7 +5,15 @@
    <v-main v-show="show">
      <slot></slot>
    </v-main>
-<!--   <v-footer app></v-footer>-->
+   <v-footer app>
+      <v-container>
+        <v-row>
+          <v-col>
+            <span class="caption">© 2021 Futzo</span>
+          </v-col>
+        </v-row>
+      </v-container>
+   </v-footer>
    <CustomSnackbar />
  </v-app>
 </template>

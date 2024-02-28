@@ -1,5 +1,9 @@
 <script setup lang="ts">
-
+const props = defineProps<{
+  maxHeight: string | number
+  maxWidth: string | number
+  scrollHeight: string | number
+}>();
 let headers = [
   { title: 'Club', align: 'start', key: 'name' },
   { title: 'PJ', align: 'start', key: 'pg' },
@@ -182,13 +186,6 @@ const teams =  [
     last_5: 'G E E P G'
   }
 ]
-const teamComputed = computed(() => {
-  return teams.map((team) => {
-    return {
-      ...team,
-    }
-  })
-})
 const getIconName = (result: string) => {
   switch (result) {
     case 'G':
@@ -201,17 +198,17 @@ const getIconName = (result: string) => {
 }
 </script>
 <template>
-  <v-card height="100%">
+  <v-card :max-height="maxHeight" :max-width="maxWidth" width="100%" height="100%" >
     <v-card-item>
       <v-card-title>
         Tabla de posiciones
       </v-card-title>
     </v-card-item>
-    <v-card-text>
+    <v-card-text class="pb-2">
       <v-data-table-virtual
           :headers="headers"
           :items="teams"
-          height="100%"
+          :height="scrollHeight"
           item-value="name"
           show-expand
       >
@@ -246,32 +243,36 @@ const getIconName = (result: string) => {
               </template>
             </td>
           </tr>
+        </template>
 
-        </template>
-        <template #bottom>
-        <footer class="d-flex pt-3">
-          <div class="d-flex flex-column mr-3">
-            <p>Clasificación</p>
-            <p class="text-caption mt-1 text-capitalize"><v-icon tag="span" color="white" class="rounded  bg-primary mr-1">mdi-plain</v-icon> Gano</p>
-            <p class="text-caption mt-1 text-capitalize"><v-icon tag="span" color="white" class="rounded  bg-info mr-1">mdi-plain</v-icon> Gano</p>
-          </div>
-          <div class="d-flex flex-column">
-            <p class="text-capitalize">último 5 partidos</p>
-            <p class="text-caption mt-1 text-capitalize"><v-icon tag="span" color="white" class="rounded  bg-green mr-1">mdi-check</v-icon> Gano</p>
-            <p class="text-caption mt-1 text-capitalize"><v-icon tag="span" color="white" class="rounded  bg-grey mr-1">mdi-minus</v-icon> Gano</p>
-            <p class="text-caption mt-1 text-capitalize"><v-icon tag="span" color="white" class="rounded  bg-red mr-1">mdi-close</v-icon> perdio</p>
-          </div>
-        </footer>
-        </template>
       </v-data-table-virtual>
     </v-card-text>
+    <v-card-actions class="d-flex py-0 ">
+      <v-container fluid class="px-2 py-0">
+        <v-row no-gutters>
+          <v-col cols="6" class="d-flex flex-column align-start justify-start">
+            <p class="text-capitalize ">Clasificación</p>
+            <p class="text-caption mt-1 text-capitalize"><v-icon tag="span" size='small' color="white" class="rounded  bg-primary mr-1">mdi-plain</v-icon> Gano</p>
+            <p class="text-caption mt-1 text-capitalize"><v-icon tag="span" size='small' color="white" class="rounded  bg-info mr-1">mdi-plain</v-icon> Gano</p>
+          </v-col>
+          <v-col cols="6" class="d-flex flex-column align-start justify-start ">
+            <p class="text-capitalize">último 5 partidos</p>
+            <p class="text-caption mt-1 text-capitalize"><v-icon size='small' tag="span" color="white" class="rounded  bg-green mr-1">mdi-check</v-icon> Gano</p>
+            <p class="text-caption mt-1 text-capitalize"><v-icon size='small' tag="span" color="white" class="rounded  bg-grey mr-1">mdi-minus</v-icon> Gano</p>
+            <p class="text-caption mt-1 text-capitalize"><v-icon size='small' tag="span" color="white" class="rounded  bg-red mr-1">mdi-close</v-icon> perdió</p>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card-actions>
   </v-card>
 </template>
 <style>
 /* Estilo para todos los navegadores */
 .v-table__wrapper::-webkit-scrollbar {
-  width: 3px;
+  width: 5px;
+  height: 5px;
 }
+
 
 /* Track */
 .v-table__wrapper::-webkit-scrollbar-track {

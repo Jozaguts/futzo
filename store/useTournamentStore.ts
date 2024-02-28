@@ -218,7 +218,39 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
             }
         },
         {
-            id: 3,
+            id: 4,
+            away: {
+                name: 'Santos',
+                img: 'https://ui-avatars.com/api/?name=Cruz azul'
+            },
+            home: {
+                name: 'America',
+                img: 'https://ui-avatars.com/api/?name=Santos'
+            },
+            result: '1-0',
+            schedule: {
+                day:'Sab. 9/3',
+                hour: '19:00',
+            }
+        },
+        {
+            id: 5,
+            away: {
+                name: 'Santos',
+                img: 'https://ui-avatars.com/api/?name=Cruz azul'
+            },
+            home: {
+                name: 'America',
+                img: 'https://ui-avatars.com/api/?name=Santos'
+            },
+            result: '1-0',
+            schedule: {
+                day:'Sab. 9/3',
+                hour: '19:00',
+            }
+        },
+        {
+            id: 6,
             away: {
                 name: 'Santos',
                 img: 'https://ui-avatars.com/api/?name=Cruz azul'
