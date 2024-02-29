@@ -16,22 +16,29 @@
            </v-col>
            <v-col cols="12">
               <v-list color="white" nav>
-                <v-list-item density="compact" v-for="link in adminLinks" :key="link.title" link :to="link.to" :disabled="link.disabled" class="my-1">
-                  <template #prepend>
-                    <v-icon>{{link.icon}}</v-icon>
-                  </template>
-                  <v-list-item-title>
-                    {{link.title}}
-                  </v-list-item-title>
-                </v-list-item>
+                <v-list-item
+                    density="compact"
+                    v-for="link in adminLinks"
+                    :key="link.title"
+                    link
+                    :to="link.to"
+                    :disabled="link.disabled"
+                    class="my-1"
+                    :prepend-icon="link.icon"
+                    :title="link.title"
+                />
                 <LinkSeparator name="Liga"></LinkSeparator>
-                <v-list-item density="compact" v-for="link in leagueLinks" :key="link.title" link :to="link.to" :disabled="link.disabled" class="my-1">
-                  <template #prepend>
-                    <v-icon>{{link.icon}}</v-icon>
-                  </template>
-                  <v-list-item-title>
-                    {{link.title}}
-                  </v-list-item-title>
+                <v-list-item
+                    density="compact"
+                    v-for="link in leagueLinks"
+                    :key="link.title"
+                    link
+                    :to="link.to"
+                    :disabled="link.disabled"
+                    class="my-1"
+                    :prepend-icon="link.icon"
+                    :title="link.title"
+                >
                 </v-list-item>
               </v-list>
            </v-col>
@@ -53,6 +60,7 @@ const adminLinks = reactive([
 const leagueLinks = reactive([
   { icon: 'mdi-trophy-variant', title: 'Torneos', to: '/torneos', disabled: false},
   { icon: 'mdi-person-group', title: 'Equipos', to: '/equipos', disabled: false},
+  { icon: 'mdi-calendar', title: 'Calendario', to: '/calendario', disabled: false},
 ])
 
 </script>

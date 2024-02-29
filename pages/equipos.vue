@@ -10,7 +10,6 @@ const tab= ref(1)
 onMounted(() => {
   useTeamStore().getTeams()
 } )
-console.log({teams: teams.value})
 </script>
 <template>
 <v-container fluid>
