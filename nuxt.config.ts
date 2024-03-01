@@ -29,6 +29,7 @@ export default defineNuxtConfig({
     }
   },
   modules: [
+    '@formkit/auto-animate/nuxt',
     '@vite-pwa/nuxt',
     '@nuxtjs/i18n',
     '@vee-validate/nuxt',

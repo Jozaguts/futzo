@@ -311,6 +311,21 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
             } )
     }
 
-    return { tournaments,tournament,categories, loadTournaments,storeTournament, storeCategory,nextGames, currentGames }
+    async function fetchTournamentsByLeagueId  (id: number) {
+        const client = useSanctumClient();
+        return  await client(`/api/v1/admin/leagues/${id}/tournaments`);
+    }
+
+    return {
+        tournaments,
+        tournament,
+        nextGames,
+        categories,
+        currentGames,
+        loadTournaments,
+        storeTournament,
+        storeCategory,
+        fetchTournamentsByLeagueId
+    }
 
 })
