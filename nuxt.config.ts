@@ -21,6 +21,7 @@ export default defineNuxtConfig({
   build: {transpile: ['vuetify','@vuepic/vue-datepicker']},
   css: [
     'vuetify/lib/styles/main.sass',
+    '@/assets/scss/main.scss',
   ],
   googleFonts: {
     display: 'swap',
