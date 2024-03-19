@@ -8,24 +8,14 @@
               max-width="448"
           >
             <VCardItem class="justify-center">
-              <template #prepend>
-                <div class="d-flex">
-                  <div v-html="logo" />
-                </div>
-              </template>
-
-              <VCardTitle class="font-weight-semibold text-2xl text-uppercase">
-                Futzo
-              </VCardTitle>
+              <v-img width="200" max-width="200" src="/futzo/logos/horizontal/logo-14.png"></v-img>
             </VCardItem>
 
             <VCardText class="pt-2">
-              <h5 class="text-h5 font-weight-semibold mb-1">
-                Bienvenido a Futzo! 👋🏻
+              <h5 class="text-h4 font-weight-semibold mb-1">
+               Iniciar sesión
               </h5>
-              <p class="mb-0">
-                Por favor inicia sesion para continuar con la aventura
-              </p>
+
             </VCardText>
 
             <VCardText>
@@ -130,20 +120,6 @@
               </VForm>
             </VCardText>
           </VCard>
-
-          <VImg
-              class="auth-footer-start-tree d-none d-md-block"
-              :src="authV1Tree"
-              :width="250"
-          />
-
-          <VImg
-              :src="authV1Tree2"
-              class="auth-footer-end-tree d-none d-md-block"
-              :width="350"
-          />
-
-          <!-- bg img -->
           <VImg
               class="auth-footer-mask d-none d-md-block"
               :src="authThemeMask"
@@ -156,12 +132,9 @@
 
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
-import logo from '@/assets/logo.svg?raw'
 import AuthProvider from '@/components/authentication/AuthProvider.vue'
 import authV1MaskDark from '@/assets/images/pages/auth-v1-mask-dark.png'
 import authV1MaskLight from '@/assets/images/pages/auth-v1-mask-light.png'
-import authV1Tree2 from '@/assets/images/pages/auth-v1-tree-2.png'
-import authV1Tree from '@/assets/images/pages/auth-v1-tree.png'
 const { login } = useSanctumAuth();
 const loadingPage = ref(true)
 definePageMeta({

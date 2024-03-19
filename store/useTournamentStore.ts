@@ -267,6 +267,10 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
         }
     ]);
     const categories = ref([]);
+    const teamsCount = ref(0)
+    const roundsCount = ref(0)
+    const matchesCount = ref(0)
+    const matchesByRound = ref(0)
     async function loadTournaments() {
         const client = useSanctumClient();
 
@@ -310,11 +314,12 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
                 }   , 5000)
             } )
     }
-
     async function fetchTournamentsByLeagueId  (id: number) {
         const client = useSanctumClient();
-        return  await client(`/api/v1/admin/leagues/${id}/tournaments`);
+        const data  = await client(`/api/v1/admin/leagues/${id}/tournaments`);
+        tournaments.value = data || [];
     }
+
 
     return {
         tournaments,
@@ -322,6 +327,10 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
         nextGames,
         categories,
         currentGames,
+        teamsCount,
+        roundsCount,
+        matchesCount,
+        matchesByRound,
         loadTournaments,
         storeTournament,
         storeCategory,

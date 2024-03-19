@@ -5,8 +5,12 @@ export const useLeaguesStore = defineStore('leaguesStore', () => {
     const leagues = ref<League[]>([]);
     const fetchLeagues = async () => {
         const client = useSanctumClient();
-        leagues.value = await client('/api/v1/admin/leagues');
+        leagues.value= await client('/api/v1/admin/leagues');
     };
+    onBeforeMount(async() => {
+        console.log('fetching leagues')
+        await useLeaguesStore().fetchLeagues()
+    })
     return {
         leagues,
         fetchLeagues,
