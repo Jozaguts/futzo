@@ -11,8 +11,8 @@
        <v-container>
          <v-row >
            <v-col cols="12" class="d-flex align-center">
-             <v-img max-width="40" width="100%" height="40" src="/logo.png"></v-img>
-              <h1 class="text-h5 ml-1">{{appName}}</h1>
+             <v-img src="/futzo/logos/horizontal/logo-12.png"></v-img>
+<!--              <h1 class="text-h5 ml-1">{{appName}}</h1>-->
            </v-col>
            <v-col cols="12">
               <v-list color="white" nav>
@@ -40,6 +40,29 @@
                     :title="link.title"
                 >
                 </v-list-item>
+                <!--          ################    #########-->
+                <v-list-group value="teams">
+                  <template v-slot:activator="{ props }">
+                    <v-list-item
+                        v-bind="props"
+                        title="Equipos"
+                        prepend-icon="mdi-account-group"
+                    ></v-list-item>
+                  </template>
+                  <v-list-item
+                      variant="text"
+                      density="compact"
+                      v-for="link in teamLinks"
+                      :key="link.title"
+                      link
+                      :to="link.to"
+                      :disabled="link.disabled"
+                      :prepend-icon="link.icon"
+                      :title="link.title"
+                  >
+                  </v-list-item>
+                </v-list-group>
+                <!--       $####################     ######33    -->
               </v-list>
            </v-col>
          </v-row>
@@ -59,8 +82,10 @@ const adminLinks = reactive([
 ])
 const leagueLinks = reactive([
   { icon: 'mdi-trophy-variant', title: 'Torneos', to: '/torneos', disabled: false},
-  { icon: 'mdi-person-group', title: 'Equipos', to: '/equipos', disabled: false},
   { icon: 'mdi-calendar', title: 'Calendario', to: '/calendario', disabled: false},
 ])
-
+const teamLinks = reactive([
+  { icon: 'mdi-clipboard-list-outline', title: 'Ver Equipo', to: '/equipos', disabled: false},
+  { icon: 'mdi-add', title: 'Inscribir Equipo', to: '/equipos/inscribir', disabled: false},
+])
 </script>
