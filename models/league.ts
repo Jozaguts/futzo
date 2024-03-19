@@ -6,4 +6,5 @@ export interface League {
     logo?: string | null;
     banner?: string | null;
     status?: string | null;
+    teams_count?: number | null;
 }

@@ -28,6 +28,22 @@ onMounted(() => {
 });
 </script>
 <style>
+.v-list-group__items{
+  --indent-padding: 1rem;
+}
+.v-list-group__items > .v-list-item.v-list-item--active.v-list-item--link.v-list-item--nav{
+  border-bottom-right-radius: 25px;
+  border-top-right-radius: 25px;
+  background: linear-gradient(-72.47deg, rgb(145, 85, 253) 22.16%, rgba(145, 85, 253, 0.7) 76.47%) !important;
+}
+.v-list-group__items > .v-list-item.v-list-item--link.v-list-item--nav{
+  border-bottom-right-radius: 25px;
+  border-top-right-radius: 25px;
+}
+.v-list-group__items > .v-list-item.v-list-item--active.v-list-item--link.v-list-item--nav> .v-list-item__overlay{
+  border-bottom-right-radius: 25px;
+  border-top-right-radius: 25px;
+}
  .v-list--nav > .v-list-item--active {
   background: linear-gradient(-72.47deg, rgb(145, 85, 253) 22.16%, rgba(145, 85, 253, 0.7) 76.47%) !important;
 }
@@ -35,4 +51,7 @@ onMounted(() => {
   border-bottom-right-radius: 25px;
   border-top-right-radius: 25px;
 }
+ .v-list-group__items > .v-list-item .v-list-item--active {
+   background: linear-gradient(-72.47deg, rgb(145, 85, 253) 22.16%, rgba(145, 85, 253, 0.7) 76.47%) !important;
+ }
 </style>

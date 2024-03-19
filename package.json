@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.8.1",
+    "@googlemaps/js-api-loader": "^1.16.6",
     "@invictus.codes/nuxt-vuetify": "^0.3.0",
     "@nuxtjs/google-fonts": "^3.0.2",
     "@pinia/nuxt": "^0.4.11",

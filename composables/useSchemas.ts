@@ -85,6 +85,7 @@ function getSchemaByName(name) {
             schemaFields.email = yusString().email();
             schemaFields.address = yusString();
             schemaFields.image = yup.array().nullable();
+            schemaFields.location_id = yup.number().nullable();
             break;
             default:
                 schemaFields = yup.mixed();
