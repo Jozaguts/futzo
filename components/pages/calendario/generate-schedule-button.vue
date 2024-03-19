@@ -14,11 +14,6 @@ const generateSchedule = async() =>{
   }
 }
 const theAreNotSchedules = computed(() => {
-  console.log({
-    schedules: schedules.value,
-    leagueId: scheduleParams.value.leagueId,
-    tournamentId: scheduleParams.value.tournamentId
-  })
    return schedules.value?.length === 0 && scheduleParams.value.leagueId && scheduleParams.value.tournamentId
 })
 </script>
