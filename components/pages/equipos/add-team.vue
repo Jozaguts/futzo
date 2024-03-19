@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {useTeamStore} from "~/store/useTeamStore";
 import {storeToRefs} from "pinia";
-const {categories, tournaments} = storeToRefs(useTeamStore())
+const {categories, tournaments,locations} = storeToRefs(useTeamStore())
 
 const dialog = ref(false);
 const tab = ref('home')
@@ -42,7 +42,8 @@ const nextStep = (e) => {
         !fields.name.fieldPropsValue['error-messages'].length &&
         !fields.tournament_id.fieldPropsValue['error-messages'].length &&
         !fields.category_id.fieldPropsValue['error-messages'].length &&
-        fields.name.fieldValue && fields.tournament_id.fieldValue && fields.category_id.fieldValue
+        !fields.location_id.fieldPropsValue['error-messages'].length &&
+        fields.name.fieldValue && fields.tournament_id.fieldValue && fields.category_id.fieldValue && fields.location_id.fieldValue
     ) {
       completedSteps.step1 = true
       step.value = 2
@@ -51,11 +52,11 @@ const nextStep = (e) => {
   if (!completedSteps.step2) {
     if (
         !fields.president_name.fieldPropsValue['error-messages'].length &&
-        !fields.dt.fieldPropsValue['error-messages'].length &&
+        !fields.coach_name.fieldPropsValue['error-messages'].length &&
         !fields.phone.fieldPropsValue['error-messages'].length &&
         !fields.email.fieldPropsValue['error-messages'].length &&
         !fields.address.fieldPropsValue['error-messages'].length &&
-        fields.president_name.fieldValue && fields.dt.fieldValue && fields.phone.fieldValue && fields.email.fieldValue && fields.address.fieldValue
+        fields.president_name.fieldValue && fields.coach_name.fieldValue && fields.phone.fieldValue && fields.email.fieldValue && fields.address.fieldValue
     ) {
       completedSteps.step2 = true
       step.value = 3
@@ -96,12 +97,12 @@ const createTeam = handleSubmit(async (values) => {
 </script>
 <template>
   <v-btn
-      variant="outlined"
+      variant="elevated"
       color="primary"
   >
     <template #default>
       Inscribir equipo
-      <v-dialog max-width="600"  v-model="dialog" activator="parent">
+      <v-dialog max-width="600"  v-model="dialog" activator="parent"  >
         <v-stepper
             :mobile="$vuetify.display.mobile"
             v-model="step"
@@ -126,6 +127,7 @@ const createTeam = handleSubmit(async (values) => {
                     <v-row>
                       <v-col cols="12">
                         <v-text-field
+                            variant="solo-filled"
                             label="Nombre del equipo"
                             v-model="fields.name.fieldValue"
                             v-bind="fields.name.fieldPropsValue"
@@ -160,12 +162,26 @@ const createTeam = handleSubmit(async (values) => {
                           </template>
                         </v-select>
                       </v-col>
+                      <v-col cols="12">
+                        <v-select
+                            v-model="fields.location_id.fieldValue"
+                            v-bind="fields.location_id.fieldPropsValue"
+                            @update:modelValue="nextStep"
+                            :items="locations"
+                            item-value="id"
+                            item-title="name"
+                        >
+                          <template v-slot:prepend>
+                            <v-list-item-title>Campo/locación</v-list-item-title>
+                          </template>
+                        </v-select>
+                      </v-col>
                     </v-row>
                   </v-container>
                 </v-card-text>
                 <v-card-actions>
                   <v-btn
-                      variant="outlined"
+                      variant="text"
                       color="primary"
                       :disabled="true"
                       @click="step = 1">
@@ -173,7 +189,7 @@ const createTeam = handleSubmit(async (values) => {
                   </v-btn>
                   <v-spacer></v-spacer>
                   <v-btn
-                      variant="outlined"
+                      variant="text"
                       @click="step = 2">
                     Siguiente
                   </v-btn>
@@ -236,14 +252,14 @@ const createTeam = handleSubmit(async (values) => {
                 </v-card-text>
                 <v-card-actions>
                   <v-btn
-                      variant="outlined"
+                      variant="text"
                       color="primary"
                       @click="step = 1">
                     Anterior
                   </v-btn>
                   <v-spacer></v-spacer>
                   <v-btn
-                      variant="outlined"
+                      variant="text"
                       @click="step = 3">
                     Siguiente
                   </v-btn>
@@ -352,14 +368,14 @@ const createTeam = handleSubmit(async (values) => {
                 </v-card-text>
                 <v-card-actions>
                   <v-btn
-                      variant="outlined"
+                      variant="text"
                       color="primary"
                       @click="step = 2">
                     Anterior
                   </v-btn>
                   <v-spacer></v-spacer>
                   <v-btn
-                      variant="outlined"
+                      variant="elevated"
                       @click="createTeam">
                     Inscribir Equipo
                   </v-btn>

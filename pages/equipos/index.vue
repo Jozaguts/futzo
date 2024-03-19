@@ -6,6 +6,7 @@ const teamStore = storeToRefs(useTeamStore())
 const {teams} = teamStore
 
 const noTeams = computed(() => teams.value?.length === 0)
+// const noTeams = computed(() => true)
 const tab= ref(1)
 onMounted(() => {
   useTeamStore().getTeams()
@@ -13,7 +14,7 @@ onMounted(() => {
 </script>
 <template>
 <v-container fluid>
-  <v-row v-if="noTeams"  class="justify-center align-center" style="height: 100vh">
+  <v-row v-if="noTeams">
     <v-col cols="12" class="text-center">
       <NoTeamRegisteredCard />
     </v-col>
