@@ -10,9 +10,8 @@
       <template #prepend>
        <v-container>
          <v-row >
-           <v-col cols="12" class="d-flex align-center">
-             <v-img src="/futzo/logos/horizontal/logo-12.png"></v-img>
-<!--              <h1 class="text-h5 ml-1">{{appName}}</h1>-->
+           <v-col cols="12" class="d-flex align-center py-0">
+             <v-img src="/futzo/logos/horizontal/logo-12.png" :eager="true" min-width="100%"  :height="$vuetify.display.mobile ? 80 : 105"></v-img>
            </v-col>
            <v-col cols="12">
               <v-list color="white" nav>
