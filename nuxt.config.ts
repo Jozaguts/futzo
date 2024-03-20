@@ -13,11 +13,6 @@ export default defineNuxtConfig({
     }
   },
   // @ts-ignore
-  "app": {
-    head: {
-      link: [{rel: 'stylesheet', href: '/loader.css'}],
-    },
-  },
   build: {transpile: ['vuetify','@vuepic/vue-datepicker']},
   css: [
     'vuetify/lib/styles/main.sass',
@@ -74,6 +69,7 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    googleMapsSecret: process.env.NUXT_GOOGLE_MAPS_API_KEY,
     public: {
       baseURLBackend: process.env.NUXT_PUBLIC_URL_BACKEND,
       backendPrefix: process.env.NUXT_PUBLIC_BACKEND_PREFIX,
