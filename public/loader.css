@@ -87,3 +87,17 @@ html {
     transform: rotate(1turn);
   }
 }
+@keyframes scaleAndFade {
+  0% {
+    transform: scale(.9);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animated-element {
+  animation: scaleAndFade 1s ease-in-out;
+}
