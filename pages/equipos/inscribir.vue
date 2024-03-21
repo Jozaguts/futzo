@@ -15,12 +15,12 @@ const {
 
 const uniform  = ref({
   home: {
-    jersey: null,
-    short: null
+    jersey: '#000',
+    short: '#fff'
   },
   away: {
-    jersey: null,
-    short: null
+    jersey: '#fff',
+    short: '#000'
   }
 })
 const openColorOptions = (e) =>{
@@ -131,7 +131,8 @@ const createTeam = handleSubmit(async (values) => {
             label="Categoria"
         >
         </v-select></v-col>
-        <v-col cols="12" md="6" lg="6" > <v-select
+        <v-col cols="12" md="6" lg="6" >
+          <v-select
             v-model="fields.location_id.fieldValue"
             v-bind="fields.location_id.fieldPropsValue"
             @update:modelValue="nextStep"

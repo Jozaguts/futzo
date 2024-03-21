@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import {storeToRefs} from "pinia";
 import {useTeamStore} from "~/store/useTeamStore";
-
+useHead({
+  script: [{src: 'https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyCEQ_vXTkXUIxE-exwES14KvkoGaAHOGFQ', async: true, id: 'google-maps',}]
+})
 const days = ref<object[]>([
     {
         name: 'Lunes',
@@ -42,7 +44,7 @@ const hours = computed(() => {
     }
     return hours;
 });
-const {locations,locationModel,availableDays} = storeToRefs(useTeamStore())
+const {locations,locationModel,availableDays,googleSearchLocations} = storeToRefs(useTeamStore())
 const {searchLocation,storeField} = useTeamStore()
 const saveDate = (day) => {
   if (!day.open || !day.close) {
@@ -67,6 +69,16 @@ const handleStoreLocation = () => {
         dialog.value = false;
       })
 }
+
+// before unmount remove the google maps script
+onUnmounted(() => {
+  console.log('test')
+  const script = document.querySelector('#google-maps');
+  if (script) {
+    script.remove();
+    window.google = {}
+  }
+});
 </script>
 <template>
   <v-dialog v-model="dialog" max-width="600">
@@ -102,7 +114,7 @@ const handleStoreLocation = () => {
                  <v-autocomplete
                      label="Dirección"
                      v-model="locationModel.address"
-                     :items="locations"
+                     :items="googleSearchLocations"
                      item-title="name"
                      item-value="address"
                      outlined

@@ -88,7 +88,7 @@ const props = defineProps<{
   //background: yellow;
   display: flex;
   flex-direction: column;
-  align-items: start;
+  align-items: flex-start;
 }
 .team {
   display: flex;
