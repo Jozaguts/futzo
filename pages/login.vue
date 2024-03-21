@@ -148,8 +148,8 @@ const [parent] = useAutoAnimate({ duration: 300 })
 const form = ref({
   name: '',
   lastname: '',
-  email: 'admin@sls.com',
-  password: 'password',
+  email: '',
+  password: '',
   remember: false,
 })
 const showRegisterForm = ref(false)
