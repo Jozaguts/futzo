@@ -3,7 +3,7 @@ import {storeToRefs} from "pinia";
 import {useTournamentStore} from "~/store";
 import {useScheduleStore} from "~/store/useScheduleStore";
 const {teamsCount, roundsCount, matchesCount,tournaments,matchesByRound} = storeToRefs(useTournamentStore())
-const {scheduleParams,daysToPlaySelectedText} = storeToRefs(useScheduleStore())
+const {scheduleParams} = storeToRefs(useScheduleStore())
 const showInfoCard = computed(() => scheduleParams.value.leagueId && scheduleParams.value.tournamentId)
 watch(() => scheduleParams.value.tournamentId, async(newValue) => {
   if (newValue) {
@@ -18,24 +18,21 @@ watch(() => scheduleParams.value.tournamentId, async(newValue) => {
 <template>
   <v-card v-auto-animate>
     <v-card-text v-if="showInfoCard">
-      <div class="d-flex flex-column ">
-        <div class="d-flex">
-          <p class="flex-1-1 text-body-1 text-capitalize">Equipos registrados: </p> <span class=" text-body-1">{{teamsCount}}</span>
-        </div>
-        <div class="d-flex">
-          <p class="flex-1-1 text-body-1 text-capitalize">Jornadas: </p> <span class=" text-body-1">{{roundsCount}}</span>
-        </div>
-        <div class="d-flex">
-          <p class="flex-1-1 text-body-1 text-capitalize">Partidos por jornada: </p> <span class="text-body-1">{{matchesByRound}}</span>
-        </div>
-        <div class="d-flex">
-          <p class="flex-1-1 text-body-1 text-capitalize">Total de Partidos: </p> <span class="text-body-1">{{matchesCount}}</span>
-        </div>
-        <div class="d-flex">
-          <p class="flex-1-1 text-body-1 text-capitalize">Dias de juego: </p> <span class="flex-1-1 text-body-1 text-right">{{daysToPlaySelectedText}}</span>
-<!--          <p class="flex-1-1 text-body-1 text-capitalize">Dias de juego: </p> <span class="flex-1-1 text-body-1 text-right">Lun | Mar | Mie | Jue | Vie | Sab | Dom</span>-->
-        </div>
-      </div>
+      eliminar torunament info card
+<!--      <div class="d-flex flex-column ">-->
+<!--        <div class="d-flex">-->
+<!--          <p class="flex-1-1 text-body-1 text-capitalize">Equipos registrados: </p> <span class=" text-body-1">{{teamsCount}}</span>-->
+<!--        </div>-->
+<!--        <div class="d-flex">-->
+<!--          <p class="flex-1-1 text-body-1 text-capitalize">Jornadas: </p> <span class=" text-body-1">{{roundsCount}}</span>-->
+<!--        </div>-->
+<!--        <div class="d-flex">-->
+<!--          <p class="flex-1-1 text-body-1 text-capitalize">Partidos por jornada: </p> <span class="text-body-1">{{matchesByRound}}</span>-->
+<!--        </div>-->
+<!--        <div class="d-flex">-->
+<!--          <p class="flex-1-1 text-body-1 text-capitalize">Total de Partidos: </p> <span class="text-body-1">{{matchesCount}}</span>-->
+<!--        </div>-->
+<!--      </div>-->
     </v-card-text>
   </v-card>
 </template>

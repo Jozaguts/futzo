@@ -1,19 +1,14 @@
 <script lang="ts" setup>
+import CustomDaysSelectComponent from "~/components/pages/calendario/custom-days-select-component.vue";
 import {storeToRefs} from "pinia";
 import {useLeaguesStore} from "~/store/useLeaguesStore";
 import {useScheduleStore} from "~/store/useScheduleStore";
 import {useAuthStore, useTournamentStore} from "~/store";
-const itemProps = (item) => {
-  return {
-    title: item.name,
-  }
-}
 const {tournaments} = storeToRefs(useTournamentStore())
 const {leagues} = storeToRefs(useLeaguesStore())
 const {isSuperAdmin} = storeToRefs(useAuthStore())
-const {scheduleParams,schedules,daysToPlay,daysToPlaySelected,customDaysSelected} =storeToRefs(useScheduleStore())
+const {scheduleParams,schedules,daysToPlay,daysToPlaySelected} =storeToRefs(useScheduleStore())
 const loadingTournaments = ref(false)
-const theAreSchedules = computed(() => schedules.value.length > 0)
 watch(() => scheduleParams.value.leagueId, async(newValue) => {
   if (newValue) {
     try {
@@ -33,7 +28,6 @@ watch(() => scheduleParams.value.leagueId, async(newValue) => {
 
 onBeforeRouteLeave((to, from, next) => {
   if (to.name !== 'calendario') {
-    // scheduleParams.value.leagueId  = null as number
     scheduleParams.value.tournamentId = null as number
   }
   next()
@@ -43,20 +37,16 @@ watch(() => leagues.value, async(newValue) => {
     scheduleParams.value.leagueId =  newValue[0].id
   }
 })
-const daysOfTheWeek = [
-  {name: 'Lunes', value: 'Lun'},
-  {name: 'Martes', value: 'Mar'},
-  {name: 'Miercoles', value: 'Mie'},
-  {name: 'Jueves', value: 'Jue'},
-  {name: 'Viernes', value: 'Vie'},
-  {name: 'Sabado', value: 'Sab'},
-  {name: 'Domingo', value: 'Dom'}
-]
-console.log(tournaments.value.length)
+const numberOfColumns = computed(() => {
+  return showCustomDaysSelect.value ? 6 : 4
+})
+const showCustomDaysSelect = computed(() => {
+  return daysToPlaySelected.value?.key === 'other' && !!scheduleParams.value.tournamentId
+})
 </script>
 <template>
   <v-row >
-    <v-col cols="12" md="3" lg="3">
+    <v-col cols="12" :md="numberOfColumns" :lg="numberOfColumns">
       <v-select
           :disabled="!isSuperAdmin"
           label="Selecciona una liga"
@@ -65,11 +55,11 @@ console.log(tournaments.value.length)
           item-title="name"
           variant="outlined"
           :items="leagues"
-
       >
       </v-select>
     </v-col>
-    <v-col cols="12" md="3" lg="3">
+    <v-col cols="12" :md="numberOfColumns" :lg="numberOfColumns">
+
       <v-select
           v-model="scheduleParams.tournamentId"
           label="Selecciona un torneo"
@@ -79,36 +69,31 @@ console.log(tournaments.value.length)
           :items="tournaments"
           :loading="loadingTournaments"
           no-data-text="No existen torneos para esta liga"
-
           clearable
       >
       </v-select>
 
     </v-col>
-    <v-col cols="12" md="3" lg="3" v-auto-animate>
+    <v-col cols="12" :md="numberOfColumns" :lg="numberOfColumns" v-auto-animate>
       <v-select
           label="Dias de juego"
+          placeholder="Selecciona los dias de juego"
           v-if="scheduleParams.tournamentId"
           v-model="daysToPlaySelected"
           :items="daysToPlay"
+          return-object
           item-title="text"
-          item-value="value"
           >
-      </v-select>
-    </v-col>
-    <v-col cols="12" md="3" lg="3" v-auto-animate>
-      <v-select multiple
-                :items="daysOfTheWeek"
-                v-if="daysToPlaySelected === 'other' && scheduleParams.tournamentId"
-                v-model="customDaysSelected" item-title="name"
-                clearable
-                label="Selecciona los dias de juego"
-                chips
-                >
+
       </v-select>
 
-      <!--    solo se muestra si hay jornadas generadas-->
-      <!--    esto ya no tiene que ir acqui la logica ha cambiado-->
+    </v-col>
+    <CustomDaysSelectComponent :cols="numberOfColumns" :show="showCustomDaysSelect" />
+  </v-row>
+
+</template>
+<!--    solo se muestra si hay jornadas generadas-->
+<!--    esto ya no tiene que ir acqui la logica ha cambiado-->
 <!--      <v-select-->
 <!--          v-if="theAreSchedules"-->
 <!--          label="Jornada"-->
@@ -119,8 +104,4 @@ console.log(tournaments.value.length)
 <!--          -->
 <!--      >-->
 <!--      </v-select>-->
-      <!--    ##################################3-->
-    </v-col>
-  </v-row>
-
-</template>
+<!--    ##################################3-->

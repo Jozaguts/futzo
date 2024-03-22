@@ -6,21 +6,16 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     const schedules = ref<Schedule[]>([]);
     const scheduleParams = ref<{leagueId: number, tournamentId: number}>({leagueId: null as number, tournamentId: null as number});
     const daysToPlay = ref([
-            {value: 'all-days', text: 'Lun Mar Mie Jue Vie Sab Dom'},
-            {value: 'weekend-days', text: 'Vie Sab Dom'},
-            {value: 'weekend', text: 'Sab Dom'},
-            {value: 'sunday', text: 'Dom'},
-            {value: 'other', text: 'Otro',},
+            {days: ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado','domingo'], key: 'all-days', text: 'Toda la semana'},
+            {days: [ 'viernes', 'sábado','domingo'], key: 'weekend-days', text: 'Viernes | Sábado | Domingo'},
+            {days: [ 'sábado','domingo'], key: 'weekend', text: 'Sábado | Domingo'},
+            {days: ['domingo'], key: 'sunday', text: 'Domingo'},
+            {days: [], key: 'other', text: 'Otro'},
         ]);
-    const daysToPlaySelected = ref('all-days');
-    const daysToPlaySelectedText = computed(() => {
-        if (daysToPlaySelected.value === 'other'){
-            return customDaysSelected.value.join(' | ');
-        }else {
-            return daysToPlay.value.find((d) => d.value === daysToPlaySelected.value)?.text;
-        }
-    });
-    const customDaysSelected = ref<string[]>([])
+    const daysToPlaySelected = ref();
+    const daysToPlayCustomSelected = ref();
+
+
 
     const fetchSchedules = async () => {
         const client = useSanctumClient()
@@ -37,9 +32,8 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
         schedules,
         daysToPlay,
         scheduleParams,
+        daysToPlayCustomSelected,
         daysToPlaySelected,
-        daysToPlaySelectedText,
-        customDaysSelected,
         fetchSchedules,
         generateSchedule,
     };

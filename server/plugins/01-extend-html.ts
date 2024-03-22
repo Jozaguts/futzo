@@ -2,7 +2,7 @@
 export default defineNitroPlugin((nitroApp) => {
     nitroApp.hooks.hook('render:html', (html, { event }) => {
         html.head.push(`
-        <style>
+        <style id="loader-styles">
         root {
             --initial-loader-bg: #9155FD;
             --initial-loader-color: #9155FD;
@@ -11,8 +11,8 @@ export default defineNitroPlugin((nitroApp) => {
           margin: 0;
         }
         html {
-          overflow-x: hidden;
-          overflow-y: hidden;
+          /*overflow-x: hidden;*/
+          /*overflow-y: hidden;*/
         }
         #loading-bg {
             position: absolute;
@@ -52,7 +52,9 @@ export default defineNitroPlugin((nitroApp) => {
         html.head.push(`
         <script async>
         window.addEventListener('load', function () {
+            
             document.querySelector('#loading-bg').classList.add('d-none')
+            document.querySelector('#loader-styles').remove()
         })
         </script>`);
     })

@@ -2,7 +2,7 @@
 import {storeToRefs} from "pinia";
 import {useScheduleStore} from "~/store/useScheduleStore";
 
-const {scheduleParams, schedules,daysToPlay,daysToPlaySelected,customDaysSelected} = storeToRefs(useScheduleStore())
+const {scheduleParams, schedules} = storeToRefs(useScheduleStore())
 const theAreNotSchedules = computed(() => {
   return schedules.value?.length === 0 && scheduleParams.value.leagueId && scheduleParams.value.tournamentId
 })
@@ -27,10 +27,6 @@ const daysOfTheWeek = [
          </v-card-title>
        </v-card-item>
        <v-card-text v-auto-animate>
-         <v-radio-group v-if="theAreNotSchedules" v-model="daysToPlaySelected">
-           <v-radio v-for="day in  daysToPlay" :key="day" :label="day.text" :value="day.value"></v-radio>
-         </v-radio-group>
-         <v-select multiple :items="daysOfTheWeek" v-if="daysToPlaySelected === 'other'" v-model="customDaysSelected" item-title="name" clearable label="Selecciona los dias de juego" chips></v-select>
        </v-card-text>
      </v-card>
    </v-col>
