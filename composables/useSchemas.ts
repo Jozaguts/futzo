@@ -59,8 +59,10 @@ function getSchemaByName(name) {
             schemaFields.location = yusString().nullable();
             schemaFields.description = yusString().nullable();
             schemaFields.creation_date = yup.date().nullable();
-            schemaFields.logo = yup.array().nullable();
-            schemaFields.banner = yup.array().nullable();
+            schemaFields.logo = yup.mixed()
+                .test('File is required', 'File ', (value: File) => value)
+            schemaFields.banner = yup.mixed()
+                .test('File is required', 'File ', (value: File) => value)
             schemaFields.status = yusString().nullable();
             break;
         case 'create-category':
