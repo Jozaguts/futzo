@@ -20,25 +20,34 @@
 
             <VCardText>
               <VForm @submit.prevent="signInHandler()">
-                <VRow v-auto-animate="{duration:600}">
-                  <!-- name -->
-                  <VCol cols="6" v-if="showRegisterForm">
-                    <VTextField
-                        v-model="form.name"
-                        label="Nombre"
-                        type="text"
-                    />
-                  </VCol>
-                  <!-- lastname -->
-                  <VCol cols="6" v-if="showRegisterForm">
-                    <VTextField
-                        v-model="form.lastname"
-                        label="Apellidos"
-                        type="text"
-                    />
-                  </VCol>
-                  <!-- email -->
-
+                <VRow>
+                  <transition
+                      enter-active-class="scale-up-vertical-top-enter-active"
+                      leave-active-class="scale-down-vertical-center-leave-active"
+                     mode="out-in"
+                  >
+                    <VCol key="name" cols="6" v-if="showRegisterForm">
+                      <VTextField
+                          v-model="form.name"
+                          label="Nombre"
+                          type="text"
+                      />
+                    </VCol>
+                  </transition>
+                  <transition
+                      enter-active-class="scale-up-vertical-top-enter-active"
+                      leave-active-class="scale-down-vertical-center-leave-active"
+                     mode="out-in"
+                  >
+                    <!-- lastname -->
+                    <VCol  key="lastname" cols="6" v-if="showRegisterForm">
+                      <VTextField
+                          v-model="form.lastname"
+                          label="Apellidos"
+                          type="text"
+                      />
+                    </VCol>
+                  </transition>
                   <VCol cols="12">
                     <VTextField
                         v-model="form.email"
@@ -46,7 +55,6 @@
                         type="email"
                     />
                   </VCol>
-
                   <!-- password -->
                   <VCol cols="12">
                     <VTextField
@@ -56,7 +64,23 @@
                         :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
                         @click:append-inner="isPasswordVisible = !isPasswordVisible"
                     />
-
+                  </VCol>
+                  <transition
+                      enter-active-class="scale-up-vertical-top-enter-active"
+                      leave-active-class="scale-down-vertical-center-leave-active"
+                      mode="out-in"
+                  >
+                    <VCol key="password_confirmation" cols="12" v-if="showRegisterForm">
+                      <VTextField
+                          v-model="form.password_confirmation"
+                          label="Confirmar contraseña"
+                          :type="isPasswordVisible ? 'text' : 'password'"
+                          :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
+                          @click:append-inner="isPasswordVisible = !isPasswordVisible"
+                      />
+                    </VCol>
+                  </transition>
+                  <VCol cols="12">
                     <!-- remember me checkbox -->
                     <div class="d-flex align-center justify-space-between flex-wrap mt-1 mb-4" v-auto-animate="{duration:600}">
                       <VCheckbox
@@ -79,27 +103,25 @@
                         :loading="isLoading"
                         :disabled="isLoading"
                     >
-                      {{showRegisterForm ? 'Registrar' : 'Iniciar sesion'}}
+                      {{showRegisterForm ? 'Registrar' : 'Iniciar sesión'}}
                     </VBtn>
                   </VCol>
                   <VCol class="d-flex align-content-center justify-start py-0">
                     <small class="text-red pl-2 font-weight-bold" v-if="error"> * {{ error }}</small>
                   </VCol>
-
                   <!-- create account -->
                   <VCol
                       cols="12"
                       class="text-center text-base"
                   >
-                    <span>Nuevo en nuestra plataforma?</span>
+                    <span v-if="!showRegisterForm">Nuevo en nuestra plataforma?</span>
                     <a href="#"
                        class="text-primary ms-2"
                        @click="showRegisterFormHandler"
                     >
-                      Crea una cuenta
+                      {{showRegisterForm ? 'Iniciar sesión' : 'Crea una cuenta' }}
                     </a>
                   </VCol>
-
                   <VCol
                       cols="12"
                       class="d-flex align-center"
@@ -135,7 +157,6 @@ import { useTheme } from 'vuetify'
 import AuthProvider from '@/components/authentication/AuthProvider.vue'
 import authV1MaskDark from '@/assets/images/pages/auth-v1-mask-dark.png'
 import authV1MaskLight from '@/assets/images/pages/auth-v1-mask-light.png'
-const { login } = useSanctumAuth();
 const loadingPage = ref(true)
 definePageMeta({
   middleware: ['sanctum:guest'],
@@ -144,12 +165,12 @@ definePageMeta({
     class: 'd-none'
   }
 });
-const [parent] = useAutoAnimate({ duration: 300 })
 const form = ref({
-  name: '',
-  lastname: '',
-  email: '',
-  password: '',
+  name: 'test',
+  lastname: 'test',
+  email: 'test@test.com',
+  password: 'password',
+  password_confirmation: 'password',
   remember: false,
 })
 const showRegisterForm = ref(false)
@@ -161,21 +182,24 @@ const authThemeMask = computed(() => {
   return vuetifyTheme.global.name.value === 'light'
       ? authV1MaskLight
       : authV1MaskDark
-})
+}) as string
+const {
+  signIn,
+  signUp,
+} = useAuth()
 const signInHandler = async () => {
   try {
     error.value =  ''
     isLoading.value = true
-    let response
     if (!showRegisterForm.value) {
-
-      response = await login({
-        email: form.value.email,
-        password: form.value.password,
-        remember: true,
-      });
+      await signIn(form.value.email, form.value.password, true);
     } else {
-       // todo handler register
+    const response =   await signUp(  form.value.name, form.value.lastname, form.value.email, form.value.password, form.value.password_confirmation);
+      if (response.data.value.message === 'register successful') {
+        await signIn(form.value.email, form.value.password, true);
+      } else {
+        error.value = response.data.value.message
+      }
     }
   }catch (e) {
     const error = useApiError(e);
@@ -184,7 +208,6 @@ const signInHandler = async () => {
 
       return;
     }
-    console.error('Request failed not because of a validation', error);
   }finally {
     isLoading.value = false
   }
@@ -195,9 +218,38 @@ const showRegisterFormHandler = () => {
 }
 onMounted(() => {
   loadingPage.value = false
-
 })
 </script>
 <style lang="scss">
 @use "@/assets/scss/pages/page-auth.scss";
+
+/* Animación de entrada */
+.scale-up-vertical-top-enter-active {
+  animation: scale-up-vertical-bottom 0.2s linear forwards;
+}
+@keyframes scale-up-vertical-bottom {
+  0% {
+    transform: scaleY(0.4);
+    transform-origin: center bottom;
+  }
+  100% {
+    transform: scaleY(1);
+    transform-origin: center bottom;
+  }
+}
+
+/* Animación de salida */
+.scale-down-vertical-center-leave-active {
+  animation: scale-down-vertical-center 0.2s linear forwards;
+}
+@keyframes scale-down-vertical-center {
+  0% {
+    transform: scaleY(1);
+    transform-origin: center;
+  }
+  100% {
+    transform: scaleY(0.3);
+    transform-origin: center;
+  }
+}
 </style>
