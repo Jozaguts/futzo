@@ -45,6 +45,7 @@ function getSchemaByName(name) {
     switch (name) {
         case 'create-tournament':
             schemaFields.name = yusString().min(6, t('tournament_min')).required(t('forms.required'));
+            schemaFields.tournament_format_id = yup.number().required(t('forms.required'));
             schemaFields.start_date = yup.date().nullable();
             schemaFields.end_date = yup.date().nullable();
             schemaFields.prize =  yusString().nullable();

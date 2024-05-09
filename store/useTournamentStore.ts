@@ -272,6 +272,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     const matchesCount = ref(0)
     const matchesByRound = ref(0)
     const loading = ref(false)
+    const tournamentTypes = ref()
     async function loadTournaments() {
         loading.value = true;
         const client = useSanctumClient();
@@ -339,8 +340,14 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
 
     }
 
+    async function getTournamentTypes(){
+        const client = useSanctumClient();
+        console.log('getTournamentTypes')
+        const response =  await client('/api/v1/admin/tournaments/types')
+        console.log({response})
+        tournamentTypes.value = response
 
-
+    }
     return {
         tournaments,
         tournament,
@@ -355,7 +362,9 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
         storeTournament,
         storeCategory,
         fetchTournamentsByLeagueId,
-        loading
+        getTournamentTypes,
+        loading,
+        tournamentTypes
     }
 
 })

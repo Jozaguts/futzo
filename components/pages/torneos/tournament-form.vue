@@ -6,7 +6,7 @@ import {useTournamentStore} from "~/store";
 import {storeToRefs} from "pinia";
 const flow = ref(['month', 'year', 'calendar']);
 const client = useSanctumClient();
-const {categories} = storeToRefs(useTournamentStore());
+const {categories,tournamentTypes} = storeToRefs(useTournamentStore());
 const {
   fields,
   handleSubmit,
@@ -39,6 +39,9 @@ watch(() => dialog.value, (value) => {
     resetForm();
   }
 });
+onMounted(async () => {
+  await useTournamentStore().getTournamentTypes();
+});
 </script>
 <template>
   <v-btn  size="30" :icon="true" class="position-absolute top-0.5">
@@ -56,6 +59,18 @@ watch(() => dialog.value, (value) => {
                       label="Nombre del torneo"
                   >
                   </v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-select
+                      clearable
+                      v-model="fields.tournament_format_id.fieldValue"
+                      v-bind="fields.tournament_format_id.fieldPropsValue"
+                      label="Tipo"
+                      :items="tournamentTypes"
+                      item-title="name"
+                      item-value="id"
+                  >
+                  </v-select>
                 </v-col>
                 <v-col cols="12">
                   <v-select
