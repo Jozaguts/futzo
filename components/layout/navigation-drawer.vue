@@ -1,79 +1,97 @@
 <template>
   <v-navigation-drawer
-      :permanent="!isMobile"
+      permanent
       v-model="drawer"
-      floating
+      :rail="rail"
       color="background"
       elevation="0"
       :border="false"
-      app>
-      <template #prepend>
-       <v-container>
-         <v-row >
-           <v-col cols="12" class="d-flex align-center py-0">
-             <v-img src="/futzo/logos/horizontal/logo-12.png" :eager="true" min-width="100%"  :height="$vuetify.display.mobile ? 80 : 105"></v-img>
-           </v-col>
-           <v-col cols="12">
-              <v-list color="white" nav>
-                <v-list-item
-                    density="compact"
-                    v-for="link in adminLinks"
-                    :key="link.title"
-                    link
-                    :to="link.to"
-                    :disabled="link.disabled"
-                    class="my-1"
-                    :prepend-icon="link.icon"
-                    :title="link.title"
-                />
-                <LinkSeparator name="Liga"></LinkSeparator>
-                <v-list-item
-                    density="compact"
-                    v-for="link in leagueLinks"
-                    :key="link.title"
-                    link
-                    :to="link.to"
-                    :disabled="link.disabled"
-                    class="my-1"
-                    :prepend-icon="link.icon"
-                    :title="link.title"
-                >
-                </v-list-item>
-                <!--          ################    #########-->
-                <v-list-group value="teams">
-                  <template v-slot:activator="{ props }">
-                    <v-list-item
-                        v-bind="props"
-                        title="Equipos"
-                        prepend-icon="mdi-account-group"
-                    ></v-list-item>
-                  </template>
-                  <v-list-item
-                      variant="text"
-                      density="compact"
-                      v-for="link in teamLinks"
-                      :key="link.title"
-                      link
-                      :to="link.to"
-                      :disabled="link.disabled"
-                      :prepend-icon="link.icon"
-                      :title="link.title"
-                  >
-                  </v-list-item>
-                </v-list-group>
-                <!--       $####################     ######33    -->
-              </v-list>
-           </v-col>
-         </v-row>
-       </v-container>
+      @click="rail = false"
+      >
+    <v-list-item
+        nav
+    >
+      <template #default>
+        <v-img src="/futzo/logos/horizontal/logo-14.png"></v-img>
       </template>
+      <template v-slot:append>
+        <v-btn
+            icon="mdi-chevron-left"
+            variant="text"
+            @click.stop="rail = !rail"
+        ></v-btn>
+      </template>
+      <template #prepend>
+        <v-btn
+            v-if="rail"
+            icon="mdi-menu"
+            variant="text"
+            @click.stop="rail = !rail"
+        ></v-btn>
+      </template>
+    </v-list-item>
+
+     <v-divider></v-divider>
+
+    <v-list density="compact" nav>
+      <v-list-item  v-if="rail" value="futzo" class="pa-0" disabled>
+        <template #default>
+          <v-img src="/futzo/logos/circular/logo-24.png" width="40" height="40"></v-img>
+        </template>
+      </v-list-item>
+      <v-list-item
+          density="compact"
+          v-for="link in adminLinks"
+          :key="link.title"
+          link
+          :to="link.to"
+          :disabled="link.disabled"
+          class="my-1"
+          :prepend-icon="link.icon"
+          :title="link.title"
+      />
+      <LinkSeparator name="Liga"></LinkSeparator>
+      <v-list-item
+          density="compact"
+          v-for="link in leagueLinks"
+          :key="link.title"
+          link
+          :to="link.to"
+          :disabled="link.disabled"
+          class="my-1"
+          :prepend-icon="link.icon"
+          :title="link.title"
+      >
+      </v-list-item>
+      <v-list-group value="teams">
+        <template v-slot:activator="{ props }">
+          <v-list-item
+              v-bind="props"
+              title="Equipos"
+              prepend-icon="mdi-account-group"
+          ></v-list-item>
+        </template>
+        <v-list-item
+            variant="text"
+            density="compact"
+            v-for="link in teamLinks"
+            :key="link.title"
+            link
+            :to="link.to"
+            :disabled="link.disabled"
+            :prepend-icon="link.icon"
+            :title="link.title"
+        >
+        </v-list-item>
+      </v-list-group>
+    </v-list>
   </v-navigation-drawer>
 </template>
 <script lang="ts" setup>
 import LinkSeparator from "~/components/layout/link-separator.vue";
 import {useAuthStore, useGlobalStore} from "~/store";
 import {storeToRefs} from "pinia";
-const { drawer, isMobile,appName } = storeToRefs(useGlobalStore())
+const { drawer, isMobile, appName, rail } = storeToRefs(useGlobalStore())
 const authStore = useAuthStore()
 const adminLinks = reactive([
   { icon: 'mdi-home', title: 'Home', to: '/', disabled: false},

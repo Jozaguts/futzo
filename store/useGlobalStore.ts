@@ -17,6 +17,7 @@ export const useGlobalStore = defineStore('global', () => {
     const isLoading = ref(true)
     const alert = ref({} as IAlertMessage)
     const appName = ref(useNuxtApp().$config.public.appName)
+    const rail = ref(false)
 
     const drawer = ref(false)
     const setAlert = (type ='error', _alert: {message: string, code: number | string}) => {
@@ -50,5 +51,5 @@ export const useGlobalStore = defineStore('global', () => {
         alert.value = {} as IAlertMessage
     }
 
-  return { isLoading, alert, setAlert, resetAlert, drawer,appName, isMobile }
+  return { isLoading, alert, setAlert, resetAlert, drawer,appName, isMobile, rail }
 })

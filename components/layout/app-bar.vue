@@ -1,6 +1,6 @@
 <template>
   <v-app-bar color="background" density="comfortable" :border="false" elevation="0" app>
-    <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+<!--    <v-app-bar-nav-icon @click.stop="rail = !rail"></v-app-bar-nav-icon>-->
     <v-container fluid>
       <v-row>
         <v-col class="d-flex justify-end">
@@ -70,7 +70,7 @@ const toggleTheme =  () => {
   theme.global.name.value = isDark.value ? 'light' : 'dark'
 }
 
-const { drawer,isMobile, appName} = storeToRefs(useGlobalStore())
+const { drawer,isMobile, appName, rail} = storeToRefs(useGlobalStore())
 const user = useSanctumUser<User>()
 const avatar = computed(() => `https://ui-avatars.com/api/?name=${user.value?.name}`)
 const role = computed(() => user.value?.roles[0])
