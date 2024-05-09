@@ -19,7 +19,7 @@ export const useGlobalStore = defineStore('global', () => {
     const appName = ref(useNuxtApp().$config.public.appName)
     const rail = ref(false)
 
-    const drawer = ref(false)
+    const drawer = ref(true)
     const setAlert = (type ='error', _alert: {message: string, code: number | string}) => {
         switch (type) {
             case 'error':
