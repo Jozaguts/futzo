@@ -271,13 +271,23 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     const roundsCount = ref(0)
     const matchesCount = ref(0)
     const matchesByRound = ref(0)
+    const loading = ref(false)
     async function loadTournaments() {
+        loading.value = true;
         const client = useSanctumClient();
 
         const data = await client('/api/v1/admin/tournaments');
+
         tournaments.value = data?.tournaments || [];
         tournament.value = tournaments.value[0] || null;
         categories.value = data?.categories || [];
+        const timeout = setTimeout(() => {
+            loading.value = false;
+            }, 1000)
+        return () => {
+            clearTimeout(timeout)
+        }
+
     }
     async function storeTournament(formData ) {
         const client = useSanctumClient();
@@ -316,9 +326,19 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     }
     async function fetchTournamentsByLeagueId  (id: number) {
         const client = useSanctumClient();
-        const data  = await client(`/api/v1/admin/leagues/${id}/tournaments`);
+        const {data}  = await client(`/api/v1/admin/leagues/${id}/tournaments`);
         tournaments.value = data || [];
+        // todo revisar la manera en la que contamos el teamcoutn y machesByRound
+        // creo deberia ser un computed que se actualice cuando cambie el valor de tournaments
+
+        // console.log({tournaments:tournaments.value })
+        // teamsCount.value = data.teams_count || 0;
+        // const test = teamsCount.value / 2 ;
+        // matchesByRound.value = teamsCount.value / 2 ;
+        // console.log( matchesByRound.value, 2222222)
+
     }
+
 
 
     return {
@@ -334,7 +354,8 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
         loadTournaments,
         storeTournament,
         storeCategory,
-        fetchTournamentsByLeagueId
+        fetchTournamentsByLeagueId,
+        loading
     }
 
 })

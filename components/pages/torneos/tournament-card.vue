@@ -1,5 +1,5 @@
 <template>
-   <v-skeleton-loader v-if="!tournaments.length" type="heading,table-row-divider@3"></v-skeleton-loader>
+   <v-skeleton-loader v-if="loading" type="heading,table-row-divider@3"></v-skeleton-loader>
    <v-card v-else rounded elevation="10"
            :max-width="maxWidth"
            :max-height="maxHeight"
@@ -67,7 +67,7 @@ import {useTournamentStore} from "~/store";
 import {storeToRefs} from "pinia";
 const page = ref(1);
 const tournamentStore = useTournamentStore();
-const { tournaments, tournament} = storeToRefs(tournamentStore);
+const { tournaments, tournament,loading} = storeToRefs(tournamentStore);
 defineProps<{maxHeight: number| string, maxWidth: string| number}>();
 const changePage = (nextPage: number) => {
   if (nextPage > 0 && nextPage <= tournaments.value.length) {

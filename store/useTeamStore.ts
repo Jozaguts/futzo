@@ -151,6 +151,9 @@ export const useTeamStore = defineStore('teamStore', () => {
         }
 
     }
+    const teamsCount = computed(() => {
+
+    })
     onMounted(async () => {
         await getLocations()
 
