@@ -10,9 +10,8 @@ dist
 .idea/*
 .idea/sonarlint/issuestore/index.pb
 .idea/sonarlint/securityhotspotstore/index.pb
-.idea/sonarlint/issuestore/index.pb
 .gitignore
 yarn-error.log
-.env.prod
 .idea/dbnavigator.xml
+/.env.prod
 
