@@ -342,9 +342,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
 
     async function getTournamentTypes(){
         const client = useSanctumClient();
-        console.log('getTournamentTypes')
         const response =  await client('/api/v1/admin/tournaments/types')
-        console.log({response})
         tournamentTypes.value = response
 
     }
