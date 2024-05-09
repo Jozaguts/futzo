@@ -30,8 +30,6 @@ watch(() => daysToPlayCustomSelected.value, (newValue) => {
         item-title="name"
         clearable
         label="Selecciona los dias de juego"
-        center-affix
-        direction="horizontal"
     >
       <template v-slot:selection="{ item, index }">
         <v-chip v-if="index <2">

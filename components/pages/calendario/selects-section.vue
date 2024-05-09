@@ -14,6 +14,7 @@ watch(() => scheduleParams.value.leagueId, async(newValue) => {
     try {
       loadingTournaments.value = true
       scheduleParams.value.tournamentId = null as number
+     //  todo debe cargar solo las ligas y nada mas
      await useTournamentStore().fetchTournamentsByLeagueId(newValue)
 
     }catch (e) {

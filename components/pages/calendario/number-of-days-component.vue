@@ -3,14 +3,15 @@ defineProps<{
   name: string,
   value: number,
   size: number,
+  maxForDay: (value: number) => number
 }>()
 </script>
 <template>
   <v-sheet  class="grid-container" color="transparent" width="130" height="130" border rounded variant="text">
-        <h3  class="text-body-1 grid-container__title"> {{name}}</h3>
+        <h3  class="text-body-1 grid-container__title text-capitalize"> {{name}}</h3>
         <span class="text-h3 grid-container__value mb-1">{{value}}</span>
-        <v-btn class="grid-container__plus-btn" :width="size" :height="size" size="small" small><v-icon>mdi-plus</v-icon></v-btn>
-        <v-btn class="grid-container__minus-btn" :width="size" :height="size" size="small" small ><v-icon>mdi-minus</v-icon></v-btn>
+        <v-btn class="grid-container__plus-btn" :disabled="maxForDay(value) === 0" @click="$emit('plus', name)" :width="size" :height="size" size="small" small><v-icon>mdi-plus</v-icon></v-btn>
+        <v-btn class="grid-container__minus-btn" @click="$emit('minus', name)" :width="size" :height="size" size="small" small ><v-icon>mdi-minus</v-icon></v-btn>
   </v-sheet>
 </template>
 <style scoped>
