@@ -13,13 +13,10 @@ export const useLeaguesStore = defineStore('leaguesStore', () => {
         footballTypes.value= await client('/api/v1/admin/leagues/football/types');
     }
     onBeforeMount(async() => {
-        console.log('fetching leagues')
         await useLeaguesStore().fetchLeagues()
-        console.log('fetching football types')
         await useLeaguesStore().getFootballTypes()
     })
     onMounted(async () => {
-        console.log('fetching football types')
         await getFootballTypes()
     })
     return {
