@@ -2,6 +2,8 @@
 import '@vuepic/vue-datepicker/dist/main.css'
 import VueDatePicker from "@vuepic/vue-datepicker";
 import {useDisplay} from "vuetify";
+import {useLeaguesStore} from "~/store/useLeaguesStore";
+import {storeToRefs} from "pinia";
 definePageMeta({
   middleware: ['sanctum:auth'],
   layout: 'blank'
@@ -43,6 +45,8 @@ const createLeague = handleSubmit(async (values) => {
 const variant = computed(() =>{
  return useDisplay().mobile ? 'elevated' : 'outlined'
 })
+const {footballTypes}  = storeToRefs( useLeaguesStore() )
+console.log({footballTypes: footballTypes.value})
 </script>
 
 <template>
@@ -72,9 +76,14 @@ const variant = computed(() =>{
                           label="Nombre"
                       ></v-text-field>
                     </v-col>
+                    <v-col cols="12">
+                      <v-select
+                          v-model="fields.football_type_id.fieldValue"
+                          v-bind="fields.football_type_id.fieldPropsValue"
+                          label="Tipo" :items="footballTypes" item-title="name" item-value="id"></v-select>
+                    </v-col>
                     <v-col>
                       <v-text-field
-
                           v-model="fields.location.fieldValue"
                           v-bind="fields.location.fieldPropsValue"
                           label="Locación"

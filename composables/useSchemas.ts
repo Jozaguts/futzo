@@ -59,6 +59,7 @@ function getSchemaByName(name) {
             schemaFields.location = yusString().nullable();
             schemaFields.description = yusString().nullable();
             schemaFields.creation_date = yup.date().nullable();
+            schemaFields.football_type_id = yup.number().required(t('forms.required'));
             schemaFields.logo = yup.mixed()
                 .test('File is required', 'File ', (value: File) => value)
             schemaFields.banner = yup.mixed()

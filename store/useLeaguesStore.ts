@@ -1,18 +1,31 @@
-import type {League} from "~/models/league";
+import type {League, LeagueType} from "~/models/league";
 import {defineStore} from "pinia";
 
 export const useLeaguesStore = defineStore('leaguesStore', () => {
     const leagues = ref<League[]>([]);
+    const footballTypes = ref<LeagueType[]>([]);
     const fetchLeagues = async () => {
         const client = useSanctumClient();
         leagues.value= await client('/api/v1/admin/leagues');
     };
+    const getFootballTypes = async () => {
+        const client = useSanctumClient();
+        footballTypes.value= await client('/api/v1/admin/leagues/football/types');
+    }
     onBeforeMount(async() => {
         console.log('fetching leagues')
         await useLeaguesStore().fetchLeagues()
+        console.log('fetching football types')
+        await useLeaguesStore().getFootballTypes()
+    })
+    onMounted(async () => {
+        console.log('fetching football types')
+        await getFootballTypes()
     })
     return {
         leagues,
+        getFootballTypes,
         fetchLeagues,
+        footballTypes,
     };
 });
