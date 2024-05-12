@@ -219,34 +219,4 @@ onMounted(() => {
 </script>
 <style lang="scss">
 @use "@/assets/scss/pages/page-auth.scss";
-
-/* Animación de entrada */
-.scale-up-vertical-top-enter-active {
-  animation: scale-up-vertical-bottom 0.2s linear forwards;
-}
-@keyframes scale-up-vertical-bottom {
-  0% {
-    transform: scaleY(0.4);
-    transform-origin: center bottom;
-  }
-  100% {
-    transform: scaleY(1);
-    transform-origin: center bottom;
-  }
-}
-
-/* Animación de salida */
-.scale-down-vertical-center-leave-active {
-  animation: scale-down-vertical-center 0.2s linear forwards;
-}
-@keyframes scale-down-vertical-center {
-  0% {
-    transform: scaleY(1);
-    transform-origin: center;
-  }
-  100% {
-    transform: scaleY(0.3);
-    transform-origin: center;
-  }
-}
 </style>
