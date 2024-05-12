@@ -2,20 +2,13 @@ import { FetchError } from 'ofetch';
 
 const VALIDATION_ERROR_CODE = 422;
 const SERVER_ERROR_CODE = 500;
+const FORBIDDEN_CODE_ERROR = 403;
+const ERRORS_BAG = [VALIDATION_ERROR_CODE, SERVER_ERROR_CODE, FORBIDDEN_CODE_ERROR]
 
-export const useApiError = (error: any) => {
-    const isFetchError = error instanceof FetchError;
-    const isValidationError =
-        isFetchError && error.response?.status === VALIDATION_ERROR_CODE;
-
-    const code = isFetchError ? error.response?.status : SERVER_ERROR_CODE;
-    const bag: Record<string, string[]> = isValidationError
-        ? error.response?._data.errors
-        : {};
+export const useApiError = (error: FetchError) => {
 
     return {
-        isValidationError,
-        code,
-        bag,
+        code: error.response.status,
+        message: error.data.message,
     };
 };

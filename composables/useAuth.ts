@@ -20,6 +20,9 @@ export default function useAuth() {
                     password_confirmation,
                 }),
             })
+                .catch((error) => {
+                    return error
+                })
         );
     }
 

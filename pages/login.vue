@@ -107,7 +107,7 @@
                     </VBtn>
                   </VCol>
                   <VCol class="d-flex align-content-center justify-start py-0">
-                    <small class="text-red pl-2 font-weight-bold" v-if="error"> * {{ error }}</small>
+                    <small class="text-red pl-2 font-weight-bold" v-if="errorMessage"> * {{ errorMessage }}</small>
                   </VCol>
                   <!-- create account -->
                   <VCol
@@ -157,6 +157,7 @@ import { useTheme } from 'vuetify'
 import AuthProvider from '@/components/authentication/AuthProvider.vue'
 import authV1MaskDark from '@/assets/images/pages/auth-v1-mask-dark.png'
 import authV1MaskLight from '@/assets/images/pages/auth-v1-mask-light.png'
+import {FetchError} from "ofetch";
 const loadingPage = ref(true)
 definePageMeta({
   middleware: ['sanctum:guest'],
@@ -176,7 +177,7 @@ const form = ref({
 const showRegisterForm = ref(false)
 const isPasswordVisible = ref(false)
 const isLoading = ref(false)
-const error = ref('')
+const errorMessage = ref('')
 const vuetifyTheme = useTheme()
 const authThemeMask = computed(() => {
   return vuetifyTheme.global.name.value === 'light'
@@ -189,31 +190,27 @@ const {
 } = useAuth()
 const signInHandler = async () => {
   try {
-    error.value =  ''
+    errorMessage.value =  ''
     isLoading.value = true
     if (!showRegisterForm.value) {
-      await signIn(form.value.email, form.value.password, true);
+      await signIn(form.value.email, form.value.password, true)
     } else {
     const response =   await signUp(  form.value.name, form.value.lastname, form.value.email, form.value.password, form.value.password_confirmation);
       if (response.data.value.message === 'register successful') {
         await signIn(form.value.email, form.value.password, true);
       } else {
-        error.value = response.data.value.message
+        errorMessage.value = response.data.value.message
       }
     }
-  }catch (e) {
-    const error = useApiError(e);
-    if (error.isValidationError) {
-      // form.setErrors(error.bag);
-
-      return;
-    }
+  }catch (error: FetchError) {
+      const {code, message} = useApiError(error);
+      errorMessage.value = message
   }finally {
     isLoading.value = false
   }
 }
 const showRegisterFormHandler = () => {
-  error.value = ''
+  errorMessage.value = ''
   showRegisterForm.value = !showRegisterForm.value
 }
 onMounted(() => {
