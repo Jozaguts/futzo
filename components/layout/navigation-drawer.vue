@@ -10,6 +10,7 @@
       >
     <v-list-item
         nav
+        ref="drawerRef"
     >
       <template #default>
         <v-img src="/futzo/logos/horizontal/logo-14.png"></v-img>
@@ -88,10 +89,12 @@
   </v-navigation-drawer>
 </template>
 <script lang="ts" setup>
+import { useResizeObserver } from '@vueuse/core'
 import LinkSeparator from "~/components/layout/link-separator.vue";
 import {useAuthStore, useGlobalStore} from "~/store";
 import {storeToRefs} from "pinia";
-const { drawer, isMobile, appName, rail } = storeToRefs(useGlobalStore())
+const { drawer,drawerWidth, isMobile, appName, rail } = storeToRefs(useGlobalStore())
+const drawerRef = ref('')
 const authStore = useAuthStore()
 const adminLinks = reactive([
   { icon: 'mdi-home', title: 'Home', to: '/', disabled: false},
@@ -105,4 +108,10 @@ const teamLinks = reactive([
   { icon: 'mdi-clipboard-list-outline', title: 'Ver Equipo', to: '/equipos', disabled: false},
   { icon: 'mdi-add', title: 'Inscribir Equipo', to: '/equipos/inscribir', disabled: false},
 ])
+
+useResizeObserver(drawerRef, (entries) => {
+  const entry = entries[0]
+  const { width } = entry.contentRect
+  drawerWidth.value = width
+})
 </script>

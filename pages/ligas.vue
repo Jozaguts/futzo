@@ -4,6 +4,7 @@ import VueDatePicker from "@vuepic/vue-datepicker";
 import {useDisplay} from "vuetify";
 import {useLeaguesStore} from "~/store/useLeaguesStore";
 import {storeToRefs} from "pinia";
+import {useGlobalStore} from "~/store";
 definePageMeta({
   middleware: ['sanctum:auth'],
 });
@@ -45,7 +46,10 @@ const variant = computed(() =>{
  return useDisplay().mobile ? 'elevated' : 'outlined'
 })
 const {footballTypes}  = storeToRefs( useLeaguesStore() )
-console.log({footballTypes: footballTypes.value})
+const {drawerWidth} = storeToRefs(useGlobalStore())
+const computedDrawerWidth = computed(() => {
+  return drawerWidth.value + 'px';
+})
 </script>
 
 <template>
@@ -151,8 +155,8 @@ console.log({footballTypes: footballTypes.value})
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 4.5rem 3.5rem;
+    transform: translate(calc(-50% + v-bind(computedDrawerWidth) / 2), -50%);
+    padding: 1rem 1.5rem;
   }
   @media (max-width: 600px) {
     .custom-v-card {
