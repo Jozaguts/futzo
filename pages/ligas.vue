@@ -6,7 +6,6 @@ import {useLeaguesStore} from "~/store/useLeaguesStore";
 import {storeToRefs} from "pinia";
 definePageMeta({
   middleware: ['sanctum:auth'],
-  layout: 'blank'
 });
 const {
   fields,
