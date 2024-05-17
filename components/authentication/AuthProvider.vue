@@ -31,7 +31,8 @@ const launchProvider = async (provider: string) => {
 
   if (PROVIDERS.includes(provider)) {
     try {
-      const data = await useNuxtApp().$api.auth.redirect(provider)
+      const client = useSanctumClient()
+      const data = await client(`auth/${provider}/redirect`)
 
       let url = data.url;
 
