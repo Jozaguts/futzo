@@ -15,7 +15,8 @@ definePageMeta({
 onMounted(() => {
   const provider = useRoute().params.provider[0]
   if ( provider === 'google' || provider === 'facebook') {
-    useNuxtApp().$api.auth.callback(provider, useRoute().query.code)
+    const client = useSanctumClient()
+    client( `/auth/${provider}/callback`)
         .then(response =>{
           if (response.success) {
             useLocalStorage('token', response.token)
