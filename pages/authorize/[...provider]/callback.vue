@@ -16,7 +16,7 @@ onMounted(() => {
   const provider = useRoute().params.provider[0]
   if ( provider === 'google' || provider === 'facebook') {
     const client = useSanctumClient()
-    client( `/auth/${provider}/callback`)
+    client( `/auth/${provider}/callback`,{params: {code : useRoute().query.code}})
         .then(response =>{
           if (response.success) {
             useLocalStorage('token', response.token)
