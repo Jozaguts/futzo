@@ -41,7 +41,7 @@
                     </template>
                     <v-list-item-title>Settings</v-list-item-title>
                   </v-list-item>
-                  <v-list-item @click.stop="logout">
+                  <v-list-item @click.stop="logoutHandler">
                     <template #prepend>
                       <v-icon>mdi-logout</v-icon>
                     </template>
@@ -60,7 +60,6 @@
 <script lang="ts" setup>
 import {useGlobalStore} from "~/store";
 import {storeToRefs} from "pinia";
-
 import { useTheme } from 'vuetify'
 import type {User} from "~/interfaces";
 const theme = useTheme()
@@ -68,6 +67,14 @@ const isDark = computed(() => theme.global.current.value.dark)
 const { logout} = useSanctumAuth();
 const toggleTheme =  () => {
   theme.global.name.value = isDark.value ? 'light' : 'dark'
+}
+const logoutHandler = async () => {
+
+  await logout()
+      .finally(() => {
+        useRouter().push({name: 'login'})
+      })
+
 }
 
 const { drawer,isMobile, appName, rail} = storeToRefs(useGlobalStore())
