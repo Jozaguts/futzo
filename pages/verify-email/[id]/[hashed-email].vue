@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+
 definePageMeta({
   layout: 'blank',
   bodyAttrs: {
@@ -9,21 +10,25 @@ const status = ref('verificando...')
 const { id, hashedemail } = useRoute().params
 const queryString = useRoute().query
 const client = useSanctumClient();
+const routerId = ref( null as number)
 
-const { data, pending, error, refresh } = await useAsyncData('verify-email', () => {
+const { data, error } = await useAsyncData('verify-email', () => {
     return client(`/verify-email/${id}/${hashedemail}?expires=${queryString.expires}&signature=${queryString.signature}`)
-        .catch((error) => {
-          console.log(error)
-            status.value = 'Error al verificar el correo'
-        })
         .then((response) => {
           console.log(response)
-            status.value = 'Correo verificado'
+          status.value = 'Correo verificado'
+          routerId.value =   setTimeout(() => {
+           useRouter().push({name: 'ligas'})
+         }, 2000)
+        })
+        .catch((error) => {
+          console.log(error)
+          status.value = 'Error al verificar el correo'
         })
 });
-console.log(data)
-console.log(pending)
-console.log(error)
+onUnmounted(() => {
+  clearTimeout(routerId.value)
+});
 </script>
 <template>
   <div class="verify-container">

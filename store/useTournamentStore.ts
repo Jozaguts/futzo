@@ -301,11 +301,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
         })
             .then(async () => {
                 await loadTournaments();
-                const globalStore = useGlobalStore();
-                globalStore.setAlert('success', {message: 'Tournament created successfully', code: 200})
-                setTimeout(() => {
-                    globalStore.resetAlert()
-                }   , 5000)
+                // todo agregar toast alert
             } )
     }
     async function storeCategory(formData) {
@@ -318,11 +314,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
         })
             .then(async () => {
                 await loadTournaments();
-                const globalStore = useGlobalStore();
-                globalStore.setAlert('success', {message: 'Category created successfully', code: 200})
-                setTimeout(() => {
-                    globalStore.resetAlert()
-                }   , 5000)
+                // todo add toast alert
             } )
     }
     async function fetchTournamentsByLeagueId  (id: number) {

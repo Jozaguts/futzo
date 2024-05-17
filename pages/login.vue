@@ -1,3 +1,97 @@
+
+<script setup lang="ts">
+import { useTheme } from 'vuetify'
+import AuthProvider from '@/components/authentication/AuthProvider.vue'
+import authV1MaskDark from '@/assets/images/pages/auth-v1-mask-dark.png'
+import authV1MaskLight from '@/assets/images/pages/auth-v1-mask-light.png'
+import {FetchError} from "ofetch";
+import {useGlobalStore} from "~/store";
+const loadingPage = ref(true)
+definePageMeta({
+  middleware: ['sanctum:guest'],
+  layout: 'blank',
+  bodyAttrs: {
+    class: 'd-none'
+  }
+});
+const form = ref({
+  name: 'test',
+  lastname: 'test',
+  email: 'test@test.com',
+  password: 'password',
+  password_confirmation: 'password',
+  remember: false,
+})
+const showRegisterForm = ref(false)
+const isPasswordVisible = ref(false)
+const isLoading = ref(false)
+const errorMessage = ref('')
+const vuetifyTheme = useTheme()
+const authThemeMask = computed(() => {
+  return vuetifyTheme.global.name.value === 'light'
+      ? authV1MaskLight
+      : authV1MaskDark
+}) as string
+const {
+  signIn,
+  signUp,
+} = useAuth()
+const {showSuccessNotification} = useGlobalStore()
+const signInHandler = async () => {
+  try {
+    errorMessage.value =  ''
+    isLoading.value = true
+    const response = await signIn(form.value.email, form.value.password, true)
+  }catch (error: FetchError) {
+    const {code, message} = useApiError(error);
+    // todo si el mensaje de error es Su dirección de correo electrónico no está verificada monstrar un link para el reenvio del correo
+    errorMessage.value = message
+  }finally {
+    isLoading.value = false
+  }
+}
+// todo ya esta listo el login y el registro y arreglar la validacion del de registro, enviar mensae de confiramcion por sms o wahtsapp y correo
+const signUpHandler = async () => {
+  errorMessage.value =  ''
+  isLoading.value = true
+  await signUp(form.value.name, form.value.lastname, form.value.email, form.value.password, form.value.password_confirmation)
+      .then(() => {
+        showSuccessNotification({
+          message: 'Por favor, revisa tu correo y sigue las instrucciones para verificar tu cuenta.'
+        })
+        showRegisterForm.value =  false
+      })
+      .catch((error: FetchError) => {
+        let {message} = useApiError(error);
+        console.log(message)
+        if(message.startsWith('Error:')){
+          message = message.replace('Error:', '')
+        }
+        errorMessage.value = message
+      })
+      .finally(() => {
+        isLoading.value = false
+      })
+
+}
+const submitHandler = () => {
+  if (!showRegisterForm.value) {
+    // login
+    signInHandler()
+  } else {
+    // registro
+    signUpHandler()
+  }
+}
+const showRegisterFormHandler = () => {
+  showSuccessNotification({message: 'Por favor, revisa tu correo y sigue las instrucciones para verificar tu cuenta.'})
+  errorMessage.value = ''
+  showRegisterForm.value = !showRegisterForm.value
+}
+onMounted(() => {
+  loadingPage.value = false
+})
+</script>
 <template>
   <v-container fluid class="pa-0 w-100">
     <v-row no-gutters>
@@ -10,16 +104,13 @@
             <VCardItem class="justify-center">
               <v-img width="200" max-width="200" src="/futzo/logos/horizontal/logo-14.png"></v-img>
             </VCardItem>
-
             <VCardText class="pt-2">
               <h5 class="text-h4 font-weight-semibold mb-1">
                Iniciar sesión
               </h5>
-
             </VCardText>
-
             <VCardText>
-              <VForm @submit.prevent="signInHandler()">
+              <VForm @submit.prevent="submitHandler">
                 <VRow>
                   <transition
                       enter-active-class="scale-up-vertical-top-enter-active"
@@ -151,72 +242,6 @@
     </v-row>
   </v-container>
 </template>
-
-<script setup lang="ts">
-import { useTheme } from 'vuetify'
-import AuthProvider from '@/components/authentication/AuthProvider.vue'
-import authV1MaskDark from '@/assets/images/pages/auth-v1-mask-dark.png'
-import authV1MaskLight from '@/assets/images/pages/auth-v1-mask-light.png'
-import {FetchError} from "ofetch";
-const loadingPage = ref(true)
-definePageMeta({
-  middleware: ['sanctum:guest'],
-  layout: 'blank',
-  bodyAttrs: {
-    class: 'd-none'
-  }
-});
-const form = ref({
-  name: 'test',
-  lastname: 'test',
-  email: 'test@test.com',
-  password: 'password',
-  password_confirmation: 'password',
-  remember: false,
-})
-const showRegisterForm = ref(false)
-const isPasswordVisible = ref(false)
-const isLoading = ref(false)
-const errorMessage = ref('')
-const vuetifyTheme = useTheme()
-const authThemeMask = computed(() => {
-  return vuetifyTheme.global.name.value === 'light'
-      ? authV1MaskLight
-      : authV1MaskDark
-}) as string
-const {
-  signIn,
-  signUp,
-} = useAuth()
-const signInHandler = async () => {
-  try {
-    errorMessage.value =  ''
-    isLoading.value = true
-    if (!showRegisterForm.value) {
-      await signIn(form.value.email, form.value.password, true)
-    } else {
-    const response =   await signUp(  form.value.name, form.value.lastname, form.value.email, form.value.password, form.value.password_confirmation);
-      if (response.data.value.message === 'register successful') {
-        await signIn(form.value.email, form.value.password, true);
-      } else {
-        errorMessage.value = response.data.value.message
-      }
-    }
-  }catch (error: FetchError) {
-      const {code, message} = useApiError(error);
-      errorMessage.value = message
-  }finally {
-    isLoading.value = false
-  }
-}
-const showRegisterFormHandler = () => {
-  errorMessage.value = ''
-  showRegisterForm.value = !showRegisterForm.value
-}
-onMounted(() => {
-  loadingPage.value = false
-})
-</script>
 <style lang="scss">
 @use "@/assets/scss/pages/page-auth.scss";
 </style>
