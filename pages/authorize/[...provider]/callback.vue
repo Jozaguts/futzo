@@ -21,16 +21,16 @@ onMounted(() => {
       params: {code : useRoute().query.code}
     })
         .then(() =>{
-          const {refreshIdentity, user, isAuthenticated} = useSanctumAuth()
+          const {refreshIdentity,  isAuthenticated} = useSanctumAuth()
           refreshIdentity().catch(error => console.error(error))
-          if (isAuthenticated.value) {
-            console.log('user authenticated')
-            useRouter().push('/')
-          }else {
-            console.log('user not authenticated')
-            user.value.name = 'test'
-            user.value.id = 1
-          }
+              .then(() => {
+                if (isAuthenticated.value) {
+                  console.log('user authenticated')
+                  useRouter().push('/')
+                }else {
+                  console.log('user not authenticated')
+                }
+              })
 
         }).catch(error => console.error(error))
   } else{
