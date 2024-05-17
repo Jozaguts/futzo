@@ -9,21 +9,16 @@ export default function useAuth() {
 
     async function signUp(name: string, lastname: string, email: string, password: string, password_confirmation: string) {
         const client = useSanctumClient();
-       return useAsyncData('register', () =>
-            client('/register',{
-                method: 'POST',
-                body: JSON.stringify({
-                    name,
-                    lastname,
-                    email,
-                    password,
-                    password_confirmation,
-                }),
-            })
-                .catch((error) => {
-                    return error
-                })
-        );
+        return await client('/register',{
+            method: 'POST',
+            body: JSON.stringify({
+                name,
+                lastname,
+                email,
+                password,
+                password_confirmation,
+            }),
+        })
     }
 
     return {
