@@ -72,7 +72,6 @@ const handleStoreLocation = () => {
 
 // before unmount remove the google maps script
 onUnmounted(() => {
-  console.log('test')
   const script = document.querySelector('#google-maps');
   if (script) {
     script.remove();
