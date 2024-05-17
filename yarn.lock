@@ -8141,6 +8141,11 @@ vue-router@^4.2.5, vue-router@^4.3.0:
   dependencies:
     "@vue/devtools-api" "^6.5.1"
 
+vue-sonner@1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/vue-sonner/-/vue-sonner-1.1.2.tgz#996c662d817b150e67770272e1d1d7f8a2d3a0c6"
+  integrity sha512-yg4f5s0a3oiiI7cNvO0Dajux1Y7s04lxww3vnQtnwQawJ3KqaKA9RIRMdI9wGTosRGIOwgYFniFRGl4+IuKPZw==
+
 vue-virtual-scroller@2.0.0-beta.8:
   version "2.0.0-beta.8"
   resolved "https://registry.yarnpkg.com/vue-virtual-scroller/-/vue-virtual-scroller-2.0.0-beta.8.tgz#eeceda57e4faa5ba1763994c873923e2a956898b"
@@ -8169,6 +8174,13 @@ vue@^3.4.21:
     "@vue/runtime-dom" "3.4.27"
     "@vue/server-renderer" "3.4.27"
     "@vue/shared" "3.4.27"
+
+vuetify-sonner@^0.3.19:
+  version "0.3.19"
+  resolved "https://registry.yarnpkg.com/vuetify-sonner/-/vuetify-sonner-0.3.19.tgz#2de43f08a00ff2fec74ea06526ec0df9cd144e27"
+  integrity sha512-Fn13UyP0Lzh9B10doHX8friWGgj0+dkRXd2fysLhtako/qEBY9nvwqKIUmGM0cUdjAUxioj7EcGod3l5qVPJVg==
+  dependencies:
+    vue-sonner "1.1.2"
 
 vuetify@^3.3.7:
   version "3.6.4"

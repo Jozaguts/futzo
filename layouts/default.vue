@@ -1,5 +1,8 @@
 <template>
  <v-app>
+   <ClientOnly>
+     <VSonner position="top-right" />
+   </ClientOnly>
    <Navigation > </Navigation>
    <AppBar > </AppBar>
    <v-main v-show="show">
@@ -22,6 +25,7 @@
 import Navigation from '~/components/layout/navigation-drawer.vue'
 import AppBar from  '~/components/layout/app-bar.vue'
 import CustomSnackbar from '~/components/snackbar.vue'
+import {VSonner} from "vuetify-sonner";
 const show = ref(false);
 onMounted(() => {
   show.value = true;
