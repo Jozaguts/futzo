@@ -80,11 +80,18 @@ export default function useAuth() {
             signUpHandler()
         }
     }
+
+    const showRegisterFormHandler = () =>{
+        errorMessage.value = ''
+        showRegisterForm.value = !showRegisterForm.value
+
+    }
     return {
         isLoading,
         form,
-        errorMessage,
         showRegisterForm,
+        errorMessage,
+        showRegisterFormHandler,
         submitHandler
     };
 }

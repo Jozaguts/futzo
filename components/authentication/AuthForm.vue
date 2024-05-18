@@ -110,7 +110,7 @@
             <span v-if="!showRegisterForm">Nuevo en nuestra plataforma?</span>
             <a href="#"
                class="text-primary ms-2"
-               @click="showRegisterForm = !showRegisterForm"
+               @click="showRegisterFormHandler"
             >
               {{showRegisterForm ? 'Iniciar sesión' : 'Crea una cuenta' }}
             </a>
@@ -139,10 +139,11 @@
 <script lang="ts" setup>
 import AuthProvider from "~/components/authentication/AuthProvider.vue";
 const {
-  showRegisterForm,
   isLoading,
   form,
   errorMessage,
+  showRegisterForm,
+  showRegisterFormHandler,
   submitHandler
 } = useAuth()
 const isPasswordVisible = ref(false)
