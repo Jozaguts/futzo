@@ -63,8 +63,8 @@ export default defineNuxtConfig({
     },
     endpoints: {
       csrf: '/sanctum/csrf-cookie', // CSRF cookie endpoint
-      login: '/login', // Endpoint that accepts user credentials
-      logout: '/logout', // Endpoint to destroy the current session
+      login: '/auth/login', // Endpoint that accepts user credentials
+      logout: '/auth/logout', // Endpoint to destroy the current session
       user: '/api/v1/me', // Endpoint that return current user information
     },
   },

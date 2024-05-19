@@ -21,7 +21,7 @@ export default function useAuth() {
     }
     async function signUp(name: string, lastname: string, email: string, password: string, password_confirmation: string) {
         const client = useSanctumClient();
-        return await client('/register',{
+        return await client('/auth/register',{
             method: 'POST',
             body: JSON.stringify({
                 name,
