@@ -37,7 +37,7 @@
     <v-list density="compact" nav>
       <v-list-item  v-if="rail" value="futzo" class="pa-0" disabled>
         <template #default>
-          <v-img src="/futzo/logos/circular/logo-24.png" width="40" height="40"></v-img>
+         <CirucularLogo />
         </template>
       </v-list-item>
       <v-list-item
@@ -93,6 +93,7 @@ import { useResizeObserver } from '@vueuse/core'
 import LinkSeparator from "~/components/layout/link-separator.vue";
 import {useAuthStore, useGlobalStore} from "~/store";
 import {storeToRefs} from "pinia";
+import CirucularLogo from "~/components/CirucularLogo.vue";
 const { drawer,drawerWidth, isMobile, appName, rail } = storeToRefs(useGlobalStore())
 const drawerRef = ref('')
 const authStore = useAuthStore()
