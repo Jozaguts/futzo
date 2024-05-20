@@ -13,7 +13,7 @@
         ref="drawerRef"
     >
       <template #default>
-        <v-img src="/futzo/logos/horizontal/logo-14.png"></v-img>
+        <Logo />
       </template>
       <template v-slot:append>
         <v-btn
