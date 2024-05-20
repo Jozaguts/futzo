@@ -116,3 +116,8 @@ useResizeObserver(drawerRef, (entries) => {
   drawerWidth.value = width
 })
 </script>
+<style scoped>
+.v-list-item >>> .v-list-item__append:last-child{
+  align-self: start; /* Tu estilo personalizado */
+}
+</style>
