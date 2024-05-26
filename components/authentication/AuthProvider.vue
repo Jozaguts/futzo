@@ -2,11 +2,15 @@
     <VBtn
       v-for="link in authProviders"
       :key="link.icon"
-      :icon="link.icon"
-      variant="text"
+      variant="outlined"
+      class="mx-3"
+      density="compact"
+      size="x-large"
+      :color="link.color"
       @click="launchProvider(link.provider)"
-      :color="vuetifyTheme.global.name.value === 'dark' ? link.colorInDark : link.color"
-    />
+    >
+      <Icon :name="link.icon"  size="25" />
+  </VBtn>
 </template>
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
@@ -14,16 +18,16 @@ const vuetifyTheme = useTheme()
 
 const authProviders = [
   {
-    icon: 'mdi-facebook',
-    color: '#4267b2',
-    colorInDark: '#4267b2',
-    provider: 'facebook',
-  },
-  {
-    icon: 'mdi-google',
-    color: '#db4437',
+    icon: 'logos:google-icon',
+    color: '#E7E3FC',
     colorInDark: '#db4437',
     provider: 'google',
+  },
+  {
+    icon: 'logos:facebook',
+    color: '#E7E3FC',
+    colorInDark: '#4267b2',
+    provider: 'facebook',
   },
 ]
 const PROVIDERS = ['facebook','google']

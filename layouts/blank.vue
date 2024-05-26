@@ -1,9 +1,12 @@
 <template>
-  <v-app>
+  <v-app app>
     <ClientOnly>
       <VSonner position="top-right"  />
     </ClientOnly>
-    <slot ></slot>
+      <slot></slot>
+    <v-footer absolute app style="max-width: 50%">
+     {{new Date().getFullYear()}} &copy; Futzo
+    </v-footer>
   </v-app>
 </template>
 <script setup lang="ts">
