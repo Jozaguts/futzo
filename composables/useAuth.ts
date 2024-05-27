@@ -7,7 +7,6 @@ export default function useAuth() {
     const showRegisterForm = ref(false);
     const form = ref({
         name: 'test',
-        lastname: 'test',
         email: 'test@test.com',
         password: 'password',
         password_confirmation: 'password',
@@ -19,13 +18,12 @@ export default function useAuth() {
         const { login } = useSanctumAuth();
         return await login({ email, password, remember });
     }
-    async function signUp(name: string, lastname: string, email: string, password: string, password_confirmation: string) {
+    async function signUp(name: string, email: string, password: string, password_confirmation: string) {
         const client = useSanctumClient();
         return await client('/auth/register',{
             method: 'POST',
             body: JSON.stringify({
                 name,
-                lastname,
                 email,
                 password,
                 password_confirmation,
@@ -35,7 +33,7 @@ export default function useAuth() {
     function signUpHandler () {
         errorMessage.value =  ''
         isLoading.value = true
-         signUp(form.value.name, form.value.lastname, form.value.email, form.value.password, form.value.password_confirmation)
+         signUp(form.value.name, form.value.email, form.value.password, form.value.password_confirmation)
             .then(() => {
                 showSuccessNotification({
                     message: 'Por favor, revisa tu correo y sigue las instrucciones para verificar tu cuenta.'
