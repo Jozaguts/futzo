@@ -86,6 +86,55 @@
         </v-list-item>
       </v-list-group>
     </v-list>
+    <template v-slot:append>
+      <div v-if="!rail" class="pa-2">
+        <v-btn
+            variant="text"
+            color="text-black"
+            :ripple="false"
+            size="x-large"
+            block
+        >
+          <template #prepend>
+            <Icon name="clarity:cog-line" size="20"/>
+          </template>
+          <template #default>
+            <span class="text-body-1 mr-12">Configuración</span>
+            <v-spacer></v-spacer>
+          </template>
+        </v-btn>
+        <v-divider></v-divider>
+        <v-card
+            variant="text"
+        >
+
+          <v-card-item>
+            <template #prepend>
+              <v-avatar >
+                <v-icon icon="mdi-user"></v-icon>
+              </v-avatar>
+            </template>
+            <template #title>
+              <small> {{user.name}}</small>
+            </template>
+            <template #subtitle>
+              {{user.email}}
+            </template>
+            <template v-slot:append>
+              <v-btn
+                  @click="logout"
+                  variant="text"
+                  color="secondary"
+                  icon="mynaui:logout"
+                  size="20"></v-btn>
+            </template>
+          </v-card-item>
+        </v-card>
+      </div>
+      <div v-else class="pa-2 text-center">
+       <v-btn @click="logout" variant="text" color="secondary" icon="mynaui:logout"></v-btn>
+      </div>
+    </template>
   </v-navigation-drawer>
 </template>
 <script lang="ts" setup>
@@ -97,27 +146,23 @@ import CirucularLogo from "~/components/CirucularLogo.vue";
 const { drawer,drawerWidth, isMobile, appName, rail } = storeToRefs(useGlobalStore())
 const drawerRef = ref('')
 const authStore = useAuthStore()
+const user = authStore?.user
 const adminLinks = reactive([
   { icon: 'mdi-home', title: 'Home', to: '/', disabled: false},
   { icon: 'mdi-users', title: 'Roles y Permisos', to: '/roles-permisos', disabled: authStore?.role !== 'super administrador'},
 ])
 const leagueLinks = reactive([
-  { icon: 'mdi-trophy-variant', title: 'Torneos', to: '/torneos', disabled: false},
+  {icon: 'mdi-trophy-variant', title: 'Liga', to: '/liga', disabled: false},
   { icon: 'mdi-calendar', title: 'Calendario', to: '/calendario', disabled: false},
 ])
 const teamLinks = reactive([
   { icon: 'mdi-clipboard-list-outline', title: 'Ver Equipo', to: '/equipos', disabled: false},
   { icon: 'mdi-add', title: 'Inscribir Equipo', to: '/equipos/inscribir', disabled: false},
 ])
-
+const {logout} = useSanctumAuth();
 useResizeObserver(drawerRef, (entries) => {
   const entry = entries[0]
   const { width } = entry.contentRect
   drawerWidth.value = width
 })
 </script>
-<style scoped>
-.v-list-item >>> .v-list-item__append:last-child{
-  align-self: start; /* Tu estilo personalizado */
-}
-</style>
