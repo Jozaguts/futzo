@@ -4,11 +4,11 @@
      <VSonner position="top-right" />
    </ClientOnly>
    <Navigation > </Navigation>
-   <AppBar > </AppBar>
-   <v-main v-show="show">
+   <AppBar> </AppBar>
+   <v-main v-show="show" class="bg-surface">
      <slot></slot>
    </v-main>
-   <v-footer app>
+   <v-footer app color="background">
       <v-container>
         <v-row>
           <v-col>

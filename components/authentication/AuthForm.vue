@@ -35,6 +35,7 @@ watch(form, (value)=>{
       class=" pa-2"
       max-width="448"
       elevation="0"
+      color="background"
   >
     <VCardItem class="justify-center text-center">
       <Logo width="165" class="mx-auto"/>

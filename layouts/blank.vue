@@ -4,7 +4,7 @@
       <VSonner position="top-right"  />
     </ClientOnly>
       <slot></slot>
-    <v-footer absolute app style="max-width: 50%">
+    <v-footer absolute app style="max-width: 50%" color="background">
      {{new Date().getFullYear()}} &copy; Futzo
     </v-footer>
   </v-app>
