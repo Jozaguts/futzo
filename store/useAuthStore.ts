@@ -7,6 +7,7 @@ export const useAuthStore = defineStore('authStore', () => {
     const isSuperAdmin = computed(() => role.value === 'super administrador')
     return {
         role,
-        isSuperAdmin
+        isSuperAdmin,
+        user,
     }
 })
