@@ -1,63 +1,24 @@
-<template>
-  <v-app-bar color="background" density="comfortable" :border="false" elevation="0" app>
-<!--    <v-app-bar-nav-icon @click.stop="rail = !rail"></v-app-bar-nav-icon>-->
-    <v-container fluid>
-      <v-row>
-        <v-col class="d-flex justify-end">
-          <v-btn icon="mdi-bell"  color="on-background"></v-btn>
-          <v-btn
-              @click="toggleTheme"
-              :icon="isDark ? 'mdi-lightbulb-on': 'mdi-lightbulb-off'"
-              color="on-background"
-          />
-          <v-menu>
-            <template #activator="{props}">
-              <v-badge color="success" dot  offset-x="2" offset-y="20" class="align-self-center">
-                <v-avatar :image="avatar"  size="30" v-bind="props"></v-avatar>
-              </v-badge>
-            </template>
-            <v-card min-width="200">
-              <v-card-item>
-                <template #prepend>
-                  <v-badge color="success" dot  size="5" offset-x="2" offset-y="30">
-                    <v-avatar :image="avatar"  size="40"></v-avatar>
-                  </v-badge>
-                </template>
-                <v-card-title class="text-body-1 pa-0">{{user?.name}}</v-card-title>
-                <v-card-subtitle class="text-caption pa-0 text-capitalize">{{role}}</v-card-subtitle>
-              </v-card-item>
-              <v-divider></v-divider>
-              <v-card-text class="pa-0">
-                <v-list>
-                  <v-list-item >
-                    <template #prepend>
-                      <v-icon>mdi-account</v-icon>
-                    </template>
-                    <v-list-item-title>Profile</v-list-item-title>
-                  </v-list-item>
-                  <v-list-item >
-                    <template #prepend>
-                      <v-icon>mdi-settings</v-icon>
-                    </template>
-                    <v-list-item-title>Settings</v-list-item-title>
-                  </v-list-item>
-                  <v-list-item @click.stop="logoutHandler">
-                    <template #prepend>
-                      <v-icon>mdi-logout</v-icon>
-                    </template>
-                    <v-list-item-title >Logout</v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-card-text>
-            </v-card>
-          </v-menu>
-        </v-col>
-      </v-row>
-
-    </v-container>
-  </v-app-bar>
-</template>
 <script lang="ts" setup>
+const breadcrumbs = computed(()=>{
+  return [
+    useRoute().name === 'index' ? ' home' :   useRoute().name
+  ]
+})
+const buttonActions = computed(() => {
+  switch(useRoute().name){
+    case 'index':
+      return false
+    case 'liga':
+      return {
+        title: 'Crear torneo',
+        icon: 'mdi-plus',
+        action: () => {
+          console.log('Crear torneo')
+        }
+      }
+  }
+
+})
 import {useGlobalStore} from "~/store";
 import {storeToRefs} from "pinia";
 import { useTheme } from 'vuetify'
@@ -82,3 +43,33 @@ const user = useSanctumUser<User>()
 const avatar = computed(() => `https://ui-avatars.com/api/?name=${user.value?.name}`)
 const role = computed(() => user.value?.roles[0])
 </script>
+<template>
+  <v-app-bar color="bg-surface" density="prominent" :border="false" elevation="0" app height="55">
+    <v-container fluid>
+      <v-row>
+        <v-col cols="10">
+          <v-breadcrumbs :items="breadcrumbs" :disabled="false">
+            <template v-slot:title="{ item }">
+              <span class="text-capitalize text-black text-h5">{{ item.title }}</span>
+            </template>
+            <template v-slot:divider>
+              <v-icon icon="mdi-chevron-right"></v-icon>
+            </template>
+          </v-breadcrumbs>
+        </v-col>
+        <v-col cols="2" class="d-flex justify-center align-center" v-if="buttonActions">
+         <v-btn variant="elevated" density="comfortable" size="large" @click="buttonActions.action">
+           <template #prepend>
+              <v-icon>{{buttonActions?.icon}}</v-icon>
+             <span class="text- text-body-2">{{buttonActions?.title}}</span>
+           </template>
+         </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-app-bar>
+</template>
+<style lang="sass">
+.v-breadcrumbs-item--disabled
+  opacity: 1
+</style>
