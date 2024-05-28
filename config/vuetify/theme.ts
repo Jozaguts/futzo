@@ -19,6 +19,7 @@ const theme: VuetifyOptions['theme'] = {
         'background': '#FFFFFF',
         'on-background': '#3A3541',
         'on-surface': '#3A3541',
+        'surface': '#F4F5FA',
         'grey-50': '#FAFAFA',
         'grey-100': '#F5F5F5',
         'grey-200': '#EEEEEE',
@@ -32,7 +33,7 @@ const theme: VuetifyOptions['theme'] = {
       },
 
       variables: {
-        'border-color': '#3A3541',
+        'border-color': '#E7E3FC',
         'medium-emphasis-opacity': 0.68,
 
         // Shadows
