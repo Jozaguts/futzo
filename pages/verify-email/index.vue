@@ -26,7 +26,7 @@ const verifyEmail = async () =>{
         if (status.value.status === 200  || status.value.message === 'Email already verified.') {
           status.value.message = 'Redireccionando...'
           routerId.value =   setTimeout(() => {
-            useRouter().push({name: 'ligas'})
+            useRouter().push({name: 'liga'})
           }, 2000)
         }
       })

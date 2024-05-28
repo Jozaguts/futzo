@@ -8,7 +8,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
         return;
     }
 
-    if (to.path !== '/ligas' && user.value?.league === 'No league assigned') {
-        return navigateTo('/ligas')
+    if (to.path !== '/liga' && user.value?.league === 'No league assigned') {
+        return navigateTo('/liga')
     }
 })
