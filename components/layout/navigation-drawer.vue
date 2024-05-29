@@ -7,6 +7,7 @@
       elevation="0"
       :border="false"
       @click="rail = false"
+      app
       >
     <v-list-item
         nav

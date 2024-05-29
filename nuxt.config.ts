@@ -1,9 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: false,
-  alias:{
-    "@configured-variables": "/<rootDir>/assets/scss/_configured-variables.scss",
-  },
+  // alias:{
+  //   "@configured-variables": "/<rootDir>/assets/scss/_configured-variables.scss",
+  // },
   vite:{
     server:{
       hmr:{
@@ -15,8 +15,8 @@ export default defineNuxtConfig({
   // @ts-ignore
   build: {transpile: ['vuetify','@vuepic/vue-datepicker','vue-sonner']},
   css: [
-    'vuetify/lib/styles/main.sass',
-    '@/assets/scss/main.scss',
+    // 'vuetify/lib/styles/main.sass',
+    // '@/assets/scss/main.scss',
   ],
   googleFonts: {
     display: 'swap',
@@ -25,6 +25,7 @@ export default defineNuxtConfig({
     }
   },
   modules: [
+      'vuetify-nuxt-module',
     '@formkit/auto-animate/nuxt',
     // '@vite-pwa/nuxt',
     '@nuxtjs/i18n',
@@ -38,6 +39,12 @@ export default defineNuxtConfig({
     '@formkit/auto-animate/nuxt',
     'nuxt-lodash',
   ],
+  vuetify: {
+    moduleOptions: {
+      /* module specific options */
+    },
+    vuetifyOptions: './vuetify.config.ts' // <== you can omit it
+  },
   // i18n: {
   //   vueI18n: './i18n.config.ts' // if you are using custom path, default
   // },

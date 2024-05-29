@@ -44,7 +44,7 @@ const avatar = computed(() => `https://ui-avatars.com/api/?name=${user.value?.na
 const role = computed(() => user.value?.roles[0])
 </script>
 <template>
-  <v-app-bar color="bg-surface" density="prominent" :border="false" elevation="0" app height="1.5rem">
+  <v-app-bar color="bg-surface" density="prominent" :border="false" elevation="0"  height="24px" app>
     <v-container fluid>
       <v-row>
         <v-col cols="6"  md="10" lg="10">
