@@ -44,10 +44,10 @@ const avatar = computed(() => `https://ui-avatars.com/api/?name=${user.value?.na
 const role = computed(() => user.value?.roles[0])
 </script>
 <template>
-  <v-app-bar color="bg-surface" density="prominent" :border="false" elevation="0" app height="55">
+  <v-app-bar color="bg-surface" density="prominent" :border="false" elevation="0" app height="1.5rem">
     <v-container fluid>
       <v-row>
-        <v-col cols="10">
+        <v-col cols="6"  md="10" lg="10">
           <v-breadcrumbs :items="breadcrumbs" :disabled="false">
             <template v-slot:title="{ item }">
               <span class="text-capitalize text-black text-h5">{{ item.title }}</span>
@@ -57,11 +57,11 @@ const role = computed(() => user.value?.roles[0])
             </template>
           </v-breadcrumbs>
         </v-col>
-        <v-col cols="2" class="d-flex justify-center align-center" v-if="buttonActions">
-         <v-btn variant="elevated" density="comfortable" size="large" @click="buttonActions.action">
+        <v-col cols="6" md="2" lg="2" class="d-flex justify-center align-center" v-if="buttonActions">
+         <v-btn variant="elevated" :density="isMobile ? 'default' : 'comfortable' " :size="isMobile ? 'default' : 'large' " @click="buttonActions.action">
            <template #prepend>
               <v-icon>{{buttonActions?.icon}}</v-icon>
-             <span class="text- text-body-2">{{buttonActions?.title}}</span>
+             <span class="text-body-2">{{buttonActions?.title}}</span>
            </template>
          </v-btn>
         </v-col>
