@@ -1,9 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: false,
-  // alias:{
-  //   "@configured-variables": "/<rootDir>/assets/scss/_configured-variables.scss",
-  // },
   vite:{
     server:{
       hmr:{
@@ -12,12 +9,7 @@ export default defineNuxtConfig({
       }
     }
   },
-  // @ts-ignore
   build: {transpile: ['vuetify','@vuepic/vue-datepicker','vue-sonner']},
-  css: [
-    // 'vuetify/lib/styles/main.sass',
-    // '@/assets/scss/main.scss',
-  ],
   googleFonts: {
     display: 'swap',
     families: {
@@ -67,6 +59,10 @@ export default defineNuxtConfig({
       onLogout: '/login', // Redirect to this page after successful logout
       onAuthOnly: '/login', // Redirect to this page if user is not authenticated
       onGuestOnly: '/', // Redirect to this page if user is authenticated
+    },
+    globalMiddleware: {
+      enabled: true,
+      allow404WithoutAuth: false,
     },
     endpoints: {
       csrf: '/sanctum/csrf-cookie', // CSRF cookie endpoint

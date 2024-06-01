@@ -3,7 +3,6 @@
 import AuthForm from '~/components/authentication/AuthForm.vue'
 const loadingPage = ref(true)
 definePageMeta({
-  middleware: ['sanctum:guest'],
   layout: 'blank',
   bodyAttrs: {
     class: 'd-none'

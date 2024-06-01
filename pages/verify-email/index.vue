@@ -4,6 +4,9 @@ definePageMeta({
   layout: 'blank',
   bodyAttrs: {
     class: 'd-none'
+  },
+  sanctum: {
+    guestOnly: true,
   }
 });
 const status = ref({

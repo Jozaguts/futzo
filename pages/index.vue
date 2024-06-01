@@ -7,8 +7,4 @@
     </v-row>
   </v-container>
 </template>
-<script setup lang="ts">
-definePageMeta({
-  middleware: ['sanctum:auth']
-});
-</script>
+<script setup lang="ts"></script>

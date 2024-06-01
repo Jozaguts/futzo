@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import NoTournamentsSvg from "~/components/pages/liga/NoTournamentsSvg.vue";
 
-definePageMeta({
-  middleware: ['sanctum:auth'],
-});
 const tab = ref('one')
 const headers =  [
   { title: 'Pyramid', value: 'name' },

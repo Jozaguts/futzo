@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({
   middleware: 'admin',
-
 })
 import RolesPermissions from "~/components/pages/configuration/roles-permissions.vue";
 const route = useRoute()

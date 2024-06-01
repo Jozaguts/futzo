@@ -7,9 +7,11 @@
 </template>
 <script setup lang="ts">
 import {definePageMeta} from "#imports";
-
 definePageMeta({
   layout: "blank",
+  sanctum: {
+    guestOnly: true,
+  }
 });
 
 onMounted(() => {
