@@ -112,7 +112,7 @@
           <v-card-item>
             <template #prepend>
               <v-avatar >
-                <v-icon icon="mdi-user"></v-icon>
+                <Icon name="solar:user-bold-duotone"></Icon>
               </v-avatar>
             </template>
             <template #title>
@@ -126,14 +126,20 @@
                   @click="logout"
                   variant="text"
                   color="secondary"
-                  icon="mynaui:logout"
-                  size="20"></v-btn>
+                  size="20"
+              >
+                    <template #prepend>
+                      <Icon name="mynaui:logout"> </Icon>
+                    </template>
+              </v-btn>
             </template>
           </v-card-item>
         </v-card>
       </div>
       <div v-else class="pa-2 text-center">
-       <v-btn @click="logout" variant="text" color="secondary" icon="mynaui:logout"></v-btn>
+       <v-btn @click="logout" variant="text" color="secondary">
+         <template #prepend><Icon name="mynaui:logout"> </Icon></template>
+       </v-btn>
       </div>
     </template>
   </v-navigation-drawer>

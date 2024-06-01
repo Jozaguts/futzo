@@ -42,7 +42,6 @@ export default function useAuth() {
             })
             .catch((error: FetchError) => {
                 let {message} = useApiError(error);
-                console.log(message)
                 if(message.startsWith('Error:')){
                     message = message.replace('Error:', '')
                 }
@@ -57,9 +56,6 @@ export default function useAuth() {
         errorMessage.value =  ''
         isLoading.value = true
         signIn(form.value.email, form.value.password, true)
-            .then(() =>{
-
-            })
             .catch((error: FetchError) =>{
                 const {code, message} = useApiError(error);
                 errorMessage.value = message
