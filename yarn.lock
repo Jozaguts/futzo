@@ -5729,10 +5729,10 @@ nuxi@^3.11.1:
   optionalDependencies:
     fsevents "~2.3.3"
 
-nuxt-auth-sanctum@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/nuxt-auth-sanctum/-/nuxt-auth-sanctum-0.3.1.tgz#7b9aae4f31c788bb12444f6e5b1b8224e6297181"
-  integrity sha512-OEamXpVWaRdfjMP9cIlVe29znBI+wS8cKXeSlt+gh9um1PGn2uHXCSBViFd3stdwfa7nT9cmnLdwUES3lp5RVw==
+nuxt-auth-sanctum@^0.3.8:
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/nuxt-auth-sanctum/-/nuxt-auth-sanctum-0.3.8.tgz#5be161117586bf00c7c77b8e51fa08d2e0c3819f"
+  integrity sha512-Vgpu8vfrk/FaReiuTRC1hnqepnY5bpcQTS3O7SAVE/ApxezEZBKqz17fGLyRLWwGhR0Qw3E0Xb1Q/dABg4XXDg==
   dependencies:
     "@nuxt/kit" "^3.9.0"
     defu "^6.1.4"
