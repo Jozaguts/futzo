@@ -34,6 +34,7 @@
     "add": "^2.0.6",
     "js-cookie": "^3.0.5",
     "nuxt-icon": "^0.6.10",
+    "nuxt-icons": "^3.2.1",
     "vue3-perfect-scrollbar": "^1.6.1",
     "vuetify-sonner": "^0.3.19",
     "yarn": "^1.22.21",

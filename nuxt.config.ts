@@ -17,7 +17,8 @@ export default defineNuxtConfig({
     }
   },
   modules: [
-      'vuetify-nuxt-module',
+      'nuxt-icons',
+     'vuetify-nuxt-module',
     '@formkit/auto-animate/nuxt',
     // '@vite-pwa/nuxt',
     '@nuxtjs/i18n',

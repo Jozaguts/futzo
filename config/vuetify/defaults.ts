@@ -18,6 +18,7 @@ export default {
   VBtn: {
     // set v-btn default color to primary
     color: 'primary',
+    style: 'text-transform: none;',
   },
   VChip: {
     elevation: 0,

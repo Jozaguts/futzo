@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import NoTournamentsSvg from "~/components/pages/liga/NoTournamentsSvg.vue";
+import CreateTournamentDialog from "~/components/pages/torneos/Dialog.vue";
+import {storeToRefs} from "pinia";
+import {useTournamentStore} from "~/store";
 
 const tab = ref('one')
 const headers =  [
@@ -16,6 +19,7 @@ const headers =  [
     ],
   },
 ]
+const {dialog} = storeToRefs(useTournamentStore());
 </script>
 <template>
   <v-container fluid class="fill-height">
@@ -37,10 +41,12 @@ const headers =  [
             <v-card-title class="text-body-2">
               Crea un torneo para verlo aquí.
             </v-card-title>
+            <CreateTournamentDialog />
             <v-btn
                 color="primary"
                 variant="elevated"
                 class="mt-4 text-body-1"
+                @click="dialog = !dialog"
             >
               Crear torneo
             </v-btn>

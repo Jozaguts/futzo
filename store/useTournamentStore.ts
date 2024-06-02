@@ -273,6 +273,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     const matchesByRound = ref(0)
     const loading = ref(false)
     const tournamentTypes = ref()
+    const dialog = ref(false)
     async function loadTournaments() {
         loading.value = true;
         const client = useSanctumClient();
@@ -353,7 +354,8 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
         fetchTournamentsByLeagueId,
         getTournamentTypes,
         loading,
-        tournamentTypes
+        tournamentTypes,
+        dialog
     }
 
 })
