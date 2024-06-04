@@ -10,3 +10,20 @@ export interface Tournament {
   status?: string | null;
   league?: string | null;
 }
+export interface TournamentForm {
+  name: string,
+  category_id: number | null,
+  tournament_format_id: number | null,
+  image: ImageForm
+}
+export interface ImageForm {
+  file: File | null,
+  name: string,
+  size: number,
+  hasError?: boolean,
+  errors?: {
+    name: string | null,
+    description: string | null,
+    action: string | null,
+  }
+}
