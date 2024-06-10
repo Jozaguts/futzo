@@ -14,7 +14,13 @@ export interface TournamentForm {
   name: string,
   category_id: number | null,
   tournament_format_id: number | null,
-  image: ImageForm
+  image: ImageForm,
+  club: string
+  city: string
+  address: string
+  dates: string[]
+  prize: string
+  description: string
 }
 export interface ImageForm {
   file: File | null,
