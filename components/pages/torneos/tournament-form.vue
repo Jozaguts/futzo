@@ -5,11 +5,12 @@ import DragDropImage from "~/components/pages/torneos/drag-drop-image.vue";
 import type {TournamentForm } from "~/models/tournament";
 import {useTeamStore} from "~/store/useTeamStore";
 import Calendar from "~/components/pages/torneos/calendar.vue";
-import {useTournamentStore} from "~/store";
+import {useGlobalStore, useTournamentStore} from "~/store";
 import useSchemas from "~/composables/useSchemas";
 const {categories,formats} = storeToRefs(useCategoryStore());
 const {locations} = storeToRefs(useTeamStore());
-const {storeTournament} = useTournamentStore();
+const tournamentStore = useTournamentStore();
+const globalStore = useGlobalStore();
 const form = ref<TournamentForm>({
   name: '',
   category_id: null,
@@ -60,10 +61,15 @@ const storeHandler = handleSubmit(async (values) => {
     }
   }
   // //validate form
-  storeTournament(formData)
+  tournamentStore.storeTournament(formData)
       .then((response) => {
-        console.log(response)
-        // resetForm();
+        if(response){
+          tournamentStore.loadTournaments();
+          tournamentStore.dialog = false;
+          resetForm();
+          globalStore.showSuccessNotification({message: 'Torneo creado correctamente'});
+        }
+
       })
       .catch((error) => {
         console.error(error)

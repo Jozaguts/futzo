@@ -292,16 +292,13 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
 
     }
     async function storeTournament(formData ) {
-        const client = useSanctumClient();
-        await client('api/v1/admin/tournaments', {
+        return await useSanctumClient()('api/v1/admin/tournaments', {
             method: 'POST',
             body: formData,
         }).then(async (response ) => {
-            console.log(response)
-            // await loadTournaments();
+            return response;
         }).catch(error => {
             useGlobalStore().showErrorNotification({message: error.data.message})
-            // error.data.message
         })
     }
     async function storeCategory(formData) {

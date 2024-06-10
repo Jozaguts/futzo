@@ -13,7 +13,7 @@ export const useGlobalStore = defineStore('global', () => {
 
     const drawer = ref(true)
   const showSuccessNotification = (props: {message: string} ) => {
-        toast(props.message)
+        toast.success(props.message)
   }
   const showErrorNotification = (props: {message: string} ) => {
       toast.error(props.message)
