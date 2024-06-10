@@ -293,17 +293,16 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     }
     async function storeTournament(formData ) {
         const client = useSanctumClient();
-        await useAsyncData('store-tournament', async () =>{
-           return await client('api/v1/admin/tournaments', {
-                method: 'POST',
-                body: formData,
-
-            });
+        await client('api/v1/admin/tournaments', {
+            method: 'POST',
+            body: formData,
+        }).then(async (response ) => {
+            console.log(response)
+            // await loadTournaments();
+        }).catch(error => {
+            useGlobalStore().showErrorNotification({message: error.data.message})
+            // error.data.message
         })
-            .then(async () => {
-                await loadTournaments();
-                // todo agregar toast alert
-            } )
     }
     async function storeCategory(formData) {
         const client = useSanctumClient();
