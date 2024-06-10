@@ -15,6 +15,9 @@ export const useGlobalStore = defineStore('global', () => {
   const showSuccessNotification = (props: {message: string} ) => {
         toast(props.message)
   }
+  const showErrorNotification = (props: {message: string} ) => {
+      toast.error(props.message)
+  }
 
-  return { isLoading, drawer,appName, isMobile, rail, drawerWidth, showSuccessNotification }
+  return { isLoading, drawer,appName, isMobile, rail, drawerWidth, showSuccessNotification, showErrorNotification}
 })
