@@ -27,9 +27,6 @@ const reset  = () => {
       <v-card-text >
         <TournamentForm />
       </v-card-text>
-      <v-card-actions>
-        <slot name="actions" />
-      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
