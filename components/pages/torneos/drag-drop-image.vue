@@ -13,7 +13,7 @@ const border = computed(() => {
   return (!state.dragging && !state.dropped) ? 'primary thin'  : 'primary sm opacity-100';
 })
 const emits = defineEmits(['removeImage','imageDropped'])
-const MAX_SIZE = 1.5;
+const MAX_SIZE = 2.0;
 
 const props = defineProps<{ image: ImageForm }>()
 const image = ref(props.image)
