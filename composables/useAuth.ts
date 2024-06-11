@@ -38,6 +38,7 @@ export default function useAuth() {
                 showSuccessNotification({
                     message: 'Por favor, revisa tu correo y sigue las instrucciones para verificar tu cuenta.'
                 })
+                useRouter().push('/verify-email')
                 showRegisterForm.value =  false
             })
             .catch((error: FetchError) => {
