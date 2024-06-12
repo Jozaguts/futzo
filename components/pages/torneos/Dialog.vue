@@ -9,8 +9,9 @@ const reset  = () => {
 
 </script>
 <template>
-  <v-dialog v-model="dialog" max-width="688" @after-leave="reset">
-    <v-card class="create-tournament-card bg-background" >
+  <v-dialog v-model="dialog" max-width="688" @after-leave="reset"  >
+
+    <v-card class="create-tournament-card bg-background" :style="{overflow: $vuetify.display.mobile ? '' : 'hidden' }">
       <v-card-item>
         <template #prepend>
           <v-sheet border="primary thin" class="mx-auto d-flex justify-center align-center mr-2 rounded-lg" height="45" width="45" color="background" >
