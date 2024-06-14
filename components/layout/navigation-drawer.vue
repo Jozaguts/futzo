@@ -33,7 +33,6 @@
       </template>
     </v-list-item>
 
-     <v-divider></v-divider>
 
     <v-list density="compact" nav>
       <v-list-item  v-if="rail" value="futzo" class="pa-0" disabled>

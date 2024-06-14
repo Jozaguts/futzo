@@ -44,13 +44,13 @@ const avatar = computed(() => `https://ui-avatars.com/api/?name=${user.value?.na
 const role = computed(() => user.value?.roles[0])
 </script>
 <template>
-  <v-app-bar color="bg-surface" density="prominent" :border="false" elevation="0"  height="24px" app>
-    <v-container fluid>
-      <v-row>
+  <v-app-bar color="background" density="prominent" :border="false" elevation="0" height="45" app>
+    <v-container fluid class="py-0 my-auto">
+      <v-row no-gutters>
         <v-col cols="6"  md="10" lg="10">
           <v-breadcrumbs :items="breadcrumbs" :disabled="false">
             <template v-slot:title="{ item }">
-              <span class="text-capitalize text-black text-h5">{{ item.title }}</span>
+              <span class="text-capitalize text-black text-h4">{{ item.title }}</span>
             </template>
             <template v-slot:divider>
               <v-icon icon="mdi-chevron-right"></v-icon>
