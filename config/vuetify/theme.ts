@@ -18,7 +18,7 @@ const theme: VuetifyOptions['theme'] = {
         'on-warning': '#FFFFFF',
         'background': '#FFFFFF',
         'on-background': '#3A3541',
-        'on-surface': '#3A3541',
+        'on-surface': '#EAECF0',
         'surface': '#F4F5FA',
         'grey-50': '#FAFAFA',
         'grey-100': '#F5F5F5',
