@@ -4,8 +4,9 @@ definePageMeta({
   bodyAttrs: {
     class: 'd-none'
   },
+  // tiene que ser excluido para que el middleware 01-verify-email funcione
   sanctum: {
-    guestOnly: true,
+    excluded: true,
   }
 });
 const email = useRoute().query.email ?? ''
@@ -105,111 +106,74 @@ const submitHandler = () => {
 }
 </script>
 <template>
-  <v-container fluid class=" py-0 bg-surface main-container">
-    <v-row>
-      <v-col cols="12" >
-        <Logo max-width="200" class="mx-auto"></Logo>
-      </v-col>
-    </v-row>
-    <v-row   class="row-custom-class">
-      <v-col cols="12" class="d-flex justify-center align-center">
-        <v-card
-            color="background"
-            width="100%"
-            max-width="540"
-            max-height="550"
-        >
-          <div class="d-flex justify-center align-center mt-8">
-            <v-sheet
-                width="56"
-                height="56"
-                color="background"
-                border="thin"
-                rounded="sm"
-                elevation="0"
-                class="d-flex align-center justify-center"
+  <div class="verify-email-main-container">
+    <Logo width="200" class="mx-auto navbar-email-verify"></Logo>
+    <div class="verify-email-container">
+      <v-card
+          width="100%"
+          max-width="540"
+          max-height="550"
+          class="verify-card"
+      >
+        <div class="d-flex justify-center align-center">
+          <v-sheet
+              width="56"
+              height="56"
+              border="thin"
+              rounded="sm"
+              elevation="0"
+              class="d-flex align-center justify-center"
+          >
+            <nuxt-icon v-if="!status.verified" name="inbox-02" filled class="mx-auto envelop-icon"></nuxt-icon>
+            <nuxt-icon v-if="status.verified && status.step === EMAIL_VALIDATED" name="check-circle" filled class="mx-auto check-circle"></nuxt-icon>
+            <nuxt-icon v-if="status.verified && status.step === CREATE_LEAGUE" name="trophy-01" filled class="mx-auto trophy-01"></nuxt-icon>
+            <nuxt-icon v-if="status.verified && status.step === LEAGUE_CREATED" name="league-created" filled class="mx-auto league-created"></nuxt-icon>
+          </v-sheet>
+        </div>
+        <v-card-item class="d-flex justify-center align-center">
+          <v-card-title class="text-center verify-card-title">
+            {{status.title}}
+          </v-card-title>
+          <v-card-subtitle class="text-center verify-card-subtitle" v-html="status.subtitle" />
+        </v-card-item>
+        <v-card-text class="my-5">
+          <div class="w-75 mx-auto my-5">
+            <v-otp-input
+                v-if="!status.verified"
+                v-model="code"
+                placeholder="0"
+                length="4"
+                width="356px"
+                min-height="80px"
 
+            ></v-otp-input>
+            <v-text-field
+                v-if="status.verified && status.step === CREATE_LEAGUE"
+                v-model="leagueName"
+                label="Nombre de la liga"
+                placeholder="Escribe el nombre de tu liga"
+            ></v-text-field>
+            <v-btn class="my-5" rounded="lg" :disabled="disabled" size="large" block  @click="submitHandler">{{status.action}}</v-btn>
+            <div
+                v-if="[VALIDATE_EMAIL].includes(status.step)"
+                class="verify-card-options-container"
             >
-              <nuxt-icon v-if="!status.verified" name="inbox-02" filled class="mx-auto envelop-icon"></nuxt-icon>
-              <nuxt-icon v-if="status.verified && status.step === EMAIL_VALIDATED" name="check-circle" filled class="mx-auto check-circle"></nuxt-icon>
-              <nuxt-icon v-if="status.verified && status.step === CREATE_LEAGUE" name="trophy-01" filled class="mx-auto trophy-01"></nuxt-icon>
-              <nuxt-icon v-if="status.verified && status.step === LEAGUE_CREATED" name="league-created" filled class="mx-auto league-created"></nuxt-icon>
-
-            </v-sheet>
-
-          </div>
-          <v-card-item class="d-flex justify-center align-center">
-            <v-card-title class="text-center">
-             {{status.title}}
-            </v-card-title>
-            <v-card-subtitle class="text-center" v-html="status.subtitle" />
-          </v-card-item>
-          <v-card-text class="my-5">
-            <div class="w-75 mx-auto my-5">
-              <v-otp-input
-                  v-if="!status.verified"
-                  v-model="code"
-                  placeholder="0"
-                  length="4"
-              ></v-otp-input>
-              <v-text-field
-                  v-if="status.verified && status.step === CREATE_LEAGUE"
-                  v-model="leagueName"
-                  label="Nombre de la liga"
-                  placeholder="Escribe el nombre de tu liga"
-              ></v-text-field>
-              <v-btn class="my-5" rounded="lg" :disabled="disabled" size="large" block  @click="submitHandler">{{status.action}}</v-btn>
-              <div
-                  v-if="[VALIDATE_EMAIL].includes(status.step)"
-                  class="d-flex justify-center align-center my-5"
-              >
-                <p class="text-body-1" >¿No recibiste el correo?</p> <v-btn variant="text">Reenviar</v-btn>
-              </div>
-              <div
-                  v-if="[VALIDATE_EMAIL].includes(status.step)"
-                  class="d-flex justify-center align-center my-5 cursor-pointer"
-                  @click="$router.push('/login')"
-              >
-                <nuxt-icon name="arrow-left" filled class="arrow-left mx-1"></nuxt-icon>  <p class="text-body-1 font-weight-bold" >Regresar a registrarme</p>
-              </div>
+              <p class="verify-card-didnt-get-email" >¿No recibiste el correo?</p> <v-btn variant="text" class="mx-0 px-0">Reenviar</v-btn>
             </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+            <div
+                v-if="[VALIDATE_EMAIL].includes(status.step)"
+                class="d-flex justify-center align-center my-5 cursor-pointer"
+                @click="$router.push('/login')"
+            >
+              <nuxt-icon name="arrow-left" filled class="arrow-left mx-1"></nuxt-icon>
+              <p class="text-body-1 font-weight-bold" >Regresar a registrarme</p>
+            </div>
+          </div>
+        </v-card-text>
+      </v-card>
+    </div>
+  </div>
 </template>
 <style lang="scss">
-.main-container {
-  height: 100vh;
-  overflow: hidden;
-}
-.nuxt-icon.envelop-icon svg{
-  width: 1.8rem;
-  height: 1.8rem;
-}
-.nuxt-icon.check-circle svg{
-  width: 1.8rem;
-  height: 1.8rem;
-}
-.nuxt-icon.arrow-left svg{
-  width: 20px;
-  height: 20px;
-}
-.nuxt-icon.trophy-01 svg{
-  width: 2rem;
-  height: 2rem;
-}
-.nuxt-icon.league-created svg{
-  width: 4rem;
-  height: 4rem;
-}
-.row-custom-class{
- position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
-}
+@import "~/assets/scss/pages/verify-email.scss";
 </style>

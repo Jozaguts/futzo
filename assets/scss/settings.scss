@@ -1,0 +1,9 @@
+@use 'vuetify/settings' with (
+  $button-height: 40px,
+  $overlay-scrim-background: rgba(12, 17, 29, 1),
+  $overlay-opacity: 0.9,
+  $sheet-background: #F9FAFB,
+  $card-border-radius: 24px,
+  $card-border-color: #EAECF0
+
+);

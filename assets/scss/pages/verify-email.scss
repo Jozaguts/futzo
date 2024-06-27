@@ -1,0 +1,128 @@
+.main-container {
+  height: 100vh;
+  overflow: hidden;
+}
+.nuxt-icon.envelop-icon svg{
+  width: 1.8rem;
+  height: 1.8rem;
+}
+.nuxt-icon.check-circle svg{
+  width: 1.8rem;
+  height: 1.8rem;
+}
+.nuxt-icon.arrow-left svg{
+  width: 20px;
+  height: 20px;
+}
+.nuxt-icon.trophy-01 svg{
+  width: 2rem;
+  height: 2rem;
+}
+.nuxt-icon.league-created svg{
+  width: 4rem;
+  height: 4rem;
+}
+.row-custom-class{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+}
+
+.verify-email-main-container{
+  height: 100%;
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-template-columns: 1fr;
+  grid-template-rows: 140px 1fr;
+  gap: 1em 1em;
+  grid-template-areas:
+    "."
+    ".";
+
+}
+.verify-email-container{
+  display: flex;
+  //min-height: 100%;
+  max-height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-4xl, 32px);
+  flex: 1 0 0;
+  align-self: stretch;
+}
+.verify-card{
+  min-width: 540px;
+  padding: var(--spacing-5xl, 40px);
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-4xl, 32px);
+  border-radius: var(--radius-4xl, 24px);
+  border: 1px solid var(--Colors-Border-border-secondary, #EAECF0);
+  background: var(--Colors-Base-White, #FFF);
+}
+.verify-card-title{
+  color: var(--colors-text-text-primary-900, #101828);
+  text-align: center;
+  font-family: sans-serif Inter;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 38px;
+}
+.verify-card-subtitle{
+  color: var(--colors-text-text-tertiary-600, #475467);
+  text-align: center;
+  /* Text md/Regular */
+  font-family: sans-serif Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 150% */
+}
+.verify-card-didnt-get-email {
+  color: var(--colors-text-text-tertiary-600, #475467);
+  /* Text sm/Regular */
+  font-family: sans-serif Inter;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; /* 142.857% */
+}
+.verify-card-options-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: stretch;
+}
+.v-otp-input__field{
+  color: var(--colors-primary-light-mode-500, #9155FD);
+  text-align: center;
+  font-family: sans-serif Inter;
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 60px; /* 125% */
+  letter-spacing: -0.96px;
+}
+.v-field__outline > .v-field__outline__start {
+  border-top-left-radius: var(--radius-lg, 10px);
+  border-bottom-left-radius: var(--radius-lg, 10px);
+  border-top: 2px solid var(--colors-primary-light-mode-500, #9155FD);
+  border-bottom: 2px solid var(--colors-primary-light-mode-500, #9155FD);
+  border-left: 2px solid var(--colors-primary-light-mode-500, #9155FD);
+  box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
+  color: #9155FD;
+}
+.v-field__outline > .v-field__outline__end {
+  border-top-right-radius: var(--radius-lg, 10px);
+  border-bottom-right-radius: var(--radius-lg, 10px);
+  border-top: 2px solid var(--colors-primary-light-mode-500, #9155FD);
+  border-bottom: 2px solid var(--colors-primary-light-mode-500, #9155FD);
+  border-right: 2px solid var(--colors-primary-light-mode-500, #9155FD);
+  box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
+  color: #9155FD;
+}
