@@ -10,7 +10,7 @@ definePageMeta({
 
 <template>
   <v-sheet height="100%" class="d-flex justify-center align-center">
-    <v-card rounded border color="background" class="w-lg-50 w-md-50" >
+    <v-card class="w-lg-50 w-md-50" >
      <div class="logo-container" >
        <Logo max-width="165" />
      </div>
