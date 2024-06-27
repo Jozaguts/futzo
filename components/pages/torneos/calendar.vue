@@ -53,7 +53,7 @@ const customPosition = (inputElement) => {
       month-name-format="long"
       :alt-position="customPosition"
       input-class-name="v-field__input"
-      menu-class-name="bg-background border rounded-lg"
+      menu-class-name=" border rounded-lg"
       calendar-cell-class-name="dp-custom-cell"
       placeholder=" Selecciona las fechas del torneo"
 

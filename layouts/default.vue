@@ -8,7 +8,7 @@
         <ClientOnly>
           <Navigation > </Navigation>
           <AppBar> </AppBar>
-          <v-main v-show="show" class="bg-surface v-main" app >
+          <v-main v-show="show" class="v-main" app >
             <slot></slot>
           </v-main>
           <v-footer  color="background" app class="d-flex justify-start align-center" height="64px" >

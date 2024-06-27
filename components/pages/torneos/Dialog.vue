@@ -11,10 +11,10 @@ const reset  = () => {
 <template>
   <v-dialog v-model="dialog" max-width="688" @after-leave="reset"  >
 
-    <v-card class="create-tournament-card bg-background" :style="{overflow: $vuetify.display.mobile ? '' : 'hidden' }">
+    <v-card class="create-tournament-card" :style="{overflow: $vuetify.display.mobile ? '' : 'hidden' }">
       <v-card-item>
         <template #prepend>
-          <v-sheet border="primary thin" class="mx-auto d-flex justify-center align-center mr-2 rounded-lg" height="45" width="45" color="background" >
+          <v-sheet border="primary thin" class="mx-auto d-flex justify-center align-center mr-2 rounded-lg" height="45" width="45" >
             <Icon name="icon-park-outline:soccer-one" size="25" color="black" border="border-lg"  />
           </v-sheet>
         </template>

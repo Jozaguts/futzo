@@ -33,7 +33,6 @@ const theAreTournaments = computed(() => tournaments.value.length > 0)
       <v-col>
         <v-card
             v-if="!theAreTournaments"
-            color="background"
             rounded
             elevation="2"
             class="fill-height mx-0 mx-md-8 mx-lg-8 d-flex justify-center align-center text-center"
@@ -69,8 +68,8 @@ const theAreTournaments = computed(() => tournaments.value.length > 0)
           </v-card-title>
           <v-card-text class="fill-height">
             <v-data-table
-                class="bg-background border-sm  rounded-lg fill-height "
-                style="max-height: 93%; border-color: #EAECF0 !important;"
+                class=" border-sm  rounded-lg fill-height "
+                style="max-height: 90%; border-color: #EAECF0 !important;"
                 :headers="headers"
                 :items="tournaments"
                 item-key="name"

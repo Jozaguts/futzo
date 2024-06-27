@@ -98,7 +98,6 @@ onBeforeMount(() => {
     </v-avatar>
     <v-sheet
         :border="border"
-        color="background"
         width="100%"
         class="d-flex flex-column align-center rounded-lg pa-2"
         @dragover.prevent
