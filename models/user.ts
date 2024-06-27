@@ -3,5 +3,6 @@ interface User {
     name: string
     email: string
     roles: string[]
+    verified: boolean
 }
 export { User }
