@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  ssr: true,
   devtools: false,
   vite:{
     server:{
@@ -34,14 +35,22 @@ export default defineNuxtConfig({
   ],
   vuetify: {
     moduleOptions: {
-      /* module specific options */
+      styles: { configFile: '/assets/scss/settings.scss' }
     },
-    vuetifyOptions: './vuetify.config.ts' // <== you can omit it
+    vuetifyOptions: {
+      /* vuetify options */
+    }
+    // moduleOptions: {
+    //   styles: { configFile: '/assets/scss/settings.scss' }
+    // },
+    // vuetifyOptions: './vuetify.config.ts' // <== you can omit it
+  },
+  features: {
+    inlineStyles: false
   },
   // i18n: {
   //   vueI18n: './i18n.config.ts' // if you are using custom path, default
   // },
-  // nuxt-auth-sanctum options (also configurable via environment variables)
   sanctum: {
     baseUrl: process.env.NUXT_PUBLIC_URL_BACKEND, // Laravel API
     // origin: 'http://futzo.test', // Nuxt app, by default will be used 'useRequestURL().origin'
