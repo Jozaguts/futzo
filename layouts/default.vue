@@ -34,15 +34,6 @@ onMounted(() => {
 const paddingLeft = computed(() => {
   return rail.value ? '56px' : '256px';
 });
-watchEffect(()=>{
-  console.log(useRoute());
-  if (useRoute().query?.code === '401'){
-    useGlobalStore().showErrorNotification({
-      message: 'Correo electronico no ha sido verificado'
-    })
-    useRouter().replace('/')
-  }
-})
 </script>
 <style>
 .v-main{

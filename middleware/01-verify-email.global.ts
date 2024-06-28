@@ -5,19 +5,11 @@ export default defineNuxtRouteMiddleware((to, from) => {
     if (process.client){
        const user = useSanctumUser<User>()
         const isLogged = user.value?.name != null
-        console.log({isLogged})
-        console.log({user: user.value})
-        if (isLogged){
-            if (!user.value?.verified){
-                if (to.name !== 'index'){
-                    return navigateTo({
-                        name: 'index',
-                        query: {
-                            code: USER_NOT_VERIFIED,
-                        }
-                    })
-                }
-            }
+        if (isLogged && !user.value?.verified && to.name !== 'index') {
+            return navigateTo({
+                name: 'index',
+                query: { code: 'USER_NOT_VERIFIED' }
+            });
         }
     }
 
