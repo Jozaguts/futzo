@@ -147,7 +147,7 @@ import {useAuthStore, useGlobalStore} from "~/store";
 import {storeToRefs} from "pinia";
 import CirucularLogo from "~/components/CirucularLogo.vue";
 const { drawer,drawerWidth, isMobile, appName, rail } = storeToRefs(useGlobalStore())
-const drawerRef = ref('')
+const drawerRef = ref()
 const authStore = useAuthStore()
 const user = authStore?.user
 const adminLinks = reactive([
@@ -169,7 +169,6 @@ useResizeObserver(drawerRef, (entries) => {
   drawerWidth.value = width
 })
 watchEffect(() => {
-  console.log({isMobile: isMobile.value})
   if(isMobile.value){
     rail.value = true
   }else {

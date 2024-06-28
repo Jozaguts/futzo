@@ -14,6 +14,7 @@ export default function useAuth() {
     })
     const isLoading = ref(false)
     const errorMessage = ref('')
+    const showVerificationLink = ref(false)
     async function signIn(email: string, password: string, remember: boolean) {
         const { login } = useSanctumAuth();
         return await login({ email, password, remember });
@@ -59,6 +60,10 @@ export default function useAuth() {
         signIn(form.value.email, form.value.password, true)
             .catch((error: FetchError) =>{
                 const {code, message} = useApiError(error);
+
+                if (message === 'Su dirección de correo electrónico no está verificada.'){
+                  showVerificationLink.value = true
+                }
                 errorMessage.value = message
             })
             .finally(() => {

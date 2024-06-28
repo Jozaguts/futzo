@@ -146,7 +146,12 @@ watch(form, (value)=>{
             </VBtn>
           </VCol>
           <VCol class="d-flex align-content-center justify-start py-0">
-            <small class="text-red pl-2 font-weight-bold" v-if="errorMessage"> * {{ errorMessage }}</small>
+            <small class="text-red pl-2 font-weight-bold" v-if="errorMessage">
+              * {{ errorMessage }}
+              <span>
+                <nuxt-link class="text-primary" :to="'/verify-email?email='+form.email">Verificar</nuxt-link>
+              </span>
+            </small>
           </VCol>
           <!-- create account -->
           <VCol
