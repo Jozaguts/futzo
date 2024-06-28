@@ -92,7 +92,7 @@ onBeforeMount(() => {
 </script>
 <template>
   <div class="d-flex" :class="image.hasError ? ' border-error border-md border-opacity-100  rounded rounded-lg' : ''">
-    <v-avatar :color="!state.dropped ? 'surface' : 'background' " size="64" class="mr-2">
+    <v-avatar :color="!state.dropped ? 'background' : 'surface' " size="64" class="mr-2">
       <nuxt-icon v-if="!state.dropped" name="image-plus" filled class="image-plus"></nuxt-icon>
       <nuxt-icon v-if="state.dropped" name="file-type-img" filled class="file-type-img"></nuxt-icon>
     </v-avatar>

@@ -11,7 +11,7 @@
           <v-main v-show="show" class="v-main" app >
             <slot></slot>
           </v-main>
-          <v-footer  color="background" app class="d-flex justify-start align-center" height="64px" >
+          <v-footer  color="white" app class="d-flex justify-start align-center" height="64px" >
             <span class="caption ml-4">© 2021 Futzo</span>
           </v-footer>
         </ClientOnly>

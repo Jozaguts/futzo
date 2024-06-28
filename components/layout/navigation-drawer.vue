@@ -3,9 +3,8 @@
       permanent
       v-model="drawer"
       :rail="rail"
-      color="background"
-      elevation="0"
-      :border="false"
+      color="white"
+      rail-width="56"
       @click="rail = false"
       app
       >
@@ -32,8 +31,6 @@
         ></v-btn>
       </template>
     </v-list-item>
-
-
     <v-list density="compact" nav>
       <v-list-item  v-if="rail" value="futzo" class="pa-0" disabled>
         <template #default>
@@ -170,5 +167,13 @@ useResizeObserver(drawerRef, (entries) => {
   const entry = entries[0]
   const { width } = entry.contentRect
   drawerWidth.value = width
+})
+watchEffect(() => {
+  console.log({isMobile: isMobile.value})
+  if(isMobile.value){
+    rail.value = true
+  }else {
+    rail.value = false
+  }
 })
 </script>

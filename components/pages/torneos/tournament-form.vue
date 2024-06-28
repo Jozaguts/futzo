@@ -107,7 +107,7 @@ const storeHandler = handleSubmit(async (values) => {
             @image-dropped="saveImage"
             @remove-image="removeImage"
         />
-        <span class="text-error text-caption ml-2">{{fields.image.fieldPropsValue['error-messages'][0] ?? '' }}</span>
+        <span class="text-error text-caption " :class="fields.image.fieldPropsValue['error-messages'][0] ? 'ml-2' : ''">{{fields.image.fieldPropsValue['error-messages'][0] ?? '' }}</span>
       </v-col>
     </v-row>
     <v-row>
@@ -260,10 +260,10 @@ const storeHandler = handleSubmit(async (values) => {
     </v-row>
     <v-row>
       <v-col cols="6">
-          <v-btn variant="outlined" block color="secondary" size="large">Cancelar</v-btn>
+          <v-btn variant="outlined" block color="secondary" density="compact" size="large">Cancelar</v-btn>
       </v-col>
       <v-col cols="6" >
-          <v-btn variant="elevated" block color="primary" size="large" @click="storeHandler">Crear torneo</v-btn>
+          <v-btn variant="elevated" block color="primary"  density="compact" size="large" @click="storeHandler">Crear torneo</v-btn>
       </v-col>
     </v-row>
   </v-container>
