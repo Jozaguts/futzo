@@ -1,0 +1,80 @@
+$text-field-details-padding-inline: 10px;
+.welcome-main-container{
+  height: 100vh;
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-template-columns: 1fr;
+  grid-template-rows: 140px 1fr;
+  gap: 1em 1em;
+  grid-template-areas:
+    "."
+    ".";
+  background: var(--Colors-Background-bg-secondary, #F9FAFB);
+}
+.welcome-email-container{
+  display: flex;
+  max-height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-4xl, 32px);
+  flex: 1 0 0;
+  align-self: stretch;
+  margin-bottom: 140px;
+}
+.welcome-logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.welcome-card{
+  display: flex;
+  padding: var(--spacing-5xl, 40px);
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  max-height: 400px;
+  align-items: center;
+  //gap: var(--spacing-5xl, 40px);
+  border-radius: var(--radius-4xl, 24px);
+  border: 1px solid var(--Colors-Border-border-secondary, #EAECF0);
+  background: var(--Colors-Base-White, #FFF);
+}
+.icon-container{
+  display: flex;
+  width: 56px;
+  height: 56px;
+  padding: var(--spacing-lg, 12px);
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-md, 8px);
+  border-radius: var(--spacing-lg, 12px);
+  border: 1px solid var(--Component-colors-Components-Icons-Featured-icons-Modern-featured-icon-modern-border, #EAECF0);
+  box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
+}
+.welcome-card__subtitle{
+  text-align: center;
+  color: var(--colors-text-text-primary-900, #101828);
+  font-family: sans-serif Inter;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 38px;
+  margin-bottom: 40px;
+}
+.welcome-card__subtitle > p{
+  color: var(--Gray-neutral-800, var(--Colors-Gray-neutral-800, #1F2A37));
+  /* Text lg/Regular */
+  font-family: sans-serif Inter;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px; /* 155.556% */
+}
+.create-league-btn{
+  max-height: 44px;
+}
+.create-league-input{
+  max-height: 40px;
+  margin-bottom: 40px;
+}

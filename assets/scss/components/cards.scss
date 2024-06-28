@@ -1,0 +1,13 @@
+.icon-container{
+  display: flex;
+  width: 56px;
+  height: 56px;
+  padding: 14px;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--spacing-lg, 12px);
+  border: 1px solid var(--Component-colors-Components-Icons-Featured-icons-Modern-featured-icon-modern-border, #EAECF0);
+
+  /* Shadows/shadow-xs */
+  box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
+}
