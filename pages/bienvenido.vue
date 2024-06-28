@@ -1,64 +1,64 @@
 <script lang="ts" setup>
+import {useGlobalStore} from "~/store";
+import CreateLeague from '~/components/pages/bienvenido/cards/create-league.vue'
+import CreatedLeague from '~/components/pages/bienvenido/cards/created-league.vue'
+const globalStore = useGlobalStore()
 definePageMeta({
-  layout: 'blank',
+  layout: false,
   bodyAttrs: {
     class: 'd-none'
   }
 });
+const currentComponent = ref('CreateLeague')
+const initLeague = (name) => {
+  useSanctumClient()( `/api/v1/admin/leagues`,{
+    credentials: 'include',
+    method: 'POST',
+    body: {
+      name
+    }
+  })
+    .then((response) =>{
+      globalStore.showSuccessNotification({message:response?.message ?? 'Liga creada' })
+      currentComponent.value = 'CreatedLeague'
+    }).catch(error => console.error(error))
+    .catch((error) => {
+      useGlobalStore().showErrorNotification({message: error?.data?.message ?? 'Ha ocurrido un error'})
+    })
+    .finally(() => {
+    })
+}
+const components = {
+  CreateLeague,
+  CreatedLeague
+}
+const eventHandler = (event: {action: string, params: {leagueName: string}}) => {
+  if (event.action === 'create-league'){
+    initLeague(event.params.leagueName)
+  }
+  if (event.action === 'league-created'){
+    const {refreshIdentity,  isAuthenticated} = useSanctumAuth()
+    refreshIdentity().catch(error => console.error(error))
+        .then(() => {
+          if (isAuthenticated.value) {
+            useRouter().push({name: 'index'})
+          }
+        })
 
+  }
+}
 </script>
 
 <template>
-  <v-sheet height="100%" class="d-flex justify-center align-center">
-    <v-card class="w-lg-50 w-md-50" >
-     <div class="logo-container" >
-       <Logo max-width="165" />
-     </div>
-      <v-card-item class="d-flex align-center justify-center">
-        <v-card-title>
-          <h1 class="font-weight-bold text-h5">Vamos a crear tu primera liga</h1>
-        </v-card-title>
-      </v-card-item>
-      <v-card-text>
-       <v-form class="w-50 mx-auto">
-        <v-text-field
-            label="Nombra tu liga"
-            variant="outlined"
-            hint="Ejemplo: Liga de amigos"
-            persistent-hint
-        >
-          <template #append-inner>
-            <Icon name="ph:question" size="20"></Icon>
-          </template>
-        </v-text-field>
-       </v-form>
-        <v-card-actions>
-          <v-btn
-              class="ml-auto text-capitalize"
-              color="primary"
-              variant="elevated"
-              size="large"
-              density="default"
-          >
-            Crear liga
-          </v-btn>
-        </v-card-actions>
-      </v-card-text>
-    </v-card>
-  </v-sheet>
+ <div class="welcome-main-container">
+   <div class="welcome-logo-container" >
+     <Logo max-width="165" />
+   </div>
+   <div class="welcome-email-container">
+     <component :is="components[currentComponent]" @event="eventHandler"></component>
+   </div>
+ </div>
 </template>
-<style >
-footer{
-  display: none !important;
-}
-.logo-container {
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  text-align: center;
-}
-
-
+<style lang="scss">
+@import '~/assets/scss/pages/welcome.scss';
 </style>

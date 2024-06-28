@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import OtpCard from '~/components/pages/verify-email/cards/otp-card.vue'
+import VerifiedCard from '~/components/pages/verify-email/cards/verified-card.vue'
+import {useGlobalStore} from "~/store";
 definePageMeta({
   layout: 'blank',
   bodyAttrs: {
@@ -9,171 +12,63 @@ definePageMeta({
     excluded: true,
   }
 });
+
 const email = useRoute().query.email ?? ''
-const VALIDATE_EMAIL  = 1;
-const EMAIL_VALIDATED = 2;
-const CREATE_LEAGUE = 3;
-const LEAGUE_CREATED = 4
-const status = ref( {
-  title: 'Revisa tu correo',
-  subtitle: `Te enviamos un correo de verificación al <br> correo <strong>${email}.</strong>`,
-  action: 'Verificar correo',
-  status: 200,
-  verified: false,
-  step: 1,
-})
-const client = useSanctumClient();
-import {useGlobalStore} from "~/store";
-const code = ref('')
-const leagueName = ref('')
-const verifyEmail = () =>{
+const currentComponent = ref('OtpCard')
+let setTimeoutId: any = null
+const verifyEmail = (code) =>{
+  const client = useSanctumClient();
   client(`/verify-email`,{
     method: 'POST',
     body: {
-      code: code.value,
+      code: code,
       email: email,
     }
   })
-    .then((response) => {
-      status.value.title = 'Correo verificado'
-      status.value.subtitle = 'Gracias por confirmar tu correo, ahora puedes </br> iniciar sesión con tu correo y contraseña.'
-      status.value.action = 'Continuar'
-      status.value.verified = true
-      status.value.step = EMAIL_VALIDATED
-      useGlobalStore().showSuccessNotification({message: response?.message ?? 'Correo verificado'})
-      code.value = ''
-    })
-    .catch((error) => {
-      useGlobalStore().showErrorNotification({message: error?.data?.message ?? 'Ha ocurrido un error'})
-    })
+      .then((response) => {
+        useGlobalStore().showSuccessNotification({message: response?.message ?? 'Correo verificado'})
+        currentComponent.value = 'VerifiedCard'
+      })
+      .catch((error) => {
+        const errorMessage = error?.data?.message ?? 'Ha ocurrido un error'
+        if (error.response.status === 401) {
+          useGlobalStore().showErrorNotification({message: errorMessage + 'redirigiendo...'})
+          setTimeoutId =  setTimeout(() => {
+            useRouter().push({name: 'login', params: {email: email}})
+          }, 3000)
+        }
+        else{
+          useGlobalStore().showErrorNotification({message: errorMessage})
+        }
+      })
 }
-useGlobalStore().showFooter = false
-const disabled = computed(() => {
-  if (status.value.verified){
-    return false
-  }
-  if (code.value.length !== 4){
-    return true
+onUnmounted(() =>{
+  if (setTimeoutId){
+    clearTimeout(setTimeoutId)
   }
 })
-const initLeague = () => {
-  useSanctumClient()( `/api/v1/admin/leagues`,{
-    credentials: 'include',
-    method: 'POST',
-    body: {
-      name: leagueName.value
-    }
-  })
-      .then((response) =>{
-        status.value.title = 'Tu liga ha sido creada'
-        status.value.subtitle = 'Ya puedes empezar a planificar tu liga.'
-        status.value.action = 'Empezar'
-        status.value.verified = true
-        status.value.step = LEAGUE_CREATED
-        useGlobalStore().showSuccessNotification({message: response?.message ?? 'Liga creada'})
-        leagueName.value = ''
-        const {refreshIdentity,  isAuthenticated} = useSanctumAuth()
-        refreshIdentity().catch(error => console.error(error))
-            .then(() => {
-              if (isAuthenticated.value) {
-                console.log('user authenticated')
-              }else {
-                console.log('user not authenticated')
-              }
-            })
-
-      }).catch(error => console.error(error))
-    .catch((error) => {
-      useGlobalStore().showErrorNotification({message: error?.data?.message ?? 'Ha ocurrido un error'})
-    })
+const components = {
+  OtpCard,
+  VerifiedCard
 }
-const submitHandler = () => {
-  if (status.value.verified && status.value.step === EMAIL_VALIDATED ){
-    status.value.step = CREATE_LEAGUE
-    status.value.title = 'Vamos a crear tu primer liga'
-    status.value.subtitle = ''
-    status.value.action = 'Crear liga'
+const eventHandler = (event: {action: string, code?: string}) => {
+  if (event.action === 'verify-email'){
+    verifyEmail(event?.code)
   }
-  else if(status.value.verified && status.value.step === CREATE_LEAGUE){
-    initLeague()
-  }
-  else if(status.value.verified && status.value.step === LEAGUE_CREATED){
-    useRouter().push('/liga')
-  }
-  else {
-    verifyEmail()
+  if (event.action === 'email-verified'){
+    useRouter().push({name: 'login', params: {email: email}})
   }
 }
 </script>
 <template>
   <div class="verify-email-main-container">
-    <Logo width="200" class="mx-auto navbar-email-verify"></Logo>
+    <Logo width="200" class="mx-auto"></Logo>
     <div class="verify-email-container">
-      <v-card
-          width="100%"
-          max-width="540"
-          max-height="550"
-          class="verify-card"
-      >
-        <div class="d-flex justify-center align-center">
-          <v-sheet
-              width="56"
-              height="56"
-              border="thin"
-              rounded="sm"
-              elevation="0"
-              class="d-flex align-center justify-center"
-          >
-            <nuxt-icon v-if="!status.verified" name="inbox-02" filled class="mx-auto envelop-icon"></nuxt-icon>
-            <nuxt-icon v-if="status.verified && status.step === EMAIL_VALIDATED" name="check-circle" filled class="mx-auto check-circle"></nuxt-icon>
-            <nuxt-icon v-if="status.verified && status.step === CREATE_LEAGUE" name="trophy-01" filled class="mx-auto trophy-01"></nuxt-icon>
-            <nuxt-icon v-if="status.verified && status.step === LEAGUE_CREATED" name="league-created" filled class="mx-auto league-created"></nuxt-icon>
-          </v-sheet>
-        </div>
-        <v-card-item class="d-flex justify-center align-center">
-          <v-card-title class="text-center verify-card-title">
-            {{status.title}}
-          </v-card-title>
-          <v-card-subtitle class="text-center verify-card-subtitle" v-html="status.subtitle" />
-        </v-card-item>
-        <v-card-text class="my-5">
-          <div class="w-75 mx-auto my-5">
-            <v-otp-input
-                v-if="!status.verified"
-                v-model="code"
-                placeholder="0"
-                length="4"
-                width="356px"
-                min-height="80px"
-
-            ></v-otp-input>
-            <v-text-field
-                v-if="status.verified && status.step === CREATE_LEAGUE"
-                v-model="leagueName"
-                label="Nombre de la liga"
-                placeholder="Escribe el nombre de tu liga"
-            ></v-text-field>
-            <v-btn class="my-5" rounded="lg" :disabled="disabled" size="large" block  @click="submitHandler">{{status.action}}</v-btn>
-            <div
-                v-if="[VALIDATE_EMAIL].includes(status.step)"
-                class="verify-card-options-container"
-            >
-              <p class="verify-card-didnt-get-email" >¿No recibiste el correo?</p> <v-btn variant="text" class="mx-0 px-0">Reenviar</v-btn>
-            </div>
-            <div
-                v-if="[VALIDATE_EMAIL].includes(status.step)"
-                class="d-flex justify-center align-center my-5 cursor-pointer"
-                @click="$router.push('/login')"
-            >
-              <nuxt-icon name="arrow-left" filled class="arrow-left mx-1"></nuxt-icon>
-              <p class="text-body-1 font-weight-bold" >Regresar a registrarme</p>
-            </div>
-          </div>
-        </v-card-text>
-      </v-card>
+      <component :is="components[currentComponent]" @event="eventHandler"> </component>
     </div>
   </div>
 </template>
 <style lang="scss">
+@import "~/assets/scss/components/cards.scss";
 @import "~/assets/scss/pages/verify-email.scss";
 </style>
