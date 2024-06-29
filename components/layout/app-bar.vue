@@ -1,55 +1,45 @@
 <script lang="ts" setup>
+import {useGlobalStore, useTournamentStore} from "~/store";
+import {storeToRefs} from "pinia";
+import { useTheme } from 'vuetify'
+import type {User} from "~/interfaces";
 const breadcrumbs = computed(()=>{
   return [
     useRoute().name === 'index' ? ' home' :   useRoute().name
   ]
 })
-const buttonActions = computed(() => {
-  switch(useRoute().name){
+const currentRouteName = useRoute().name
+const buttonActions = computed<{icon: string, title: string} | boolean>(() => {
+  switch(currentRouteName){
     case 'index':
       return false
     case 'liga':
       return {
         title: 'Crear torneo',
         icon: 'mdi-plus',
-        action: () => {
-          console.log('Crear torneo')
-        }
       }
     default:
-          return{
-            title: 'Crear',
-            icon: 'mdi-plus',
-            action: () => {
-              console.log('Crear')
-            }
-          }
+      return {
+        title: 'Crear',
+        icon: 'mdi-plus',
+      }
   }
 
 })
-import {useGlobalStore} from "~/store";
-import {storeToRefs} from "pinia";
-import { useTheme } from 'vuetify'
-import type {User} from "~/interfaces";
 const theme = useTheme()
-const isDark = computed(() => theme.global.current.value.dark)
-const { logout} = useSanctumAuth();
-const toggleTheme =  () => {
-  theme.global.name.value = isDark.value ? 'light' : 'dark'
-}
-const logoutHandler = async () => {
-
-  await logout()
-      .finally(() => {
-        useRouter().push({name: 'login'})
-      })
-
-}
-
-const { drawer,isMobile, appName, rail} = storeToRefs(useGlobalStore())
+const {isMobile} = storeToRefs(useGlobalStore())
 const user = useSanctumUser<User>()
-const avatar = computed(() => `https://ui-avatars.com/api/?name=${user.value?.name}`)
-const role = computed(() => user.value?.roles[0])
+const handleActions = () => {
+  console.log(currentRouteName)
+  switch (currentRouteName) {
+    case 'liga':
+      const {dialog} = storeToRefs(useTournamentStore())
+      dialog.value = true
+      break
+    case 'theme':
+      break
+  }
+}
 </script>
 <template>
   <v-app-bar color="white"  :border="false" elevation="0" height="85" app>
@@ -68,11 +58,12 @@ const role = computed(() => user.value?.roles[0])
          variant="elevated"
          :density="isMobile ? 'default' : 'comfortable'"
          :size="isMobile ? 'small' : 'large' "
-         @click="buttonActions.action"
+         @click="handleActions"
          class="mr-2 mr-lg-12 mr-md-12"
+         v-if="buttonActions"
      >
        <template #prepend>
-          <v-icon>{{buttonActions?.icon}}</v-icon>
+          <v-icon>{{buttonActions.icon}}</v-icon>
          <span class="text-body-2">{{buttonActions?.title}}</span>
        </template>
      </v-btn>

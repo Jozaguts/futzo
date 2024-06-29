@@ -46,7 +46,7 @@ const theAreTournaments = computed(() => tournaments.value.length > 0)
             <v-card-title class="text-body-2">
               Crea un torneo para verlo aquí.
             </v-card-title>
-            <CreateTournamentDialog />
+
             <v-btn
                 color="primary"
                 variant="elevated"
@@ -139,6 +139,7 @@ const theAreTournaments = computed(() => tournaments.value.length > 0)
 
           </v-card-text>
         </v-card>
+        <CreateTournamentDialog />
       </v-col>
       </v-row>
   </v-container>
