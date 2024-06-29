@@ -17,6 +17,7 @@ const MAX_SIZE = 2.0;
 
 const props = defineProps<{ image: ImageForm }>()
 const image = ref(props.image)
+const imageRef = ref(null)
 const formatImageName = computed(() => {
   return image.value.name.replace(/[-_]/g, ' ')
       .charAt(0).toUpperCase() + image.value.name.slice(1)
@@ -36,19 +37,25 @@ const validateSize  = () =>{
 
 }
 
-const handleDrop = (e: DragEvent) => {
+const eventHandler = (e: DragEvent | Event) => {
   e.preventDefault();
+  // console.log(e)
   state.dragging = false;
-  const files = e.dataTransfer.files;
+  let files = [];
+  if (e.type === 'drop'){
+     files = e.dataTransfer.files;
+  }else if(e.type === 'change') {
+     files = (e.target as HTMLInputElement).files;
+  }
   if (files.length) {
     startBuffer();
     state.dropped = true;
     image.value.file = files[0];
     image.value.name = files[0].name;
     image.value.size = files[0].size;
-
     emits('imageDropped', files[0])
   }
+  
 }
 const startBuffer =  () => {
   const updateValue = (val) => Math.min(val + Math.random() * 10, 100);
@@ -89,6 +96,10 @@ watch(() => image.value.size, () => {
 onBeforeMount(() => {
   clearInterval(state.interval)
 })
+const showInput = () => {
+  const input = imageRef.value.$el.querySelector('input');
+  input.click();
+}
 </script>
 <template>
   <div class="d-flex" :class="image.hasError ? ' border-error border-md border-opacity-100  rounded rounded-lg' : ''">
@@ -101,13 +112,14 @@ onBeforeMount(() => {
         width="100%"
         class="d-flex flex-column align-center rounded-lg pa-2"
         @dragover.prevent
-        @drop.prevent="handleDrop"
+        @drop.prevent="eventHandler"
         @dragenter="state.dragging = true"
         @drop="state.dragging = false"
     >
       <div class="d-flex justify-center align-center flex-column" v-if="!state.dropped">
         <div>
-          <v-btn variant="text" color="primary" class="text-body-1 px-1" >Haz clic para añadir</v-btn>
+          <v-file-input :hidden="true" class="d-none" ref="imageRef" @change="eventHandler"></v-file-input>
+          <v-btn variant="text" color="primary" class="text-body-1 px-1" @click="showInput" >Haz clic para añadir</v-btn>
           <span class="text-body-1">o arrastra aquí</span>
         </div>
         <p class="text-caption">SVG, PNG o JPG (max. 1080x1080px)</p>
