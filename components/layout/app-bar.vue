@@ -1,13 +1,63 @@
 <script lang="ts" setup>
-import {useGlobalStore, useTournamentStore} from "~/store";
+import {useAuthStore, useGlobalStore, useTournamentStore} from "~/store";
 import {storeToRefs} from "pinia";
 import { useTheme } from 'vuetify'
 import type {User} from "~/interfaces";
 const breadcrumbs = computed(()=>{
-  return [
-    useRoute().name === 'index' ? ' home' :   useRoute().name
-  ]
+  console.log( useRoute().path)
+ switch (useRoute().name) {
+   case 'index':
+      return [
+        {
+          title: 'Dashboard',
+          to: '/'
+        }
+      ]
+   case 'liga':
+      return [
+        useAuthStore().user?.league?.name,
+      ]
+   case 'liga-torneo':
+      return [
+        {
+          title: useAuthStore().user?.league?.name,
+          to: '/liga'
+        },
+        {
+          title: useRoute().path.split('/')[2],
+          to: useRoute().path
+        }
+      ]
+   case 'calendario':
+      return ['Calendario']
+   case 'equipos':
+      return ['Equipos']
+   case 'equipos-inscribir':
+      return [
+        {
+          title: 'Equipos',
+          to: '/equipos'
+        },
+          'Inscribir'
+      ]
+   default:
+      return [
+        {
+          title: 'home',
+          to: '/'
+        },
+        {
+          title: 'liga',
+          to: '/liga'
+        },
+        {
+          title: useRoute().name,
+          to: useRoute().path
+        }
+      ]
+  }
 })
+
 const currentRouteName = useRoute().name
 const buttonActions = computed<{icon: string, title: string} | boolean>(() => {
   switch(currentRouteName){
@@ -30,7 +80,6 @@ const theme = useTheme()
 const {isMobile} = storeToRefs(useGlobalStore())
 const user = useSanctumUser<User>()
 const handleActions = () => {
-  console.log(currentRouteName)
   switch (currentRouteName) {
     case 'liga':
       const {dialog} = storeToRefs(useTournamentStore())
