@@ -1,4 +1,6 @@
+
 @use 'vuetify/settings' with (
+  $body-font-family: "Inter",
   $button-height: 40px,
   $overlay-scrim-background: rgba(12, 17, 29, 1),
   $overlay-opacity: 0.9,

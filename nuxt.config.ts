@@ -12,10 +12,10 @@ export default defineNuxtConfig({
   },
   build: {transpile: ['vuetify','@vuepic/vue-datepicker','vue-sonner']},
   googleFonts: {
-    display: 'swap',
     families: {
-      Inter: [100, 200, 300, 400, 500, 600, 700]
-    }
+      Inter: '200..900',
+    },
+    display: 'swap',
   },
   modules: [
       'nuxt-icons',
