@@ -1,16 +1,21 @@
 <script lang="ts" setup>
 
-import PositionsTable from "~/components/pages/equipos/positions-table.vue";
-import liveGames from "~/components/pages/equipos/live-games.vue";
+import PositionsTable from "~/components/pages/equipos/positions-table";
+import LiveGames from "~/components/pages/equipos/live-games";
+import NextGamesToday from "~/components/pages/equipos/next-games-today";
 </script>
 <template>
-  <v-container>
-    <v-row>
-      <v-col>
-      </v-col>
-    </v-row>
-  </v-container>
-
+  <div class="container">
+    <div class="table-container ">
+      <PositionsTable />
+    </div>
+    <div class="live-games">
+      <LiveGames />
+    </div>
+    <div class="next-games-today">
+      <NextGamesToday />
+    </div>
+    <div class="next-games">asdsa</div>
   </div>
 </template>
 <style lang="scss">
@@ -48,11 +53,22 @@ import liveGames from "~/components/pages/equipos/live-games.vue";
 
 .live-games {
   @include grid-area(live-games);
+  display: flex;
+  width: 100%;
+  padding: 0  1rem 0 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-xl, 16px);
 }
 
 .next-games-today {
   @include grid-area(next-games-today);
-  background: #0d1116;
+  display: flex;
+  width: 100%;
+  padding: 0  1rem 0 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-xl, 16px);
 }
 
 .next-games {

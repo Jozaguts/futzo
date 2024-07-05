@@ -1,12 +1,12 @@
 <script setup lang="ts">
 </script>
 <template>
-  <v-table class="positions-table" density="comfortable">
+  <v-table class="positions-table" >
     <template #top>
       <h2 class="positions-table-title">Tabla de posiciones</h2>
     </template>
    <template #wrapper>
-     <div class="v-table__wrapper" >
+     <div class="v-table__wrapper ">
        <table >
          <thead>
            <tr>
@@ -150,12 +150,12 @@
 
   </v-table>
 </template>
-<style lang="scss">
+<style lang="scss" scoped>
 .positions-table{
   background: var(--Colors-Base-White, #FFF);
   border-radius: var(--radius-md, 8px);
 }
-tbody > tr:nth-child(odd) {
+.positions-table > .v-table__wrapper > table > tbody > tr:nth-child(odd) {
   border-bottom: 1px solid var(--Colors-Border-border-secondary, #EAECF0);
   background: var(--Colors-Background-bg-primary_hover, #F9FAFB);
 }
@@ -171,11 +171,11 @@ tbody > tr:nth-child(odd) {
   border-radius: var(--radius-md, 8px);
   border: 1px solid var(--Colors-Border-border-secondary, #EAECF0);
 }
-table > tbody > tr > td, table > tbody > tr{
+.positions-table > .v-table__wrapper > table > tbody > tr > td, table > tbody > tr{
   text-align: center !important;
   border-bottom: 1px solid #EAECF0 !important;
 }
-table > thead > tr > th{
+.positions-table > .v-table__wrapper  > table > thead > tr > th{
   text-align: center !important;
   border-bottom: 1px solid #EAECF0 !important;
 }
