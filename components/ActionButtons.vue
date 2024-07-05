@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import {storeToRefs} from "pinia";
 import {useGlobalStore, useTournamentStore} from "~/store";
+import EditarTorneo from "~/components/pages/liga/editar-torneo.vue";
+import CancelarTorneo from "~/components/pages/liga/cancelar-torneo.vue";
 
 const {isMobile} = storeToRefs(useGlobalStore())
 const currentRouteName = computed(() =>  useRoute().name)
+console.log(currentRouteName.value)
 
 const buttonActions = computed<{icon: string, title: string} | boolean>(() => {
   switch(currentRouteName.value){
@@ -12,12 +15,17 @@ const buttonActions = computed<{icon: string, title: string} | boolean>(() => {
     case 'liga':
       return {
         title: 'Crear torneo',
-        icon: 'mdi-plus',
+        icon: 'plus',
+      }
+    case 'liga-torneo':
+      return {
+        title: 'Marcar como terminado',
+        icon: 'check-circle-broken',
       }
     default:
       return {
         title: 'Crear',
-        icon: 'mdi-plus',
+        icon: 'plus',
       }
   }
 
@@ -34,17 +42,42 @@ const handleActions = () => {
 }
 </script>
 <template>
-  <v-btn
-      variant="elevated"
-      :density="isMobile ? 'default' : 'comfortable'"
-      :size="isMobile ? 'small' : 'large' "
-      @click="handleActions"
-      class="mr-2 mr-lg-12 mr-md-12"
-      v-if="buttonActions"
-  >
-    <template #prepend>
-      <v-icon>{{buttonActions.icon}}</v-icon>
-      <span class="text-body-2">{{buttonActions?.title}}</span>
+  <div class="d-flex justify-center align-center">
+    <template v-if="currentRouteName === 'liga-torneo'" >
+      <EditarTorneo />
+      <CancelarTorneo />
     </template>
-  </v-btn>
+    <v-btn
+        variant="elevated"
+        @click="handleActions"
+        class="mr-2 mr-lg-12 mr-md-12 navbar-btn-action"
+        v-if="buttonActions"
+    >
+      <template #prepend>
+        <nuxt-icon :name="buttonActions.icon" filled></nuxt-icon>
+        <span class="button-text">{{buttonActions?.title}}</span>
+      </template>
+    </v-btn>
+  </div>
 </template>
+<style lang="sass">
+.button-text
+  font-size: 16px
+  font-style: normal
+  font-weight: 600
+  line-height: 24px
+  text-transform: none
+  margin-left: .5rem
+.navbar-btn-action
+  border-radius: var(--radius-md, 8px)
+  border: 1px solid var(--Component-colors-Components-Buttons-Secondary-button-secondary-border, #D0D5DD)
+  box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05)
+  font-size: 16px
+  font-style: normal
+  color: var(--Component-colors-Components-Buttons-Secondary-button-secondary-fg, #344054)
+  font-weight: 600
+  line-height: 24px
+  margin-left: 1.5rem
+.navbar-btn-action.secondary
+  color: var(--Component-colors-Components-Buttons-Secondary-button-secondary-fg, #344054) !important
+</style>
