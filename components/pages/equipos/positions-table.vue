@@ -147,7 +147,6 @@
        </table>
      </div>
    </template>
-
   </v-table>
 </template>
 <style lang="scss" scoped>

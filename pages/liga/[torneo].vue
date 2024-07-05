@@ -3,6 +3,7 @@
 import PositionsTable from "~/components/pages/equipos/positions-table";
 import LiveGames from "~/components/pages/equipos/live-games";
 import NextGamesToday from "~/components/pages/equipos/next-games-today";
+import NextGames from "~/components/pages/equipos/next-games.vue";
 </script>
 <template>
   <div class="container">
@@ -15,7 +16,9 @@ import NextGamesToday from "~/components/pages/equipos/next-games-today";
     <div class="next-games-today">
       <NextGamesToday />
     </div>
-    <div class="next-games">asdsa</div>
+    <div class="next-games">
+      <NextGames />
+    </div>
   </div>
 </template>
 <style lang="scss">
@@ -45,12 +48,11 @@ import NextGamesToday from "~/components/pages/equipos/next-games-today";
     "table-container table-container table-container table-container table-container table-container table-container table-container table-container next-games-today next-games-today next-games-today"
     "table-container table-container table-container table-container table-container table-container table-container table-container table-container next-games-today next-games-today next-games-today"
     "table-container table-container table-container table-container table-container table-container table-container table-container table-container next-games-today next-games-today next-games-today"
-    "table-container table-container table-container table-container table-container table-container table-container table-container table-container next-games-today next-games-today next-games-today"
+    "next-games next-games next-games next-games next-games next-games next-games next-games next-games next-games-today next-games-today next-games-today"
     "next-games next-games next-games next-games next-games next-games next-games next-games next-games next-games-today next-games-today next-games-today"
     "next-games next-games next-games next-games next-games next-games next-games next-games next-games . . ."
     "next-games next-games next-games next-games next-games next-games next-games next-games next-games . . .";
 }
-
 .live-games {
   @include grid-area(live-games);
   display: flex;
@@ -60,7 +62,6 @@ import NextGamesToday from "~/components/pages/equipos/next-games-today";
   align-items: flex-start;
   gap: var(--spacing-xl, 16px);
 }
-
 .next-games-today {
   @include grid-area(next-games-today);
   display: flex;
@@ -70,16 +71,20 @@ import NextGamesToday from "~/components/pages/equipos/next-games-today";
   align-items: flex-start;
   gap: var(--spacing-xl, 16px);
 }
-
-.next-games {
-  @include grid-area(next-games);
-  background: #2a2a92;
-}
 .table-container {
   @include grid-area(table-container);
   padding: 1rem;
   border-radius: var(--radius-2xl, 16px);
   background: var(--Colors-Base-White, #FFF);
+}
+.next-games {
+  @include grid-area(next-games);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-md, 8px);
+  align-self: stretch;
+  width: 100%;
 }
 </style>
 
