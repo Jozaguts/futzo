@@ -6,7 +6,7 @@
           <VSonner position="top-right" />
         </ClientOnly>
         <ClientOnly>
-          <Navigation > </Navigation>
+          <Navigation> </Navigation>
           <AppBar> </AppBar>
           <v-main v-show="show" class="v-main" app >
             <slot></slot>
