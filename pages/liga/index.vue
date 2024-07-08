@@ -17,13 +17,19 @@ const headers =  [
   { title: 'Status', value: 'status', sortable: true, align: 'center' },
   { title: '', value: 'actions', sortable: false,  },
 ]
-const {dialog, tournaments} = storeToRefs(useTournamentStore());
-
+const {dialog, tournaments, tournamentId} = storeToRefs(useTournamentStore());
 onMounted(() => {
   useTournamentStore()
       .loadTournaments()
 })
 const theAreTournaments = computed(() => tournaments.value.length > 0)
+const handleShowTournament = (tournament) => {
+  tournamentId.value = tournament.id
+  useRouter().push({
+    name: 'liga-torneo',
+    params: { torneo: tournament.slug }
+  })
+}
 </script>
 <template>
   <v-container fluid class="fill-height">
@@ -56,7 +62,7 @@ const theAreTournaments = computed(() => tournaments.value.length > 0)
               Crear torneo
             </v-btn>
           </v-card-item>
-  </v-card>
+        </v-card>
         <v-card v-else height="100%"  variant="text">
           <v-card-title class="mb-4">
             <v-tabs>
@@ -100,10 +106,7 @@ const theAreTournaments = computed(() => tournaments.value.length > 0)
                 <v-btn
                     size="small"
                     rounded="md"
-                    @click="useRouter().push({
-                name: 'liga-torneo',
-                params: { torneo: item.slug }
-              })">Ver Torneo</v-btn>
+                    @click="handleShowTournament(item)">Ver Torneo</v-btn>
               </template>
               <template #bottom="props">
               <v-divider />
