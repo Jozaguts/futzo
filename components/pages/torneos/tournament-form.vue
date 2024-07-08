@@ -15,7 +15,7 @@ const imageForm =  ref<ImageForm>({
   name: '',
   size: 0
 })
-const {tournamentToEdit,tournamentId} = storeToRefs(useTournamentStore());
+const {tournamentToEdit,tournamentId,isEdition} = storeToRefs(useTournamentStore());
 const {categories,formats} = storeToRefs(useCategoryStore());
 const {locations} = storeToRefs(useTeamStore());
 let locationsFind = ref([]);
@@ -69,7 +69,7 @@ const setDates = (dates: string[]) => {
   fields.start_date.fieldValue = dates[0];
   fields.end_date.fieldValue = dates[1];
 }
-const isEdit = computed(() => !!tournamentId.value)
+
 const handleSelectLocation = (value: any) => {
   console.log(value)
   fields.address.fieldValue = value.description;
@@ -101,7 +101,7 @@ const searchHandler = async(place: string) =>{
 
 }
 const textButton = computed(() => {
-  return isEdit.value ? 'Editar torneo' : 'Crear torneo'
+  return isEdition.value ? 'Editar torneo' : 'Crear torneo'
 })
 const submitHandler = handleSubmit(async (values: TournamentForm) => {
   const formData = new FormData ();
@@ -129,7 +129,7 @@ const submitHandler = handleSubmit(async (values: TournamentForm) => {
       formData.append(key, values[key]);
     }
   }
-  if (isEdit.value){
+  if (isEdition.value){
     tournamentStore.updateTournament(tournamentId.value, formData)
         .then((response) => {
           if(response){

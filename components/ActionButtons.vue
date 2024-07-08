@@ -1,13 +1,11 @@
 <script lang="ts" setup>
 import {storeToRefs} from "pinia";
-import {useGlobalStore, useTournamentStore} from "~/store";
+import {useTournamentStore} from "~/store";
 import EditarTorneo from "~/components/pages/liga/editar-torneo.vue";
 import CancelarTorneo from "~/components/pages/liga/cancelar-torneo.vue";
+import type {TournamentForm} from "~/models/tournament";
 
-const {isMobile} = storeToRefs(useGlobalStore())
 const currentRouteName = computed(() =>  useRoute().name)
-console.log(currentRouteName.value)
-
 const buttonActions = computed<{icon: string, title: string} | boolean>(() => {
   switch(currentRouteName.value){
     case 'index':
@@ -33,7 +31,10 @@ const buttonActions = computed<{icon: string, title: string} | boolean>(() => {
 const handleActions = () => {
   switch (currentRouteName.value) {
     case 'liga':
-      const {dialog} = storeToRefs(useTournamentStore())
+      const {dialog,isEdition,tournamentToEdit,tournamentId} = storeToRefs(useTournamentStore())
+      isEdition.value = false
+      tournamentId.value = null
+      tournamentToEdit.value = {} as  TournamentForm
       dialog.value = true
       break
     case 'theme':

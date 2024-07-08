@@ -2,11 +2,8 @@
 import {storeToRefs} from "pinia";
 import TournamentForm from "~/components/pages/torneos/tournament-form.vue";
 import {useTournamentStore} from "~/store";
-const {dialog,isEdition,tournamentToEdit, tournamentId} = storeToRefs(useTournamentStore());
-const reset  = () => {
-  tournamentToEdit.value = {} as any
-  tournamentId.value = null
-}
+const {dialog,isEdition, tournamentId} = storeToRefs(useTournamentStore());
+
 const title = computed(() =>{
   return isEdition.value ? 'Editar torneo' : 'Crear un torneo'
 })
@@ -16,7 +13,7 @@ const subtitle = computed(() => {
 
 </script>
 <template>
-  <v-dialog v-model="dialog" max-width="688" @after-leave="reset"  >
+  <v-dialog v-model="dialog" max-width="688">
 
     <v-card class="create-tournament-card" :style="{overflow: $vuetify.display.mobile ? '' : 'hidden' }">
       <v-card-item>
