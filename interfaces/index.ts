@@ -1,28 +1,7 @@
 export  { IApiInstance } from "~/interfaces/api";
 import { FetchOptions, FetchRequest } from 'ofetch'
 
-export interface Endpoints {
-  csrf: string
-  login: string
-  logout: string
-  user: string
-}
-
-export interface Redirects {
-  home: string
-  login: string
-  logout: string
-}
-
-
 export {};
-export interface ModuleOptions {
-  csrf: CSRFSpec
-  token: boolean
-  baseUrl: string
-  endpoints: Endpoints
-  redirects: Redirects
-}
 declare global {
   interface Window {
     FB: any;
@@ -38,11 +17,6 @@ export interface User {
   name: string
   email: string
   roles: string[]
-}
-export interface CSRFSpec {
-  headerKey: string
-  cookieKey: string
-  tokenCookieKey: string
 }
 
 export type ApiFetch = <T>(
@@ -84,4 +58,29 @@ export interface Role {
 export interface Permission {
   id: number,
   name: string
+}
+export interface AutocompletePrediction {
+  description:           string;
+  matched_substrings:    MatchedSubstring[];
+  place_id:              string;
+  reference:             string;
+  structured_formatting: StructuredFormatting;
+  terms:                 Term[];
+  types:                 string[];
+}
+
+export interface MatchedSubstring {
+  length: number;
+  offset: number;
+}
+
+export interface StructuredFormatting {
+  main_text:                    string;
+  main_text_matched_substrings: MatchedSubstring[];
+  secondary_text:               string;
+}
+
+export interface Term {
+  offset: number;
+  value:  string;
 }
