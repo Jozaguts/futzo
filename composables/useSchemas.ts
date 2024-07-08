@@ -45,19 +45,19 @@ function getSchemaByName(name) {
     switch (name) {
         case 'create-tournament':
             schemaFields.name = yusString().min(6, t('tournament_min')).required(t('forms.required'));
+            schemaFields.image = yup.mixed()
+                .test('File is required', 'Campo requerido ', (value: File) => value)
+            schemaFields.category_id = yup.number().required(t('forms.required'));
             schemaFields.tournament_format_id = yup.number().required(t('forms.required'));
-            schemaFields.start_date = yup.date().nullable();
-            schemaFields.end_date = yup.date().nullable();
-            schemaFields.location = yusString().required(t('forms.required'));
+            schemaFields.location = yup.object() // club/lugar
             schemaFields.city = yusString().required(t('forms.required'));
             schemaFields.address = yusString().required(t('forms.required'));
+            schemaFields.start_date = yup.date().nullable();
+            schemaFields.end_date = yup.date().nullable();
             schemaFields.prize =   yusString().required(t('forms.required'));
             schemaFields.winner = yusString().nullable();
             schemaFields.description = yusString().nullable();
             schemaFields.status = yusString().nullable();
-            schemaFields.category_id = yup.number().required(t('forms.required'));
-            schemaFields.image = yup.mixed()
-                .test('File is required', 'Campo requerido ', (value: File) => value)
             break;
         case 'create-league':
             schemaFields.id = yusString().nullable();
