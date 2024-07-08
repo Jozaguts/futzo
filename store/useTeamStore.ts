@@ -9,6 +9,7 @@ interface GooglePlace {
     }[];
 }
 interface Location {
+    id: number;
     name: string;
     address: string;
 }
@@ -92,15 +93,19 @@ export const useTeamStore = defineStore('teamStore', () => {
         }
     }
     const searchLocation = useDebounceFn(async (place: string) => {
-
             if (!place || lastSearch.value.toUpperCase() === place.toUpperCase()){ return}
-            const autocompleteService = new window.google.maps.places.AutocompleteService()
+        const autocompleteService = new window.google.maps.places.AutocompleteService()
             autocompleteService.getPlacePredictions({input: place}, (predictions, status) => {
-
-                googleSearchLocations.value = predictions.map((p: any) => {
+                if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
+                    googleSearchLocations.value = []
+                    return;
+                }
+               return googleSearchLocations.value = predictions.map((p: any) => {
                     return  {
-                        name: p.description,
-                        address: p.structured_formatting.secondary_text
+                        name: p.structured_formatting.main_text,
+                        address: p.structured_formatting.secondary_text,
+                        formatAddress: p.description,
+                        place_id: p.place_id
                     }
                 })
             })
