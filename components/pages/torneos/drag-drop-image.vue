@@ -85,6 +85,12 @@ const removeImage = () =>{
   state.bufferValue = 20;
   emits('removeImage')
 }
+const loadImage = () => {
+  state.value = 100;
+  state.bufferValue = 100;
+  state.dropped = true
+  image.value.name = 'imagen.jpg';
+}
 watch(() => state.value, (newValue) => {
   if (newValue >= 100) {
     clearInterval(state.interval)
@@ -100,6 +106,9 @@ const showInput = () => {
   const input = imageRef.value.$el.querySelector('input');
   input.click();
 }
+defineExpose({
+  loadImage
+})
 </script>
 <template>
   <div class="d-flex" :class="image.hasError ? ' border-error border-md border-opacity-100  rounded rounded-lg' : ''">
