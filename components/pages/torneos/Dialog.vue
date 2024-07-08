@@ -2,10 +2,17 @@
 import {storeToRefs} from "pinia";
 import TournamentForm from "~/components/pages/torneos/tournament-form.vue";
 import {useTournamentStore} from "~/store";
-const {dialog} = storeToRefs(useTournamentStore());
+const {dialog,isEdition,tournamentToEdit, tournamentId} = storeToRefs(useTournamentStore());
 const reset  = () => {
-  console.log('reset')
+  tournamentToEdit.value = {} as any
+  tournamentId.value = null
 }
+const title = computed(() =>{
+  return isEdition.value ? 'Editar torneo' : 'Crear un torneo'
+})
+const subtitle = computed(() => {
+  return isEdition.value ? 'Modifica los detalles del torneo.' : 'Completa los detalles del torneo para agregarlo a tu liga'
+})
 
 </script>
 <template>
@@ -18,8 +25,8 @@ const reset  = () => {
             <Icon name="icon-park-outline:soccer-one" size="25" color="black" border="border-lg"  />
           </v-sheet>
         </template>
-        <template #title><span class="">Crear un torneo</span></template>
-        <template #subtitle>Completa los detalles del torneo para agregarlo a tu liga</template>
+        <template #title><span class="">{{title}}</span></template>
+        <template #subtitle>{{subtitle}}</template>
         <template #append>
           <Icon name="icon-park-outline:close" size="20" color="grey" @click="dialog = false" />
         </template>

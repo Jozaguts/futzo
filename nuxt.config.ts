@@ -1,5 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  app:{
+    head: {
+      script: [
+        {
+            src: 'https://maps.googleapis.com/maps/api/js?key='+process.env.NUXT_GOOGLE_MAPS_API_KEY+'&libraries=places',
+            async: true,
+            defer: true,
+        }
+      ]
+    }
+  },
   ssr: true,
   devtools: false,
   vite:{
