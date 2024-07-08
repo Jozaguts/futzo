@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import VueDatePicker from "@vuepic/vue-datepicker";
 import '@vuepic/vue-datepicker/dist/main.css'
-const date = ref();
+const dates = ref([]);
 const emits = defineEmits(['selected-dates'])
 const dp = ref();
 const getDate = (value, index) => {
@@ -10,8 +10,6 @@ const getDate = (value, index) => {
   if (value.length === 1){
     const date = formatDate(value[0])
     dates.push(date)
-
-    dates.push()
   }else if (value.length === 2){
     const date1 = formatDate(value[0])
     const date2 = formatDate(value[1])
@@ -22,7 +20,7 @@ const getDate = (value, index) => {
 }
 const selectDate = () => {
   dp.value.selectDate()
-  emits('selected-dates', date.value)
+  emits('selected-dates', dates.value)
 }
 const formatDate = (date) => {
   const day = date.getDate();
@@ -35,12 +33,18 @@ const customPosition = (inputElement) => {
   const inputRect = inputElement.getBoundingClientRect();
   return { top: inputRect.top -60 , left: inputRect.left -100 , transform: 'translate(50%)' }
 }
+const setDatesFromRequest = (_dates) => {
+  dates.value = _dates
+}
+defineExpose({
+  setDatesFromRequest,
+})
 
 </script>
 <template>
   <VueDatePicker
       ref="dp"
-      v-model="date"
+      v-model="dates"
       position="left"
       range
       utc
