@@ -15,7 +15,7 @@ export interface Tournament {
 }
 export interface TournamentForm {
   name: string,
-  image?: File,
+  image?: File | string,
   category_id: number,
   tournament_format_id: number,
   location: AutocompletePrediction
