@@ -29,6 +29,7 @@ definePageMeta({
     <div class="next-games">
       <NextGames />
     </div>
+    <CreateTournamentDialog />
   </div>
 </template>
 <style lang="scss">
