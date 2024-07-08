@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import {storeToRefs} from "pinia";
 import {useTeamStore} from "~/store/useTeamStore";
-useHead({
-  script: [{src: 'https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyCEQ_vXTkXUIxE-exwES14KvkoGaAHOGFQ', async: true, id: 'google-maps',}]
-})
 const days = ref<object[]>([
     {
         name: 'Lunes',
