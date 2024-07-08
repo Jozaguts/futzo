@@ -1,9 +1,19 @@
 <script lang="ts" setup>
-
+import {definePageMeta} from "#imports";
 import PositionsTable from "~/components/pages/equipos/positions-table";
 import LiveGames from "~/components/pages/equipos/live-games";
 import NextGamesToday from "~/components/pages/equipos/next-games-today";
 import NextGames from "~/components/pages/equipos/next-games.vue";
+import CreateTournamentDialog from "~/components/pages/torneos/Dialog.vue";
+import {useTournamentStore} from "~/store";
+
+definePageMeta({
+  middleware: () => {
+    if(!useTournamentStore().tournamentId){
+      useRouter().push({name: 'liga'})
+    }
+  }
+});
 </script>
 <template>
   <div class="container">
