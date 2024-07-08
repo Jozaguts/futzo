@@ -16,7 +16,7 @@ definePageMeta({
 });
 </script>
 <template>
-  <div class="container">
+  <div class="tournament-details-container">
     <div class="table-container ">
       <PositionsTable />
     </div>
@@ -47,7 +47,7 @@ definePageMeta({
 @mixin grid-area($name) {
   grid-area: $name;
 }
-.container {
+.tournament-details-container {
   @include generate-grid(12, 12);
   grid-template-areas:
     "table-container table-container table-container table-container table-container table-container table-container table-container table-container live-games live-games live-games"
