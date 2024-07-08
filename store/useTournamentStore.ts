@@ -1,6 +1,6 @@
 
 import {defineStore} from "pinia";
-import type {Tournament} from "~/models/tournament";
+import type {Tournament, TournamentForm, TournamentStoreRequest} from "~/models/tournament";
 import type {Game} from "~/models/Game";
 import {useGlobalStore} from "~/store/useGlobalStore";
 export const useTournamentStore = defineStore('tournamentStore', () => {
@@ -274,6 +274,9 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     const loading = ref(false)
     const tournamentTypes = ref()
     const dialog = ref(false)
+    const isEdition = ref(false)
+    const tournamentId = ref<number | null>(null)
+    const tournamentToEdit = ref({} as TournamentForm)
     async function loadTournaments() {
         loading.value = true;
         const client = useSanctumClient();
@@ -294,6 +297,16 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     async function storeTournament(formData ) {
         return await useSanctumClient()('api/v1/admin/tournaments', {
             method: 'POST',
+            body: formData,
+        }).then(async (response ) => {
+            return response;
+        }).catch(error => {
+            useGlobalStore().showErrorNotification({message: error.data.message})
+        })
+    }
+    async function updateTournament(tournamentId ,formData) {
+        return await useSanctumClient()(`api/v1/admin/tournaments/${tournamentId}`, {
+            method: 'PUT',
             body: formData,
         }).then(async (response ) => {
             return response;
@@ -349,9 +362,13 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
         storeCategory,
         fetchTournamentsByLeagueId,
         getTournamentTypes,
+        updateTournament,
         loading,
         tournamentTypes,
-        dialog
+        dialog,
+        isEdition,
+        tournamentId,
+        tournamentToEdit
     }
 
 })
