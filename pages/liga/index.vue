@@ -17,7 +17,7 @@ const headers =  [
   { title: 'Status', value: 'status', sortable: true, align: 'center' },
   { title: '', value: 'actions', sortable: false,  },
 ]
-const {dialog, tournaments, tournamentId,tournament} = storeToRefs(useTournamentStore());
+const {dialog, tournaments, tournamentId,tournament,pagination} = storeToRefs(useTournamentStore());
 onMounted(() => {
   useTournamentStore()
       .loadTournaments()
@@ -45,13 +45,14 @@ const setChipColor = (status) => {
       return 'warning'
   }
 }
+
 </script>
 <template>
   <v-container fluid class="fill-height">
     <v-row class="fill-height">
       <v-col >
         <v-card
-            v-if="!theAreTournaments"
+            v-if="!tournaments.length"
             rounded
             elevation="2"
             height="100%"
@@ -125,33 +126,48 @@ const setChipColor = (status) => {
               </template>
               <template #bottom="props">
               <v-divider />
-              <div class="w-100 d-flex justify-space-between align-center px-4 pb-4 pt-4">
-                <v-btn
-                       elevation="0"
-                       variant="text"
-                       color="black"
-                       rounded="md"
-                       border="thin secondary"
+                <v-pagination
+                    class="custom-pagination"
+                    v-model="pagination.page"
+                    :length="pagination.total"
+                    start="1"
+                    @update:modelValue="useTournamentStore().loadTournaments"
                 >
-                  <template #prepend>
-                    <nuxt-icon name="arrow-left" filled></nuxt-icon>
+                  <template #prev="props">
+                    <v-btn
+                        @click="props.onClick"
+                        :disabled="props.disabled"
+                        elevation="0"
+                        variant="text"
+                        color="black"
+                        rounded="md"
+                        border="thin secondary"
+                    >
+                      <template #prepend>
+                        <nuxt-icon name="arrow-left" filled></nuxt-icon>
+                      </template>
+                      Anterior
+                    </v-btn>
                   </template>
-                  Anterior
-                </v-btn>
-                <v-chip class="bg-surface" color="black" rounded="sm" >{{props.page}}</v-chip>
-                <v-btn
-                       elevation="0"
-                       variant="text"
-                       color="black"
-                       rounded="md"
-                       border="thin secondary"
-                >
-                  <template #append>
-                    <nuxt-icon name="arrow-right" filled></nuxt-icon>
+                  <template #next="props">
+                    <v-btn
+                        @click="props.onClick"
+                        :disabled="props.disabled"
+                        elevation="0"
+                        variant="text"
+                        color="black"
+                        rounded="md"
+                        border="thin secondary"
+                        class="ml-auto"
+                    >
+
+                      <template #append>
+                        <nuxt-icon name="arrow-right" filled></nuxt-icon>
+                      </template>
+                      Siguiente
+                    </v-btn>
                   </template>
-                  Siguiente
-                </v-btn>
-              </div>
+                </v-pagination>
               </template>
             </v-data-table>
 
@@ -162,7 +178,15 @@ const setChipColor = (status) => {
       </v-row>
   </v-container>
 </template>
-<style>
+<style >
+.custom-pagination > .v-pagination__list > .v-pagination__prev{
+  position: absolute;
+  left: 2rem;
+}
+.custom-pagination > .v-pagination__list > .v-pagination__next{
+  position: absolute;
+  right: 2rem;
+}
 thead{
   background: v-bind(backgroundColor);
 

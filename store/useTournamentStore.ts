@@ -277,22 +277,24 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     const isEdition = ref(false)
     const tournamentId = ref<number | null>(null)
     const tournamentToEdit = ref({} as TournamentForm)
+    const pagination = ref({
+        page: 1,
+        perPage: 10,
+        total: 0,
+    })
     async function loadTournaments() {
         loading.value = true;
         const client = useSanctumClient();
-
-        const data = await client('/api/v1/admin/tournaments');
-
+        const {data, meta} = await client(`/api/v1/admin/tournaments?per_page=${pagination.value.perPage}&page=${pagination.value.page}`);
         tournaments.value = data?.tournaments || [];
         tournament.value = tournaments.value[0] || null;
         categories.value = data?.categories || [];
-        const timeout = setTimeout(() => {
-            loading.value = false;
-            }, 1000)
-        return () => {
-            clearTimeout(timeout)
+        pagination.value = {
+            page: meta.current_page,
+            perPage: meta.per_page,
+            total: meta.last_page,
         }
-
+        loading.value = false;
     }
     async function storeTournament(formData ) {
         return await useSanctumClient()('api/v1/admin/tournaments', {
@@ -341,7 +343,6 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
         // console.log( matchesByRound.value, 2222222)
 
     }
-
     async function updateTournamentStatus(tournamentId ,status) {
         const client = useSanctumClient();
         await client(`api/v1/admin/tournaments/${tournamentId}/status`, {
@@ -351,7 +352,6 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
             await loadTournaments();
         })
     }
-
     async function getTournamentTypes(){
         const client = useSanctumClient();
         const response =  await client('/api/v1/admin/tournaments/types')
@@ -379,7 +379,8 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
         isEdition,
         tournamentId,
         tournamentToEdit,
-        updateTournamentStatus
+        updateTournamentStatus,
+        pagination
 
     }
 
