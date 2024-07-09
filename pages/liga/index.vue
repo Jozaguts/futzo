@@ -17,18 +17,33 @@ const headers =  [
   { title: 'Status', value: 'status', sortable: true, align: 'center' },
   { title: '', value: 'actions', sortable: false,  },
 ]
-const {dialog, tournaments, tournamentId} = storeToRefs(useTournamentStore());
+const {dialog, tournaments, tournamentId,tournament} = storeToRefs(useTournamentStore());
 onMounted(() => {
   useTournamentStore()
       .loadTournaments()
 })
 const theAreTournaments = computed(() => tournaments.value.length > 0)
-const handleShowTournament = (tournament) => {
-  tournamentId.value = tournament.id
+const handleShowTournament = (_tournament) => {
+  tournamentId.value = _tournament.id
+  tournament.value = _tournament
   useRouter().push({
     name: 'liga-torneo',
-    params: { torneo: tournament.slug }
+    params: { torneo: _tournament.slug }
   })
+}
+const setChipColor = (status) => {
+  switch (status) {
+    case 'creado':
+      return 'warning'
+    case 'en curso':
+      return 'success'
+    case 'completado':
+      return 'primary'
+    case 'cancelado':
+      return 'error'
+    default:
+      return 'warning'
+  }
 }
 </script>
 <template>
@@ -98,7 +113,7 @@ const handleShowTournament = (tournament) => {
                 ></v-checkbox-btn>
               </template>
               <template v-slot:item.status="{ item }">
-                <v-chip :color="item.status === 'active' ? 'success' : ''" border="lg" class="text-capitalize">
+                <v-chip :color="setChipColor(item.status)" border="lg" class="text-capitalize">
                   {{ item.status }}
                 </v-chip>
               </template>

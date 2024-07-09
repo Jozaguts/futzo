@@ -342,6 +342,16 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
 
     }
 
+    async function updateTournamentStatus(tournamentId ,status) {
+        const client = useSanctumClient();
+        await client(`api/v1/admin/tournaments/${tournamentId}/status`, {
+            method: 'PUT',
+            body: {status},
+        }).then(async () => {
+            await loadTournaments();
+        })
+    }
+
     async function getTournamentTypes(){
         const client = useSanctumClient();
         const response =  await client('/api/v1/admin/tournaments/types')

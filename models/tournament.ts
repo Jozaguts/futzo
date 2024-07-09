@@ -9,7 +9,7 @@ export interface Tournament {
   prize?: string | null;
   winner?: string | null;
   description?: string | null;
-  status?: string | null;
+  status?: string;
   league?: string | null;
   image: string;
 }
