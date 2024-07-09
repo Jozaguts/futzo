@@ -6,7 +6,7 @@ const {tournamentId, tournament} = storeToRefs(useTournamentStore())
 const tournamentStatus = computed(() => tournament.value?.status)
 const handleCancelTournament = () => {
   useTournamentStore()
-      .updateTournament( tournamentId.value, {status: 'cancelado'})
+      .updateTournamentStatus( tournamentId.value, {status: 'cancelado'})
       .then(() => {
         dialog.value = false
         useRouter().push({name: "liga"})

@@ -1,6 +1,6 @@
 
 import {defineStore} from "pinia";
-import type {Tournament, TournamentForm, TournamentStoreRequest} from "~/models/tournament";
+import type {Tournament, TournamentForm} from "~/models/tournament";
 import type {Game} from "~/models/Game";
 import {useGlobalStore} from "~/store/useGlobalStore";
 export const useTournamentStore = defineStore('tournamentStore', () => {
@@ -346,7 +346,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
         const client = useSanctumClient();
         await client(`api/v1/admin/tournaments/${tournamentId}/status`, {
             method: 'PUT',
-            body: {status},
+            body: status,
         }).then(async () => {
             await loadTournaments();
         })
@@ -378,7 +378,9 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
         dialog,
         isEdition,
         tournamentId,
-        tournamentToEdit
+        tournamentToEdit,
+        updateTournamentStatus
+
     }
 
 })
