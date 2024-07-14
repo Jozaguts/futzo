@@ -50,7 +50,6 @@ export default defineNuxtConfig({
     "@vee-validate/nuxt",
     "nuxt-auth-sanctum",
     "nuxt-typed-router",
-    "nuxt-icon",
     "@nuxtjs/google-fonts",
     "@pinia/nuxt",
     "@vueuse/nuxt",

@@ -69,7 +69,7 @@
             title="Configuración"
           >
             <template #prepend>
-              <Icon name="clarity:cog-line" size="24" class="mr-2" />
+              <nuxt-icon name="settings-01" class="mr-2" filled />
             </template>
           </v-list-item>
         </v-list>
@@ -78,7 +78,8 @@
           <v-card-item>
             <template #prepend>
               <v-avatar>
-                <Icon name="solar:user-bold-duotone"></Icon>
+                <!--               todo add icon  icon-->
+                <!--                <Icon name="solar:user-bold-duotone"></Icon>-->
               </v-avatar>
             </template>
             <template #title>
@@ -90,7 +91,7 @@
             <template v-slot:append>
               <v-btn @click="logout" variant="text" size="24">
                 <template #prepend>
-                  <Icon name="mynaui:logout" size="24"> </Icon>
+                  <nuxt-icon name="logout" filled></nuxt-icon>
                 </template>
               </v-btn>
             </template>
@@ -99,9 +100,10 @@
       </div>
       <div v-else class="text-center">
         <v-btn @click="logout" variant="text">
-          <template #prepend
-            ><Icon name="mynaui:logout" size="24"> </Icon
-          ></template>
+          <template #prepend>
+            <nuxt-icon name="settings-01" class="mr-2" />
+            ></template
+          >
         </v-btn>
       </div>
     </template>
