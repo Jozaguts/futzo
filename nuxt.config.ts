@@ -23,14 +23,14 @@ export default defineNuxtConfig({
     enabled: false,
   },
 
-  vite: {
-    server: {
-      hmr: {
-        protocol: "ws",
-        host: "0.0.0.0",
-      },
-    },
-  },
+  // vite: {
+  //   server: {
+  //     hmr: {
+  //       protocol: "ws",
+  //       host: "0.0.0.0",
+  //     },
+  //   },
+  // },
 
   build: { transpile: ["vuetify", "@vuepic/vue-datepicker", "vue-sonner"] },
 
