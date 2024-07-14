@@ -1,7 +1,6 @@
-<script lang="ts" setup>
-</script>
+<script lang="ts" setup></script>
 <template>
-  <v-table class="live-games-table" density="comfortable">
+  <v-table class="live-games-table futzo-rounded" density="comfortable">
     <template #top>
       <h2 class="live-games-table__title">Tabla de posiciones</h2>
     </template>
@@ -10,29 +9,12 @@
         <table>
           <tbody>
             <tr class="live-games-table__cell">
-            <td class="team">
-              <img src="https://placehold.co/50x50" alt="team logo"  class="logo"/>
-              <span class="team_name">Equipo 1</span>
-            </td>
-            <td class="data">
-              <div class="live">
-                <nuxt-icon name="Ellipse-red" filled></nuxt-icon>
-                <span>Live</span>
-              </div>
-              <div class="result">
-                <div class="text">
-                  1:3
-                </div>
-              </div>
-            </td>
-            <td class="team">
-              <img src="https://placehold.co/50x50" alt="team logo"  class="logo"/>
-              <span class="team_name">Equipo 1</span>
-            </td>
-          </tr>
-            <tr class="live-games-table__cell">
               <td class="team">
-                <img src="https://placehold.co/50x50" alt="team logo"  class="logo"/>
+                <img
+                  src="https://placehold.co/50x50"
+                  alt="team logo"
+                  class="logo"
+                />
                 <span class="team_name">Equipo 1</span>
               </td>
               <td class="data">
@@ -41,19 +23,25 @@
                   <span>Live</span>
                 </div>
                 <div class="result">
-                  <div class="text">
-                    1:3
-                  </div>
+                  <div class="text">1:3</div>
                 </div>
               </td>
               <td class="team">
-                <img src="https://placehold.co/50x50" alt="team logo"  class="logo"/>
+                <img
+                  src="https://placehold.co/50x50"
+                  alt="team logo"
+                  class="logo"
+                />
                 <span class="team_name">Equipo 1</span>
               </td>
             </tr>
             <tr class="live-games-table__cell">
               <td class="team">
-                <img src="https://placehold.co/50x50" alt="team logo"  class="logo"/>
+                <img
+                  src="https://placehold.co/50x50"
+                  alt="team logo"
+                  class="logo"
+                />
                 <span class="team_name">Equipo 1</span>
               </td>
               <td class="data">
@@ -62,13 +50,42 @@
                   <span>Live</span>
                 </div>
                 <div class="result">
-                  <div class="text">
-                    1:3
-                  </div>
+                  <div class="text">1:3</div>
                 </div>
               </td>
               <td class="team">
-                <img src="https://placehold.co/50x50" alt="team logo"  class="logo"/>
+                <img
+                  src="https://placehold.co/50x50"
+                  alt="team logo"
+                  class="logo"
+                />
+                <span class="team_name">Equipo 1</span>
+              </td>
+            </tr>
+            <tr class="live-games-table__cell">
+              <td class="team">
+                <img
+                  src="https://placehold.co/50x50"
+                  alt="team logo"
+                  class="logo"
+                />
+                <span class="team_name">Equipo 1</span>
+              </td>
+              <td class="data">
+                <div class="live">
+                  <nuxt-icon name="Ellipse-red" filled></nuxt-icon>
+                  <span>Live</span>
+                </div>
+                <div class="result">
+                  <div class="text">1:3</div>
+                </div>
+              </td>
+              <td class="team">
+                <img
+                  src="https://placehold.co/50x50"
+                  alt="team logo"
+                  class="logo"
+                />
                 <span class="team_name">Equipo 1</span>
               </td>
             </tr>
@@ -79,39 +96,38 @@
   </v-table>
 </template>
 <style lang="scss" scoped>
-.live-games-table{
+.live-games-table {
   height: 100%;
   display: flex;
   width: 100%;
-  padding: 1rem  1rem 0 1rem;
+  padding: 1rem 1rem 0 1rem;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--spacing-xl, 16px);
 }
-.live-games-table__title{
+.live-games-table__title {
   color: var(--Component-colors-Utility-Gray-utility-gray-800, #182230);
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
   line-height: 24px; /* 150% */
 }
-.v-table__wrapper.content{
+.v-table__wrapper.content {
   width: 100%;
 }
-.live-games-table__cell{
+.live-games-table__cell {
   display: flex;
   justify-content: space-between;
   align-items: center;
   align-self: stretch;
   width: 100%;
   border-radius: var(--radius-md, 8px);
-  border: 2px solid var(--colors-gray-light-mode-200, #EEE);
-
+  border: 2px solid var(--colors-gray-light-mode-200, #eee);
 }
-.live-games-table__cell:not(:last-child){
+.live-games-table__cell:not(:last-child) {
   margin: 1rem 0;
 }
-.team{
+.team {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -119,7 +135,7 @@
   flex: 1 0 0;
   min-height: 80px;
 }
-.data{
+.data {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -138,7 +154,7 @@
   border-radius: 100px;
   //background: url(<path-to-image>) lightgray 50% / cover no-repeat;
 }
-.team_name{
+.team_name {
   color: var(--Component-colors-Utility-Gray-utility-gray-700, #344054);
   font-size: 12px;
   font-style: normal;
@@ -152,7 +168,7 @@
   gap: var(--spacing-xs, 4px);
 }
 .data > .live > span {
-  color: var(--Colors-Error-600, #E8454A);
+  color: var(--Colors-Error-600, #e8454a);
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
@@ -168,7 +184,7 @@
   background: var(--Colors-Base-Black, #000);
 }
 .data > .result > .text {
-  color: var(--Colors-Base-White, #FFF);
+  color: var(--Colors-Base-White, #fff);
   text-align: center;
   font-size: 20px;
   font-style: normal;

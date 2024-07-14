@@ -17,7 +17,7 @@ const subtitle = computed(() => {
 <template>
   <v-dialog v-model="dialog" max-width="688">
     <v-card
-      class="create-tournament-card"
+      class="create-tournament-card futzo-rounded"
       :style="{ overflow: $vuetify.display.mobile ? '' : 'hidden' }"
     >
       <v-card-item>
