@@ -1,13 +1,12 @@
 #!/usr/bin/env sh
-if [ -f .env ]; then
-    export $(cat .env | grep -v '^#' | xargs)
+if [ -f .env.prod ]; then
+    export $(cat .env.prod | grep -v '^#' | xargs)
 fi
- abort on errors
+
 set -e
 npm run build
 cp ecosystem.config.cjs .output/
 cd .output/
-
 
 git init
 git add -A
