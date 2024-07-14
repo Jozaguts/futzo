@@ -100,7 +100,7 @@
   height: 100%;
   display: flex;
   width: 100%;
-  padding: 1rem 1rem 0 1rem;
+  padding: 1rem;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--spacing-xl, 16px);
@@ -125,7 +125,7 @@
   border: 2px solid var(--colors-gray-light-mode-200, #eee);
 }
 .live-games-table__cell:not(:last-child) {
-  margin: 1rem 0;
+  margin: 0 0 1rem 0;
 }
 .team {
   display: flex;

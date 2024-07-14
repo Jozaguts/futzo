@@ -38,3 +38,7 @@
   border: 1px solid #eaecf0;
   background: #fff;
 }
+.futzo-table > .v-table__wrapper > table > thead > tr > th, .futzo-table > .v-table__wrapper > table > tbody > tr > td {
+  height: 20px !important;
+  padding: 12px 24px !important;
+}

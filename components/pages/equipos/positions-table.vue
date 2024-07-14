@@ -1,6 +1,6 @@
 <script setup lang="ts"></script>
 <template>
-  <v-table class="positions-table">
+  <v-table class="positions-table futzo-table">
     <template #top>
       <h2 class="positions-table-title mt-0">Tabla de posicioness</h2>
     </template>

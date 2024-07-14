@@ -1,30 +1,32 @@
 <script lang="ts" setup>
-import {definePageMeta} from "#imports";
+import { definePageMeta } from "#imports";
 import PositionsTable from "~/components/pages/equipos/positions-table";
 import LiveGames from "~/components/pages/equipos/live-games";
 import NextGamesToday from "~/components/pages/equipos/next-games-today";
 import NextGames from "~/components/pages/equipos/next-games.vue";
 import CreateTournamentDialog from "~/components/pages/torneos/Dialog.vue";
-import {useTournamentStore} from "~/store";
+import { useTournamentStore } from "~/store";
 
 definePageMeta({
   middleware: () => {
-    if(!useTournamentStore().tournamentId){
-      useRouter().push({name: 'liga'})
+    if (!useTournamentStore().tournamentId) {
+      useRouter().push({ name: "liga" });
     }
-  }
+  },
 });
 </script>
 <template>
   <div class="tournament-details-container">
-    <div class="table-container ">
+    <div class="table-container">
       <PositionsTable />
     </div>
-    <div class="live-games">
-      <LiveGames />
-    </div>
-    <div class="next-games-today">
-      <NextGamesToday />
+    <div class="games-container">
+      <div class="live-games">
+        <LiveGames />
+      </div>
+      <div class="next-games-today">
+        <NextGamesToday />
+      </div>
     </div>
     <div class="next-games">
       <NextGames />
@@ -33,63 +35,49 @@ definePageMeta({
   </div>
 </template>
 <style lang="scss">
-@mixin generate-grid($columns, $rows) {
+.tournament-details-container {
   display: grid;
-  grid-template-columns: repeat($columns, 1fr);
-  grid-template-rows: repeat($rows, 1fr);
   grid-auto-columns: 1fr;
-  row-gap: 1em;
-  column-gap: 2rem;
-  grid-auto-flow: row;
-  height: 100%;
-  padding: 2rem
+  grid-template-columns: calc(80% - 20px) calc(20% + 20px);
+  grid-template-rows: calc(70% - 20px) calc(30% + 20px);
+  gap: 1em 1em;
+  grid-template-areas:
+    "table-container games-container"
+    "next-games games-container";
+  padding: 40px;
+}
+.table-container {
+  grid-area: table-container;
+  padding: 1rem;
+  border-radius: var(--radius-2xl, 16px);
+  background: var(--Colors-Base-White, #fff);
+}
+.games-container {
+  grid-area: games-container;
+}
+.games-container > :first-child {
+  margin-bottom: 2rem;
 }
 
-@mixin grid-area($name) {
-  grid-area: $name;
-}
-.tournament-details-container {
-  @include generate-grid(12, 12);
-  grid-template-areas:
-    "table-container table-container table-container table-container table-container table-container table-container table-container table-container live-games live-games live-games"
-    "table-container table-container table-container table-container table-container table-container table-container table-container table-container live-games live-games live-games"
-    "table-container table-container table-container table-container table-container table-container table-container table-container table-container live-games live-games live-games"
-    "table-container table-container table-container table-container table-container table-container table-container table-container table-container live-games live-games live-games"
-    "table-container table-container table-container table-container table-container table-container table-container table-container table-container live-games live-games live-games"
-    "table-container table-container table-container table-container table-container table-container table-container table-container table-container next-games-today next-games-today next-games-today"
-    "table-container table-container table-container table-container table-container table-container table-container table-container table-container next-games-today next-games-today next-games-today"
-    "table-container table-container table-container table-container table-container table-container table-container table-container table-container next-games-today next-games-today next-games-today"
-    "next-games next-games next-games next-games next-games next-games next-games next-games next-games next-games-today next-games-today next-games-today"
-    "next-games next-games next-games next-games next-games next-games next-games next-games next-games next-games-today next-games-today next-games-today"
-    "next-games next-games next-games next-games next-games next-games next-games next-games next-games . . ."
-    "next-games next-games next-games next-games next-games next-games next-games next-games next-games . . .";
-}
 .live-games {
-  @include grid-area(live-games);
   display: flex;
   width: 100%;
-  padding: 0  1rem 0 1rem;
+  padding: 0 1rem 0 1rem;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--spacing-xl, 16px);
 }
 .next-games-today {
-  @include grid-area(next-games-today);
   display: flex;
   width: 100%;
-  padding: 0  1rem 0 1rem;
+  padding: 0 1rem 0 1rem;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--spacing-xl, 16px);
 }
-.table-container {
-  @include grid-area(table-container);
-  padding: 1rem;
-  border-radius: var(--radius-2xl, 16px);
-  background: var(--Colors-Base-White, #FFF);
-}
+
 .next-games {
-  @include grid-area(next-games);
+  grid-area: next-games;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -98,4 +86,3 @@ definePageMeta({
   width: 100%;
 }
 </style>
-
