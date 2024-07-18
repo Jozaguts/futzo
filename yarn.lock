@@ -2080,6 +2080,11 @@ autoprefixer@^10.4.19:
     picocolors "^1.0.0"
     postcss-value-parser "^4.2.0"
 
+awesome-phonenumber@^6.4.0:
+  version "6.10.0"
+  resolved "https://registry.yarnpkg.com/awesome-phonenumber/-/awesome-phonenumber-6.10.0.tgz#7a3d85d14afa3f98c17f893fa2af29ab9b332d22"
+  integrity sha512-nLzMoIWl7cP/1xL7ErlT3+zoGu9S/nbdZ89HdLwiW75U4tV26vaDkFQiz6QdIm5SWRY+BmI5LN9+HiiqFHHq8Q==
+
 b4a@^1.6.4:
   version "1.6.6"
   resolved "https://registry.yarnpkg.com/b4a/-/b4a-1.6.6.tgz#a4cc349a3851987c3c4ac2d7785c18744f6da9ba"
@@ -2492,6 +2497,16 @@ core-util-is@~1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.3.tgz#a6042d3634c2b27e9328f837b965fac83808db85"
   integrity sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==
+
+countries-list@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/countries-list/-/countries-list-3.1.0.tgz#1cbe32f58659c7d6a1e744917689f24c84333ea8"
+  integrity sha512-HpTBLZba1VPTZSjUnUwR7SykxV7Z/7/+ZM5x5wi5tO99Qvom6bE2SC+AQ18016ujg3jSlYBbMITrHNnPAHSM9Q==
+
+country-flag-icons@^1.5.12:
+  version "1.5.13"
+  resolved "https://registry.yarnpkg.com/country-flag-icons/-/country-flag-icons-1.5.13.tgz#963596b7fca6602b4b389a4e7b711ef3f33cc0b1"
+  integrity sha512-4JwHNqaKZ19doQoNcBjsoYA+I7NqCH/mC/6f5cBWvdKzcK5TMmzLpq3Z/syVHMHJuDGFwJ+rPpGizvrqJybJow==
 
 crc-32@^1.2.0:
   version "1.2.2"
@@ -3152,6 +3167,11 @@ find-up@^5.0.0:
   dependencies:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
+
+flag-icons@^7.1.0, flag-icons@^7.2.3:
+  version "7.2.3"
+  resolved "https://registry.yarnpkg.com/flag-icons/-/flag-icons-7.2.3.tgz#b67f379fa0ef28c4e605319a78035131bdd8ced7"
+  integrity sha512-X2gUdteNuqdNqob2KKTJTS+ZCvyWeLCtDz9Ty8uJP17Y4o82Y+U/Vd4JNrdwTAjagYsRznOn9DZ+E/Q52qbmqg==
 
 flatted@^3.3.1:
   version "3.3.1"
@@ -6324,6 +6344,18 @@ util-deprecate@^1.0.1, util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
 
+v-phone-input@^4.2.2:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/v-phone-input/-/v-phone-input-4.2.2.tgz#acbaadb10e00b6200818f085e4254b7b4f0b4abb"
+  integrity sha512-DiRDc0l704GqT1ahUjib/aoJXVyYMuEsQtCpwyHP3ZEue7RpyameYg9q9qujhm0W/bD/67Sd6aMsqjyUqOrhYg==
+  dependencies:
+    awesome-phonenumber "^6.4.0"
+    countries-list "^3.1.0"
+    country-flag-icons "^1.5.12"
+  optionalDependencies:
+    flag-icons "^7.1.0"
+    world-flags-sprite "^0.0.2"
+
 validate-npm-package-license@^3.0.1:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/validate-npm-package-license/-/validate-npm-package-license-3.0.4.tgz#fc91f6b9c7ba15c857f4cb2c5defeec39d4f410a"
@@ -6597,6 +6629,11 @@ wide-align@^1.1.2, wide-align@^1.1.5:
   integrity sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg==
   dependencies:
     string-width "^1.0.2 || 2 || 3 || 4"
+
+world-flags-sprite@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/world-flags-sprite/-/world-flags-sprite-0.0.2.tgz#a2dc2c7dfbf385ece2ff8dd6a05c516c5c47e1f0"
+  integrity sha512-v4Qjd8+5hBNVyn9AKFcVTaKZWaz0fZliHZ7FK0ugPMbAv+oI5BZrT72rBxmGiD6D86yshA08FTo/CcAaZW7buw==
 
 wrap-ansi@^7.0.0:
   version "7.0.0"

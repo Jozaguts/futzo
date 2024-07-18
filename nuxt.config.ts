@@ -32,7 +32,14 @@ export default defineNuxtConfig({
   //   },
   // },
 
-  build: { transpile: ["vuetify", "@vuepic/vue-datepicker", "vue-sonner"] },
+  build: {
+    transpile: [
+      "vuetify",
+      "@vuepic/vue-datepicker",
+      "vue-sonner",
+      "v-phone-input",
+    ],
+  },
 
   googleFonts: {
     families: {
