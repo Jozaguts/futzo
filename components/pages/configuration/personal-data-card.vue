@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { VPhoneInput } from "v-phone-input";
 import { useAuthStore } from "~/store";
-import type { User } from "~/models/user";
+import type { UpdateUserForm, User } from "~/models/user";
 
 const { fields, resetForm, handleSubmit } = useSchemas("edit-user");
 const user = computed(() => useAuthStore().user as User);
@@ -14,8 +14,14 @@ onMounted(() => {
     },
   });
 });
-const submit = handleSubmit(async (values) => {
-  console.log(values);
+const submit = handleSubmit((values) => {
+  const updateUserForm: UpdateUserForm = {
+    id: user.value.id,
+    name: values.name,
+    phone: values.phone,
+    email: values.email,
+  };
+  useAuthStore().updateUser(updateUserForm);
 });
 </script>
 <template>

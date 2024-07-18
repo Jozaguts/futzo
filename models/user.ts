@@ -7,3 +7,9 @@ export interface User {
   verified: boolean;
   phone: string;
 }
+export interface UpdateUserForm {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+}
