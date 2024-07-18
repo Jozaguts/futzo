@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useAuthStore } from "~/store";
-import PersonalDataCard from "~/components/configuration/personal-data-card.vue";
+import PersonalDataCard from "~/components/pages/configuration/personal-data-card.vue";
 
 const user = computed(() => useAuthStore().user);
 const tab = ref(1);
