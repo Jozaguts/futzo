@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import Avatar from "~/components/pages/configuration/avatar.vue";
 import { useAuthStore } from "~/store";
 import PersonalDataCard from "~/components/pages/configuration/personal-data-card.vue";
 
@@ -10,12 +11,10 @@ const tab = ref(1);
     <v-card variant="text">
       <v-card-item class="mb-12">
         <template #prepend>
-          <v-avatar size="64" class="mr-4">
-            <v-img src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
-          </v-avatar>
+          <Avatar />
         </template>
-        <v-card-title class="card-title"> {{ user.name }} </v-card-title>
-        <v-card-subtitle class="card-subtitle">{{
+        <v-card-title class="card-title ml-2"> {{ user.name }} </v-card-title>
+        <v-card-subtitle class="card-subtitle ml-2">{{
           user.email
         }}</v-card-subtitle>
       </v-card-item>

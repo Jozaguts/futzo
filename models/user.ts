@@ -6,6 +6,7 @@ export interface User {
   roles: string[];
   verified: boolean;
   phone: string;
+  avatar: string;
 }
 export interface UpdateUserForm {
   id: number;

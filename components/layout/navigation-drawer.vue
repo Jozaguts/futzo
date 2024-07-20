@@ -1,3 +1,60 @@
+<script lang="ts" setup>
+import { useResizeObserver } from "@vueuse/core";
+import { useAuthStore, useGlobalStore } from "~/store";
+import { storeToRefs } from "pinia";
+import CircularLogo from "~/components/CircularLogo.vue";
+
+const { drawer, drawerWidth, isMobile, appName, rail } =
+  storeToRefs(useGlobalStore());
+const drawerRef = ref();
+const authStore = useAuthStore();
+const { user } = storeToRefs(authStore);
+const adminLinks = reactive([
+  {
+    icon: "mdi-users",
+    title: "Roles y Permisos",
+    to: "/roles-permisos",
+    disabled: authStore?.role !== "super administrador",
+  },
+]);
+const links = reactive([
+  { icon: "home", title: "Dashboard", to: "/", disabled: false },
+  { icon: "trophy", title: "Liga", to: "/liga", disabled: false },
+  { icon: "calendar", title: "Calendario", to: "/calendario", disabled: false },
+  {
+    icon: "ion_shirt-sharp",
+    title: "Equipos",
+    to: "/equipos",
+    disabled: false,
+  },
+  {
+    icon: "players",
+    title: "Jugadores",
+    to: "/jugadores",
+    disabled: false,
+  },
+  {
+    icon: "ball",
+    title: "MVP",
+    to: "/mvp",
+    disabled: false,
+  },
+]);
+const { logout } = useSanctumAuth();
+useResizeObserver(drawerRef, (entries) => {
+  const entry = entries[0];
+  const { width } = entry.contentRect;
+  drawerWidth.value = width;
+});
+watchEffect(() => {
+  if (isMobile.value) {
+    rail.value = true;
+  } else {
+    rail.value = false;
+  }
+});
+</script>
+
 <template>
   <v-navigation-drawer
     permanent
@@ -109,59 +166,3 @@
     </template>
   </v-navigation-drawer>
 </template>
-<script lang="ts" setup>
-import { useResizeObserver } from "@vueuse/core";
-import { useAuthStore, useGlobalStore } from "~/store";
-import { storeToRefs } from "pinia";
-import CircularLogo from "~/components/CircularLogo.vue";
-
-const { drawer, drawerWidth, isMobile, appName, rail } =
-  storeToRefs(useGlobalStore());
-const drawerRef = ref();
-const authStore = useAuthStore();
-const { user } = storeToRefs(authStore);
-const adminLinks = reactive([
-  {
-    icon: "mdi-users",
-    title: "Roles y Permisos",
-    to: "/roles-permisos",
-    disabled: authStore?.role !== "super administrador",
-  },
-]);
-const links = reactive([
-  { icon: "home", title: "Dashboard", to: "/", disabled: false },
-  { icon: "trophy", title: "Liga", to: "/liga", disabled: false },
-  { icon: "calendar", title: "Calendario", to: "/calendario", disabled: false },
-  {
-    icon: "ion_shirt-sharp",
-    title: "Equipos",
-    to: "/equipos",
-    disabled: false,
-  },
-  {
-    icon: "players",
-    title: "Jugadores",
-    to: "/jugadores",
-    disabled: false,
-  },
-  {
-    icon: "ball",
-    title: "MVP",
-    to: "/mvp",
-    disabled: false,
-  },
-]);
-const { logout } = useSanctumAuth();
-useResizeObserver(drawerRef, (entries) => {
-  const entry = entries[0];
-  const { width } = entry.contentRect;
-  drawerWidth.value = width;
-});
-watchEffect(() => {
-  if (isMobile.value) {
-    rail.value = true;
-  } else {
-    rail.value = false;
-  }
-});
-</script>
