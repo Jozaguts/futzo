@@ -57,38 +57,25 @@ const submit = handleSubmit((values) => {
             <p class="label-form">Teléfono</p>
           </v-col>
           <v-col cols="4">
-            <VPhoneInput
-              variant="plain"
-              :singleLine="true"
-              v-model="fields.phone.fieldValue"
-              class="user-data-configuration-form__input"
-              :invalidMessage="
-                ({ label, example }) => {
-                  return `${label} debe ser un numero valido (${example}).`;
-                }
-              "
-            >
-            </VPhoneInput>
-            <small class="text-error">{{
-              fields.phone.fieldPropsValue["error-messages"][0]
-            }}</small>
+            <client-only>
+              <VPhoneInput
+                variant="plain"
+                :singleLine="true"
+                v-model="fields.phone.fieldValue"
+                class="user-data-configuration-form__input"
+                :invalidMessage="
+                  ({ label, example }) => {
+                    return `${label} debe ser un numero valido (${example}).`;
+                  }
+                "
+              >
+              </VPhoneInput>
+              <small class="text-error">{{
+                fields.phone.fieldPropsValue["error-messages"][0]
+              }}</small>
+            </client-only>
           </v-col>
         </v-row>
-        <!--        <v-row class="row-border-bottom" no-gutters>-->
-        <!--          <v-col cols="3">-->
-        <!--            <p class="label-form">Ciudad</p>-->
-        <!--          </v-col>-->
-        <!--          <v-col cols="4">-->
-        <!--            <v-text-field-->
-        <!--              v-model="fields.city.fieldValue"-->
-        <!--              variant="plain"-->
-        <!--              class="user-data-configuration-form__input"-->
-        <!--            ></v-text-field>-->
-        <!--            <small class="text-error">{{-->
-        <!--              fields.city.fieldPropsValue["error-messages"][0]-->
-        <!--            }}</small>-->
-        <!--          </v-col>-->
-        <!--        </v-row>-->
         <v-row class="row-border-bottom" no-gutters>
           <v-col cols="3">
             <p class="label-form">Correo electrónico</p>
