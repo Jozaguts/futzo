@@ -119,7 +119,7 @@ const { drawer, drawerWidth, isMobile, appName, rail } =
   storeToRefs(useGlobalStore());
 const drawerRef = ref();
 const authStore = useAuthStore();
-const user = authStore?.user;
+const { user } = storeToRefs(authStore);
 const adminLinks = reactive([
   {
     icon: "mdi-users",
