@@ -28,7 +28,7 @@ const tab = ref(1);
             <personal-data-card />
           </v-tabs-window-item>
           <v-tabs-window-item :value="2" :key="2">
-            Lorem ipsum dolor sit amet
+            <lazy-pages-configuration-password-data-card />
           </v-tabs-window-item>
         </v-tabs-window>
       </v-card-text>

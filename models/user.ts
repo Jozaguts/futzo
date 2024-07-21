@@ -14,3 +14,9 @@ export interface UpdateUserForm {
   email: string;
   phone: string;
 }
+export interface UpdateUserPasswordForm {
+  id: number;
+  password: string;
+  new_password: string;
+  new_password_confirmation: string;
+}

@@ -131,6 +131,14 @@ function getSchemaByName(name) {
       // schemaFields.city = yup.string().required(t("forms.required"));
       schemaFields.phone = yusString();
       break;
+    case "edit-password":
+      schemaFields.password = yup.string().required(t("forms.required"));
+      schemaFields.new_password = yup.string().required(t("forms.required"));
+      schemaFields.new_password_confirmation = yup
+        .string()
+        .required(t("forms.required"))
+        .oneOf([yup.ref("new_password"), null], "Las contraseñas no coinciden");
+      break;
     default:
       schemaFields = yup.mixed();
   }

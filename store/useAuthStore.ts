@@ -1,5 +1,9 @@
 import { defineStore } from "pinia";
-import type { UpdateUserForm, User } from "~/models/user";
+import type {
+  UpdateUserForm,
+  UpdateUserPasswordForm,
+  User,
+} from "~/models/user";
 import { toast } from "vuetify-sonner";
 import { useSanctumUser } from "#imports";
 
@@ -18,6 +22,24 @@ export const useAuthStore = defineStore("authStore", () => {
       await refreshIdentity();
       toast.success("Perfil actualizado");
     });
+  };
+  const updatePassword = (updateUserPasswordForm: UpdateUserPasswordForm) => {
+    const client = useSanctumClient();
+
+    client(`api/v1/admin/profile/${updateUserPasswordForm.id}/password`, {
+      method: "PUT",
+      body: {
+        ...updateUserPasswordForm,
+      },
+    })
+      .then(() => {
+        toast.success("Contraseña actualizada");
+      })
+      .catch((error) => {
+        const message =
+          error?.data?.message || "Error al actualizar la contraseña";
+        toast.error(message);
+      });
   };
   const updateAvatar = async (avatar: File) => {
     const client = useSanctumClient();
@@ -45,5 +67,6 @@ export const useAuthStore = defineStore("authStore", () => {
     updateUser,
     avatar,
     updateAvatar,
+    updatePassword,
   };
 });
