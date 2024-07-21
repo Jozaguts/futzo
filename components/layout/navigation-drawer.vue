@@ -47,11 +47,7 @@ useResizeObserver(drawerRef, (entries) => {
   drawerWidth.value = width;
 });
 watchEffect(() => {
-  if (isMobile.value) {
-    rail.value = true;
-  } else {
-    rail.value = false;
-  }
+  rail.value = isMobile.value;
 });
 </script>
 
@@ -131,12 +127,11 @@ watchEffect(() => {
           </v-list-item>
         </v-list>
         <v-divider></v-divider>
-        <v-card>
+        <v-card :loading="!user.name">
           <v-card-item>
             <template #prepend>
               <v-avatar>
-                <!--               todo add icon  icon-->
-                <!--                <Icon name="solar:user-bold-duotone"></Icon>-->
+                <v-img :src="user.avatar"></v-img>
               </v-avatar>
             </template>
             <template #title>
@@ -156,11 +151,25 @@ watchEffect(() => {
         </v-card>
       </div>
       <div v-else class="text-center">
+        <v-list density="compact" nav>
+          <v-list-item
+            density="compact"
+            key="configuration"
+            link
+            to="/configuracion"
+            :disabled="false"
+            title="Configuración"
+          >
+            <template #prepend>
+              <nuxt-icon name="settings-01" class="mr-2" filled />
+            </template>
+          </v-list-item>
+        </v-list>
+        <v-divider></v-divider>
         <v-btn @click="logout" variant="text">
           <template #prepend>
-            <nuxt-icon name="settings-01" class="mr-2" />
-            ></template
-          >
+            <nuxt-icon name="logout" class="mr-2" filled />
+          </template>
         </v-btn>
       </div>
     </template>

@@ -42,3 +42,7 @@
   height: 20px !important;
   padding: 12px 24px !important;
 }
+ a.v-list-item--active > div.v-list-item__prepend > span > svg #Icon > path:nth-child(1),
+a.v-list-item--active > div.v-list-item__prepend > span > svg #Icon > path:nth-child(2) {
+  stroke: white !important  ;
+}
