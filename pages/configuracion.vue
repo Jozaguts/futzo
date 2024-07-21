@@ -13,9 +13,9 @@ const tab = ref(1);
         <template #prepend>
           <Avatar />
         </template>
-        <v-card-title class="card-title ml-2"> {{ user.name }} </v-card-title>
+        <v-card-title class="card-title ml-2"> {{ user?.name }} </v-card-title>
         <v-card-subtitle class="card-subtitle ml-2">{{
-          user.email
+          user?.email
         }}</v-card-subtitle>
       </v-card-item>
       <v-card-text>

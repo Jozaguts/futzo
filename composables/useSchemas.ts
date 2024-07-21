@@ -41,10 +41,7 @@ function getSchemaByName(name) {
         "no-leading-space",
         "No se permite espacio en blanco al inicio",
         (value) => {
-          if (value && value.startsWith(" ")) {
-            return false;
-          }
-          return true;
+          return !(value && value.startsWith(" "));
         },
       );
   };
