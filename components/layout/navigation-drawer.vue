@@ -2,19 +2,17 @@
 import { useResizeObserver } from "@vueuse/core";
 import { useAuthStore, useGlobalStore } from "~/store";
 import { storeToRefs } from "pinia";
-import CircularLogo from "~/components/CircularLogo.vue";
 
-const { drawer, drawerWidth, isMobile, appName, rail } =
-  storeToRefs(useGlobalStore());
+const { drawer, drawerWidth, isMobile, rail } = storeToRefs(useGlobalStore());
 const drawerRef = ref();
 const authStore = useAuthStore();
-const { user } = storeToRefs(authStore);
+const { user, isSuperAdmin } = storeToRefs(authStore);
 const adminLinks = reactive([
   {
-    icon: "mdi-users",
+    icon: "roles",
     title: "Roles y Permisos",
     to: "/roles-permisos",
-    disabled: authStore?.role !== "super administrador",
+    disabled: !isSuperAdmin.value,
   },
 ]);
 const links = reactive([
@@ -61,16 +59,7 @@ watchEffect(() => {
     app
   >
     <v-list-item nav ref="drawerRef">
-      <template #default>
-        <Logo />
-      </template>
-      <template v-slot:append>
-        <v-btn
-          icon="mdi-chevron-left"
-          variant="text"
-          @click.stop="rail = !rail"
-        ></v-btn>
-      </template>
+      <Logo />
       <template #prepend>
         <v-btn
           v-if="rail"
@@ -79,23 +68,32 @@ watchEffect(() => {
           @click.stop="rail = !rail"
         ></v-btn>
       </template>
+      <template #append>
+        <v-btn
+          icon="mdi-chevron-left"
+          variant="text"
+          @click.stop="rail = !rail"
+        ></v-btn>
+      </template>
     </v-list-item>
+
     <v-list density="compact" nav>
-      <v-list-item v-if="rail" value="futzo" class="pa-0" disabled>
-        <template #default>
-          <CircularLogo />
-        </template>
-      </v-list-item>
-      <v-list-item
-        density="compact"
-        v-for="link in adminLinks"
-        :key="link.title"
-        link
-        :to="link.to"
-        :disabled="link.disabled"
-        :prepend-icon="link.icon"
-        :title="link.title"
-      />
+      <template v-if="isSuperAdmin">
+        <v-list-item
+          density="compact"
+          v-for="link in adminLinks"
+          :key="link.title"
+          link
+          :to="link.to"
+          :disabled="link.disabled"
+          :prepend-icon="link.icon"
+          :title="link.title"
+        >
+          <template #prepend>
+            <nuxt-icon :name="link.icon" class="mr-2 drawer-icon" />
+          </template>
+        </v-list-item>
+      </template>
       <v-list-item
         density="compact"
         v-for="link in links"
@@ -110,7 +108,8 @@ watchEffect(() => {
         </template>
       </v-list-item>
     </v-list>
-    <template v-slot:append>
+
+    <template #append>
       <div v-if="!rail">
         <v-list density="compact" nav>
           <v-list-item
@@ -127,18 +126,18 @@ watchEffect(() => {
           </v-list-item>
         </v-list>
         <v-divider></v-divider>
-        <v-card :loading="!user.name">
+        <v-card :loading="!user?.name">
           <v-card-item>
             <template #prepend>
               <v-avatar>
-                <v-img :src="user.avatar"></v-img>
+                <v-img :src="user?.avatar"></v-img>
               </v-avatar>
             </template>
             <template #title>
-              <small> {{ user.name }}</small>
+              <small> {{ user?.name }}</small>
             </template>
             <template #subtitle>
-              {{ user.email }}
+              {{ user?.email }}
             </template>
             <template v-slot:append>
               <v-btn @click="logout" variant="text" size="24">
