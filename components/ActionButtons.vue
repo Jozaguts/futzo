@@ -1,62 +1,73 @@
 <script lang="ts" setup>
-import {storeToRefs} from "pinia";
-import {useTournamentStore} from "~/store";
+import { storeToRefs } from "pinia";
+import { useTeamStore, useTournamentStore } from "~/store";
 import EditarTorneo from "~/components/pages/liga/editar-torneo.vue";
 import CancelarTorneo from "~/components/pages/liga/cancelar-torneo.vue";
-import type {TournamentForm} from "~/models/tournament";
+import type { TournamentForm } from "~/models/tournament";
 
-const currentRouteName = computed(() =>  useRoute().name)
-const buttonActions = computed<{icon: string, title: string} | boolean>(() => {
-  switch(currentRouteName.value){
-    case 'index':
-      return false
-    case 'liga':
-      return {
-        title: 'Crear torneo',
-        icon: 'plus',
-      }
-    case 'liga-torneo':
-      return {
-        title: 'Marcar como terminado',
-        icon: 'check-circle-broken',
-      }
-    default:
-      return {
-        title: 'Crear',
-        icon: 'plus',
-      }
-  }
-
-})
+const currentRouteName = computed(() => useRoute().name);
+const buttonActions = computed<{ icon: string; title: string } | boolean>(
+  () => {
+    switch (currentRouteName.value) {
+      case "index":
+        return false;
+      case "liga":
+        return {
+          title: "Crear torneo",
+          icon: "plus",
+        };
+      case "liga-torneo":
+        return {
+          title: "Marcar como terminado",
+          icon: "check-circle-broken",
+        };
+      case "equipos":
+        return {
+          title: "Crear equipo",
+          icon: "plus",
+        };
+      default:
+        return {
+          title: "Crear",
+          icon: "plus",
+        };
+    }
+  },
+);
 const handleActions = () => {
   switch (currentRouteName.value) {
-    case 'liga':
-      const {dialog,isEdition,tournamentToEdit,tournamentId} = storeToRefs(useTournamentStore())
-      isEdition.value = false
-      tournamentId.value = null
-      tournamentToEdit.value = {} as  TournamentForm
-      dialog.value = true
-      break
-    case 'theme':
-      break
+    case "liga":
+      const { dialog, isEdition, tournamentToEdit, tournamentId } =
+        storeToRefs(useTournamentStore());
+      isEdition.value = false;
+      tournamentId.value = null;
+      tournamentToEdit.value = {} as TournamentForm;
+      dialog.value = true;
+      break;
+    case "equipos":
+      const teamStore = useTeamStore();
+      teamStore.dialog = true;
+      break;
+    case "theme":
+      break;
   }
-}
+};
 </script>
 <template>
   <div class="d-flex justify-center align-center">
-    <template v-if="currentRouteName === 'liga-torneo'" >
+    <template v-if="currentRouteName === 'liga-torneo'">
       <EditarTorneo />
       <CancelarTorneo />
     </template>
     <v-btn
-        variant="elevated"
-        @click="handleActions"
-        class="mr-2 mr-lg-12 mr-md-12 navbar-btn-action"
-        v-if="buttonActions"
+      variant="elevated"
+      @click="handleActions"
+      class="mr-2 mr-lg-12 mr-md-12 navbar-btn-action"
+      v-if="buttonActions"
     >
       <template #prepend>
         <nuxt-icon :name="buttonActions.icon" filled></nuxt-icon>
-        <span class="button-text">{{buttonActions?.title}}</span>
+        <span class="button-text">{{ buttonActions?.title }}</span>
       </template>
     </v-btn>
   </div>
