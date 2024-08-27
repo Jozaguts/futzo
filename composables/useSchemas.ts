@@ -32,7 +32,7 @@ export default function (schemaNAme: string) {
 }
 
 function getSchemaByName(name) {
-  let schemaFields = {};
+  let schemaFields = {} as any;
   const { t } = useI18n();
   const yusString = () => {
     return yup
@@ -107,17 +107,23 @@ function getSchemaByName(name) {
       break;
     case "create-team":
       schemaFields.name = yusString().required(t("forms.required"));
+      schemaFields.image = yup
+        .mixed()
+        .test("File is required", "Campo requerido ", (value: any) => value);
       schemaFields.category_id = yup.number().required(t("forms.required"));
-      schemaFields.tournament_id = yup.number().required(t("forms.required"));
-      schemaFields.president_name = yusString().required(t("forms.required"));
-      schemaFields.coach_name = yusString().required(t("forms.required"));
-      schemaFields.phone = yusString()
-        .matches(/^\d{10}$/, "Número de teléfono no es válido")
-        .required();
-      schemaFields.email = yusString().email();
-      schemaFields.address = yusString();
-      schemaFields.image = yup.array().nullable();
-      schemaFields.location_id = yup.number().nullable();
+      schemaFields.location = yup.object();
+      schemaFields.primary_color = yusString().required(t("forms.required"));
+      schemaFields.secondary_color = yusString().required(t("forms.required"));
+      schemaFields.description = yusString().nullable();
+
+      // schemaFields.phone = yusString()
+      //   .matches(/^\d{10}$/, "Número de teléfono no es válido")
+      //   .required();
+      // schemaFields.email = yusString().email();
+      // schemaFields.address = yusString();
+      // schemaFields.president_name = yusString().required(t("forms.required"));
+      // schemaFields.coach_name = yusString().required(t("forms.required"));
+
       break;
     case "edit-user":
       schemaFields.name = yusString().required(t("forms.required"));
