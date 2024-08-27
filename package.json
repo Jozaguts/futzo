@@ -25,6 +25,7 @@
   "dependencies": {
     "@formkit/auto-animate": "^0.8.2",
     "@googlemaps/js-api-loader": "^1.16.6",
+    "@morev/vue-transitions": "^3.0.2",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@pinia/nuxt": "^0.5.1",
     "@vee-validate/nuxt": "^4.13.2",

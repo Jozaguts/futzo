@@ -60,8 +60,8 @@ export default defineNuxtConfig({
     "@nuxtjs/google-fonts",
     "@pinia/nuxt",
     "@vueuse/nuxt",
-    "@formkit/auto-animate/nuxt",
     "nuxt-lodash",
+    "@morev/vue-transitions/nuxt",
   ],
 
   vuetify: {
