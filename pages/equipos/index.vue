@@ -1,55 +1,47 @@
 <script lang="ts" setup>
-import NoTeamRegisteredCard from "~/components/pages/equipos/no-team-registered-card.vue";
-import {useTeamStore} from "~/store/useTeamStore";
-import {storeToRefs} from "pinia";
-const teamStore = storeToRefs(useTeamStore())
-const {teams} = teamStore
+import NoTeamsSvg from "~/components/pages/equipos/noTeamsSvg.vue";
+import LazyCreateTeamDialog from "~/components/pages/equipos/create-team.vue";
+import { useTeamStore } from "~/store/useTeamStore";
 
-const noTeams = computed(() => teams.value?.length === 0)
-// const noTeams = computed(() => true)
-const tab= ref(1)
-onMounted(() => {
-  useTeamStore().getTeams()
-} )
+const teamStore = useTeamStore();
+const noTeams = computed(() => teamStore.teams.length === 0);
+const toggleDialog = () => {
+  teamStore.dialog = !teamStore.dialog;
+};
 </script>
 <template>
-<v-container fluid>
-  <v-row v-if="noTeams">
-    <v-col cols="12" class="text-center">
-      <NoTeamRegisteredCard />
-    </v-col>
-  </v-row>
-<!--   todo mostrar los diferentes torneos que tenga la liga mediante tabs-->
-  <v-row v-else>
-    <v-col cols="12">
-      <v-tabs
-          v-model="tab"
-      >
-        <v-tab  v-for="team in teams" :value="team.id" :key="team.id">{{team.name}}</v-tab>
-      </v-tabs>
-      <v-window v-model="tab">
-        <v-window-item
-            v-for="team in teams"
-            :value="team.id"
-            :key="team.id"
+  <v-container fluid class="fill-height">
+    <v-row class="fill-height">
+      <v-col>
+        <v-card
+          v-if="noTeams"
+          rounded
+          elevation="2"
+          height="100%"
+          class="mx-0 mx-md-8 mx-lg-8 d-flex justify-center align-center text-center"
         >
-          <v-card>
-            <v-card-item>
-              <v-card-title>
-                {{team.name}}
-              </v-card-title>
-            </v-card-item>
+          <v-card-item>
+            <v-card-title> No hay equipos aún {{ noTeams }} </v-card-title>
             <v-card-text>
-              {{team}}
+              <NoTeamsSvg />
             </v-card-text>
-          </v-card>
-        </v-window-item>
-      </v-window>
-    </v-col>
-  </v-row>
-</v-container>
+            <v-card-title class="text-body-2">
+              Crea un torneo para verlo aquí.
+            </v-card-title>
+            <v-btn
+              color="primary"
+              variant="elevated"
+              class="mt-4 text-body-1"
+              @click="toggleDialog"
+            >
+              Crear torneo
+            </v-btn>
+          </v-card-item>
+        </v-card>
+        <!-- form component-->
+        <LazyCreateTeamDialog />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
-<style>
-
-
-</style>
+<style></style>
