@@ -44,7 +44,7 @@ const search = useDebounceFn(async (place: string) => {
   }
   const autocompleteService =
     new window.google.maps.places.AutocompleteService();
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     autocompleteService.getPlacePredictions(
       { input: place },
       (predictions, status) => {

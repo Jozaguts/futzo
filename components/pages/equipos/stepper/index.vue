@@ -26,8 +26,3 @@ const props = withDefaults(defineProps<Props>(), { step: "createTeam" });
     </transition-slide>
   </div>
 </template>
-<style>
-.block {
-  position: relative;
-}
-</style>

@@ -21,7 +21,7 @@ const toggleDialog = () => {
           class="mx-0 mx-md-8 mx-lg-8 d-flex justify-center align-center text-center"
         >
           <v-card-item>
-            <v-card-title> No hay equipos aún {{ noTeams }} </v-card-title>
+            <v-card-title> No hay equipos aún</v-card-title>
             <v-card-text>
               <NoTeamsSvg />
             </v-card-text>
@@ -34,7 +34,7 @@ const toggleDialog = () => {
               class="mt-4 text-body-1"
               @click="toggleDialog"
             >
-              Crear torneo
+              Crear Equipo
             </v-btn>
           </v-card-item>
         </v-card>

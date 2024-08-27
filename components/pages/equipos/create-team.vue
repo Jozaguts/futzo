@@ -3,7 +3,7 @@ import StepperDot from "~/components/shared/stepper-dot.vue";
 import CreateTeamStepper from "~/components/pages/equipos/stepper/index.vue";
 import { storeToRefs } from "pinia";
 import { useTeamStore, useTournamentStore } from "~/store";
-import type { CurrentStep } from "~/models/tournament";
+import type { CurrentStep } from "~/models/Team";
 
 const { isEdition, tournamentId } = storeToRefs(useTournamentStore());
 const teamStore = useTeamStore();
@@ -71,7 +71,6 @@ const backHandler = () => {
 
   const stepsOrder: CurrentStep[] = ["createTeam", "createDt", "createOwner"];
   const currentStepIndex = stepsOrder.indexOf(steps.value.current);
-  console.log(currentStepIndex);
   steps.value.current = stepsOrder[currentStepIndex - 1];
 };
 </script>
