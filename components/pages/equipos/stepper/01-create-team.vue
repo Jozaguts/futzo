@@ -4,21 +4,24 @@ import { useCategoryStore } from "~/store/useCategoryStore";
 import DragDropImage from "~/components/pages/torneos/drag-drop-image.vue";
 import ColorPicker from "~/components/shared/colorPicker.vue";
 import type { ImageForm } from "~/models/tournament";
-import { useTeamStore } from "~/store/useTeamStore";
 import useSchemas from "~/composables/useSchemas";
+import { useTeamStore } from "~/store";
 
-const dragDropImageRef = ref(null);
 const imageForm = ref<ImageForm>({
   file: null,
   name: "",
   size: 0,
 });
-const { categories, formats } = storeToRefs(useCategoryStore());
-const teamStore = useTeamStore();
-const { steps, isEdition } = storeToRefs(teamStore);
+const dragDropImageRef = ref(null);
+const showPrimaryColor = ref(false);
+const showSecondaryColor = ref(false);
+const primaryColor = ref("");
+const secondaryColor = ref("");
 let locationsFind = ref([]);
-const { handleSubmit, resetForm, fields } = useSchemas("create-team");
-
+const { categories } = storeToRefs(useCategoryStore());
+const { teamStoreRequest } = storeToRefs(useTeamStore());
+const { handleSubmit, resetForm, fields, validate, setValues } =
+  useSchemas("create-team");
 const saveImage = (file: File) => {
   imageForm.value.file = file;
   imageForm.value.name = file.name;
@@ -31,12 +34,6 @@ const removeImage = () => {
   imageForm.value.size = 0;
   fields.image.fieldValue = null;
 };
-const handleSelectLocation = (value: any) => {
-  console.log(value);
-  fields.address.fieldValue = value.description;
-  fields.city.fieldValue = value.terms[2].value;
-};
-
 const search = useDebounceFn(async (place: string) => {
   if (!window.google || !window.google.maps || !window.google.maps.places) {
     console.error("Google Maps JavaScript API library is not loaded.");
@@ -53,6 +50,7 @@ const search = useDebounceFn(async (place: string) => {
           resolve([]);
           return;
         }
+        console.log(predictions);
         resolve(predictions);
       },
     );
@@ -65,9 +63,6 @@ const searchHandler = async (place: string) => {
   }
 };
 
-const show1 = ref(false);
-const primaryColor = ref("");
-const secondaryColor = ref("");
 const updateColorHandler = (color: string, type: string) => {
   if (type === "primary") {
     primaryColor.value = color;
@@ -77,9 +72,24 @@ const updateColorHandler = (color: string, type: string) => {
     fields.secondary_color.fieldValue = color;
   }
 };
+defineExpose({
+  validate,
+  handleSubmit,
+});
+onMounted(() => {
+  if (teamStoreRequest.value?.teamData) {
+    setValues({ ...teamStoreRequest.value.teamData });
+    primaryColor.value = teamStoreRequest.value.teamData.primary_color ?? "";
+    secondaryColor.value =
+      teamStoreRequest.value.teamData.secondary_color ?? "";
+    if (teamStoreRequest.value.teamData.image) {
+      dragDropImageRef.value.loadImage();
+    }
+  }
+});
 </script>
 <template>
-  <v-container class="container">
+  <v-container class="container" style="min-height: 480px">
     <v-row>
       <v-col cols="12" lg="4" md="4">
         <span class="text-body-1"> Nombre del equipo* </span>
@@ -135,12 +145,11 @@ const updateColorHandler = (color: string, type: string) => {
     </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Ciudad* </span>
+        <span class="text-body-1">Dirección*</span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
         <v-autocomplete
-          v-model="fields.location.fieldValue"
-          @update:modelValue="handleSelectLocation"
+          v-model="fields.address.fieldValue"
           :items="locationsFind"
           no-data-text="No hay resultados"
           outlined
@@ -149,7 +158,7 @@ const updateColorHandler = (color: string, type: string) => {
           clear-on-select
           clearable
           no-filter
-          v-bind="fields.location.fieldPropsValue"
+          v-bind="fields.address.fieldPropsValue"
           @update:search="searchHandler($event)"
         >
           <template v-slot:item="{ props, item }">
@@ -185,9 +194,9 @@ const updateColorHandler = (color: string, type: string) => {
               v-bind="fields.primary_color.fieldPropsValue"
             >
               <template #append-inner>
-                <div @click="show1 = true">
+                <div @click="showPrimaryColor = true">
                   <ColorPicker
-                    :show="show1"
+                    :show="showPrimaryColor"
                     @update-value="updateColorHandler($event, 'primary')"
                   />
                 </div>
@@ -197,15 +206,15 @@ const updateColorHandler = (color: string, type: string) => {
           <v-col cols="6">
             <v-text-field
               variant="outlined"
-              placeholder="Color Secudario"
+              placeholder="Color Secundario"
               class="team-color-picker secondary"
               v-model="fields.secondary_color.fieldValue"
               v-bind="fields.secondary_color.fieldPropsValue"
             >
               <template #append-inner>
-                <div @click="show1 = true">
+                <div @click="showSecondaryColor = true">
                   <ColorPicker
-                    :show="show1"
+                    :show="showSecondaryColor"
                     @update-value="updateColorHandler($event, 'secondary')"
                   />
                 </div>
@@ -234,20 +243,14 @@ const updateColorHandler = (color: string, type: string) => {
   </v-container>
 </template>
 <style lang="sass">
-.team-color-picker
-  margin-right: 8px
-.team-color-picker > .v-input__control > .v-field--appended
-  padding-inline-end: 0
-.team-color-picker.primary > .v-input__control > .v-field--appended > .v-field__append-inner
+.team-color-picker.primary> .v-input__control > .v-field--appended > .v-field__append-inner
   background: v-bind(primaryColor)
   padding: 0
   border-top-right-radius: 4px
+  border-left: 1px solid #D2D6DB
   border-bottom-right-radius: 4px
+
 .team-color-picker.secondary > .v-input__control > .v-field--appended > .v-field__append-inner
   background: v-bind(secondaryColor)
-
-.team-color-picker > .v-input__control > .v-field--appended > .v-field__append-inner > div
-  cursor: pointer
-  min-height: 100%
-  min-width: 44px
+  border-left: 1px solid #D2D6DB
 </style>

@@ -2,7 +2,7 @@ import { useForm } from "vee-validate";
 import * as yup from "yup";
 
 export default function (schemaNAme: string) {
-  const vuetifyConfig = (state) => {
+  const vuetifyConfig = (state: { errors: string }) => {
     return {
       props: {
         "error-messages": state.errors,
@@ -14,10 +14,12 @@ export default function (schemaNAme: string) {
 
   const fields = Object.keys(schema.fields);
 
-  const { defineField, handleSubmit, resetForm } = useForm({
-    validationSchema: schema,
-  });
-  const fieldProps = reactive({});
+  const { defineField, handleSubmit, resetForm, validate, setValues } = useForm(
+    {
+      validationSchema: schema,
+    },
+  );
+  const fieldProps = reactive({} as any);
 
   fields.forEach((field) => {
     const [fieldValue, fieldPropsValue] = defineField(field, vuetifyConfig);
@@ -28,10 +30,12 @@ export default function (schemaNAme: string) {
     handleSubmit,
     resetForm,
     fields: fieldProps,
+    validate,
+    setValues,
   };
 }
 
-function getSchemaByName(name) {
+function getSchemaByName(name: string) {
   let schemaFields = {} as any;
   const { t } = useI18n();
   const yusString = () => {
@@ -52,7 +56,7 @@ function getSchemaByName(name) {
         .required(t("forms.required"));
       schemaFields.image = yup
         .mixed()
-        .test("File is required", "Campo requerido ", (value: File) => value);
+        .test("File is required", "Campo requerido ", (value: any) => value);
       schemaFields.category_id = yup.number().required(t("forms.required"));
       schemaFields.tournament_format_id = yup
         .number()
@@ -111,7 +115,7 @@ function getSchemaByName(name) {
         .mixed()
         .test("File is required", "Campo requerido ", (value: any) => value);
       schemaFields.category_id = yup.number().required(t("forms.required"));
-      schemaFields.location = yup.object();
+      schemaFields.address = yup.object();
       schemaFields.primary_color = yusString().required(t("forms.required"));
       schemaFields.secondary_color = yusString().required(t("forms.required"));
       schemaFields.description = yusString().nullable();
