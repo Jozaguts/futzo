@@ -1,8 +1,4 @@
 <script lang="ts" setup>
-interface Props {
-  show: boolean;
-}
-const { show } = withDefaults(defineProps<Props>(), { show: false });
 const emits = defineEmits(["update-value"]);
 const colorHandler = (color: string | boolean) => {
   if (typeof color === "string") {
