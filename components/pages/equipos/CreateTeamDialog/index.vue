@@ -15,7 +15,9 @@ const leaveHandler = () => {
 <template>
   <v-dialog
     v-model="teamStore.dialog"
-    max-width="688"
+    max-width="690"
+    min-height="800"
+    scrollable
     @after-leave="leaveHandler"
   >
     <v-card
@@ -28,5 +30,5 @@ const leaveHandler = () => {
   </v-dialog>
 </template>
 <style>
-@import "~/assets/scss/pages/create-team.scss";
+@import "assets/scss/pages/create-team.sass";
 </style>
