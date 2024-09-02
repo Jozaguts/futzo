@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import NoTeamsSvg from "~/components/pages/equipos/noTeamsSvg.vue";
-import { LazyPagesEquiposCreateTeamDialog } from "#components";
+import CreateTeamDialog from "~/components/pages/equipos/CreateTeamDialog/index.vue";
 import { useTeamStore } from "~/store/useTeamStore";
 
 const teamStore = useTeamStore();
@@ -39,7 +39,7 @@ const toggleDialog = () => {
           </v-card-item>
         </v-card>
         <!-- form component-->
-        <LazyPagesEquiposCreateTeamDialog />
+        <CreateTeamDialog />
       </v-col>
     </v-row>
   </v-container>
