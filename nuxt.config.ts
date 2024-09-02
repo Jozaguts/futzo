@@ -23,15 +23,6 @@ export default defineNuxtConfig({
     enabled: true,
   },
 
-  // vite: {
-  //   server: {
-  //     hmr: {
-  //       protocol: "ws",
-  //       host: "0.0.0.0",
-  //     },
-  //   },
-  // },
-
   build: {
     transpile: [
       "vuetify",
@@ -62,6 +53,7 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "nuxt-lodash",
     "@morev/vue-transitions/nuxt",
+    "vue3-perfect-scrollbar/nuxt",
   ],
 
   vuetify: {
