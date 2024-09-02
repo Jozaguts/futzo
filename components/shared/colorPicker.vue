@@ -10,9 +10,12 @@ const colorHandler = (color: string | boolean) => {
   <v-dialog
     activator="parent"
     max-width="264"
+    :absolute="true"
     :scrim="false"
+    :offset="[150, 0]"
     class="color-picker-dialog"
     elevation="15"
+    location-strategy="connected"
   >
     <v-card
       height="350"
