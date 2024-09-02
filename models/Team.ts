@@ -20,6 +20,16 @@ export type CreateTeamForm = {
   email: string;
   address: string;
   image: string;
+  colors: {
+    home: {
+      primary: string;
+      secondary: string;
+    };
+    away: {
+      primary: string;
+      secondary: string;
+    };
+  };
 };
 export type CreateDtForm = {
   name: string;

@@ -115,18 +115,15 @@ function getSchemaByName(name: string) {
         .mixed()
         .test("File is required", "Campo requerido ", (value: any) => value);
       schemaFields.category_id = yup.number().required(t("forms.required"));
-      schemaFields.address = yup.object();
-      schemaFields.primary_color = yusString().required(t("forms.required"));
-      schemaFields.secondary_color = yusString().required(t("forms.required"));
+      schemaFields.address = yup.object({});
+      schemaFields.colors = yup.object({}).required(t("forms.required"));
       schemaFields.description = yusString().nullable();
-
-      // schemaFields.phone = yusString()
-      //   .matches(/^\d{10}$/, "Número de teléfono no es válido")
-      //   .required();
-      // schemaFields.email = yusString().email();
-      // schemaFields.address = yusString();
-      // schemaFields.president_name = yusString().required(t("forms.required"));
-      // schemaFields.coach_name = yusString().required(t("forms.required"));
+      schemaFields.email = yusString().email();
+      schemaFields.phone = yusString().matches(
+        // acept format +52...
+        /^(\+52)?(\d{10})$/,
+        "Número de teléfono no es válido",
+      );
 
       break;
     case "edit-user":

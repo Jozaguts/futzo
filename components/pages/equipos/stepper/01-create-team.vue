@@ -6,6 +6,7 @@ import ColorPicker from "~/components/shared/colorPicker.vue";
 import type { ImageForm } from "~/models/tournament";
 import useSchemas from "~/composables/useSchemas";
 import { useTeamStore } from "~/store";
+import { VPhoneInput } from "v-phone-input";
 
 const imageForm = ref<ImageForm>({
   file: null,
@@ -13,10 +14,16 @@ const imageForm = ref<ImageForm>({
   size: 0,
 });
 const dragDropImageRef = ref(null);
-const showPrimaryColor = ref(false);
-const showSecondaryColor = ref(false);
-const primaryColor = ref("");
-const secondaryColor = ref("");
+const colors = ref({
+  home: {
+    primary: "",
+    secondary: "",
+  },
+  away: {
+    primary: "",
+    secondary: "",
+  },
+});
 let locationsFind = ref([]);
 const { categories } = storeToRefs(useCategoryStore());
 const { teamStoreRequest } = storeToRefs(useTeamStore());
@@ -50,7 +57,6 @@ const search = useDebounceFn(async (place: string) => {
           resolve([]);
           return;
         }
-        console.log(predictions);
         resolve(predictions);
       },
     );
@@ -63,29 +69,33 @@ const searchHandler = async (place: string) => {
   }
 };
 
-const updateColorHandler = (color: string, type: string) => {
-  if (type === "primary") {
-    primaryColor.value = color;
-    fields.primary_color.fieldValue = color;
+const updateColorHandler = (
+  color: string,
+  isHomeColor: boolean,
+  type: "primary" | "secondary",
+) => {
+  if (isHomeColor) {
+    colors.value.home[type] = color;
+    fields.colors.fieldValue = { ...colors.value };
   } else {
-    secondaryColor.value = color;
-    fields.secondary_color.fieldValue = color;
+    colors.value.away[type] = color;
+    fields.colors.fieldValue = { ...colors.value };
   }
 };
-defineExpose({
-  validate,
-  handleSubmit,
-});
+
 onMounted(() => {
   if (teamStoreRequest.value?.teamData) {
+    console.log("fired");
     setValues({ ...teamStoreRequest.value.teamData });
-    primaryColor.value = teamStoreRequest.value.teamData.primary_color ?? "";
-    secondaryColor.value =
-      teamStoreRequest.value.teamData.secondary_color ?? "";
+    colors.value = { ...teamStoreRequest.value.teamData.colors };
     if (teamStoreRequest.value.teamData.image) {
       dragDropImageRef.value.loadImage();
     }
   }
+});
+defineExpose({
+  validate,
+  handleSubmit,
 });
 </script>
 <template>
@@ -157,6 +167,7 @@ onMounted(() => {
           hide-selected
           clear-on-select
           clearable
+          density="compact"
           no-filter
           v-bind="fields.address.fieldPropsValue"
           @update:search="searchHandler($event)"
@@ -183,74 +194,123 @@ onMounted(() => {
       <v-col cols="12" lg="4" md="4">
         <span class="text-body-1"> Colores del equipo* </span>
       </v-col>
-      <v-col cols="12" lg="8" md="8">
+      <v-col cols="12" lg="8" md="8" class="pt-0">
         <v-row no-gutters class="position-relative">
-          <v-col cols="6">
-            <v-text-field
-              variant="outlined"
-              placeholder="Color primario"
-              class="team-color-picker primary"
-              v-model="fields.primary_color.fieldValue"
-              v-bind="fields.primary_color.fieldPropsValue"
-            >
-              <template #append-inner>
-                <div @click="showPrimaryColor = true">
-                  <ColorPicker
-                    :show="showPrimaryColor"
-                    @update-value="updateColorHandler($event, 'primary')"
-                  />
+          <v-col cols="12">
+            <v-row no-gutters>
+              <v-col cols="6">
+                <div class="color-pickers-container">
+                  <div class="color-pickers-container__label">
+                    <span class="text-body-2">Local</span>
+                  </div>
+                  <div class="color-picker-items-container">
+                    <div
+                      class="color-picker-items-container__item home primary"
+                    >
+                      <ColorPicker
+                        @update-value="
+                          updateColorHandler($event, true, 'primary')
+                        "
+                      />
+                    </div>
+                    <div
+                      class="color-picker-items-container__item home secondary"
+                    >
+                      <ColorPicker
+                        @update-value="
+                          updateColorHandler($event, true, 'secondary')
+                        "
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <small class="text-error text-caption">{{
+                      fields.colors.fieldPropsValue["error-messages"][0]
+                    }}</small>
+                  </div>
                 </div>
-              </template>
-            </v-text-field>
-          </v-col>
-          <v-col cols="6">
-            <v-text-field
-              variant="outlined"
-              placeholder="Color Secundario"
-              class="team-color-picker secondary"
-              v-model="fields.secondary_color.fieldValue"
-              v-bind="fields.secondary_color.fieldPropsValue"
-            >
-              <template #append-inner>
-                <div @click="showSecondaryColor = true">
-                  <ColorPicker
-                    :show="showSecondaryColor"
-                    @update-value="updateColorHandler($event, 'secondary')"
-                  />
+              </v-col>
+              <v-col cols="6">
+                <div class="color-pickers-container">
+                  <div class="color-pickers-container__label">
+                    <span class="text-body-2">Visitante</span>
+                  </div>
+                  <div class="color-picker-items-container">
+                    <div
+                      class="color-picker-items-container__item away primary"
+                    >
+                      <ColorPicker
+                        @update-value="
+                          updateColorHandler($event, false, 'primary')
+                        "
+                      />
+                    </div>
+                    <div
+                      class="color-picker-items-container__item away secondary"
+                    >
+                      <ColorPicker
+                        @update-value="
+                          updateColorHandler($event, false, 'secondary')
+                        "
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <small class="text-error text-caption">{{
+                      fields.colors.fieldPropsValue["error-messages"][0]
+                    }}</small>
+                  </div>
                 </div>
-              </template>
-            </v-text-field>
+              </v-col>
+            </v-row>
           </v-col>
         </v-row>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Descripción* </span>
+        <span class="text-body-1"> Contacto</span>
       </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <v-textarea
-          v-model="fields.description.fieldValue"
-          v-bind="fields.description.fieldPropsValue"
-          placeholder="Una breve descripción del equipo..."
-          variant="outlined"
-          dense
-          rows="2"
-          class="rounded-lg"
-        ></v-textarea>
+      <v-col col="12" lg="8" md="8">
+        <v-text-field
+          v-model="fields.email.fieldValue"
+          v-bind="fields.email.fieldPropsValue"
+          placeholder="Correo electrónico"
+          outlined
+          class="mb-4"
+          density="compact"
+        ></v-text-field>
+        <client-only>
+          <VPhoneInput
+            variant="plain"
+            :singleLine="true"
+            v-model="fields.phone.fieldValue"
+            class="phone-input"
+            display-format="international"
+            example="52 1 55 1234 5678"
+            validate-on="blur lazy"
+            :invalidMessage="
+              ({ label, example }) => {
+                return `${label} debe ser un numero valido (${example}).`;
+              }
+            "
+          >
+          </VPhoneInput>
+          <small class="text-error">{{
+            fields.phone.fieldPropsValue["error-messages"][0]
+          }}</small>
+        </client-only>
       </v-col>
     </v-row>
   </v-container>
 </template>
 <style lang="sass">
-.team-color-picker.primary> .v-input__control > .v-field--appended > .v-field__append-inner
-  background: v-bind(primaryColor)
-  padding: 0
-  border-top-right-radius: 4px
-  border-left: 1px solid #D2D6DB
-  border-bottom-right-radius: 4px
-
-.team-color-picker.secondary > .v-input__control > .v-field--appended > .v-field__append-inner
-  background: v-bind(secondaryColor)
-  border-left: 1px solid #D2D6DB
+.color-picker-items-container__item.home.primary
+  background: v-bind('colors.home.primary')
+.color-picker-items-container__item.home.secondary
+  background: v-bind('colors.home.secondary')
+.color-picker-items-container__item.away.primary
+  background: v-bind('colors.away.primary')
+.color-picker-items-container__item.away.secondary
+  background: v-bind('colors.away.secondary')
 </style>
