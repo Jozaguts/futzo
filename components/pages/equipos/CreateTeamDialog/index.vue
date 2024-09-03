@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import HeaderCard from "~/components/pages/equipos/CreateTeamDialog/Header.vue";
 import { storeToRefs } from "pinia";
-import { useTeamStore } from "~/store";
+import { useAuthStore, useTeamStore, useTournamentStore } from "~/store";
 import StepperContainer from "~/components/pages/equipos/stepper/index.vue";
 
 const { isEdition } = storeToRefs(useTeamStore());
@@ -11,6 +11,10 @@ const leaveHandler = () => {
   steps.value.current = "createTeam";
   steps.value.completed = [];
 };
+onMounted(() => {
+  const userId = useAuthStore().user?.id as number;
+  useTournamentStore().fetchTournamentsByLeagueId(userId);
+});
 </script>
 <template>
   <v-dialog
