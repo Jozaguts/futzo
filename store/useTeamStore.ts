@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { Team, TeamStoreRequest } from "~/models/Team";
+import type { FormSteps, Team, TeamStoreRequest } from "~/models/Team";
 import { toast } from "vuetify-sonner";
 
 export const useTeamStore = defineStore("teamStore", () => {
@@ -82,11 +82,11 @@ export const useTeamStore = defineStore("teamStore", () => {
   //     image: new File([], ""),
   //   },
   // });
-  // const client = useSanctumClient();
-  // const steps = ref<FormSteps>({
-  //   current: "createTeam",
-  //   completed: [],
-  // }
+  const client = useSanctumClient();
+  const steps = ref<FormSteps>({
+    current: "createTeam",
+    completed: [],
+  });
   const isEdition = ref(false);
 
   const createTeam = async () => {
