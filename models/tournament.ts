@@ -12,6 +12,7 @@ export interface Tournament {
   status?: string;
   league?: string | null;
   image: string;
+  category_id: number;
 }
 export interface TournamentForm {
   name: string;

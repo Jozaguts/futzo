@@ -119,6 +119,7 @@ function getSchemaByName(name: string) {
       schemaFields.colors = yup.object({}).required(t("forms.required"));
       schemaFields.description = yusString().nullable();
       schemaFields.email = yusString().email();
+      schemaFields.tournament_id = yup.number().required(t("forms.required"));
       schemaFields.phone = yusString().matches(
         // acept format +52...
         /^(\+52)?(\d{10})$/,
