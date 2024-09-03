@@ -200,11 +200,11 @@
 .vs-container::after {
   content: "";
   display: block;
-  width: 1px; /* Establece el ancho a 1px para una línea vertical */
-  height: 10px; /* Establece la altura al 100% para que abarque todo el contenedor */
+  width: 1px;
+  height: 10px;
   background: var(--colors-gray-light-mode-400, #bdbdbd);
-  position: absolute; /* Posiciona el pseudo-elemento de forma absoluta */
-  left: 50%; /* Centra la línea vertical */
+  position: absolute;
+  left: 50%;
   top: 90%;
 }
 .vs-container::before {
