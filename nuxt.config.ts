@@ -81,7 +81,7 @@ export default defineNuxtConfig({
     baseUrl: process.env.NUXT_PUBLIC_URL_BACKEND, // Laravel API
     // origin: 'http://futzo.test', // Nuxt app, by default will be used 'useRequestURL().origin'
     userStateKey: "sanctum.user.identity", // user state key for Vue `useState` composable
-    redirectIfAuthenticated: false, // Redirect to onLogin if already authenticated
+    redirectIfAuthenticated: true, // Redirect to onLogin if already authenticated
     csrf: {
       cookie: "XSRF-TOKEN", // CSRF cookie name
       header: "X-XSRF-TOKEN", // CSRF header name
