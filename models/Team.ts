@@ -2,24 +2,16 @@ export interface FormSteps {
   current: CurrentStep;
   completed: string[];
 }
-// todo cambia la interface para crear equipo
-// $table->string('name');
-// $table->string('president_name');
-// $table->string('coach_name');
-// $table->string('phone')->nullable();
-// $table->string('email')->nullable();
-// $table->string('address')->nullable();
-// $table->string('image')->nullable();
 export type CurrentStep = "createTeam" | "createDt" | "createOwner";
 
 export type CreateTeamForm = {
+  id?: number;
   name: string;
-  president_name: string;
-  coach_name: string;
   phone: string;
   email: string;
-  address: string;
-  image: string;
+  address: object;
+  category_id: number;
+  image: HTMLImageElement | File | string;
   colors: {
     home: {
       primary: string;
@@ -30,23 +22,24 @@ export type CreateTeamForm = {
       secondary: string;
     };
   };
+  description: string;
 };
 export type CreateDtForm = {
+  id?: number;
   name: string;
   phone: string;
   email: string;
-  address: string;
-  image: string;
+  image: HTMLImageElement | File | string;
 };
 export type CreateOwnerForm = {
+  id?: number;
   name: string;
   phone: string;
   email: string;
-  address: string;
-  image: string;
+  image: HTMLImageElement | File | string;
 };
 export interface TeamStoreRequest {
-  teamData: CreateTeamForm;
-  dtData: CreateDtForm;
-  ownerData: CreateOwnerForm;
+  team: CreateTeamForm;
+  coach: CreateDtForm;
+  president: CreateOwnerForm;
 }

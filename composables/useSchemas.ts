@@ -124,8 +124,38 @@ function getSchemaByName(name: string) {
         /^(\+52)?(\d{10})$/,
         "Número de teléfono no es válido",
       );
-
       break;
+    case "create-coach":
+      schemaFields.name = yusString().required(t("forms.required"));
+      schemaFields.email = yup
+        .string()
+        .email("Correo electrónico no válido")
+        .required(t("forms.required"));
+      schemaFields.phone = yusString().matches(
+        // acept format +52...
+        /^(\+52)?(\d{10})$/,
+        "Número de teléfono no es válido",
+      );
+      schemaFields.image = yup
+        .mixed()
+        .test("File is required", "Campo requerido ", (value: any) => value);
+      break;
+    case "create-owner":
+      schemaFields.name = yusString().required(t("forms.required"));
+      schemaFields.email = yup
+        .string()
+        .email("Correo electrónico no válido")
+        .required(t("forms.required"));
+      schemaFields.phone = yusString().matches(
+        // acept format +52...
+        /^(\+52)?(\d{10})$/,
+        "Número de teléfono no es válido",
+      );
+      schemaFields.image = yup
+        .mixed()
+        .test("File is required", "Campo requerido ", (value: any) => value);
+      break;
+
     case "edit-user":
       schemaFields.name = yusString().required(t("forms.required"));
       schemaFields.email = yup
