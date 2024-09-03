@@ -5,7 +5,7 @@ import DragDropImage from "~/components/pages/torneos/drag-drop-image.vue";
 import ColorPicker from "~/components/shared/colorPicker.vue";
 import type { ImageForm } from "~/models/tournament";
 import useSchemas from "~/composables/useSchemas";
-import { useTeamStore } from "~/store";
+import { useTeamStore, useTournamentStore } from "~/store";
 import { VPhoneInput } from "v-phone-input";
 
 const imageForm = ref<ImageForm>({
@@ -26,6 +26,7 @@ const colors = ref({
 });
 let locationsFind = ref([]);
 const { categories } = storeToRefs(useCategoryStore());
+const { tournaments } = storeToRefs(useTournamentStore());
 const { teamStoreRequest } = storeToRefs(useTeamStore());
 const { handleSubmit, resetForm, fields, validate, setValues } =
   useSchemas("create-team");
@@ -82,7 +83,18 @@ const updateColorHandler = (
     fields.colors.fieldValue = { ...colors.value };
   }
 };
-
+const categoryHandler = (value?: number) => {
+  if (!value) {
+    return;
+  }
+  const tournament = tournaments.value.find(
+    (tournament) => tournament.id === value,
+  );
+  if (!tournament) {
+    return;
+  }
+  fields.category_id.fieldValue = tournament?.category_id;
+};
 onMounted(() => {
   if (teamStoreRequest.value?.team) {
     setValues({ ...teamStoreRequest.value.team });
@@ -115,6 +127,46 @@ defineExpose({
     </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
+        <span class="text-body-1"> Torneo* </span>
+      </v-col>
+      <v-col cols="12" lg="8" md="8">
+        <v-select
+          item-title="name"
+          item-value="id"
+          clearable
+          :items="tournaments"
+          placeholder="p.ej. Clausura "
+          outlined
+          v-model="fields.tournament_id.fieldValue"
+          v-bind="fields.tournament_id.fieldPropsValue"
+          density="compact"
+          @update:model-value="categoryHandler"
+        >
+        </v-select>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" lg="4" md="4">
+        <span class="text-body-1"> Categoría* </span>
+      </v-col>
+      <v-col cols="12" lg="8" md="8">
+        <v-select
+          disabled
+          no-data-text="No hay categorías"
+          :items="categories"
+          density="compact"
+          item-title="name"
+          item-value="id"
+          placeholder="Categoría"
+          menu-icon="mdi-chevron-down"
+          v-model="fields.category_id.fieldValue"
+          v-bind="fields.category_id.fieldPropsValue"
+        >
+        </v-select>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" lg="4" md="4">
         <span class="text-body-1"> Imagen del equipo* </span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
@@ -133,25 +185,7 @@ defineExpose({
         >
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Categoría* </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <v-select
-          no-data-text="No hay categorías"
-          :items="categories"
-          density="compact"
-          item-title="name"
-          item-value="id"
-          placeholder="Categoría"
-          menu-icon="mdi-chevron-down"
-          v-model="fields.category_id.fieldValue"
-          v-bind="fields.category_id.fieldPropsValue"
-        >
-        </v-select>
-      </v-col>
-    </v-row>
+
     <v-row>
       <v-col cols="12" lg="4" md="4">
         <span class="text-body-1">Dirección*</span>
