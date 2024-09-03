@@ -4,10 +4,14 @@ import CreateTeamDialog from "~/components/pages/equipos/CreateTeamDialog/index.
 import { useTeamStore } from "~/store/useTeamStore";
 
 const teamStore = useTeamStore();
-const noTeams = computed(() => teamStore.teams.length === 0);
+const { teams } = storeToRefs(teamStore);
+const noTeams = computed(() => teams.value.length === 0);
 const toggleDialog = () => {
   teamStore.dialog = !teamStore.dialog;
 };
+onMounted(() => {
+  teamStore.getTeams();
+});
 </script>
 <template>
   <v-container fluid class="fill-height">
