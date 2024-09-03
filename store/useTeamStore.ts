@@ -1,84 +1,92 @@
 import { defineStore } from "pinia";
-import type { FormSteps, TeamStoreRequest } from "~/models/Team";
+import type { Team, TeamStoreRequest } from "~/models/Team";
 import { toast } from "vuetify-sonner";
 
 export const useTeamStore = defineStore("teamStore", () => {
   const dialog = ref(false);
-  const teams = ref([]);
-  const team = ref({});
-  const teamStoreRequest = ref<TeamStoreRequest>({
-    team: {
-      name: "equipo 1",
-      phone: "+52 322 2397177",
-      email: "test@test.com",
-      address: {
-        description:
-          "La Sabana, San José Province, San José, Sabana, Costa Rica",
-        matched_substrings: { length: 9, offset: 0 },
-        place_id: "ChIJM_Dtpqv8oI8RyETi6jXqf_c",
-        reference: "ChIJM_Dtpqv8oI8RyETi6jXqf_c",
-        structured_formatting: {
-          main_text: "La Sabana",
-          main_text_matched_substrings: { length: 9, offset: 0 },
-          secondary_text: "San José Province, San José, Sabana, Costa Rica",
-        },
-        terms: [
-          {
-            offset: 0,
-            value: "La Sabana",
-          },
-          {
-            offset: 11,
-            value: "San José Province",
-          },
-          {
-            offset: 30,
-            value: "San José",
-          },
-          {
-            offset: 40,
-            value: "Sabana",
-          },
-        ],
-        types: [
-          "establishment",
-          "tourist_attraction",
-          "point_of_interest",
-          "park",
-        ],
-      },
-      category_id: 1,
-      image: new Image(),
-      colors: {
-        home: {
-          primary: "#000000",
-          secondary: "#000000",
-        },
-        away: {
-          primary: "#fff",
-          secondary: "#fff",
-        },
-      },
-      description: "description",
-    },
-    president: {
-      name: "president name",
-      email: "email@test.com",
-      phone: "+52 3222398299",
-      image: new File([], ""),
-    },
-    coach: {
-      name: "coach name",
-      email: "coach@test.com",
-      phone: "+52 3222398211",
-      image: new File([], ""),
-    },
+  const teams = ref<Team[]>();
+  const team = ref<Team>();
+  const teamId = ref(0);
+  const pagination = ref({
+    page: 1,
+    perPage: 10,
+    total: 0,
   });
-  const client = useSanctumClient();
-  const steps = ref<FormSteps>({
-    current: "createTeam",
-    completed: [],
-  });
+  const teamStoreRequest = ref<TeamStoreRequest>();
+  //     {
+  //   team: {
+  //     name: "equipo 1",
+  //     phone: "+52 322 2397177",
+  //     email: "test@test.com",
+  //     tournament_id: 1,
+  //     address: {
+  //       description:
+  //         "La Sabana, San José Province, San José, Sabana, Costa Rica",
+  //       matched_substrings: { length: 9, offset: 0 },
+  //       place_id: "ChIJM_Dtpqv8oI8RyETi6jXqf_c",
+  //       reference: "ChIJM_Dtpqv8oI8RyETi6jXqf_c",
+  //       structured_formatting: {
+  //         main_text: "La Sabana",
+  //         main_text_matched_substrings: { length: 9, offset: 0 },
+  //         secondary_text: "San José Province, San José, Sabana, Costa Rica",
+  //       },
+  //       terms: [
+  //         {
+  //           offset: 0,
+  //           value: "La Sabana",
+  //         },
+  //         {
+  //           offset: 11,
+  //           value: "San José Province",
+  //         },
+  //         {
+  //           offset: 30,
+  //           value: "San José",
+  //         },
+  //         {
+  //           offset: 40,
+  //           value: "Sabana",
+  //         },
+  //       ],
+  //       types: [
+  //         "establishment",
+  //         "tourist_attraction",
+  //         "point_of_interest",
+  //         "park",
+  //       ],
+  //     },
+  //     category_id: 2,
+  //     image: new Image(),
+  //     colors: {
+  //       home: {
+  //         primary: "#000000",
+  //         secondary: "#000000",
+  //       },
+  //       away: {
+  //         primary: "#fff",
+  //         secondary: "#fff",
+  //       },
+  //     },
+  //     description: "description",
+  //   },
+  //   president: {
+  //     name: "president name",
+  //     email: "email@test.com",
+  //     phone: "+52 3222398299",
+  //     image: new File([], ""),
+  //   },
+  //   coach: {
+  //     name: "coach name",
+  //     email: "coach@test.com",
+  //     phone: "+52 3222398211",
+  //     image: new File([], ""),
+  //   },
+  // });
+  // const client = useSanctumClient();
+  // const steps = ref<FormSteps>({
+  //   current: "createTeam",
+  //   completed: [],
+  // }
   const isEdition = ref(false);
 
   const createTeam = async () => {
@@ -158,8 +166,8 @@ export const useTeamStore = defineStore("teamStore", () => {
   };
   const getTeams = async () => {
     try {
-      const response = await client("/api/v1/admin/teams");
-      teams.value = response.teams;
+      const { data } = await client("/api/v1/admin/teams");
+      teams.value = data.teams;
     } catch (error) {
       console.log(error);
     }
@@ -174,5 +182,7 @@ export const useTeamStore = defineStore("teamStore", () => {
     isEdition,
     teamStoreRequest,
     getTeams,
+    teamId,
+    pagination,
   };
 });
