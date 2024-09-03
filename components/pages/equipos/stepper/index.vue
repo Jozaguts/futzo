@@ -31,13 +31,26 @@ const nextHandler = async () => {
   const teamStoreRequestValues = await formValues();
   if (statusForm.valid) {
     if (steps.value.current === "createTeam") {
-      teamStoreRequest.value.teamData = { ...teamStoreRequestValues };
+      teamStoreRequest.value.team = { ...teamStoreRequestValues };
+    }
+    if (steps.value.current === "createDt") {
+      teamStoreRequest.value.coach = { ...teamStoreRequestValues };
+    }
+    if (steps.value.current === "createOwner") {
+      teamStoreRequest.value.president = { ...teamStoreRequestValues };
     }
     const stepsOrder: CurrentStep[] = ["createTeam", "createDt", "createOwner"];
     const currentStepIndex = stepsOrder.indexOf(steps.value.current);
     if (!steps.value.completed.includes(stepsOrder[currentStepIndex])) {
       // si el paso no está completado
       steps.value.completed.push(stepsOrder[currentStepIndex]); // se agrega al array de completados
+    }
+    if (currentStepIndex === stepsOrder.length - 1) {
+      // si es el último paso
+      loading.value = true;
+      await teamStore.createTeam();
+      loading.value = false;
+      return;
     }
     steps.value.current = stepsOrder[currentStepIndex + 1]; // siguiente paso
   }
