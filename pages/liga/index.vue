@@ -37,7 +37,7 @@ const handleShowTournament = (_tournament) => {
     params: { torneo: _tournament.slug },
   });
 };
-const setChipColor = (status) => {
+const setChipColor = (status: string) => {
   switch (status) {
     case "creado":
       return "warning";

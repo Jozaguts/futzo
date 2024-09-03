@@ -2,10 +2,11 @@
 import NoTeamsSvg from "~/components/pages/equipos/noTeamsSvg.vue";
 import CreateTeamDialog from "~/components/pages/equipos/CreateTeamDialog/index.vue";
 import { useTeamStore } from "~/store/useTeamStore";
+import TeamsTable from "~/components/pages/equipos/teams-table.vue";
 
 const teamStore = useTeamStore();
 const { teams } = storeToRefs(teamStore);
-const noTeams = computed(() => teams.value.length === 0);
+const noTeams = computed(() => teams.value?.length === 0);
 const toggleDialog = () => {
   teamStore.dialog = !teamStore.dialog;
 };
@@ -42,6 +43,7 @@ onMounted(() => {
             </v-btn>
           </v-card-item>
         </v-card>
+        <TeamsTable v-else />
         <!-- form component-->
         <CreateTeamDialog />
       </v-col>
