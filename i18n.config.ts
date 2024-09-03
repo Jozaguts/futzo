@@ -29,6 +29,14 @@ export default defineI18nConfig(() => ({
           clear: "Limpiar",
           prependAction: "Prepend action",
         },
+        noDataText: "No hay datos disponibles",
+        pagination: {
+          ariaLabel: {
+            root: "Paginacion",
+            next: "Pagina siguiente",
+            previous: "Pagina anterior",
+          },
+        },
       },
     },
   },
