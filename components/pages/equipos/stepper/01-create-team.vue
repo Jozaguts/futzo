@@ -84,11 +84,10 @@ const updateColorHandler = (
 };
 
 onMounted(() => {
-  if (teamStoreRequest.value?.teamData) {
-    console.log("fired");
-    setValues({ ...teamStoreRequest.value.teamData });
-    colors.value = { ...teamStoreRequest.value.teamData.colors };
-    if (teamStoreRequest.value.teamData.image) {
+  if (teamStoreRequest.value?.team) {
+    setValues({ ...teamStoreRequest.value.team });
+    colors.value = { ...teamStoreRequest.value.team.colors };
+    if (teamStoreRequest.value.team.image) {
       dragDropImageRef.value.loadImage();
     }
   }

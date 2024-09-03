@@ -6,7 +6,8 @@ import StepIndicator from "~/components/pages/equipos/stepper/step-indicator.vue
 import { useTeamStore } from "~/store";
 import type { CreateTeamForm, CurrentStep } from "~/models/Team";
 
-const scrollbarApi = ref(null);
+// const scrollbarApi = ref(null);
+const loading = ref(false);
 const teamStore = useTeamStore();
 const { steps, isEdition, teamStoreRequest } = storeToRefs(teamStore);
 const stepRef = ref<{ validate: Function; handleSubmit: Function }>({
@@ -60,65 +61,66 @@ const textButton = computed(() => {
       return "Crear equipo";
   }
 });
-onMounted(() => {
-  if (scrollbarApi.value) {
-    console.log(scrollbarApi.value.ps?.settings);
-  }
-});
+// onMounted(() => {
+//   // if (scrollbarApi.value) {
+//   //   console.log(scrollbarApi.value.ps?.settings);
+//   // }
+// });
 </script>
 <template>
-  <PerfectScrollbar>
-    <v-card-text class="pb-2" style="overflow-x: hidden">
-      <StepIndicator />
-      <transition-slide
-        group
-        :offset="{
-          enter: ['-100%', 0],
-          leave: ['100%', 0],
-        }"
-      >
-        <createTeamStep
-          ref="stepRef"
-          v-if="steps.current === 'createTeam'"
-          :key="steps.current"
-        />
-        <createDtStep
-          ref="stepRef"
-          v-if="steps.current === 'createDt'"
-          :key="steps.current"
-        />
-        <createOwnerStep
-          ref="stepRef"
-          v-if="steps.current === 'createOwner'"
-          :key="steps.current"
-        />
-      </transition-slide>
-      <v-container>
-        <v-row>
-          <v-col cols="6">
-            <v-btn
-              variant="outlined"
-              block
-              color="secondary"
-              density="comfortable"
-              size="large"
-              @click="backHandler"
-              >{{ textButtonCancel }}</v-btn
-            >
-          </v-col>
-          <v-col cols="6">
-            <v-btn
-              variant="elevated"
-              block
-              color="primary"
-              density="comfortable"
-              size="large"
-              @click="nextHandler"
-              >{{ textButton }}</v-btn
-            >
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-card-text>
-  </PerfectScrollbar>
+  <!--  <PerfectScrollbar>-->
+  <v-card-text class="pb-2" style="overflow-x: hidden">
+    <StepIndicator />
+    <transition-slide
+      group
+      :offset="{
+        enter: ['-100%', 0],
+        leave: ['100%', 0],
+      }"
+    >
+      <createTeamStep
+        ref="stepRef"
+        v-if="steps.current === 'createTeam'"
+        :key="steps.current"
+      />
+      <createDtStep
+        ref="stepRef"
+        v-if="steps.current === 'createDt'"
+        :key="steps.current"
+      />
+      <createOwnerStep
+        ref="stepRef"
+        v-if="steps.current === 'createOwner'"
+        :key="steps.current"
+      />
+    </transition-slide>
+    <v-container>
+      <v-row>
+        <v-col cols="6">
+          <v-btn
+            variant="outlined"
+            block
+            color="secondary"
+            density="comfortable"
+            size="large"
+            @click="backHandler"
+            >{{ textButtonCancel }}</v-btn
+          >
+        </v-col>
+        <v-col cols="6">
+          <v-btn
+            variant="elevated"
+            block
+            color="primary"
+            density="comfortable"
+            size="large"
+            :loading="loading"
+            @click="nextHandler"
+            >{{ textButton }}</v-btn
+          >
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-card-text>
+  <!--  </PerfectScrollbar>-->
 </template>
