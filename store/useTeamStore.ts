@@ -12,7 +12,9 @@ export const useTeamStore = defineStore("teamStore", () => {
     perPage: 10,
     total: 0,
   });
-  const teamStoreRequest = ref<TeamStoreRequest>();
+  const teamStoreRequest = ref<Partial<TeamStoreRequest>>(
+    {} as TeamStoreRequest,
+  );
   //     {
   //   team: {
   //     name: "equipo 1",

@@ -31,13 +31,22 @@ const nextHandler = async () => {
   const teamStoreRequestValues = await formValues();
   if (statusForm.valid) {
     if (steps.value.current === "createTeam") {
-      teamStoreRequest.value.team = { ...teamStoreRequestValues };
+      teamStoreRequest.value = {
+        ...teamStoreRequest.value,
+        team: { ...teamStoreRequestValues },
+      };
     }
     if (steps.value.current === "createDt") {
-      teamStoreRequest.value.coach = { ...teamStoreRequestValues };
+      teamStoreRequest.value = {
+        ...teamStoreRequest.value,
+        coach: { ...teamStoreRequestValues },
+      };
     }
     if (steps.value.current === "createOwner") {
-      teamStoreRequest.value.president = { ...teamStoreRequestValues };
+      teamStoreRequest.value = {
+        ...teamStoreRequest.value,
+        president: { ...teamStoreRequestValues },
+      };
     }
     const stepsOrder: CurrentStep[] = ["createTeam", "createDt", "createOwner"];
     const currentStepIndex = stepsOrder.indexOf(steps.value.current);
@@ -81,59 +90,59 @@ const textButton = computed(() => {
 // });
 </script>
 <template>
-  <!--  <PerfectScrollbar>-->
-  <v-card-text class="pb-2" style="overflow-x: hidden">
-    <StepIndicator />
-    <transition-slide
-      group
-      :offset="{
-        enter: ['-100%', 0],
-        leave: ['100%', 0],
-      }"
-    >
-      <createTeamStep
-        ref="stepRef"
-        v-if="steps.current === 'createTeam'"
-        :key="steps.current"
-      />
-      <createDtStep
-        ref="stepRef"
-        v-if="steps.current === 'createDt'"
-        :key="steps.current"
-      />
-      <createOwnerStep
-        ref="stepRef"
-        v-if="steps.current === 'createOwner'"
-        :key="steps.current"
-      />
-    </transition-slide>
-    <v-container>
-      <v-row>
-        <v-col cols="6">
-          <v-btn
-            variant="outlined"
-            block
-            color="secondary"
-            density="comfortable"
-            size="large"
-            @click="backHandler"
-            >{{ textButtonCancel }}</v-btn
-          >
-        </v-col>
-        <v-col cols="6">
-          <v-btn
-            variant="elevated"
-            block
-            color="primary"
-            density="comfortable"
-            size="large"
-            :loading="loading"
-            @click="nextHandler"
-            >{{ textButton }}</v-btn
-          >
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-card-text>
-  <!--  </PerfectScrollbar>-->
+  <PerfectScrollbar>
+    <v-card-text class="pb-2" style="overflow-x: hidden">
+      <StepIndicator />
+      <transition-slide
+        group
+        :offset="{
+          enter: ['-100%', 0],
+          leave: ['100%', 0],
+        }"
+      >
+        <createTeamStep
+          ref="stepRef"
+          v-if="steps.current === 'createTeam'"
+          :key="steps.current"
+        />
+        <createDtStep
+          ref="stepRef"
+          v-if="steps.current === 'createDt'"
+          :key="steps.current"
+        />
+        <createOwnerStep
+          ref="stepRef"
+          v-if="steps.current === 'createOwner'"
+          :key="steps.current"
+        />
+      </transition-slide>
+      <v-container>
+        <v-row>
+          <v-col cols="6">
+            <v-btn
+              variant="outlined"
+              block
+              color="secondary"
+              density="comfortable"
+              size="large"
+              @click="backHandler"
+              >{{ textButtonCancel }}</v-btn
+            >
+          </v-col>
+          <v-col cols="6">
+            <v-btn
+              variant="elevated"
+              block
+              color="primary"
+              density="comfortable"
+              size="large"
+              :loading="loading"
+              @click="nextHandler"
+              >{{ textButton }}</v-btn
+            >
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card-text>
+  </PerfectScrollbar>
 </template>
