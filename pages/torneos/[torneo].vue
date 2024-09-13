@@ -10,7 +10,7 @@ import { useTournamentStore } from "~/store";
 definePageMeta({
   middleware: () => {
     if (!useTournamentStore().tournamentId) {
-      useRouter().push({ name: "liga" });
+      useRouter().push({ name: "torneos" });
     }
   },
 });

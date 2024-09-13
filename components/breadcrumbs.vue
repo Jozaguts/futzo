@@ -12,13 +12,13 @@ const breadcrumbs = computed(() => {
           to: "/",
         },
       ];
-    case "liga":
+    case "torneos":
       return [leagueName.value];
-    case "liga-torneo":
+    case "torneos-torneo":
       return [
         {
           title: leagueName.value,
-          to: "/liga",
+          to: "/torneos",
         },
         {
           title: useRoute().path.split("/")[2],
@@ -52,8 +52,8 @@ const breadcrumbs = computed(() => {
           to: "/",
         },
         {
-          title: "liga",
-          to: "/liga",
+          title: "torneos",
+          to: "/torneos",
         },
         {
           title: routeName.value,

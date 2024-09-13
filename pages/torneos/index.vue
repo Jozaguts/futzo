@@ -4,6 +4,9 @@ import CreateTournamentDialog from "~/components/pages/torneos/Dialog.vue";
 import { storeToRefs } from "pinia";
 import { useTournamentStore } from "~/store";
 import { useTheme } from "vuetify";
+import { useRouter } from "#app";
+import { computed, onMounted } from "#imports";
+import type { Tournament } from "~/models/tournament";
 
 const backgroundColor = useTheme().current.value.colors.background;
 const headers = [
@@ -29,11 +32,11 @@ onMounted(() => {
   useTournamentStore().loadTournaments();
 });
 const theAreTournaments = computed(() => tournaments.value.length > 0);
-const handleShowTournament = (_tournament) => {
+const handleShowTournament = (_tournament: Tournament) => {
   tournamentId.value = _tournament.id;
   tournament.value = _tournament;
   useRouter().push({
-    name: "liga-torneo",
+    name: "torneos-torneo",
     params: { torneo: _tournament.slug },
   });
 };

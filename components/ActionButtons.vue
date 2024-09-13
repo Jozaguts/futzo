@@ -4,6 +4,7 @@ import { useTeamStore, useTournamentStore } from "~/store";
 import EditarTorneo from "~/components/pages/liga/editar-torneo.vue";
 import CancelarTorneo from "~/components/pages/liga/cancelar-torneo.vue";
 import type { TournamentForm } from "~/models/tournament";
+import MarkAsCompleted from "~/components/pages/liga/mark-as-completed.vue";
 
 const currentRouteName = computed(() => useRoute().name);
 const buttonActions = computed<{ icon: string; title: string } | boolean>(
@@ -11,15 +12,10 @@ const buttonActions = computed<{ icon: string; title: string } | boolean>(
     switch (currentRouteName.value) {
       case "index":
         return false;
-      case "liga":
+      case "torneos":
         return {
           title: "Crear torneo",
           icon: "plus",
-        };
-      case "liga-torneo":
-        return {
-          title: "Marcar como terminado",
-          icon: "check-circle-broken",
         };
       case "equipos":
         return {
@@ -36,7 +32,7 @@ const buttonActions = computed<{ icon: string; title: string } | boolean>(
 );
 const handleActions = () => {
   switch (currentRouteName.value) {
-    case "liga":
+    case "torneos":
       const { dialog, isEdition, tournamentToEdit, tournamentId } =
         storeToRefs(useTournamentStore());
       isEdition.value = false;
@@ -48,6 +44,9 @@ const handleActions = () => {
       const teamStore = useTeamStore();
       teamStore.dialog = true;
       break;
+    case "torneos-torneo":
+      useTournamentStore().markAsCompleted();
+      break;
     case "theme":
       break;
   }
@@ -55,15 +54,16 @@ const handleActions = () => {
 </script>
 <template>
   <div class="d-flex justify-center align-center">
-    <template v-if="currentRouteName === 'liga-torneo'">
+    <template v-if="currentRouteName === 'torneos-torneo'">
       <EditarTorneo />
       <CancelarTorneo />
+      <MarkAsCompleted />
     </template>
     <v-btn
       variant="elevated"
       @click="handleActions"
       class="mr-2 mr-lg-12 mr-md-12 navbar-btn-action"
-      v-if="buttonActions"
+      v-else-if="currentRouteName !== 'torneos-torneo' && buttonActions"
     >
       <template #prepend>
         <nuxt-icon :name="buttonActions.icon" filled></nuxt-icon>
