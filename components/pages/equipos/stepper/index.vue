@@ -57,7 +57,11 @@ const nextHandler = async () => {
     if (currentStepIndex === stepsOrder.length - 1) {
       // si es el último paso
       loading.value = true;
-      await teamStore.createTeam();
+      if (teamStore.isEdition) {
+        await teamStore.updateTeam(teamStoreRequest.value.team.id);
+      } else {
+        await teamStore.createTeam();
+      }
       loading.value = false;
       return;
     }
