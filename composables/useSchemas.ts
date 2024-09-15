@@ -36,6 +36,7 @@ export default function (schemaNAme: string) {
 }
 
 function getSchemaByName(name: string) {
+  console.log(name);
   let schemaFields = {} as any;
   const { t } = useI18n();
   const yusString = () => {
@@ -137,7 +138,7 @@ function getSchemaByName(name: string) {
         /^(\+52)?(\d{10})$/,
         "Número de teléfono no es válido",
       );
-      schemaFields.image = yup
+      schemaFields.avatar = yup
         .mixed()
         .test("File is required", "Campo requerido ", (value: any) => value);
       break;
@@ -152,11 +153,47 @@ function getSchemaByName(name: string) {
         /^(\+52)?(\d{10})$/,
         "Número de teléfono no es válido",
       );
-      schemaFields.image = yup
+      schemaFields.avatar = yup
         .mixed()
         .test("File is required", "Campo requerido ", (value: any) => value);
       break;
-
+    case "edit-team":
+      schemaFields.name = yusString().required(t("forms.required"));
+      schemaFields.image = yup.mixed().nullable();
+      // .test("File is required", "Campo requerido ", (value: any) => value);
+      schemaFields.category_id = yup.number().required(t("forms.required"));
+      schemaFields.address = yup.object({});
+      schemaFields.colors = yup.object({}).required(t("forms.required"));
+      schemaFields.description = yusString().nullable();
+      schemaFields.email = yusString().email();
+      schemaFields.tournament_id = yup.number().required(t("forms.required"));
+      schemaFields.phone = yusString().matches(
+        // acept format +52...
+        /^(\+52)?(\d{10})$/,
+        "Número de teléfono no es válido",
+      );
+      break;
+    case "edit-coach":
+      schemaFields.name = yusString().required(t("forms.required"));
+      schemaFields.email = yup.string();
+      schemaFields.phone = yusString().matches(
+        // acept format +52...
+        /^(\+52)?(\d{10})$/,
+        "Número de teléfono no es válido",
+      );
+      schemaFields.avatar = yup.mixed().nullable();
+      // .test("File is required", "Campo requerido ", (value: any) => value);
+      break;
+    case "edit-owner":
+      schemaFields.name = yusString().required(t("forms.required"));
+      schemaFields.email = yup.string();
+      schemaFields.phone = yusString().matches(
+        // acept format +52...
+        /^(\+52)?(\d{10})$/,
+        "Número de teléfono no es válido",
+      );
+      schemaFields.avatar = yup.mixed().nullable();
+    // .test("File is required", "Campo requerido ", (value: any) => value
     case "edit-user":
       schemaFields.name = yusString().required(t("forms.required"));
       schemaFields.email = yup

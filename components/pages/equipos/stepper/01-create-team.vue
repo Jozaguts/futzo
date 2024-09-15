@@ -27,9 +27,10 @@ const colors = ref({
 let locationsFind = ref([]);
 const { categories } = storeToRefs(useCategoryStore());
 const { tournaments } = storeToRefs(useTournamentStore());
-const { teamStoreRequest } = storeToRefs(useTeamStore());
-const { handleSubmit, resetForm, fields, validate, setValues } =
-  useSchemas("create-team");
+const { teamStoreRequest, isEdition } = storeToRefs(useTeamStore());
+const { handleSubmit, resetForm, fields, validate, setValues } = useSchemas(
+  isEdition.value ? "edit-team" : "create-team",
+);
 const saveImage = (file: File) => {
   imageForm.value.file = file;
   imageForm.value.name = file.name;
@@ -310,6 +311,7 @@ defineExpose({
           v-bind="fields.email.fieldPropsValue"
           placeholder="Correo electrónico"
           outlined
+          :disabled="isEdition"
           class="mb-4"
           density="compact"
         ></v-text-field>
@@ -319,6 +321,7 @@ defineExpose({
             :singleLine="true"
             v-model="fields.phone.fieldValue"
             class="phone-input"
+            :disabled="isEdition"
             display-format="international"
             example="52 1 55 1234 5678"
             validate-on="blur lazy"

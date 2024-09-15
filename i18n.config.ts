@@ -35,6 +35,8 @@ export default defineI18nConfig(() => ({
             root: "Paginacion",
             next: "Pagina siguiente",
             previous: "Pagina anterior",
+            currentPage: "Pagina actual",
+            page: "Pagina",
           },
         },
       },

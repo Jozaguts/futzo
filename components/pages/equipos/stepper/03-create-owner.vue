@@ -14,27 +14,30 @@ const imageForm = ref<ImageForm>({
 });
 
 const teamStore = useTeamStore();
-const { teamStoreRequest } = storeToRefs(teamStore);
+const { teamStoreRequest, isEdition } = storeToRefs(teamStore);
 
-const { handleSubmit, resetForm, fields, validate, setValues } =
-  useSchemas("create-owner");
+const { handleSubmit, resetForm, fields, validate, setValues } = useSchemas(
+  isEdition.value ? "edit-owner" : "create-owner",
+);
 
 const saveImage = (file: File) => {
   imageForm.value.file = file;
   imageForm.value.name = file.name;
   imageForm.value.size = file.size;
-  fields.image.fieldValue = file;
+  fields.avatar.fieldValue = file;
 };
 const removeImage = () => {
   imageForm.value.file = null;
   imageForm.value.name = "";
   imageForm.value.size = 0;
-  fields.image.fieldValue = null;
+  fields.avatar.fieldValue = null;
 };
 onMounted(() => {
   if (teamStoreRequest.value?.president) {
     setValues({ ...teamStoreRequest.value.president });
-    if (teamStoreRequest.value.president.image) {
+
+    console.log(teamStoreRequest.value.president.avatar);
+    if (teamStoreRequest.value.president.avatar) {
       dragDropImageRef.value.loadImage();
     }
   }
@@ -74,9 +77,9 @@ defineExpose({
         <span
           class="text-error text-caption"
           :class="
-            fields.image.fieldPropsValue['error-messages'][0] ? 'ml-2' : ''
+            fields.avatar.fieldPropsValue['error-messages'][0] ? 'ml-2' : ''
           "
-          >{{ fields.image.fieldPropsValue["error-messages"][0] ?? "" }}</span
+          >{{ fields.avatar.fieldPropsValue["error-messages"][0] ?? "" }}</span
         >
       </v-col>
     </v-row>
@@ -88,6 +91,7 @@ defineExpose({
         <v-text-field
           placeholder="p.ej. luis@futzo.io "
           outlined
+          :disabled="isEdition"
           v-model="fields.email.fieldValue"
           v-bind="fields.email.fieldPropsValue"
           density="compact"
@@ -103,6 +107,7 @@ defineExpose({
           <VPhoneInput
             variant="plain"
             :singleLine="true"
+            :disabled="isEdition"
             v-model="fields.phone.fieldValue"
             class="phone-input"
             display-format="international"

@@ -11,6 +11,7 @@ export const useTeamStore = defineStore("teamStore", () => {
     page: 1,
     perPage: 10,
     total: 0,
+    to: 1,
   });
   const teamStoreRequest = ref<Partial<TeamStoreRequest>>(
     {} as TeamStoreRequest,
@@ -92,6 +93,41 @@ export const useTeamStore = defineStore("teamStore", () => {
   const isEdition = ref(false);
 
   const createTeam = async () => {
+    let form = prepareForm();
+
+    await client("/api/v1/admin/teams", {
+      method: "POST",
+      body: form,
+    })
+      .then(async (response) => {
+        await getTeams();
+        toast.success("Equipo creado");
+
+        dialog.value = false;
+      })
+      .catch((error) => {
+        console.error(error.data?.errors);
+
+        toast.error(error.data?.message ?? "Error al crear equipo");
+      });
+  };
+  const updateTeam = async (teamId: number) => {
+    let form = prepareForm();
+    await client(`/api/v1/admin/teams/${teamId}`, {
+      method: "PUT",
+      body: form,
+    })
+      .then(async (response) => {
+        await getTeams();
+        toast.success("Equipo actualizado");
+        dialog.value = false;
+      })
+      .catch((error) => {
+        console.error(error.data?.errors);
+        toast.error(error.data?.message ?? "Error al editar equipo");
+      });
+  };
+  const prepareForm = (): FormData => {
     let form = new FormData();
 
     for (const key in teamStoreRequest.value) {
@@ -149,27 +185,26 @@ export const useTeamStore = defineStore("teamStore", () => {
         }
       }
     }
-
-    await client("/api/v1/admin/teams", {
-      method: "POST",
-      body: form,
-    })
-      .then(async (response) => {
-        await getTeams();
-        toast.success("Equipo creado");
-
-        dialog.value = false;
-      })
-      .catch((error) => {
-        console.error(error.data?.errors);
-
-        toast.error(error.data?.message ?? "Error al crear equipo");
-      });
+    return form;
   };
   const getTeams = async () => {
     try {
-      const { data } = await client("/api/v1/admin/teams");
-      teams.value = data.teams;
+      const response = await client(
+        `/api/v1/admin/teams?per_page=20&page=${pagination.value.to}`,
+      );
+      pagination.value.total = response.meta.last_page;
+      pagination.value.page = response.meta.current_page;
+      teams.value = response.data.teams;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getTeam = async (id: number) => {
+    try {
+      return await client<{ data: TeamStoreRequest }>(
+        `/api/v1/admin/teams/${id}`,
+      );
     } catch (error) {
       console.log(error);
     }
@@ -178,13 +213,15 @@ export const useTeamStore = defineStore("teamStore", () => {
   return {
     teams,
     team,
-    createTeam,
     dialog,
     steps,
     isEdition,
     teamStoreRequest,
-    getTeams,
     teamId,
     pagination,
+    createTeam,
+    getTeams,
+    getTeam,
+    updateTeam,
   };
 });
