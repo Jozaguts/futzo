@@ -7,7 +7,6 @@
         </ClientOnly>
         <ClientOnly>
           <Navigation> </Navigation>
-          <AppBar v-if="isNotConfigurationPage"> </AppBar>
           <v-main v-show="show" class="v-main" app>
             <slot></slot>
           </v-main>
@@ -27,7 +26,6 @@
 
 <script setup lang="ts">
 import Navigation from "~/components/layout/navigation-drawer.vue";
-import AppBar from "~/components/layout/app-bar.vue";
 import { VSonner } from "vuetify-sonner";
 import { useGlobalStore } from "~/store";
 import { storeToRefs } from "pinia";
@@ -48,10 +46,12 @@ const isNotConfigurationPage = computed(() => {
 .v-main {
   padding-left: v-bind(paddingLeft);
   padding-bottom: 64px;
+  margin-top: 40px;
 }
 @media (min-width: 920px) {
   .v-main {
     padding-left: v-bind(paddingLeft);
+    margin-top: 40px;
   }
 }
 </style>

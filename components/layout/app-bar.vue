@@ -1,14 +1,21 @@
 <script lang="ts" setup>
 import Breadcrumbs from "~/components/breadcrumbs.vue";
-import ActionButtons from "~/components/ActionButtons.vue";
+
+const props = defineProps();
 </script>
 <template>
-  <v-app-bar color="white"  :border="false" elevation="0" height="85" app>
+  <v-app-bar :border="false" elevation="0" density="compact" app>
     <template #title>
       <breadcrumbs />
     </template>
     <template #append>
-     <ActionButtons />
+      <slot name="buttons"> </slot>
+      <!--      <ActionButtons />-->
     </template>
   </v-app-bar>
 </template>
+<style scoped>
+header {
+  padding-top: 40px;
+}
+</style>

@@ -7,6 +7,7 @@ export const useTeamStore = defineStore("teamStore", () => {
   const teams = ref<Team[]>();
   const team = ref<Team>();
   const teamId = ref(0);
+  const search = ref("");
   const pagination = ref({
     page: 1,
     perPage: 10,
@@ -219,6 +220,7 @@ export const useTeamStore = defineStore("teamStore", () => {
     teamStoreRequest,
     teamId,
     pagination,
+    search,
     createTeam,
     getTeams,
     getTeam,

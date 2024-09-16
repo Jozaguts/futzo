@@ -6,7 +6,7 @@ import StepperContainer from "~/components/pages/equipos/stepper/index.vue";
 
 const { isEdition } = storeToRefs(useTeamStore());
 const teamStore = useTeamStore();
-const { steps } = storeToRefs(teamStore);
+const { steps, teams } = storeToRefs(teamStore);
 const leaveHandler = () => {
   steps.value.current = "createTeam";
   steps.value.completed = [];

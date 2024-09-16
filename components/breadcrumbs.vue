@@ -79,12 +79,12 @@ const breadcrumbs = computed(() => {
 .v-breadcrumbs-item--disabled
   opacity: 1
 .text-breadcrumbs
-  color: #182230
+  color: #000
+  font-size: 36px
   font-style: normal
-  font-weight: 500
+  font-weight: 600
+  line-height: 44px
   letter-spacing: -0.72px
-  font-size: 20px
-  line-height: 30px
 .text-breadcrumbs.text-primary
   font-weight: 700
 </style>

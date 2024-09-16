@@ -1,37 +1,19 @@
 <script setup lang="ts">
 import { useTeamStore } from "~/store";
 import type { TeamResponse } from "~/models/Team";
+import getHeaders from "~/utils/headers-table";
 
-const { teams, teamId, isEdition, pagination, dialog, teamStoreRequest } =
-  storeToRefs(useTeamStore());
-const search = ref("");
-const headers = [
-  { title: "#", value: "", sortable: true },
-  { title: "Equipo", value: "name", sortable: true },
-  { title: "Torneo", value: "tournament.name", sortable: true },
-  { title: "Categoría", value: "category.name", sortable: true },
-  { title: "Cancha", value: "field", sortable: true },
-  { title: "Delegado/Presidente", value: "president.name", sortable: true },
-  {
-    title: "Teléfono",
-    value: "president.phone",
-    sortable: true,
-    align: "center",
-  },
-  {
-    title: "Correo",
-    value: "president.email",
-    sortable: true,
-    align: "center",
-  },
-  {
-    title: "Dirección",
-    value: "address.structured_formatting.main_text",
-    sortable: true,
-    align: "center",
-  },
-  { title: "", value: "actions", sortable: false },
-];
+const {
+  teams,
+  teamId,
+  isEdition,
+  pagination,
+  dialog,
+  teamStoreRequest,
+  search,
+} = storeToRefs(useTeamStore());
+// const search = ref("");
+const headers = getHeaders("teams");
 const setChipColor = (status: string) => {
   switch (status) {
     case "creado":
@@ -72,30 +54,24 @@ const paginationHandler = (page: number) => {
   pagination.value.to = page;
   useTeamStore().getTeams();
 };
+const noTeams = computed(() => teams.value?.length === 0);
 </script>
 <template>
-  <v-card height="100%" variant="text">
-    <v-card-title class="mb-4">
-      <v-text-field
-        v-model="search"
-        label="Search"
-        prepend-inner-icon="mdi-magnify"
-        variant="outlined"
-        hide-details
-        single-line
-      ></v-text-field>
-    </v-card-title>
+  <v-card height="100%" variant="text" v-if="!noTeams" class="mt-5">
     <v-card-text class="fill-height">
       <v-data-table
         class="border-sm fill-height futzo-rounded"
-        style="max-height: 90%; border-color: #eaecf0 !important"
+        style="max-height: calc(100% - 2rem); border-color: #eaecf0 !important"
         :headers="headers"
         :items="teams"
         :search="search"
         item-key="name"
         items-per-page="10"
       >
-        <template #[`item.name`]="{ item }">
+        <template #[`item.index`]="{ item, index }">
+          {{ index + 1 }}
+        </template>
+        <template #[`item.name`]="{ item, index }">
           <v-avatar :image="item.image"></v-avatar>
           {{ item.name }}
         </template>
@@ -171,5 +147,16 @@ const paginationHandler = (page: number) => {
   position: absolute;
   bottom: 0;
   right: 0;
+}
+thead > tr > th {
+  border-bottom: 1px solid #eaecf0 !important;
+}
+tbody > tr.v-data-table__tr:nth-child(even) {
+  background: #f9fafb !important;
+  border: 1px solid #eaecf0 !important;
+}
+.v-data-table__tr:nth-child(even) td {
+  border-top: 1px solid #eaecf0 !important;
+  border-bottom: 1px solid #eaecf0 !important;
 }
 </style>
