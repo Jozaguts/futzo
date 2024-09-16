@@ -15,6 +15,9 @@ const adminLinks = reactive([
     disabled: !isSuperAdmin.value,
   },
 ]);
+if (!isSuperAdmin.value) {
+  adminLinks.pop();
+}
 const links = reactive([
   { icon: "home", title: "Dashboard", to: "/", disabled: false },
   { icon: "trophy", title: "Torneos", to: "/torneos", disabled: false },
