@@ -13,7 +13,7 @@ const noTeams = computed(() => teams.value?.length === 0);
     v-if="noTeams"
     width="calc(100% - 80px)"
     max-height="calc(100% - 60px)"
-    class="v-sheet d-flex justify-center align-center fill-height mx-auto mt-10"
+    class="no-teams-v-sheet d-flex justify-center align-center fill-height mx-auto mt-10"
   >
     <div class="d-flex flex-column align-center">
       <h2 class="card-title">No hay equipos aún</h2>
@@ -31,7 +31,7 @@ const noTeams = computed(() => teams.value?.length === 0);
   </v-sheet>
 </template>
 <style>
-.v-sheet {
+.no-teams-v-sheet {
   border-radius: 12px;
   border: 1px solid #eaecf0;
   background: #fff;

@@ -46,12 +46,10 @@ const isNotConfigurationPage = computed(() => {
 .v-main {
   padding-left: v-bind(paddingLeft);
   padding-bottom: 64px;
-  margin-top: 40px;
 }
 @media (min-width: 920px) {
   .v-main {
     padding-left: v-bind(paddingLeft);
-    margin-top: 40px;
   }
 }
 </style>

@@ -7,7 +7,11 @@ const user = computed(() => useAuthStore().user);
 const tab = ref(1);
 </script>
 <template>
-  <v-sheet height="100%" color="white" class="pa-10 full-height">
+  <v-sheet
+    height="100%"
+    color="white"
+    class="pa-10 full-height configuration-v-sheet"
+  >
     <v-card variant="text">
       <v-card-item class="mb-12">
         <template #prepend>
