@@ -12,6 +12,7 @@ const emits = defineEmits(["searching"]);
     :placeholder="placeholder"
     append-inner-icon="mdi-magnify"
     class="search-button"
+    density="compact"
     @update:model-value="emits('searching', $event)"
   >
   </v-text-field>
@@ -23,7 +24,7 @@ const emits = defineEmits(["searching"]);
   background: #fff;
   box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
 }
-.search-button >>> .mdi-menu-down {
+:deep(.mdi-menu-down) {
   display: none;
 }
 </style>

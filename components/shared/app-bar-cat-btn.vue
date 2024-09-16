@@ -20,6 +20,7 @@ const emits = defineEmits(["click"]);
 </template>
 <style>
 .app-bar-cat-btn {
+  max-height: 42px;
   border-radius: 8px;
   border: 1px solid #7f56d9;
   background: #9155fd;
