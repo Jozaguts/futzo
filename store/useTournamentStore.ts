@@ -6,6 +6,8 @@ import { useGlobalStore } from "~/store/useGlobalStore";
 export const useTournamentStore = defineStore("tournamentStore", () => {
   const tournament = ref<Tournament | null>(null);
   const tournaments = ref<Tournament[]>([]);
+  const noTournaments = computed(() => !tournaments.value.length);
+  const search = ref("");
   const nextGames = ref<Game[]>([
     {
       id: 1,
@@ -400,5 +402,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     updateTournamentStatus,
     pagination,
     markAsCompleted,
+    noTournaments,
+    search,
   };
 });

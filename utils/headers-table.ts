@@ -39,6 +39,34 @@ export default function getHeaders(tableName: string): Header[] {
         },
         { title: "", value: "actions", sortable: false },
       ];
+    case "tournaments":
+      return [
+        { title: "Nombre del torneo", value: "name", sortable: true },
+        { title: "Categoría", value: "category.name", sortable: true },
+        { title: "Formato", value: "format.name", sortable: true },
+        { title: "Inicio", value: "start_date", sortable: true },
+        { title: "Fin", value: "end_date", sortable: true },
+        {
+          title: "# de equipos",
+          value: "teams",
+          sortable: true,
+          align: "center",
+        },
+        {
+          title: "# de partidos",
+          value: "matches",
+          sortable: true,
+          align: "center",
+        },
+        {
+          title: "# de jugadores",
+          value: "players",
+          sortable: true,
+          align: "center",
+        },
+        { title: "Status", value: "status", sortable: true, align: "center" },
+        { title: "", value: "actions", sortable: false },
+      ];
     default:
       throw new Error("Table not found");
   }

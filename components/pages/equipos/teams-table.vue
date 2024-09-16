@@ -60,7 +60,7 @@ const noTeams = computed(() => teams.value?.length === 0);
   <v-card height="100%" variant="text" v-if="!noTeams" class="mt-5">
     <v-card-text class="fill-height">
       <v-data-table
-        class="border-sm fill-height futzo-rounded"
+        class="border-sm fill-height futzo-rounded teams-table"
         style="max-height: calc(100% - 2rem); border-color: #eaecf0 !important"
         :headers="headers"
         :items="teams"
@@ -106,7 +106,7 @@ const noTeams = computed(() => teams.value?.length === 0);
                 color="black"
                 rounded="md"
                 border="thin secondary"
-                class="align-self-start"
+                class="__pre"
               >
                 <template #prepend>
                   <nuxt-icon name="arrow-left" filled></nuxt-icon>
@@ -123,7 +123,7 @@ const noTeams = computed(() => teams.value?.length === 0);
                 color="black"
                 rounded="md"
                 border="thin secondary"
-                class="ml-auto"
+                class="__next"
               >
                 <template #append>
                   <nuxt-icon name="arrow-right" filled></nuxt-icon>
@@ -138,15 +138,17 @@ const noTeams = computed(() => teams.value?.length === 0);
   </v-card>
 </template>
 <style>
-.v-pagination__prev {
+.__next {
   position: absolute;
-  bottom: 0;
-  left: 0;
+  bottom: 50%;
+  right: 1rem;
+  transform: translate(0, 50%);
 }
-.v-pagination__next {
+.__pre {
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: 50%;
+  left: 1rem;
+  transform: translate(0, 50%);
 }
 thead > tr > th {
   border-bottom: 1px solid #eaecf0 !important;
