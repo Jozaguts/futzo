@@ -188,19 +188,23 @@ export const useTeamStore = defineStore("teamStore", () => {
     }
     return form;
   };
-  const getTeams = async (paginate = true) => {
+  const getTeams = async () => {
     try {
       const response = await client(
-        `/api/v1/admin/teams?per_page=20&page=${pagination.value.to}?paginate=${paginate}`,
+        `/api/v1/admin/teams?per_page=20&page=${pagination.value.to}`,
       );
-      if (paginate) {
-        pagination.value.total = response.meta.last_page;
-        pagination.value.page = response.meta.current_page;
-        teams.value = response.teams;
-      } else {
-        console.log(response.teams);
-        teams.value = response.teams;
-      }
+      console.log({ response });
+      pagination.value.total = response.meta.last_page;
+      pagination.value.page = response.meta.current_page;
+      teams.value = response.data.teams;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const list = async () => {
+    try {
+      const response = await client("/api/v1/admin/teams/list");
+      teams.value = response.teams;
     } catch (error) {
       console.log(error);
     }
@@ -230,5 +234,6 @@ export const useTeamStore = defineStore("teamStore", () => {
     getTeams,
     getTeam,
     updateTeam,
+    list,
   };
 });

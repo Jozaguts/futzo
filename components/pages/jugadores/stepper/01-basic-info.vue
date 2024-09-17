@@ -51,7 +51,7 @@ const updateCategory = (teamId) => {
   }
 };
 onMounted(() => {
-  useTeamStore().getTeams(false);
+  useTeamStore().list();
   if (playerStoreRequest.value?.basic?.avatar) {
     dragDropImageRef.value?.loadImage();
   }
