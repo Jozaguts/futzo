@@ -1,2 +1,2 @@
 <script lang="ts" setup></script>
-<template>jugadores</template>
+<template></template>

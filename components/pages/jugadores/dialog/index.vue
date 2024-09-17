@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import HeaderCard from "~/components/pages/equipos/CreateTeamDialog/Header.vue";
+import HeaderCard from "~/components/pages/jugadores/dialog/header.vue";
 import { storeToRefs } from "pinia";
-import { useAuthStore, useTeamStore, useTournamentStore } from "~/store";
-import StepperContainer from "~/components/pages/equipos/stepper/index.vue";
+import { useAuthStore, usePlayerStore, useTournamentStore } from "~/store";
+import StepperContainer from "~/components/pages/jugadores/stepper/index.vue";
 
-const teamStore = useTeamStore();
-const { steps, teams } = storeToRefs(teamStore);
+const { players, steps, dialog } = storeToRefs(usePlayerStore());
 const leaveHandler = () => {
-  steps.value.current = "createTeam";
+  steps.value.current = "basic-info";
   steps.value.completed = [];
 };
 onMounted(() => {
@@ -17,13 +16,15 @@ onMounted(() => {
 </script>
 <template>
   <v-dialog
-    v-model="teamStore.dialog"
+    v-model="dialog"
     max-width="690"
-    min-height="800"
     @after-leave="leaveHandler"
+    max-height="800"
+    height="100%"
   >
     <v-card
       class="create-tournament-card futzo-rounded"
+      height="100%"
       :style="{ overflow: $vuetify.display.mobile ? '' : 'hidden' }"
     >
       <HeaderCard />
