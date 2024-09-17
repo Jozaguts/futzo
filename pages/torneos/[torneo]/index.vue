@@ -5,6 +5,9 @@ import LiveGames from "~/components/pages/equipos/live-games";
 import NextGamesToday from "~/components/pages/equipos/next-games-today";
 import NextGames from "~/components/pages/equipos/next-games.vue";
 import CreateTournamentDialog from "~/components/pages/torneos/Dialog.vue";
+import PageLayout from "~/components/shared/page-layout/index.vue";
+import AppBar from "~/components/layout/app-bar.vue";
+import AppBarBtn from "~/components/pages/torneos/torneo/app-bar-btn.vue";
 import { useTournamentStore } from "~/store";
 
 definePageMeta({
@@ -16,23 +19,34 @@ definePageMeta({
 });
 </script>
 <template>
-  <div class="tournament-details-container">
-    <div class="table-container">
-      <PositionsTable />
-    </div>
-    <div class="games-container">
-      <div class="live-games">
-        <LiveGames />
+  <PageLayout>
+    <template #app-bar>
+      <AppBar>
+        <template #buttons>
+          <AppBarBtn />
+        </template>
+      </AppBar>
+    </template>
+    <template #default>
+      <div class="tournament-details-container">
+        <div class="table-container">
+          <PositionsTable />
+        </div>
+        <div class="games-container">
+          <div class="live-games">
+            <LiveGames />
+          </div>
+          <div class="next-games-today">
+            <NextGamesToday />
+          </div>
+        </div>
+        <div class="next-games">
+          <NextGames />
+        </div>
+        <CreateTournamentDialog />
       </div>
-      <div class="next-games-today">
-        <NextGamesToday />
-      </div>
-    </div>
-    <div class="next-games">
-      <NextGames />
-    </div>
-    <CreateTournamentDialog />
-  </div>
+    </template>
+  </PageLayout>
 </template>
 <style lang="scss">
 .tournament-details-container {
