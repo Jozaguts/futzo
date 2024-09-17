@@ -211,6 +211,28 @@ function getSchemaByName(name: string) {
         .required(t("forms.required"))
         .oneOf([yup.ref("new_password"), null], "Las contraseñas no coinciden");
       break;
+    case "create-player-basic-info":
+      schemaFields.name = yusString().required(t("forms.required"));
+      schemaFields.last_name = yusString().required(t("forms.required"));
+      schemaFields.birthday = yup.date().required(t("forms.required"));
+      schemaFields.avatar = yup
+        .mixed()
+        .test("File is required", "Campo requerido ", (value: any) => value);
+      schemaFields.nationality = yusString().required(t("forms.required"));
+      schemaFields.team_id = yup.number().nullable();
+      schemaFields.category_id = yup.number().nullable();
+      break;
+    case "edit-player-basic-info":
+      schemaFields.name = yusString().required(t("forms.required"));
+      schemaFields.last_name = yusString().required(t("forms.required"));
+      schemaFields.birthday = yup.date().required(t("forms.required"));
+      schemaFields.avatar = yup
+        .mixed()
+        .test("File is required", "Campo requerido ", (value: any) => value);
+      schemaFields.nationality = yusString().required(t("forms.required"));
+      schemaFields.team_id = yup.number().nullable();
+      schemaFields.category_id = yup.number().nullable();
+      break;
     default:
       schemaFields = yup.mixed();
   }
