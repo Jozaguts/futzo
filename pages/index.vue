@@ -1,24 +1,29 @@
-<template>
-  <v-container fluid>
-    <v-row>
-      <v-col>
-        <h1>Dashboard</h1>
-      </v-col>
-    </v-row>
-  </v-container>
-</template>
 <script setup lang="ts">
-import {useGlobalStore} from "~/store";
+import { useGlobalStore } from "~/store";
+import PageLayout from "~/components/shared/page-layout/index.vue";
+import AppBar from "~/components/layout/app-bar.vue";
+import AppBarBtn from "~/components/pages/dashboard/app-bar-btn.vue";
 
-watchEffect(()=>{
+watchEffect(() => {
   const route = useRoute();
   const router = useRouter();
   const globalStore = useGlobalStore();
-  if (route.query?.code === 'USER_NOT_VERIFIED'){
+  if (route.query?.code === "USER_NOT_VERIFIED") {
     globalStore.showErrorNotification({
-      message: 'Correo electrónico no ha sido verificado'
-    })
-    router.replace('/');
+      message: "Correo electrónico no ha sido verificado",
+    });
+    router.replace("/");
   }
-})
+});
 </script>
+<template>
+  <PageLayout>
+    <template #app-bar>
+      <AppBar>
+        <template #buttons>
+          <AppBarBtn />
+        </template>
+      </AppBar>
+    </template>
+  </PageLayout>
+</template>
