@@ -188,14 +188,19 @@ export const useTeamStore = defineStore("teamStore", () => {
     }
     return form;
   };
-  const getTeams = async () => {
+  const getTeams = async (paginate = true) => {
     try {
       const response = await client(
-        `/api/v1/admin/teams?per_page=20&page=${pagination.value.to}`,
+        `/api/v1/admin/teams?per_page=20&page=${pagination.value.to}?paginate=${paginate}`,
       );
-      pagination.value.total = response.meta.last_page;
-      pagination.value.page = response.meta.current_page;
-      teams.value = response.data.teams;
+      if (paginate) {
+        pagination.value.total = response.meta.last_page;
+        pagination.value.page = response.meta.current_page;
+        teams.value = response.teams;
+      } else {
+        console.log(response.teams);
+        teams.value = response.teams;
+      }
     } catch (error) {
       console.log(error);
     }
