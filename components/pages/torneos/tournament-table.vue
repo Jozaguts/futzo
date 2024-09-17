@@ -112,6 +112,20 @@ const customHeight = computed(() => {
         </v-chip>
       </template>
       <template #item.actions="{ item }">
+        <v-btn
+          color="on-background"
+          size="small"
+          rounded="md"
+          variant="outlined"
+          class="mr-2 show-calendar-btn"
+          @click="
+            $router.push({
+              name: 'torneos-torneo-calendario',
+              params: { torneo: item.slug },
+            })
+          "
+          >Ver calendario</v-btn
+        >
         <v-btn size="small" rounded="md" @click="handleShowTournament(item)"
           >Ver Torneo</v-btn
         >
@@ -164,6 +178,12 @@ const customHeight = computed(() => {
   </v-sheet>
 </template>
 <style>
+.show-calendar-btn {
+  border-radius: 8px;
+  border: 1px solid #d0d5dd;
+  background: #fff;
+  box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
+}
 .custom-height {
   height: v-bind(mainHeight);
 }

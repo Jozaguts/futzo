@@ -1,4 +1,5 @@
 <template>
+  <NuxtLoadingIndicator color="#9155FD" :height="6" />
   <div>
     <v-layout>
       <v-app app>
