@@ -21,7 +21,6 @@ if (!isSuperAdmin.value) {
 const links = reactive([
   { icon: "home", title: "Dashboard", to: "/", disabled: false },
   { icon: "trophy", title: "Torneos", to: "/torneos", disabled: false },
-  { icon: "calendar", title: "Calendario", to: "/calendario", disabled: false },
   {
     icon: "ion_shirt-sharp",
     title: "Equipos",
