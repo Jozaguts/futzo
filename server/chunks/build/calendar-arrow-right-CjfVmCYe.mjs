@@ -1,0 +1,4 @@
+const calendarArrowRight = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">\n    <path d="M7.5 15L12.5 10L7.5 5" stroke="#344054" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>\n</svg>';
+
+export { calendarArrowRight as default };
+//# sourceMappingURL=calendar-arrow-right-CjfVmCYe.mjs.map
