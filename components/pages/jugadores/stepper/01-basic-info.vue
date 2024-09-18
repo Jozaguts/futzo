@@ -175,6 +175,7 @@ defineExpose({
                 <v-divider />
                 <div class="d-flex mt-2 justify-space-between w-100">
                   <v-btn
+                    color="secondary"
                     class="select-button"
                     @click="datepicker?.closeMenu()"
                     variant="outlined"
