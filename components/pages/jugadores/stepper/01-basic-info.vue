@@ -4,13 +4,14 @@ import useSchemas from "~/composables/useSchemas";
 import VueDatePicker, { type DatePickerInstance } from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { usePlayerStore, useTeamStore } from "~/store";
+import { useCategoryStore } from "~/store/useCategoryStore";
 import {
   dragDropImageRef,
   imageForm,
   removeImage,
   saveImage,
 } from "~/composables/useImage";
-import { useCategoryStore } from "~/store/useCategoryStore";
+import validateAndFormatDate from "~/utils/dateCalendarValidation";
 
 const { isEdition, playerStoreRequest } = storeToRefs(usePlayerStore());
 const { teams } = storeToRefs(useTeamStore());
@@ -21,6 +22,7 @@ const { handleSubmit, resetForm, fields, validate, setValues } = useSchemas(
 
 const datepicker = ref<DatePickerInstance>(null);
 const temporalDate = ref();
+const internalModelValue = ref();
 const saveImageHandler = (image: File) => {
   saveImage(image);
   fields.avatar.fieldValue = image;
@@ -41,21 +43,40 @@ const setTemporalDate = (date: string) => {
   temporalDate.value = formatDate(new Date(date));
   return temporalDate.value;
 };
-const showYearView = () => {
-  datepicker.value?.switchView("time");
-};
 const updateCategory = (teamId) => {
   const team = teams.value.find((team) => team.id === teamId);
   if (team) {
     fields.category_id.fieldValue = team.category.id;
   }
 };
+const updateMonth = (direction: "back" | "forward") => {
+  if (!internalModelValue.value) {
+    internalModelValue.value = new Date();
+  }
+
+  const date = new Date(internalModelValue.value);
+  if (direction === "back") {
+    date.setMonth(date.getMonth() - 1);
+  } else {
+    date.setMonth(date.getMonth() + 1);
+  }
+  console.log(date);
+  datepicker.value?.updateInternalModelValue(date);
+};
+const formatDateToInput = useDebounceFn((dateString: any) => {
+  const dates = validateAndFormatDate(dateString.target.value);
+  if (!!dates) {
+    temporalDate.value = dates?.format;
+    datepicker.value?.updateInternalModelValue(dates?.raw);
+  }
+}, 1000);
 onMounted(() => {
   useTeamStore().list();
   if (playerStoreRequest.value?.basic?.avatar) {
     dragDropImageRef.value?.loadImage();
   }
 });
+
 defineExpose({
   validate,
   handleSubmit,
@@ -98,9 +119,12 @@ defineExpose({
       <v-col cols="12" lg="8" md="8" classs="position-relative">
         <client-only>
           <VueDatePicker
-            class="postion-absolute"
+            :config="{
+              keepViewOnOffsetClick: true,
+            }"
             ref="datepicker"
             locale="es"
+            @internal-model-change="internalModelValue = $event"
             :format="setTemporalDate"
             v-model="fields.birthday.fieldValue"
             v-bind="fields.birthday.fieldPropsValue"
@@ -112,7 +136,7 @@ defineExpose({
             <template #month-year="{ month, year, months }">
               <div class="d-flex flex-column">
                 <div class="month-year-container">
-                  <div class="arrow-left">
+                  <div class="arrow-left" @click="updateMonth('back')">
                     <nuxt-icon
                       name="calendar-arrow-left"
                       class="calendar-arrow-left"
@@ -123,11 +147,11 @@ defineExpose({
                     <div class="month">
                       {{ months[month]["text"] }}
                     </div>
-                    <div class="year" @click="showYearView">
+                    <div class="year">
                       {{ year }}
                     </div>
                   </div>
-                  <div class="arrow-right">
+                  <div class="arrow-right" @click="updateMonth('forward')">
                     <nuxt-icon
                       class="calendar-arrow-right"
                       name="calendar-arrow-right"
@@ -137,14 +161,16 @@ defineExpose({
                 </div>
                 <div class="d-flex w-100">
                   <v-text-field
-                    readonly
                     density="compact"
-                    :value="temporalDate"
+                    label="DD-MM-YY"
+                    @keyup="formatDateToInput"
+                    v-model="temporalDate"
+                    clearable
                   ></v-text-field>
                 </div>
               </div>
             </template>
-            <template #action-row="{ internalModelValue, selectDate }">
+            <template #action-row="{ selectDate }">
               <div class="action-row w-100">
                 <v-divider />
                 <div class="d-flex mt-2 justify-space-between w-100">
