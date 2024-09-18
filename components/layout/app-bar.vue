@@ -4,7 +4,7 @@ import Breadcrumbs from "~/components/breadcrumbs.vue";
 const props = defineProps();
 </script>
 <template>
-  <v-app-bar :border="false" elevation="0" density="compact" app>
+  <v-app-bar color="white" :border="false" elevation="0" app height="90">
     <template #title>
       <breadcrumbs />
     </template>
@@ -14,8 +14,4 @@ const props = defineProps();
     </template>
   </v-app-bar>
 </template>
-<style scoped>
-header {
-  padding-top: 40px;
-}
-</style>
+<style scoped></style>

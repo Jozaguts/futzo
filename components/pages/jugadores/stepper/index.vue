@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import createTeamStep from "~/components/pages/jugadores/stepper/01-basic-info.vue";
-import createDtStep from "~/components/pages/jugadores/stepper/02-details-info.vue";
-import createOwnerStep from "~/components/pages/jugadores/stepper/03-contact-info.vue";
+import basicInfoStep from "~/components/pages/jugadores/stepper/01-basic-info.vue";
+import detailsInfoStep from "~/components/pages/jugadores/stepper/02-details-info.vue";
+import contactInfoStep from "~/components/pages/jugadores/stepper/03-contact-info.vue";
 import StepIndicator from "~/components/pages/jugadores/stepper/step-indicator.vue";
 import { usePlayerStore } from "~/store";
 import type { CreatePlayerForm, CurrentStep } from "~/models/player";
@@ -112,17 +112,17 @@ const textButton = computed(() => {
               leave: ['100%', 0],
             }"
           >
-            <createTeamStep
+            <basicInfoStep
               ref="stepRef"
               v-if="steps.current === 'basic-info'"
               :key="steps.current"
             />
-            <createDtStep
+            <detailsInfoStep
               ref="stepRef"
               v-if="steps.current === 'details-info'"
               :key="steps.current"
             />
-            <createOwnerStep
+            <contactInfoStep
               ref="stepRef"
               v-if="steps.current === 'contact-info'"
               :key="steps.current"
