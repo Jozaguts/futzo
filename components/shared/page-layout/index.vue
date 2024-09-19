@@ -28,7 +28,7 @@ const computedStyles = computed(() => {
   height: calc(100% - 1rem);
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 50px 1.8fr;
+  grid-template-rows: 0 1.8fr;
   grid-auto-columns: 1fr;
   gap: 0 0;
   grid-auto-flow: row;

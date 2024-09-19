@@ -10,8 +10,6 @@ const props = defineProps();
     </template>
     <template #append>
       <slot name="buttons"> </slot>
-      <!--      <ActionButtons />-->
     </template>
   </v-app-bar>
 </template>
-<style scoped></style>
