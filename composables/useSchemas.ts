@@ -138,7 +138,7 @@ function getSchemaByName(name: string) {
         );
       schemaFields.category_id = yup.number().required(t("forms.required"));
       schemaFields.address = yup.object({});
-      schemaFields.colors = yup.object({}).required(t("forms.required"));
+      schemaFields.colors = yup.object({}).nullable();
       schemaFields.description = yusString().nullable();
       schemaFields.email = yusString().email();
       schemaFields.tournament_id = yup.number().required(t("forms.required"));

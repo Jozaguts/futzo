@@ -100,7 +100,7 @@ export const useTeamStore = defineStore("teamStore", () => {
       method: "POST",
       body: form,
     })
-      .then(async (response) => {
+      .then(async () => {
         await getTeams();
         toast.success("Equipo creado");
 
@@ -118,7 +118,7 @@ export const useTeamStore = defineStore("teamStore", () => {
       method: "PUT",
       body: form,
     })
-      .then(async (response) => {
+      .then(async () => {
         await getTeams();
         toast.success("Equipo actualizado");
         dialog.value = false;
