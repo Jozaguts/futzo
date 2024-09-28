@@ -114,7 +114,15 @@ function getSchemaByName(name: string) {
       schemaFields.name = yusString().required(t("forms.required"));
       schemaFields.image = yup
         .mixed()
-        .test("File is required", "Campo requerido ", (value: any) => value);
+        .nullable()
+        .test(
+          "File is required",
+          "Solo imágenes .jgp, png, svg ",
+          (value: any) => {
+            if (value === undefined) return true;
+            return value?.type?.includes("image/");
+          },
+        );
       schemaFields.category_id = yup.number().required(t("forms.required"));
       schemaFields.address = yup.object({});
       schemaFields.colors = yup.object({}).required(t("forms.required"));
@@ -193,7 +201,8 @@ function getSchemaByName(name: string) {
         "Número de teléfono no es válido",
       );
       schemaFields.avatar = yup.mixed().nullable();
-    // .test("File is required", "Campo requerido ", (value: any) => value
+      // .test("File is required", "Campo requerido ", (value: any) => value
+      break;
     case "edit-user":
       schemaFields.name = yusString().required(t("forms.required"));
       schemaFields.email = yup
