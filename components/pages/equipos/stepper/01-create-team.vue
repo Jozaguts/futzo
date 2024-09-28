@@ -3,17 +3,17 @@ import { storeToRefs } from "pinia";
 import { useCategoryStore } from "~/store/useCategoryStore";
 import DragDropImage from "~/components/pages/torneos/drag-drop-image.vue";
 import ColorPicker from "~/components/shared/colorPicker.vue";
-import type { ImageForm } from "~/models/tournament";
 import useSchemas from "~/composables/useSchemas";
 import { useTeamStore, useTournamentStore } from "~/store";
 import { VPhoneInput } from "v-phone-input";
+import {
+  dragDropImageRef,
+  imageForm,
+  removeImage,
+  saveImage,
+} from "~/composables/useImage";
+import search from "~/utils/googleSearch";
 
-const imageForm = ref<ImageForm>({
-  file: null,
-  name: "",
-  size: 0,
-});
-const dragDropImageRef = ref(null);
 const colors = ref({
   home: {
     primary: "",
@@ -31,39 +31,15 @@ const { teamStoreRequest, isEdition } = storeToRefs(useTeamStore());
 const { handleSubmit, resetForm, fields, validate, setValues } = useSchemas(
   isEdition.value ? "edit-team" : "create-team",
 );
-const saveImage = (file: File) => {
-  imageForm.value.file = file;
-  imageForm.value.name = file.name;
-  imageForm.value.size = file.size;
-  fields.image.fieldValue = file;
+const saveImageHandler = (image: File) => {
+  saveImage(image);
+  fields.avatar.fieldValue = image;
 };
-const removeImage = () => {
-  imageForm.value.file = null;
-  imageForm.value.name = "";
-  imageForm.value.size = 0;
-  fields.image.fieldValue = null;
+const removeImageHandler = () => {
+  removeImage();
+  fields.avatar.fieldValue = null;
 };
-const search = useDebounceFn(async (place: string) => {
-  if (!window.google || !window.google.maps || !window.google.maps.places) {
-    console.error("Google Maps JavaScript API library is not loaded.");
-    return [];
-  }
-  const autocompleteService =
-    new window.google.maps.places.AutocompleteService();
-  return new Promise((resolve) => {
-    autocompleteService.getPlacePredictions(
-      { input: place },
-      (predictions, status) => {
-        if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
-          console.error("Error fetching place predictions:", status);
-          resolve([]);
-          return;
-        }
-        resolve(predictions);
-      },
-    );
-  });
-}, 400);
+
 const searchHandler = async (place: string) => {
   const response = await search(place);
   if (response) {
@@ -174,8 +150,8 @@ defineExpose({
         <DragDropImage
           ref="dragDropImageRef"
           :image="imageForm"
-          @image-dropped="saveImage"
-          @remove-image="removeImage"
+          @image-dropped="saveImageHandler"
+          @remove-image="removeImageHandler"
         />
         <span
           class="text-error text-caption"
@@ -343,10 +319,13 @@ defineExpose({
 <style lang="sass">
 .color-picker-items-container__item.home.primary
   background: v-bind('colors.home.primary')
+
 .color-picker-items-container__item.home.secondary
   background: v-bind('colors.home.secondary')
+
 .color-picker-items-container__item.away.primary
   background: v-bind('colors.away.primary')
+
 .color-picker-items-container__item.away.secondary
   background: v-bind('colors.away.secondary')
 </style>

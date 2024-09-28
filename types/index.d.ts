@@ -5,7 +5,7 @@ declare global {
   interface Window {
     FB: any;
     statusChangeCallback: (any: any) => any;
-    window: {
+    google: {
       maps: any;
     };
   }

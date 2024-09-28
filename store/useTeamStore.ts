@@ -193,7 +193,6 @@ export const useTeamStore = defineStore("teamStore", () => {
       const response = await client(
         `/api/v1/admin/teams?per_page=20&page=${pagination.value.to}`,
       );
-      console.log({ response });
       pagination.value.total = response.meta.last_page;
       pagination.value.page = response.meta.current_page;
       teams.value = response.data.teams;
