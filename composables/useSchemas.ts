@@ -56,7 +56,15 @@ function getSchemaByName(name: string) {
         .required(t("forms.required"));
       schemaFields.image = yup
         .mixed()
-        .test("File is required", "Campo requerido ", (value: any) => value);
+        .nullable()
+        .test(
+          "File is required",
+          "Solo imágenes .jgp, png, svg ",
+          (value: any) => {
+            if (value === undefined) return true;
+            return value?.type?.includes("image/");
+          },
+        );
       schemaFields.category_id = yup.number().required(t("forms.required"));
       schemaFields.tournament_format_id = yup
         .number()
@@ -148,36 +156,62 @@ function getSchemaByName(name: string) {
       );
       break;
     case "create-coach":
-      schemaFields.name = yusString().required(t("forms.required"));
+      schemaFields.name = yusString().nullable();
       schemaFields.email = yup
         .string()
         .email("Correo electrónico no válido")
-        .required(t("forms.required"));
+        .nullable();
       schemaFields.phone = yusString().matches(
         /^(\+52)?(\d{10})$/,
         "Número de teléfono no es válido",
       );
       schemaFields.avatar = yup
         .mixed()
-        .test("File is required", "Campo requerido ", (value: any) => value);
+        .nullable()
+        .test(
+          "File is required",
+          "Solo imágenes .jgp, png, svg ",
+          (value: any) => {
+            if (value === undefined) return true;
+            return value?.type?.includes("image/");
+          },
+        );
       break;
     case "create-owner":
-      schemaFields.name = yusString().required(t("forms.required"));
+      schemaFields.name = yusString().nullable();
       schemaFields.email = yup
         .string()
         .email("Correo electrónico no válido")
-        .required(t("forms.required"));
+        .nullable();
       schemaFields.phone = yusString().matches(
         /^(\+52)?(\d{10})$/,
         "Número de teléfono no es válido",
       );
       schemaFields.avatar = yup
         .mixed()
-        .test("File is required", "Campo requerido ", (value: any) => value);
+        .nullable()
+        .test(
+          "File is required",
+          "Solo imágenes .jgp, png, svg ",
+          (value: any) => {
+            if (value === undefined) return true;
+            return value?.type?.includes("image/");
+          },
+        );
       break;
     case "edit-team":
       schemaFields.name = yusString().required(t("forms.required"));
-      schemaFields.image = yup.mixed().nullable();
+      schemaFields.image = yup
+        .mixed()
+        .nullable()
+        .test(
+          "File is required",
+          "Solo imágenes .jgp, png, svg ",
+          (value: any) => {
+            if (value === undefined) return true;
+            return value?.type?.includes("image/");
+          },
+        );
       schemaFields.category_id = yup.number().required(t("forms.required"));
       schemaFields.address = yup.object({});
       schemaFields.colors = yup.object({}).required(t("forms.required"));
@@ -196,7 +230,17 @@ function getSchemaByName(name: string) {
         /^(\+52)?(\d{10})$/,
         "Número de teléfono no es válido",
       );
-      schemaFields.avatar = yup.mixed().nullable();
+      schemaFields.avatar = yup
+        .mixed()
+        .nullable()
+        .test(
+          "File is required",
+          "Solo imágenes .jgp, png, svg ",
+          (value: any) => {
+            if (value === undefined) return true;
+            return value?.type?.includes("image/");
+          },
+        );
       break;
     case "edit-owner":
       schemaFields.name = yusString().required(t("forms.required"));
@@ -205,7 +249,17 @@ function getSchemaByName(name: string) {
         /^(\+52)?(\d{10})$/,
         "Número de teléfono no es válido",
       );
-      schemaFields.avatar = yup.mixed().nullable();
+      schemaFields.avatar = yup
+        .mixed()
+        .nullable()
+        .test(
+          "File is required",
+          "Solo imágenes .jgp, png, svg ",
+          (value: any) => {
+            if (value === undefined) return true;
+            return value?.type?.includes("image/");
+          },
+        );
       break;
     case "edit-user":
       schemaFields.name = yusString().required(t("forms.required"));
@@ -230,7 +284,15 @@ function getSchemaByName(name: string) {
       schemaFields.birthday = yup.date().required(t("forms.required"));
       schemaFields.avatar = yup
         .mixed()
-        .test("File is required", "Campo requerido ", (value: any) => value);
+        .nullable()
+        .test(
+          "File is required",
+          "Solo imágenes .jgp, png, svg ",
+          (value: any) => {
+            if (value === undefined) return true;
+            return value?.type?.includes("image/");
+          },
+        );
       schemaFields.nationality = yusString().required(t("forms.required"));
       schemaFields.team_id = yup.number().nullable();
       schemaFields.category_id = yup.number().nullable();
@@ -241,7 +303,15 @@ function getSchemaByName(name: string) {
       schemaFields.birthday = yup.date().required(t("forms.required"));
       schemaFields.avatar = yup
         .mixed()
-        .test("File is required", "Campo requerido ", (value: any) => value);
+        .nullable()
+        .test(
+          "File is required",
+          "Solo imágenes .jgp, png, svg ",
+          (value: any) => {
+            if (value === undefined) return true;
+            return value?.type?.includes("image/");
+          },
+        );
       schemaFields.nationality = yusString().required(t("forms.required"));
       schemaFields.team_id = yup.number().nullable();
       schemaFields.category_id = yup.number().nullable();
