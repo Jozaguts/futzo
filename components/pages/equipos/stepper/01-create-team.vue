@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { useCategoryStore } from "~/store/useCategoryStore";
+import CategorySelectComponent from "~/components/inputs/CategoriesSelect.vue";
 import DragDropImage from "~/components/pages/torneos/drag-drop-image.vue";
 import ColorPicker from "~/components/shared/colorPicker.vue";
 import useSchemas from "~/composables/useSchemas";
@@ -25,7 +25,6 @@ const colors = ref({
   },
 });
 let locationsFind = ref([]);
-const { categories } = storeToRefs(useCategoryStore());
 const { tournaments } = storeToRefs(useTournamentStore());
 const { teamStoreRequest, isEdition } = storeToRefs(useTeamStore());
 const { handleSubmit, resetForm, fields, validate, setValues } = useSchemas(
@@ -127,19 +126,10 @@ defineExpose({
         <span class="text-body-1"> Categoría* </span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
-        <v-select
-          disabled
-          no-data-text="No hay categorías"
-          :items="categories"
-          density="compact"
-          item-title="name"
-          item-value="id"
-          placeholder="Categoría"
-          menu-icon="mdi-chevron-down"
+        <CategorySelectComponent
           v-model="fields.category_id.fieldValue"
-          v-bind="fields.category_id.fieldPropsValue"
-        >
-        </v-select>
+          :errors="fields.category_id.fieldPropsValue"
+        />
       </v-col>
     </v-row>
     <v-row>
