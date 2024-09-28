@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import CategorySelectComponent from "~/components/inputs/CategoriesSelect.vue";
+import ColorsComponent from "~/components/pages/equipos/colors-component.vue";
 import DragDropImage from "~/components/pages/torneos/drag-drop-image.vue";
-import ColorPicker from "~/components/shared/colorPicker.vue";
 import useSchemas from "~/composables/useSchemas";
 import { useTeamStore, useTournamentStore } from "~/store";
 import { VPhoneInput } from "v-phone-input";
@@ -14,16 +14,6 @@ import {
 } from "~/composables/useImage";
 import search from "~/utils/googleSearch";
 
-const colors = ref({
-  home: {
-    primary: "",
-    secondary: "",
-  },
-  away: {
-    primary: "",
-    secondary: "",
-  },
-});
 let locationsFind = ref([]);
 const { tournaments } = storeToRefs(useTournamentStore());
 const { teamStoreRequest, isEdition } = storeToRefs(useTeamStore());
@@ -38,25 +28,10 @@ const removeImageHandler = () => {
   removeImage();
   fields.avatar.fieldValue = null;
 };
-
 const searchHandler = async (place: string) => {
   const response = await search(place);
   if (response) {
     locationsFind.value = response;
-  }
-};
-
-const updateColorHandler = (
-  color: string,
-  isHomeColor: boolean,
-  type: "primary" | "secondary",
-) => {
-  if (isHomeColor) {
-    colors.value.home[type] = color;
-    fields.colors.fieldValue = { ...colors.value };
-  } else {
-    colors.value.away[type] = color;
-    fields.colors.fieldValue = { ...colors.value };
   }
 };
 const categoryHandler = (value?: number) => {
@@ -72,13 +47,15 @@ const categoryHandler = (value?: number) => {
   fields.category_id.fieldValue = tournament?.category_id;
 };
 onMounted(() => {
-  if (teamStoreRequest.value?.team) {
+  if (teamStoreRequest.value?.team && isEdition.value) {
     setValues({ ...teamStoreRequest.value.team });
-    colors.value = { ...teamStoreRequest.value.team.colors };
     if (teamStoreRequest.value.team.image) {
-      dragDropImageRef.value.loadImage();
+      dragDropImageRef.value?.loadImage();
     }
   }
+});
+onUnmounted(() => {
+  resetForm();
 });
 defineExpose({
   validate,
@@ -197,72 +174,10 @@ defineExpose({
       <v-col cols="12" lg="8" md="8" class="pt-0">
         <v-row no-gutters class="position-relative">
           <v-col cols="12">
-            <v-row no-gutters>
-              <v-col cols="6">
-                <div class="color-pickers-container">
-                  <div class="color-pickers-container__label">
-                    <span class="text-body-2">Local</span>
-                  </div>
-                  <div class="color-picker-items-container">
-                    <div
-                      class="color-picker-items-container__item home primary"
-                    >
-                      <ColorPicker
-                        @update-value="
-                          updateColorHandler($event, true, 'primary')
-                        "
-                      />
-                    </div>
-                    <div
-                      class="color-picker-items-container__item home secondary"
-                    >
-                      <ColorPicker
-                        @update-value="
-                          updateColorHandler($event, true, 'secondary')
-                        "
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <small class="text-error text-caption">{{
-                      fields.colors.fieldPropsValue["error-messages"][0]
-                    }}</small>
-                  </div>
-                </div>
-              </v-col>
-              <v-col cols="6">
-                <div class="color-pickers-container">
-                  <div class="color-pickers-container__label">
-                    <span class="text-body-2">Visitante</span>
-                  </div>
-                  <div class="color-picker-items-container">
-                    <div
-                      class="color-picker-items-container__item away primary"
-                    >
-                      <ColorPicker
-                        @update-value="
-                          updateColorHandler($event, false, 'primary')
-                        "
-                      />
-                    </div>
-                    <div
-                      class="color-picker-items-container__item away secondary"
-                    >
-                      <ColorPicker
-                        @update-value="
-                          updateColorHandler($event, false, 'secondary')
-                        "
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <small class="text-error text-caption">{{
-                      fields.colors.fieldPropsValue["error-messages"][0]
-                    }}</small>
-                  </div>
-                </div>
-              </v-col>
-            </v-row>
+            <ColorsComponent
+              v-model:colors="fields.colors.fieldValue"
+              :errors="fields.colors.fieldPropsValue"
+            />
           </v-col>
         </v-row>
       </v-col>
@@ -306,16 +221,3 @@ defineExpose({
     </v-row>
   </v-container>
 </template>
-<style lang="sass">
-.color-picker-items-container__item.home.primary
-  background: v-bind('colors.home.primary')
-
-.color-picker-items-container__item.home.secondary
-  background: v-bind('colors.home.secondary')
-
-.color-picker-items-container__item.away.primary
-  background: v-bind('colors.away.primary')
-
-.color-picker-items-container__item.away.secondary
-  background: v-bind('colors.away.secondary')
-</style>

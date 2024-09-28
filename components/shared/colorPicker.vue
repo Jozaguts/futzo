@@ -36,20 +36,26 @@ const colorHandler = (color: string | boolean) => {
 <style lang="sass">
 .color-picker-dialog, .v-color-picker-canvas
   border-radius: var(--radius-md, 8px)
+
 .v-color-picker-preview__dot
   display: none
+
 .v-color-picker__controls
   padding: 1rem .5rem
+
 .v-color-picker-preview__sliders
   padding: 0
+
 .nuxt-icon.polygon > svg
   width: 66px
   height: 44px
+
 .nuxt-icon.polygon
   position: absolute
   bottom: 0
   left: 50%
   transform: translate(-50%, 100%)
+
 .v-color-picker-edit__input > input
   font-size: .8rem
 </style>

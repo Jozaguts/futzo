@@ -1,10 +1,15 @@
 import { defineStore } from "pinia";
-import type { FormSteps, Team, TeamStoreRequest } from "~/models/Team";
+import type {
+  FormSteps,
+  Team,
+  TeamResponse,
+  TeamStoreRequest,
+} from "~/models/Team";
 import { toast } from "vuetify-sonner";
 
 export const useTeamStore = defineStore("teamStore", () => {
   const dialog = ref(false);
-  const teams = ref<Team[]>();
+  const teams = ref<TeamResponse[]>();
   const team = ref<Team>();
   const teamId = ref(0);
   const search = ref("");

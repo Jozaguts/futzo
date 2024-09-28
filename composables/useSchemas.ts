@@ -62,7 +62,7 @@ function getSchemaByName(name: string) {
           "Solo imágenes .jgp, png, svg ",
           (value: any) => {
             if (value === undefined) return true;
-            return value?.type?.includes("image/");
+            return value?.type?.includes("image/") || typeof value === "string";
           },
         );
       schemaFields.category_id = yup.number().required(t("forms.required"));
@@ -97,7 +97,7 @@ function getSchemaByName(name: string) {
           "Solo imágenes .jgp, png, svg",
           (value: any) => {
             if (value === undefined) return true;
-            return value?.type?.includes("image/");
+            return value?.type?.includes("image/") || typeof value === "string";
           },
         );
       schemaFields.banner = yup
@@ -107,7 +107,7 @@ function getSchemaByName(name: string) {
           "Solo imágenes .jgp, png, svg",
           (value: any) => {
             if (value === undefined) return true;
-            return value?.type?.includes("image/");
+            return value?.type?.includes("image/") || typeof value === "string";
           },
         );
       schemaFields.status = yusString().nullable();
@@ -141,7 +141,7 @@ function getSchemaByName(name: string) {
           "Solo imágenes .jgp, png, svg ",
           (value: any) => {
             if (value === undefined) return true;
-            return value?.type?.includes("image/");
+            return value?.type?.includes("image/") || typeof value === "string";
           },
         );
       schemaFields.category_id = yup.number().required(t("forms.required"));
@@ -173,7 +173,7 @@ function getSchemaByName(name: string) {
           "Solo imágenes .jgp, png, svg ",
           (value: any) => {
             if (value === undefined) return true;
-            return value?.type?.includes("image/");
+            return value?.type?.includes("image/") || typeof value === "string";
           },
         );
       break;
@@ -195,7 +195,7 @@ function getSchemaByName(name: string) {
           "Solo imágenes .jgp, png, svg ",
           (value: any) => {
             if (value === undefined) return true;
-            return value?.type?.includes("image/");
+            return value?.type?.includes("image/") || typeof value === "string";
           },
         );
       break;
@@ -209,7 +209,7 @@ function getSchemaByName(name: string) {
           "Solo imágenes .jgp, png, svg ",
           (value: any) => {
             if (value === undefined) return true;
-            return value?.type?.includes("image/");
+            return value?.type?.includes("image/") || typeof value === "string";
           },
         );
       schemaFields.category_id = yup.number().required(t("forms.required"));
@@ -238,7 +238,7 @@ function getSchemaByName(name: string) {
           "Solo imágenes .jgp, png, svg ",
           (value: any) => {
             if (value === undefined) return true;
-            return value?.type?.includes("image/");
+            return value?.type?.includes("image/") || typeof value === "string";
           },
         );
       break;
@@ -257,7 +257,7 @@ function getSchemaByName(name: string) {
           "Solo imágenes .jgp, png, svg ",
           (value: any) => {
             if (value === undefined) return true;
-            return value?.type?.includes("image/");
+            return value?.type?.includes("image/") || typeof value === "string";
           },
         );
       break;
@@ -290,7 +290,7 @@ function getSchemaByName(name: string) {
           "Solo imágenes .jgp, png, svg ",
           (value: any) => {
             if (value === undefined) return true;
-            return value?.type?.includes("image/");
+            return value?.type?.includes("image/") || typeof value === "string";
           },
         );
       schemaFields.nationality = yusString().required(t("forms.required"));
@@ -309,7 +309,7 @@ function getSchemaByName(name: string) {
           "Solo imágenes .jgp, png, svg ",
           (value: any) => {
             if (value === undefined) return true;
-            return value?.type?.includes("image/");
+            return value?.type?.includes("image/") || typeof value === "string";
           },
         );
       schemaFields.nationality = yusString().required(t("forms.required"));

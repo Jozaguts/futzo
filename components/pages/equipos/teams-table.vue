@@ -12,7 +12,7 @@ const {
   teamStoreRequest,
   search,
 } = storeToRefs(useTeamStore());
-// const search = ref("");
+
 const headers = getHeaders("teams");
 const setChipColor = (status: string) => {
   switch (status) {
@@ -29,25 +29,26 @@ const setChipColor = (status: string) => {
   }
 };
 const showTeamHandler = (_team: TeamResponse) => {
+  const { president, coach, ...team } = _team;
   teamId.value = _team.id;
   isEdition.value = true;
+
   teamStoreRequest.value = {
     team: {
-      id: _team.id,
-      name: _team.name,
-      category_id: _team.category.id,
-      address: _team.address,
-      colors: _team.colors,
-      description: _team.description,
-      email: _team.email,
-      image: _team.image,
-      phone: _team.phone,
-      tournament_id: _team.tournament.id,
+      id: team.id,
+      name: team.name,
+      tournament_id: team.tournament.id,
+      category_id: team.category.id,
+      address: team?.address,
+      colors: team?.colors,
+      description: team?.description,
+      email: team?.email,
+      image: team?.image,
+      phone: team?.phone,
     },
-    president: { ..._team.president, image: _team.president.avatar },
-    coach: { ..._team.coach, image: _team.coach.avatar },
+    president: { ...president, image: president?.avatar },
+    coach: { ...coach, image: coach?.avatar },
   };
-  // const response = useTeamStore().getTeam(teamId.value);
   dialog.value = true;
 };
 const paginationHandler = (page: number) => {
@@ -86,8 +87,8 @@ const noTeams = computed(() => teams.value?.length === 0);
         </template>
         <template #item.actions="{ item }">
           <v-btn size="small" rounded="md" @click="showTeamHandler(item)"
-            >Ver Equipo</v-btn
-          >
+            >Ver Equipo
+          </v-btn>
         </template>
         <template #bottom>
           <v-divider />
@@ -144,19 +145,23 @@ const noTeams = computed(() => teams.value?.length === 0);
   right: 1rem;
   transform: translate(0, 50%);
 }
+
 .__pre {
   position: absolute;
   bottom: 50%;
   left: 1rem;
   transform: translate(0, 50%);
 }
+
 thead > tr > th {
   border-bottom: 1px solid #eaecf0 !important;
 }
+
 tbody > tr.v-data-table__tr:nth-child(even) {
   background: #f9fafb !important;
   border: 1px solid #eaecf0 !important;
 }
+
 .v-data-table__tr:nth-child(even) td {
   border-top: 1px solid #eaecf0 !important;
   border-bottom: 1px solid #eaecf0 !important;
