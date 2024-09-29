@@ -13,7 +13,9 @@ export interface Tournament {
   league?: string | null;
   image: string;
   category_id: number;
+  slug: string;
 }
+
 export interface TournamentForm {
   name: string;
   image?: File | string;
@@ -29,6 +31,7 @@ export interface TournamentForm {
   description: string;
   status: string;
 }
+
 export interface TournamentStoreRequest {
   id?: number;
   category_id: number;
@@ -41,6 +44,7 @@ export interface TournamentStoreRequest {
   tournament_format_id: number;
   location: AutocompletePrediction;
 }
+
 export interface TournamentResponse {
   id: number;
   name: string;

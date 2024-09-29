@@ -25,7 +25,7 @@ const computedStyles = computed(() => {
 </template>
 <style>
 .futzo-page-container {
-  height: calc(100% - 1rem);
+  height: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 0 1.8fr;
@@ -45,5 +45,6 @@ const computedStyles = computed(() => {
 .main {
   grid-area: main;
   box-sizing: border-box;
+  padding: 40px;
 }
 </style>

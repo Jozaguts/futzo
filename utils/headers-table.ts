@@ -1,10 +1,11 @@
 type Header = {
   title: string;
   value: string;
-  sortable: boolean;
-  align?: string;
+  align?: "start" | "center" | "end";
+  sortable?: boolean;
+  filterable?: boolean;
+  divider?: boolean;
 };
-
 export default function getHeaders(tableName: string): Header[] {
   switch (tableName) {
     case "teams":
