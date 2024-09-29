@@ -40,11 +40,13 @@ const handleShowTournament = (_tournament: Tournament) => {
 <template>
   <!--  todo agregar un filtro de torneos en el header-->
   <CustomTable
+    v-if="!noTournaments"
     :headers="headers"
     :items="tournaments"
     itemKey="name"
     :search.sync="search"
     :pagination.sync="pagination"
+    @update:pagination="useTournamentStore().loadTournaments()"
   >
     <template #actions="{ item }">
       <v-btn

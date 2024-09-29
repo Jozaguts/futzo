@@ -79,7 +79,9 @@ const pagination = defineModel("pagination", {
         v-model="pagination.page"
         :length="pagination.total"
         start="1"
-        @update:modelValue="console.log('useTournamentStore().loadTournaments')"
+        @update:modelValue="
+          $emit('update:pagination', { ...pagination, page: $event })
+        "
       >
         <template #prev="props">
           <v-btn
@@ -118,26 +120,3 @@ const pagination = defineModel("pagination", {
     </template>
   </v-data-table>
 </template>
-<style>
-.futzo-pagination {
-  position: relative;
-}
-
-.futzo-pagination > .v-pagination__list > .v-pagination__prev {
-  position: absolute;
-  left: 0;
-}
-
-.futzo-pagination > .v-pagination__list > .v-pagination__next {
-  position: absolute;
-  right: 2rem;
-}
-
-thead {
-  background: #f9fafb;
-}
-
-tbody > tr.v-data-table__tr:nth-child(even) {
-  background: #f9fafb;
-}
-</style>
