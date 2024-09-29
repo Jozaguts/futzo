@@ -47,6 +47,7 @@ const handleShowTournament = (_tournament: Tournament) => {
     :search.sync="search"
     :pagination.sync="pagination"
     @update:pagination="useTournamentStore().loadTournaments()"
+    :status-handler="setChipColor"
   >
     <template #actions="{ item }">
       <v-btn

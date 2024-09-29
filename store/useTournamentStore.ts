@@ -284,6 +284,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     perPage: 10,
     total: 0,
   });
+
   async function loadTournaments() {
     loading.value = true;
     const client = useSanctumClient();
@@ -300,6 +301,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     };
     loading.value = false;
   }
+
   async function storeTournament(formData) {
     return await useSanctumClient()("api/v1/admin/tournaments", {
       method: "POST",
@@ -312,6 +314,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         useGlobalStore().showErrorNotification({ message: error.data.message });
       });
   }
+
   async function updateTournament(tournamentId, formData) {
     return await useSanctumClient()(
       `api/v1/admin/tournaments/${tournamentId}`,
@@ -327,6 +330,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         useGlobalStore().showErrorNotification({ message: error.data.message });
       });
   }
+
   async function storeCategory(formData) {
     const client = useSanctumClient();
     await useAsyncData("store-category", async () => {
@@ -339,6 +343,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
       // todo add toast alert
     });
   }
+
   async function fetchTournamentsByLeagueId(id: number) {
     const client = useSanctumClient();
     const { data } = await client(`/api/v1/admin/leagues/${id}/tournaments`);
@@ -352,6 +357,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     // matchesByRound.value = teamsCount.value / 2 ;
     // console.log( matchesByRound.value, 2222222)
   }
+
   async function updateTournamentStatus(tournamentId: number, status: string) {
     const client = useSanctumClient();
     await client(`api/v1/admin/tournaments/${tournamentId}/status`, {
@@ -361,6 +367,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
       await loadTournaments();
     });
   }
+
   async function getTournamentTypes() {
     const client = useSanctumClient();
     tournamentTypes.value = await client("/api/v1/admin/tournaments/types");
@@ -377,6 +384,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
       },
     );
   }
+
   return {
     tournaments,
     tournament,

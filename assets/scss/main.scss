@@ -68,3 +68,25 @@ a.v-list-item--active > div.v-list-item__prepend > span > svg #Icon > path:nth-c
 .futzo-rounded.v-table {
   height: 100%;
 }
+
+.futzo-pagination {
+  position: relative;
+}
+
+.futzo-pagination > .v-pagination__list > .v-pagination__prev {
+  position: absolute;
+  left: 0;
+}
+
+.futzo-pagination > .v-pagination__list > .v-pagination__next {
+  position: absolute;
+  right: 2rem;
+}
+
+thead {
+  background: #f9fafb;
+}
+
+tbody > tr.v-data-table__tr:nth-child(even) {
+  background: #f9fafb;
+}

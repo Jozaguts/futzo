@@ -21,6 +21,18 @@ defineProps({
     type: String,
     default: "name",
   },
+  statusHandler: {
+    type: Function as PropType<(item: string) => string>,
+    required: false,
+  },
+  showIndex: {
+    type: Boolean,
+    default: false,
+  },
+  customName: {
+    type: Boolean,
+    default: false,
+  },
 });
 const search = defineModel("search", {
   type: String,
@@ -42,6 +54,7 @@ const pagination = defineModel("pagination", {
     show-select
     height="100%"
   >
+    <!--    header-->
     <template
       v-slot:header.data-table-select="{ allSelected, selectAll, someSelected }"
     >
@@ -53,6 +66,15 @@ const pagination = defineModel("pagination", {
       >
       </v-checkbox-btn>
     </template>
+    <!--    item index colum-->
+    <template v-if="showIndex" #[`item.index`]="{ item, index }">
+      {{ index + 1 }}
+    </template>
+    <!-- item name column-->
+    <template v-if="customName" #[`item.name`]="{ item, index }">
+      <v-avatar :image="item.image"></v-avatar>
+      {{ item.name }}
+    </template>
     <template
       v-slot:item.data-table-select="{ internalItem, isSelected, toggleSelect }"
     >
@@ -63,7 +85,7 @@ const pagination = defineModel("pagination", {
       ></v-checkbox-btn>
     </template>
     <template v-slot:item.status="{ item }">
-      <v-chip color="primary" border="lg" class="text-capitalize">
+      <v-chip :color="statusHandler(item)" border="lg" class="text-capitalize">
         {{ item.status }}
       </v-chip>
     </template>
