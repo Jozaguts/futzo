@@ -127,7 +127,6 @@ defineExpose({
             @internal-model-change="internalModelValue = $event"
             :format="setTemporalDate"
             v-model="fields.birthday.fieldValue"
-            v-bind="fields.birthday.fieldPropsValue"
             month-name-format="long"
             @date-update="setTemporalDate"
             :enable-time-picker="false"
@@ -190,11 +189,14 @@ defineExpose({
             </template>
           </VueDatePicker>
         </client-only>
+        <div class="text-error ml-3 pt-1 text-caption">
+          {{ fields.birthday.fieldPropsValue["error-messages"][0] ?? "" }}
+        </div>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Nacionalidad*</span>
+        <span class="text-body-1">Nacionalidad*</span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
         <v-text-field
@@ -209,7 +211,7 @@ defineExpose({
     </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Imagen del equipo* </span>
+        <span class="text-body-1">Imagen del jugador* </span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
         <DragDropImage
