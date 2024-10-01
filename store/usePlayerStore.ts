@@ -13,7 +13,7 @@ export const usePlayerStore = defineStore("playerStore", () => {
   const updatePlayer = async () => {};
   const createPlayer = async () => {};
   const steps = ref<FormSteps>({
-    current: "basic-info",
+    current: "details-info",
     completed: [],
   });
   return {

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import basicInfoStep from "~/components/pages/jugadores/stepper/01-basic-info.vue";
-import detailsInfoStep from "~/components/pages/jugadores/stepper/02-details-info.vue";
-import contactInfoStep from "~/components/pages/jugadores/stepper/03-contact-info.vue";
+import BasicInfoStep from "~/components/pages/jugadores/stepper/01-basic-info.vue";
+import DetailsInfoStep from "~/components/pages/jugadores/stepper/02-details-info.vue";
+import ContactInfoStep from "~/components/pages/jugadores/stepper/03-contact-info.vue";
 import StepIndicator from "~/components/pages/jugadores/stepper/step-indicator.vue";
 import { usePlayerStore } from "~/store";
 import type { CreatePlayerForm, CurrentStep } from "~/models/player";
@@ -96,65 +96,71 @@ const textButton = computed(() => {
 });
 </script>
 <template>
-  <v-card-text>
-    <v-container class="pa-0">
-      <v-row>
-        <v-col>
-          <StepIndicator />
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <transition-slide
-            group
-            :offset="{
-              enter: ['-100%', 0],
-              leave: ['100%', 0],
-            }"
-          >
-            <basicInfoStep
-              ref="stepRef"
-              v-if="steps.current === 'basic-info'"
-              :key="steps.current"
-            />
-            <detailsInfoStep
-              ref="stepRef"
-              v-if="steps.current === 'details-info'"
-              :key="steps.current"
-            />
-            <contactInfoStep
-              ref="stepRef"
-              v-if="steps.current === 'contact-info'"
-              :key="steps.current"
-            />
-          </transition-slide>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="6">
-          <v-btn
-            variant="outlined"
-            block
-            color="secondary"
-            density="comfortable"
-            size="large"
-            @click="backHandler"
-            >{{ textButtonCancel }}</v-btn
-          >
-        </v-col>
-        <v-col cols="6">
-          <v-btn
-            variant="elevated"
-            block
-            color="primary"
-            density="comfortable"
-            size="large"
-            :loading="loading"
-            @click="nextHandler"
-            >{{ textButton }}</v-btn
-          >
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-card-text>
+  <PerfectScrollbar
+    :options="{
+      suppressScrollX: true,
+    }"
+  >
+    <v-card-text>
+      <v-container class="pa-0">
+        <v-row>
+          <v-col>
+            <StepIndicator />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <transition-slide
+              group
+              :offset="{
+                enter: ['-100%', 0],
+                leave: ['100%', 0],
+              }"
+            >
+              <BasicInfoStep
+                ref="stepRef"
+                v-if="steps.current === 'basic-info'"
+                :key="steps.current"
+              />
+              <DetailsInfoStep
+                ref="stepRef"
+                v-if="steps.current === 'details-info'"
+                :key="steps.current"
+              />
+              <ContactInfoStep
+                ref="stepRef"
+                v-if="steps.current === 'contact-info'"
+                :key="steps.current"
+              />
+            </transition-slide>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="6">
+            <v-btn
+              variant="outlined"
+              block
+              color="secondary"
+              density="comfortable"
+              size="large"
+              @click="backHandler"
+              >{{ textButtonCancel }}
+            </v-btn>
+          </v-col>
+          <v-col cols="6">
+            <v-btn
+              variant="elevated"
+              block
+              color="primary"
+              density="comfortable"
+              size="large"
+              :loading="loading"
+              @click="nextHandler"
+              >{{ textButton }}
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card-text>
+  </PerfectScrollbar>
 </template>

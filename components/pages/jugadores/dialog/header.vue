@@ -2,32 +2,10 @@
 import { usePlayerStore } from "~/store";
 
 const { dialog, steps, isEdition } = storeToRefs(usePlayerStore());
-const title = computed(() => {
-  switch (steps.value.current) {
-    case "basic-info":
-      return isEdition.value ? "Editar jugador" : "Crear un jugador";
-    case "details-info":
-      return isEdition.value ? "Editar DT" : "Crear DT";
-    case "contact-info":
-      return isEdition.value ? "Editar dueño" : "Crear dueño";
-  }
-});
-const subtitle = computed(() => {
-  switch (steps.value.current) {
-    case "basic-info":
-      return isEdition.value
-        ? "Modifica los detalles del jugador."
-        : "Completa los detalles del jugador.";
-    case "details-info":
-      return isEdition.value
-        ? "Modifica los detalles del DT."
-        : "Completa los detalles del DT.";
-    case "contact-info":
-      return isEdition.value
-        ? "Modifica los detalles del dueño."
-        : "Completa los detalles del dueño.";
-  }
-});
+const title = isEdition.value ? "Editar jugador" : "Crear un jugador";
+const subtitle = isEdition.value
+  ? "Modifica los detalles del jugador."
+  : "Completa los detalles del jugador.";
 </script>
 <template>
   <v-card-item>
