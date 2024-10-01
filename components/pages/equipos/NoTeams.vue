@@ -11,9 +11,7 @@ const noTeams = computed(() => teams.value?.length === 0);
 <template>
   <v-sheet
     v-if="noTeams"
-    width="calc(100% - 80px)"
-    max-height="calc(100% - 60px)"
-    class="no-teams-v-sheet d-flex justify-center align-center fill-height mx-auto mt-10"
+    class="no-teams-v-sheet d-flex justify-center align-center fill-height"
   >
     <div class="d-flex flex-column align-center">
       <h2 class="card-title">No hay equipos aún</h2>
@@ -39,6 +37,7 @@ const noTeams = computed(() => teams.value?.length === 0);
     012px 16px -4px rgba(16, 24, 40, 0.08),
     0 4px 6px -2px rgba(16, 24, 40, 0.03);
 }
+
 .card-title {
   color: #111927;
   font-size: 20px;
@@ -46,6 +45,7 @@ const noTeams = computed(() => teams.value?.length === 0);
   font-weight: 600;
   line-height: 30px;
 }
+
 .card-sub-title {
   color: #1f2a37;
   font-size: 16px;
