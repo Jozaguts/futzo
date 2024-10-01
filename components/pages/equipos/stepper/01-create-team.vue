@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import CategorySelectComponent from "~/components/inputs/CategoriesSelect.vue";
-import ColorsComponent from "~/components/pages/equipos/colors-component.vue";
 import DragDropImage from "~/components/pages/torneos/drag-drop-image.vue";
+import ColorsComponent from "~/components/pages/equipos/colors-component.vue";
 import useSchemas from "~/composables/useSchemas";
 import { useTeamStore, useTournamentStore } from "~/store";
 import { VPhoneInput } from "v-phone-input";
@@ -22,11 +22,12 @@ const { handleSubmit, resetForm, fields, validate, setValues } = useSchemas(
 );
 const saveImageHandler = (image: File) => {
   saveImage(image);
-  fields.avatar.fieldValue = image;
+  fields.image.fieldValue = image;
 };
 const removeImageHandler = () => {
   removeImage();
-  fields.avatar.fieldValue = null;
+  fields.image.fieldValue = null;
+  fields.image.fieldValue = null;
 };
 const searchHandler = async (place: string) => {
   const response = await search(place);
