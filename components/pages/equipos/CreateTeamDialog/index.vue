@@ -23,6 +23,7 @@ onMounted(() => {
     max-width="690"
     min-height="800"
     @after-leave="leaveHandler"
+    scrollable
   >
     <v-card
       class="create-tournament-card futzo-rounded"

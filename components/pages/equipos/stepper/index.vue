@@ -94,7 +94,7 @@ const textButton = computed(() => {
 // });
 </script>
 <template>
-  <PerfectScrollbar>
+  <PerfectScrollbar :options="{ suppressScrollX: true }">
     <v-card-text class="pb-2" style="overflow-x: hidden">
       <StepIndicator />
       <transition-slide
@@ -130,8 +130,8 @@ const textButton = computed(() => {
               density="comfortable"
               size="large"
               @click="backHandler"
-              >{{ textButtonCancel }}</v-btn
-            >
+              >{{ textButtonCancel }}
+            </v-btn>
           </v-col>
           <v-col cols="6">
             <v-btn
@@ -142,8 +142,8 @@ const textButton = computed(() => {
               size="large"
               :loading="loading"
               @click="nextHandler"
-              >{{ textButton }}</v-btn
-            >
+              >{{ textButton }}
+            </v-btn>
           </v-col>
         </v-row>
       </v-container>
