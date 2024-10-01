@@ -47,7 +47,7 @@ const categoryHandler = (value?: number) => {
   fields.category_id.fieldValue = tournament?.category_id;
 };
 onMounted(() => {
-  if (teamStoreRequest.value?.team && isEdition.value) {
+  if (teamStoreRequest.value?.team) {
     setValues({ ...teamStoreRequest.value.team });
     if (teamStoreRequest.value.team.image) {
       dragDropImageRef.value?.loadImage();
