@@ -5,11 +5,12 @@ import { useAuthStore, useTeamStore, useTournamentStore } from "~/store";
 import StepperContainer from "~/components/pages/equipos/stepper/index.vue";
 
 const teamStore = useTeamStore();
-const { steps, isEdition } = storeToRefs(teamStore);
+const { steps, isEdition, teamStoreRequest } = storeToRefs(teamStore);
 const leaveHandler = () => {
   steps.value.current = "createTeam";
   steps.value.completed = [];
   isEdition.value = false;
+  teamStoreRequest.value = {};
 };
 onMounted(() => {
   const userId = useAuthStore().user?.id as number;
