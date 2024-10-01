@@ -111,7 +111,7 @@ defineExpose({
     </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Imagen del equipo* </span>
+        <span class="text-body-1"> Imagen del equipo </span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
         <DragDropImage
@@ -132,7 +132,7 @@ defineExpose({
 
     <v-row>
       <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1">Dirección*</span>
+        <span class="text-body-1">Dirección</span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
         <v-autocomplete
@@ -169,13 +169,13 @@ defineExpose({
     </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Colores del equipo* </span>
+        <span class="text-body-1"> Colores del equipo </span>
       </v-col>
       <v-col cols="12" lg="8" md="8" class="pt-0">
         <v-row no-gutters class="position-relative">
           <v-col cols="12">
             <ColorsComponent
-              v-model:colors="fields.colors.fieldValue"
+              v-model:model-value="fields.colors.fieldValue"
               :errors="fields.colors.fieldPropsValue"
             />
           </v-col>
