@@ -1,5 +1,9 @@
 <script lang="ts" setup>
 import ColorPicker from "~/components/shared/colorPicker.vue";
+import { useTeamStore } from "~/store";
+
+const store = useTeamStore();
+const { teamStoreRequest } = storeToRefs(store);
 
 interface Colors {
   home: {
@@ -12,18 +16,24 @@ interface Colors {
   };
 }
 
-const colors = defineModel<Colors>("colors", {
-  default: {
-    home: {
-      primary: "#fff",
-      secondary: "#fff",
-    },
-    away: {
-      primary: "#fff",
-      secondary: "#fff",
-    },
+const colors = ref<Colors>({
+  home: {
+    primary: "#fff",
+    secondary: "#fff",
+  },
+  away: {
+    primary: "#fff",
+    secondary: "#fff",
   },
 });
+const colorsModel = defineModel();
+watch(
+  colors,
+  (value) => {
+    colorsModel.value = value;
+  },
+  { deep: true },
+);
 defineProps({
   errors: {
     type: Object,
@@ -32,17 +42,11 @@ defineProps({
     }),
   },
 });
-const updateColorHandler = (
-  color: string,
-  isHomeColor: boolean,
-  type: "primary" | "secondary",
-) => {
-  if (isHomeColor) {
-    colors.value.home[type] = color;
-  } else {
-    colors.value.away[type] = color;
+onMounted(() => {
+  if (teamStoreRequest.value?.team?.colors) {
+    colors.value = teamStoreRequest.value.team.colors;
   }
-};
+});
 </script>
 <template>
   <v-row no-gutters>
@@ -52,16 +56,8 @@ const updateColorHandler = (
           <span class="text-body-2">Local</span>
         </div>
         <div class="color-picker-items-container">
-          <div class="color-picker-items-container__item home primary">
-            <ColorPicker
-              @update-value="updateColorHandler($event, true, 'primary')"
-            />
-          </div>
-          <div class="color-picker-items-container__item home secondary">
-            <ColorPicker
-              @update-value="updateColorHandler($event, true, 'secondary')"
-            />
-          </div>
+          <ColorPicker v-model:color="colors.home.primary" />
+          <ColorPicker v-model:color="colors.home.secondary" />
         </div>
         <div>
           <small class="text-error text-caption">{{
@@ -76,16 +72,8 @@ const updateColorHandler = (
           <span class="text-body-2">Visitante</span>
         </div>
         <div class="color-picker-items-container">
-          <div class="color-picker-items-container__item away primary">
-            <ColorPicker
-              @update-value="updateColorHandler($event, false, 'primary')"
-            />
-          </div>
-          <div class="color-picker-items-container__item away secondary">
-            <ColorPicker
-              @update-value="updateColorHandler($event, false, 'secondary')"
-            />
-          </div>
+          <ColorPicker v-model:color="colors.away.primary" />
+          <ColorPicker v-model:color="colors.away.secondary" />
         </div>
         <div>
           <small class="text-error text-caption">{{
@@ -96,16 +84,3 @@ const updateColorHandler = (
     </v-col>
   </v-row>
 </template>
-<style lang="sass">
-.color-picker-items-container__item.home.primary
-  background: v-bind('colors.home.primary')
-
-.color-picker-items-container__item.home.secondary
-  background: v-bind('colors.home.secondary')
-
-.color-picker-items-container__item.away.primary
-  background: v-bind('colors.away.primary')
-
-.color-picker-items-container__item.away.secondary
-  background: v-bind('colors.away.secondary')
-</style>

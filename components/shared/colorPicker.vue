@@ -1,37 +1,39 @@
 <script lang="ts" setup>
-const emits = defineEmits(["update-value"]);
-const colorHandler = (color: string | boolean) => {
-  if (typeof color === "string") {
-    emits("update-value", color);
-  }
-};
+const color = defineModel("color", {
+  type: String,
+});
 </script>
 <template>
-  <v-dialog
-    activator="parent"
-    max-width="264"
-    :absolute="true"
-    :scrim="false"
-    :offset="[150, 0]"
-    class="color-picker-dialog"
-    elevation="15"
-    location-strategy="connected"
+  <div
+    class="color-picker-items-container__item"
+    :style="{ backgroundColor: color }"
   >
-    <v-card
-      height="350"
-      width="264"
-      class="d-flex justify-center align-center flex-row pa-4 position-relative"
+    <v-dialog
+      activator="parent"
+      max-width="264"
+      :absolute="true"
+      :scrim="false"
+      :offset="[150, 0]"
+      class="color-picker-dialog"
+      elevation="15"
+      location-strategy="connected"
     >
-      <v-color-picker
-        width="230"
-        elevation="0"
-        position="absolute"
-        mode="hexa"
-        @update:modelValue="colorHandler"
-      ></v-color-picker>
-    </v-card>
-    <nuxt-icon name="polygon" filled class="polygon"></nuxt-icon>
-  </v-dialog>
+      <v-card
+        height="350"
+        width="264"
+        class="d-flex justify-center align-center flex-row pa-4 position-relative"
+      >
+        <v-color-picker
+          width="230"
+          elevation="0"
+          position="absolute"
+          mode="hexa"
+          v-model="color"
+        ></v-color-picker>
+      </v-card>
+      <nuxt-icon name="polygon" filled class="polygon"></nuxt-icon>
+    </v-dialog>
+  </div>
 </template>
 <style lang="sass">
 .color-picker-dialog, .v-color-picker-canvas
