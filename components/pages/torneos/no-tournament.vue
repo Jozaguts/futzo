@@ -7,8 +7,7 @@ const { noTournaments, dialog } = storeToRefs(useTournamentStore());
 <template>
   <v-sheet
     v-if="noTournaments"
-    height="100%"
-    class="custom-v-sheet d-flex justify-center align-center mx-10"
+    class="custom-v-sheet d-flex justify-center align-center"
   >
     <div class="d-flex flex-column align-center">
       <h2 class="card-title">No hay torneos aún</h2>

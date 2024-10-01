@@ -10,9 +10,7 @@ const toggleDialog = () => {
 <template>
   <v-sheet
     v-if="noPlayers"
-    width="calc(100% - 80px)"
-    max-height="calc(100% - 60px)"
-    class="custom-v-sheet d-flex justify-center align-center fill-height mx-auto mt-10"
+    class="custom-v-sheet d-flex justify-center align-center fill-height"
   >
     <div class="d-flex flex-column align-center">
       <h2 class="card-title">No hay jugadores aún</h2>
@@ -37,6 +35,7 @@ const toggleDialog = () => {
   font-weight: 600;
   line-height: 30px;
 }
+
 .card-sub-title {
   color: #1f2a37;
   font-size: 16px;
