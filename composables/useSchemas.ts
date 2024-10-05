@@ -333,6 +333,22 @@ function getSchemaByName(name: string) {
       schemaFields.foot = yup.string().nullable();
       schemaFields.medical_notes = yup.string().nullable();
       break;
+    case "create-player-contact-info":
+      schemaFields.phone = yusString().matches(
+        /^(\+52)?(\d{10})$/,
+        "Número de teléfono no es válido",
+      );
+      schemaFields.email = yusString().email();
+      schemaFields.notes = yup.object();
+      break;
+    case "edit-player-contact-info":
+      schemaFields.phone = yusString().matches(
+        /^(\+52)?(\d{10})$/,
+        "Número de teléfono no es válido",
+      );
+      schemaFields.email = yusString().email();
+      schemaFields.notes = yup.object();
+      break;
     default:
       schemaFields = yup.mixed();
   }
