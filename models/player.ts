@@ -8,21 +8,22 @@ export interface Player {
   league_id: number;
   league?: string;
 }
+
 export interface FormSteps {
   current: CurrentStep;
   completed: string[];
 }
+
 export type CurrentStep = "basic-info" | "details-info" | "contact-info";
 
 export interface CreatePlayerForm {}
+
 export interface PlayerStoreRequest {
-  basic: {
-    id?: number;
-    avatar: HTMLImageElement | File | string;
-  };
-  details: {};
-  contact: {};
+  basic: BasicInfoForm;
+  details: DetailsInfoForm;
+  contact: ContactInfoForm;
 }
+
 export interface ImageForm {
   file: File | null;
   name: string;
@@ -33,4 +34,30 @@ export interface ImageForm {
     description: string | null;
     action: string | null;
   };
+}
+
+export interface BasicInfoForm {
+  id?: number;
+  name: string;
+  lastName: string;
+  birthdate: string;
+  nationality: string;
+  avatar: HTMLImageElement | File | string;
+  team_id?: number;
+  category_id?: number;
+}
+
+export interface DetailsInfoForm {
+  position_id: number;
+  jersey_number: number;
+  height: number;
+  weight: number;
+  foot: string;
+  medical_notes: number;
+}
+
+export interface ContactInfoForm {
+  email: string;
+  phone: string;
+  notes: string;
 }
