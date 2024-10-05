@@ -1,18 +1,22 @@
 <script lang="ts" setup>
 import useSchemas from "~/composables/useSchemas";
 import "@vuepic/vue-datepicker/dist/main.css";
-import { usePlayerStore, useTeamStore } from "~/store";
+import { usePlayerStore, usePositionsStore, useTeamStore } from "~/store";
 
 const { isEdition, playerStoreRequest } = storeToRefs(usePlayerStore());
 const { teams } = storeToRefs(useTeamStore());
 const { handleSubmit, resetForm, fields, validate, setValues } = useSchemas(
-  isEdition.value ? "edit-player-basic-info" : "create-player-basic-info",
+  isEdition.value ? "edit-player-details-info" : "create-player-details-info",
 );
+const { positions } = storeToRefs(usePositionsStore());
 
 defineExpose({
   validate,
   handleSubmit,
 });
+const test = (value: string) => {
+  fields.foot.fieldValue = value;
+};
 </script>
 <template>
   <v-container class="pt-0">
@@ -22,11 +26,13 @@ defineExpose({
       </v-col>
       <v-col cols="12" lg="8" md="8">
         <v-select
-          :items="[]"
+          :items="positions"
           placeholder="p.ej. Ronaldo"
           outlined
-          v-model="fields.last_name.fieldValue"
-          v-bind="fields.last_name.fieldPropsValue"
+          item-value="id"
+          :item-props="(item) => ({ title: item.abbr, subtitle: item.name })"
+          v-model="fields.position.fieldValue"
+          v-bind="fields.position.fieldPropsValue"
           density="compact"
         ></v-select>
       </v-col>
@@ -36,7 +42,13 @@ defineExpose({
         <span class="text-body-1"> Jersey/Camiseta*</span>
       </v-col>
       <v-col cols="12" lg="8" md="8" classs="position-relative">
-        <v-text-field type="number"></v-text-field>
+        <v-text-field
+          v-model="fields.tshirt_number.fieldValue"
+          v-bind="fields.tshirt_number.fieldPropsValue"
+          type="number"
+          placeholder="p.ej. 12+1"
+          min="1"
+        ></v-text-field>
       </v-col>
     </v-row>
     <v-row>
@@ -48,11 +60,12 @@ defineExpose({
           placeholder="p.ej. 180"
           outlined
           type="number"
-          v-model="fields.nationality.fieldValue"
-          v-bind="fields.nationality.fieldPropsValue"
+          v-model="fields.height.fieldValue"
+          v-bind="fields.height.fieldPropsValue"
           density="compact"
-          append-inner-icon="kg"
+          min="0"
         >
+          <template #append-inner>cm</template>
         </v-text-field>
       </v-col>
     </v-row>
@@ -61,20 +74,64 @@ defineExpose({
         <span class="text-body-1"> Peso </span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
-        <v-text-field type="number" append-inner-icon="cms"></v-text-field>
+        <v-text-field
+          v-model="fields.weight.fieldValue"
+          v-bind="fields.weight.fieldPropsValue"
+          type="number"
+          min="0"
+          placeholder="p.ej. 80"
+        >
+          <template #append-inner>kg</template>
+        </v-text-field>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
         <span class="text-body-1"> Pierna dominante</span>
       </v-col>
-      <v-col cols="12" lg="8" md="8"></v-col>
+      <v-col cols="12" lg="8" md="8">
+        <v-item-group
+          selected-class="primary"
+          class="d-flex"
+          @update:modelValue="test"
+        >
+          <v-row no-gutters>
+            <v-col
+              cols="6"
+              v-for="item in [{ text: 'Izquierda' }, { text: 'Derecha' }]"
+              :class="item.text === 'Izquierda' ? 'pr-2' : 'pl-2'"
+            >
+              <v-item
+                v-slot="{ isSelected, selectedClass, toggle }"
+                :value="item.text"
+              >
+                <v-btn
+                  variant="outlined"
+                  density="compact"
+                  size="x-large"
+                  @click="toggle"
+                  :color="isSelected ? 'primary' : 'secondary'"
+                  block
+                >
+                  {{ item.text }}
+                </v-btn>
+              </v-item>
+            </v-col>
+          </v-row>
+        </v-item-group>
+      </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
         <span class="text-body-1">Notas medicas</span>
       </v-col>
-      <v-col cols="12" lg="8" md="8"></v-col>
+      <v-col cols="12" lg="8" md="8">
+        <v-textarea
+          v-model="fields.medical_notes.fieldValue"
+          v-bind="fields.medical_notes.fieldPropsValue"
+          placeholder="Añade notas médicas si es necesario…"
+        ></v-textarea>
+      </v-col>
     </v-row>
   </v-container>
 </template>

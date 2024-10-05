@@ -117,7 +117,6 @@ const validateAndFormatDate = (
   if (!dayPattern.test(day)) {
     return null;
   }
-  console.log({ year });
   // Validar el año
   if (!yearPattern.test(year)) {
     return null;
