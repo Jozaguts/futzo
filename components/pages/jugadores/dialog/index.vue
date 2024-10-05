@@ -19,8 +19,6 @@ onMounted(() => {
     v-model="dialog"
     max-width="690"
     @after-leave="leaveHandler"
-    max-height="800"
-    height="100%"
     scrollable
   >
     <v-card

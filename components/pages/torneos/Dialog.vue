@@ -15,7 +15,7 @@ const subtitle = computed(() => {
 });
 </script>
 <template>
-  <v-dialog v-model="dialog" max-width="688">
+  <v-dialog v-model="dialog" max-width="690">
     <v-card
       class="create-tournament-card futzo-rounded"
       :style="{ overflow: $vuetify.display.mobile ? '' : 'hidden' }"
@@ -54,12 +54,14 @@ const subtitle = computed(() => {
   padding-inline-start: 0 !important;
   margin-top: 0.4rem;
 }
+
 .nuxt-icon.image-plus svg,
 .nuxt-icon.file-type-img svg,
 .nuxt-icon.trash-error svg {
   width: 2rem;
   height: 2rem;
 }
+
 .nuxt-icon.trash svg {
   width: 1rem;
   height: 1rem;

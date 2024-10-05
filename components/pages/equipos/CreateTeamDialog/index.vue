@@ -21,7 +21,6 @@ onMounted(() => {
   <v-dialog
     v-model="teamStore.dialog"
     max-width="690"
-    min-height="800"
     @after-leave="leaveHandler"
     scrollable
   >
