@@ -18,6 +18,7 @@ const { teams } = storeToRefs(useTeamStore());
 const { categories } = storeToRefs(useCategoryStore());
 const { handleSubmit, resetForm, fields, validate, setValues } = useSchemas(
   isEdition.value ? "edit-player-basic-info" : "create-player-basic-info",
+  { nationality: "Mexicana" },
 );
 
 const datepicker = ref<DatePickerInstance>(null);
@@ -60,7 +61,6 @@ const updateMonth = (direction: "back" | "forward") => {
   } else {
     date.setMonth(date.getMonth() + 1);
   }
-  console.log(date);
   datepicker.value?.updateInternalModelValue(date);
 };
 const formatDateToInput = useDebounceFn((dateString: any) => {
