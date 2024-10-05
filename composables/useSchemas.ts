@@ -1,7 +1,7 @@
 import { useForm } from "vee-validate";
 import * as yup from "yup";
 
-export default function (schemaNAme: string) {
+export default function (schemaNAme: string, initialValues = {}) {
   const vuetifyConfig = (state: { errors: string }) => {
     return {
       props: {
@@ -17,6 +17,7 @@ export default function (schemaNAme: string) {
   const { defineField, handleSubmit, resetForm, validate, setValues } = useForm(
     {
       validationSchema: schema,
+      initialValues,
     },
   );
   const fieldProps = reactive({} as any);
@@ -315,6 +316,22 @@ function getSchemaByName(name: string) {
       schemaFields.nationality = yusString().required(t("forms.required"));
       schemaFields.team_id = yup.number().nullable();
       schemaFields.category_id = yup.number().nullable();
+      break;
+    case "create-player-details-info":
+      schemaFields.position = yup.number().nullable();
+      schemaFields.tshirt_number = yup.number().nullable();
+      schemaFields.height = yup.number().nullable();
+      schemaFields.weight = yup.number().nullable();
+      schemaFields.foot = yup.string().nullable();
+      schemaFields.medical_notes = yup.string().nullable();
+      break;
+    case "edit-player-details-info":
+      schemaFields.position = yup.number().nullable();
+      schemaFields.tshirt_number = yup.number().nullable();
+      schemaFields.height = yup.number().nullable();
+      schemaFields.weight = yup.number().nullable();
+      schemaFields.foot = yup.string().nullable();
+      schemaFields.medical_notes = yup.string().nullable();
       break;
     default:
       schemaFields = yup.mixed();

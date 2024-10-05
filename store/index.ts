@@ -3,3 +3,4 @@ export { useAuthStore } from "@/store/useAuthStore";
 export { useTournamentStore } from "@/store/useTournamentStore";
 export { useTeamStore } from "@/store/useTeamStore";
 export { usePlayerStore } from "@/store/usePlayerStore";
+export { usePositionsStore } from "@/store/usePositionsStore";
