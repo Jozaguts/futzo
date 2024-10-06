@@ -339,7 +339,7 @@ function getSchemaByName(name: string) {
         "Número de teléfono no es válido",
       );
       schemaFields.email = yusString().email();
-      schemaFields.notes = yup.object();
+      schemaFields.notes = yup.string().nullable();
       break;
     case "edit-player-contact-info":
       schemaFields.phone = yusString().matches(
@@ -347,7 +347,7 @@ function getSchemaByName(name: string) {
         "Número de teléfono no es válido",
       );
       schemaFields.email = yusString().email();
-      schemaFields.notes = yup.object();
+      schemaFields.notes = yup.string().nullable();
       break;
     default:
       schemaFields = yup.mixed();
