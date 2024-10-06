@@ -3,11 +3,15 @@ import { usePlayerStore } from "~/store";
 import useSchemas from "~/composables/useSchemas";
 import { VPhoneInput } from "v-phone-input";
 
-const { isEdition } = storeToRefs(usePlayerStore());
-const { handleSubmit, resetForm, fields, validate, setValues } = useSchemas(
+const { isEdition, playerStoreRequest } = storeToRefs(usePlayerStore());
+const { handleSubmit, fields, validate, setValues } = useSchemas(
   isEdition.value ? "edit-player-contact-info" : "create-player-contact-info",
 );
-
+onMounted(() => {
+  if (playerStoreRequest.value.contact) {
+    setValues({ ...playerStoreRequest.value.contact });
+  }
+});
 defineExpose({
   validate,
   handleSubmit,
@@ -17,20 +21,20 @@ defineExpose({
   <v-container class="pt-0">
     <v-row>
       <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Posición*</span>
+        <span class="text-body-1"> Correo electrónico*</span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
         <v-text-field
           v-model="fields.email.fieldValue"
           v-bind="fields.email.fieldPropsValue"
-          placeholder="p.ej."
+          placeholder="p.ej. sagit@futzo.io"
         >
         </v-text-field>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Teléfono*</span>
+        <span class="text-body-1">Teléfono</span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
         <client-only>
@@ -58,11 +62,11 @@ defineExpose({
     </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Dirección*</span>
+        <span class="text-body-1"> Notas adicionales</span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
         <v-textarea
-          placeholder="Anade notas adicionales si es necesario..."
+          placeholder="Añade notas adicionales si es necesario..."
           v-model="fields.notes.fieldValue"
           v-bind="fields.notes.fieldPropsValue"
         >

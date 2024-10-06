@@ -16,7 +16,7 @@ export interface FormSteps {
 
 export type CurrentStep = "basic-info" | "details-info" | "contact-info";
 
-export interface CreatePlayerForm {}
+export interface CreatePlayerForm extends PlayerStoreRequest {}
 
 export interface PlayerStoreRequest {
   basic: BasicInfoForm;
@@ -49,10 +49,10 @@ export interface BasicInfoForm {
 
 export interface DetailsInfoForm {
   position_id: number;
-  jersey_number: number;
+  number: number;
   height: number;
   weight: number;
-  foot: string;
+  dominant_foot: string;
   medical_notes: number;
 }
 

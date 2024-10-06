@@ -65,7 +65,9 @@ const nextHandler = async () => {
       // si es el último paso
       loading.value = true;
       if (isEdition.value) {
-        await usePlayerStore().updatePlayer(playerStoreRequest.value.basic.id);
+        await usePlayerStore().updatePlayer(
+          playerStoreRequest.value.basic.id as number,
+        );
       } else {
         await usePlayerStore().createPlayer();
       }

@@ -282,7 +282,7 @@ function getSchemaByName(name: string) {
     case "create-player-basic-info":
       schemaFields.name = yusString().required(t("forms.required"));
       schemaFields.last_name = yusString().required(t("forms.required"));
-      schemaFields.birthday = yup.date().required(t("forms.required"));
+      schemaFields.birthdate = yup.date().required(t("forms.required"));
       schemaFields.avatar = yup
         .mixed()
         .nullable()
@@ -301,7 +301,7 @@ function getSchemaByName(name: string) {
     case "edit-player-basic-info":
       schemaFields.name = yusString().required(t("forms.required"));
       schemaFields.last_name = yusString().required(t("forms.required"));
-      schemaFields.birthday = yup.date().required(t("forms.required"));
+      schemaFields.birthdate = yup.date().required(t("forms.required"));
       schemaFields.avatar = yup
         .mixed()
         .nullable()
@@ -319,18 +319,18 @@ function getSchemaByName(name: string) {
       break;
     case "create-player-details-info":
       schemaFields.position = yup.number().nullable();
-      schemaFields.tshirt_number = yup.number().nullable();
+      schemaFields.number = yup.number().nullable();
       schemaFields.height = yup.number().nullable();
       schemaFields.weight = yup.number().nullable();
-      schemaFields.foot = yup.string().nullable();
+      schemaFields.dominant_foot = yup.string().nullable();
       schemaFields.medical_notes = yup.string().nullable();
       break;
     case "edit-player-details-info":
       schemaFields.position = yup.number().nullable();
-      schemaFields.tshirt_number = yup.number().nullable();
+      schemaFields.number = yup.number().nullable();
       schemaFields.height = yup.number().nullable();
       schemaFields.weight = yup.number().nullable();
-      schemaFields.foot = yup.string().nullable();
+      schemaFields.dominant_foot = yup.string().nullable();
       schemaFields.medical_notes = yup.string().nullable();
       break;
     case "create-player-contact-info":
@@ -338,7 +338,7 @@ function getSchemaByName(name: string) {
         /^(\+52)?(\d{10})$/,
         "Número de teléfono no es válido",
       );
-      schemaFields.email = yusString().email();
+      schemaFields.email = yusString().email().required(t("forms.required"));
       schemaFields.notes = yup.string().nullable();
       break;
     case "edit-player-contact-info":
@@ -346,7 +346,7 @@ function getSchemaByName(name: string) {
         /^(\+52)?(\d{10})$/,
         "Número de teléfono no es válido",
       );
-      schemaFields.email = yusString().email();
+      schemaFields.email = yusString().email().required(t("forms.required"));
       schemaFields.notes = yup.string().nullable();
       break;
     default:

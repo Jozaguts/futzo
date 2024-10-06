@@ -72,9 +72,15 @@ const formatDateToInput = useDebounceFn((dateString: any) => {
 }, 1000);
 onMounted(() => {
   useTeamStore().list();
-  if (playerStoreRequest.value?.basic?.avatar) {
-    dragDropImageRef.value?.loadImage();
+  if (playerStoreRequest.value?.basic) {
+    setValues({ ...playerStoreRequest.value.basic });
+    if (playerStoreRequest.value.basic.avatar) {
+      dragDropImageRef.value?.loadImage();
+    }
   }
+});
+onUnmounted(() => {
+  resetForm();
 });
 
 defineExpose({
@@ -126,7 +132,7 @@ defineExpose({
             locale="es"
             @internal-model-change="internalModelValue = $event"
             :format="setTemporalDate"
-            v-model="fields.birthday.fieldValue"
+            v-model="fields.birthdate.fieldValue"
             month-name-format="long"
             @date-update="setTemporalDate"
             :enable-time-picker="false"
@@ -190,7 +196,7 @@ defineExpose({
           </VueDatePicker>
         </client-only>
         <div class="text-error ml-3 pt-1 text-caption">
-          {{ fields.birthday.fieldPropsValue["error-messages"][0] ?? "" }}
+          {{ fields.birthdate.fieldPropsValue["error-messages"][0] ?? "" }}
         </div>
       </v-col>
     </v-row>

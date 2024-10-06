@@ -14,15 +14,24 @@ defineExpose({
   validate,
   handleSubmit,
 });
-const test = (value: string) => {
-  fields.foot.fieldValue = value;
+const dominatedFootHandler = (value: string) => {
+  fields.dominant_foot.fieldValue = value;
 };
+onMounted(() => {
+  if (playerStoreRequest.value.details) {
+    setValues({ ...playerStoreRequest.value.details });
+    if (playerStoreRequest.value.details.dominant_foot) {
+      fields.dominant_foot.fieldValue =
+        playerStoreRequest.value.details.dominant_foot;
+    }
+  }
+});
 </script>
 <template>
   <v-container class="pt-0">
     <v-row>
       <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Posición*</span>
+        <span class="text-body-1"> Posición</span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
         <v-select
@@ -39,12 +48,12 @@ const test = (value: string) => {
     </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Jersey/Camiseta*</span>
+        <span class="text-body-1"> Jersey/Camiseta</span>
       </v-col>
       <v-col cols="12" lg="8" md="8" classs="position-relative">
         <v-text-field
-          v-model="fields.tshirt_number.fieldValue"
-          v-bind="fields.tshirt_number.fieldPropsValue"
+          v-model="fields.number.fieldValue"
+          v-bind="fields.number.fieldPropsValue"
           type="number"
           placeholder="p.ej. 12+1"
           min="1"
@@ -93,7 +102,8 @@ const test = (value: string) => {
         <v-item-group
           selected-class="primary"
           class="d-flex"
-          @update:modelValue="test"
+          :model-value="fields.dominant_foot.fieldValue"
+          @update:modelValue="dominatedFootHandler"
         >
           <v-row no-gutters>
             <v-col

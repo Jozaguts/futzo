@@ -35,7 +35,7 @@ const removeImage = () => {
 onMounted(() => {
   if (teamStoreRequest.value?.coach) {
     setValues({ ...teamStoreRequest.value.coach });
-    console.log(teamStoreRequest.value.coach.avatar);
+
     if (teamStoreRequest.value.coach.avatar) {
       dragDropImageRef.value.loadImage();
     }

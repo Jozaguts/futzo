@@ -6,7 +6,6 @@ import StepIndicator from "~/components/pages/equipos/stepper/step-indicator.vue
 import { useTeamStore } from "~/store";
 import type { CreateTeamForm, CurrentStep } from "~/models/Team";
 
-// const scrollbarApi = ref(null);
 const loading = ref(false);
 const teamStore = useTeamStore();
 const { steps, isEdition, teamStoreRequest } = storeToRefs(teamStore);
@@ -87,11 +86,6 @@ const textButton = computed(() => {
       return "Crear equipo";
   }
 });
-// onMounted(() => {
-//   // if (scrollbarApi.value) {
-//   //   console.log(scrollbarApi.value.ps?.settings);
-//   // }
-// });
 </script>
 <template>
   <PerfectScrollbar :options="{ suppressScrollX: true }">

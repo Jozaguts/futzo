@@ -4,10 +4,12 @@ import { storeToRefs } from "pinia";
 import { useAuthStore, usePlayerStore, useTournamentStore } from "~/store";
 import StepperContainer from "~/components/pages/jugadores/stepper/index.vue";
 
-const { players, steps, dialog } = storeToRefs(usePlayerStore());
+const { players, steps, dialog, playerStoreRequest } =
+  storeToRefs(usePlayerStore());
 const leaveHandler = () => {
   steps.value.current = "basic-info";
   steps.value.completed = [];
+  playerStoreRequest.value = {};
 };
 onMounted(() => {
   const userId = useAuthStore().user?.id as number;
