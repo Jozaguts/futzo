@@ -2,6 +2,8 @@ import { defineStore } from "pinia";
 import type { Tournament, TournamentForm } from "~/models/tournament";
 import type { Game } from "~/models/Game";
 import { useGlobalStore } from "~/store/useGlobalStore";
+import { useSanctumUser } from "#imports";
+import type { User } from "~/models/user";
 
 export const useTournamentStore = defineStore("tournamentStore", () => {
   const tournament = ref<Tournament | null>(null);
@@ -344,9 +346,12 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     });
   }
 
-  async function fetchTournamentsByLeagueId(id: number) {
+  async function fetchTournamentsByLeagueId() {
     const client = useSanctumClient();
-    const { data } = await client(`/api/v1/admin/leagues/${id}/tournaments`);
+    const user = useSanctumUser<User>();
+    const { data } = await client(
+      `/api/v1/admin/leagues/${user.value?.league?.id}/tournaments`,
+    );
     tournaments.value = data || [];
     // todo revisar la manera en la que contamos el teamcoutn y machesByRound
     // creo deberia ser un computed que se actualice cuando cambie el valor de tournaments
@@ -355,6 +360,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     // teamsCount.value = data.teams_count || 0;
     // const test = teamsCount.value / 2 ;
     // matchesByRound.value = teamsCount.value / 2 ;
+
     // console.log( matchesByRound.value, 2222222)
   }
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import HeaderCard from "~/components/pages/jugadores/dialog/header.vue";
 import { storeToRefs } from "pinia";
-import { useAuthStore, usePlayerStore, useTournamentStore } from "~/store";
+import { usePlayerStore, useTournamentStore } from "~/store";
 import StepperContainer from "~/components/pages/jugadores/stepper/index.vue";
 
 const { players, steps, dialog, playerStoreRequest } =
@@ -12,8 +12,7 @@ const leaveHandler = () => {
   playerStoreRequest.value = {};
 };
 onMounted(() => {
-  const userId = useAuthStore().user?.id as number;
-  useTournamentStore().fetchTournamentsByLeagueId(userId);
+  useTournamentStore().fetchTournamentsByLeagueId();
 });
 </script>
 <template>
