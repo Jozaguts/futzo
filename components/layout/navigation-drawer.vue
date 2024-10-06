@@ -132,7 +132,7 @@ watchEffect(() => {
           <v-card-item>
             <template #prepend>
               <v-avatar>
-                <v-img :src="user?.avatar"></v-img>
+                <v-img :src="user?.image"></v-img>
               </v-avatar>
             </template>
             <template #title>

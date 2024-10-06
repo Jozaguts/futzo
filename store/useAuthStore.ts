@@ -11,7 +11,7 @@ export const useAuthStore = defineStore("authStore", () => {
   const user = useSanctumUser<User>();
   const role = computed(() => user.value?.roles[0]);
   const isSuperAdmin = computed(() => role.value === "super administrador");
-  const avatar = computed(() => user.value?.avatar);
+  const image = computed(() => user.value?.image);
   const updateUser = (updateUserForm: UpdateUserForm) => {
     const client = useSanctumClient();
     client(`api/v1/admin/profile/${updateUserForm.id}`, {
@@ -41,21 +41,21 @@ export const useAuthStore = defineStore("authStore", () => {
         toast.error(message);
       });
   };
-  const updateAvatar = async (avatar: File) => {
+  const updateImage = async (image: File) => {
     const client = useSanctumClient();
     const formData = new FormData();
-    formData.append("avatar", avatar);
-    client(`api/v1/admin/profile/${user.value?.id}/avatar`, {
+    formData.append("image", image);
+    client(`api/v1/admin/profile/${user.value?.id}/image`, {
       method: "POST",
       body: formData,
     })
       .then(async () => {
         const { refreshIdentity } = useSanctumAuth();
         await refreshIdentity();
-        toast.success("Avatar actualizado");
+        toast.success("image actualizada");
       })
       .catch((error) => {
-        const message = error?.data?.message || "Error al actualizar el avatar";
+        const message = error?.data?.message || "Error al actualizar la imagen";
         toast.error(message);
       });
   };
@@ -65,8 +65,8 @@ export const useAuthStore = defineStore("authStore", () => {
     isSuperAdmin,
     user,
     updateUser,
-    avatar,
-    updateAvatar,
+    image,
+    updateImage,
     updatePassword,
   };
 });

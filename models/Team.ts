@@ -2,6 +2,7 @@ export interface FormSteps {
   current: CurrentStep;
   completed: string[];
 }
+
 export type CurrentStep = "createTeam" | "createDt" | "createOwner";
 
 export type CreateTeamForm = {
@@ -39,11 +40,13 @@ export type CreateOwnerForm = {
   email: string;
   image: HTMLImageElement | File | string;
 };
+
 export interface TeamStoreRequest {
   team: CreateTeamForm;
   coach: CreateDtForm;
   president: CreateOwnerForm;
 }
+
 export type Team = {
   id: number;
   name: string;
@@ -78,6 +81,7 @@ export type Team = {
     image: string;
   };
 };
+
 export interface TeamResponse {
   id: number;
   name: string;
@@ -141,7 +145,7 @@ export interface User {
   name: string;
   email: string;
   phone: string;
-  avatar: string;
+  image: string;
   league_id: number;
 }
 

@@ -26,11 +26,11 @@ const temporalDate = ref();
 const internalModelValue = ref();
 const saveImageHandler = (image: File) => {
   saveImage(image);
-  fields.avatar.fieldValue = image;
+  fields.image.fieldValue = image;
 };
 const removeImageHandler = () => {
   removeImage();
-  fields.avatar.fieldValue = null;
+  fields.image.fieldValue = null;
 };
 const formatDate = (date: Date) => {
   return new Date(date).toLocaleDateString("es-MX", {
@@ -74,7 +74,7 @@ onMounted(() => {
   useTeamStore().list();
   if (playerStoreRequest.value?.basic) {
     setValues({ ...playerStoreRequest.value.basic });
-    if (playerStoreRequest.value.basic.avatar) {
+    if (playerStoreRequest.value.basic.image) {
       dragDropImageRef.value?.loadImage();
     }
   }
@@ -229,9 +229,9 @@ defineExpose({
         <span
           class="text-error text-caption"
           :class="
-            fields.avatar.fieldPropsValue['error-messages'][0] ? 'ml-2' : ''
+            fields.image.fieldPropsValue['error-messages'][0] ? 'ml-2' : ''
           "
-          >{{ fields.avatar.fieldPropsValue["error-messages"][0] ?? "" }}</span
+          >{{ fields.image.fieldPropsValue["error-messages"][0] ?? "" }}</span
         >
       </v-col>
     </v-row>

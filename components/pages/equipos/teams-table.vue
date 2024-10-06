@@ -33,8 +33,8 @@ const showTeamHandler = (_team: TeamResponse) => {
       image: team?.image,
       phone: team?.phone,
     },
-    president: { ...president, image: president?.avatar },
-    coach: { ...coach, image: coach?.avatar },
+    president: { ...president, image: president?.image },
+    coach: { ...coach, image: coach?.image },
   };
   dialog.value = true;
 };

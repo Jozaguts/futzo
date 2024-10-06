@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useAuthStore } from "~/store";
 
-const { avatar } = storeToRefs(useAuthStore());
+const { image } = storeToRefs(useAuthStore());
 const imageRef = ref(null);
 const loading = ref(false);
 const eventHandler = (event: Event) => {
@@ -9,7 +9,7 @@ const eventHandler = (event: Event) => {
   if (file) {
     loading.value = true;
     useAuthStore()
-      .updateAvatar(file)
+      .updateImage(file)
       .finally(() => {
         loading.value = false;
       });
@@ -29,7 +29,7 @@ const showInput = () => {
   </div>
   <div v-else class="position-relative">
     <v-avatar size="64">
-      <v-img :src="avatar" />
+      <v-img :src="image" />
     </v-avatar>
     <v-btn
       class="image-plus-avatar__btn"

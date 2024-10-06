@@ -42,7 +42,7 @@ export interface BasicInfoForm {
   lastName: string;
   birthdate: string;
   nationality: string;
-  avatar: HTMLImageElement | File | string;
+  image: HTMLImageElement | File | string;
   team_id?: number;
   category_id?: number;
 }

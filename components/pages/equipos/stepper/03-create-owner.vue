@@ -24,21 +24,21 @@ const saveImage = (file: File) => {
   imageForm.value.file = file;
   imageForm.value.name = file.name;
   imageForm.value.size = file.size;
-  fields.avatar.fieldValue = file;
+  fields.image.fieldValue = file;
 };
 const removeImage = () => {
   imageForm.value.file = null;
   imageForm.value.name = "";
   imageForm.value.size = 0;
-  fields.avatar.fieldValue = null;
+  fields.image.fieldValue = null;
 };
 onMounted(() => {
   if (teamStoreRequest.value?.president) {
     setValues({ ...teamStoreRequest.value.president });
 
-    console.log(teamStoreRequest.value.president.avatar);
-    if (teamStoreRequest.value.president.avatar) {
-      dragDropImageRef.value.loadImage();
+    console.log(teamStoreRequest.value.president.image);
+    if (teamStoreRequest.value.president.image) {
+      dragDropImageRef.value?.loadImage();
     }
   }
 });
@@ -77,9 +77,9 @@ defineExpose({
         <span
           class="text-error text-caption"
           :class="
-            fields.avatar.fieldPropsValue['error-messages'][0] ? 'ml-2' : ''
+            fields.image.fieldPropsValue['error-messages'][0] ? 'ml-2' : ''
           "
-          >{{ fields.avatar.fieldPropsValue["error-messages"][0] ?? "" }}</span
+          >{{ fields.image.fieldPropsValue["error-messages"][0] ?? "" }}</span
         >
       </v-col>
     </v-row>
