@@ -282,17 +282,7 @@ function getSchemaByName(name: string) {
     case "create-player-basic-info":
       schemaFields.name = yusString().required(t("forms.required"));
       schemaFields.last_name = yusString().required(t("forms.required"));
-      schemaFields.birthdate = yup
-        .date()
-        .transform((value, originalValue) => {
-          if (typeof originalValue === "string" && originalValue) {
-            // Crear un objeto Date desde el valor original (cadena)
-            const date = new Date(originalValue);
-            return isNaN(date) ? new Date("") : date; // Devolver un Date válido o invalido si es incorrecto
-          }
-          return value;
-        })
-        .required(t("forms.required"));
+      schemaFields.birthdate = yup.date().required(t("forms.required"));
       schemaFields.image = yup
         .mixed()
         .nullable()
@@ -311,17 +301,7 @@ function getSchemaByName(name: string) {
     case "edit-player-basic-info":
       schemaFields.name = yusString().required(t("forms.required"));
       schemaFields.last_name = yusString().required(t("forms.required"));
-      schemaFields.birthdate = yup
-        .date()
-        .transform((value, originalValue) => {
-          if (typeof originalValue === "string" && originalValue) {
-            // Crear un objeto Date desde el valor original (cadena)
-            const date = new Date(originalValue);
-            return isNaN(date) ? new Date("") : date; // Devolver un Date válido o invalido si es incorrecto
-          }
-          return value;
-        })
-        .required(t("forms.required"));
+      schemaFields.birthdate = yup.date().required(t("forms.required"));
       schemaFields.image = yup
         .mixed()
         .nullable()

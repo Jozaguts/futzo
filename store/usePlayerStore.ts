@@ -39,6 +39,9 @@ export const usePlayerStore = defineStore("playerStore", () => {
       for (const key in data) {
         if (data[key] instanceof File) {
           form.append(`${prefix}[${key}]`, data[key]);
+        } else if (data[key] instanceof Date) {
+          const date = data[key].toISOString().split("T")[0];
+          form.append(`${prefix}[${key}]`, date);
         } else {
           form.append(`${prefix}[${key}]`, data[key]);
         }
