@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-import { storeToRefs } from "pinia";
 import StepperDot from "~/components/shared/stepper-dot.vue";
-import { usePlayerStore } from "~/store";
 
-const teamStore = usePlayerStore();
-const { steps } = storeToRefs(teamStore);
+export interface FormSteps {
+  current: string;
+  completed: string[];
+}
+
+const steps = withDefaults(defineProps<FormSteps>(), {});
 </script>
 <template>
   <div class="steps-container">
@@ -17,13 +19,15 @@ const { steps } = storeToRefs(teamStore);
     <StepperDot
       :active="steps.current === 'details-info'"
       :completed="steps.completed.includes('details-info')"
-      label="Detalles del jugador"
-    />
-    <v-divider />
-    <StepperDot
-      :active="steps.current === 'contact-info'"
-      :completed="steps.completed.includes('contact-info')"
-      label="Información de contacto"
+      label="Detalles del torneo"
     />
   </div>
 </template>
+<style lang="sass" scoped>
+.steps-container
+  display: flex
+  align-items: center
+  max-width: 80%
+  margin: 1rem auto 3rem auto
+  position: relative
+</style>

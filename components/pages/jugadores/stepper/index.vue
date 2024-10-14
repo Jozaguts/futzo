@@ -2,7 +2,7 @@
 import BasicInfoStep from "~/components/pages/jugadores/stepper/01-basic-info.vue";
 import DetailsInfoStep from "~/components/pages/jugadores/stepper/02-details-info.vue";
 import ContactInfoStep from "~/components/pages/jugadores/stepper/03-contact-info.vue";
-import StepIndicator from "~/components/pages/jugadores/stepper/step-indicator.vue";
+import StepIndicator from "~/components/shared/step-indicator.vue";
 import { usePlayerStore } from "~/store";
 import type { CreatePlayerForm, CurrentStep } from "~/models/player";
 
@@ -107,7 +107,10 @@ const textButton = computed(() => {
       <v-container class="pa-0">
         <v-row>
           <v-col>
-            <StepIndicator />
+            <StepIndicator
+              :current="steps.current"
+              :completed="steps.completed"
+            />
           </v-col>
         </v-row>
         <v-row>

@@ -44,7 +44,7 @@ const setTemporalDate = (date: string) => {
   temporalDate.value = formatDate(new Date(date));
   return temporalDate.value;
 };
-const updateCategory = (teamId) => {
+const updateCategory = (teamId: number) => {
   const team = teams.value.find((team) => team.id === teamId);
   if (team) {
     fields.category_id.fieldValue = team.category.id;
