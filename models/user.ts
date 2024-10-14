@@ -2,7 +2,8 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  league: League | string;
+  league: League;
+  has_league: boolean;
   roles: string[];
   verified: boolean;
   phone: string;
