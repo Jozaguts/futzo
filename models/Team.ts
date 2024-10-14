@@ -1,9 +1,18 @@
 export interface FormSteps {
   current: CurrentStep;
-  completed: string[];
+  steps: TeamSteps[];
 }
 
+export type TeamSteps = {
+  step: CurrentStep;
+  completed: boolean;
+  label: FormLabelStep;
+};
 export type CurrentStep = "createTeam" | "createDt" | "createOwner";
+export type FormLabelStep =
+  | "Crea un equipo"
+  | "Crea el DT"
+  | "Crea el presidente";
 
 export type CreateTeamForm = {
   id?: number;

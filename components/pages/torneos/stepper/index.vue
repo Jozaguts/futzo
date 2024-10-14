@@ -42,8 +42,8 @@ const nextHandler = async () => {
     }
     const stepsOrder: CurrentStep[] = ["basic-info", "details-info"];
     const currentStepIndex = stepsOrder.indexOf(steps.value.current);
-    if (!steps.value.completed.includes(stepsOrder[currentStepIndex])) {
-      steps.value.completed.push(stepsOrder[currentStepIndex]);
+    if (!steps.value.steps[currentStepIndex].completed) {
+      steps.value.steps[currentStepIndex].completed = true;
     }
     if (currentStepIndex === stepsOrder.length - 1) {
       loading.value = true;
@@ -73,7 +73,7 @@ const textButton = computed(() => {
     case "basic-info":
       return "Siguiente";
     case "details-info":
-      return "Siguiente";
+      return "Crear torneo";
     default:
       return "Crear torneo";
   }
@@ -89,10 +89,7 @@ const textButton = computed(() => {
       <v-container class="pa-0">
         <v-row>
           <v-col>
-            <StepIndicator
-              :current="steps.current"
-              :completed="steps.completed"
-            />
+            <StepIndicator :form-steps="steps" />
           </v-col>
         </v-row>
         <v-row>

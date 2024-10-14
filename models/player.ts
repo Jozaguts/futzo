@@ -11,8 +11,19 @@ export interface Player {
 
 export interface FormSteps {
   current: CurrentStep;
-  completed: string[];
+  steps: PlayerSteps[];
 }
+
+export interface PlayerSteps {
+  step: CurrentStep;
+  completed: boolean;
+  label: FormLabelStep;
+}
+
+export type FormLabelStep =
+  | "Información básica"
+  | "Detalles del jugador"
+  | "Información de contacto";
 
 export type CurrentStep = "basic-info" | "details-info" | "contact-info";
 

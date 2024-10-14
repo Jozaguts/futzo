@@ -61,38 +61,6 @@ const removeImageHandler = () => {
     </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Imagen del torneo </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <DragDropImage
-          ref="dragDropImageRef"
-          :image="imageForm"
-          @image-dropped="saveImageHandler"
-          @remove-image="removeImageHandler"
-        />
-        <span
-          class="text-error text-caption"
-          :class="
-            fields.image.fieldPropsValue['error-messages'][0] ? 'ml-2' : ''
-          "
-          >{{ fields.image.fieldPropsValue["error-messages"][0] ?? "" }}</span
-        >
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Categoría* </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <CategorySelectComponent
-          :disabled="false"
-          v-model="fields.category_id.fieldValue"
-          :errors="fields.category_id.fieldPropsValue"
-        />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
         <span class="text-body-1"> Formato* </span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
@@ -115,6 +83,38 @@ const removeImageHandler = () => {
             </v-list-item>
           </template>
         </v-select>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" lg="4" md="4">
+        <span class="text-body-1"> Categoría* </span>
+      </v-col>
+      <v-col cols="12" lg="8" md="8">
+        <CategorySelectComponent
+          :disabled="false"
+          v-model="fields.category_id.fieldValue"
+          :errors="fields.category_id.fieldPropsValue"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" lg="4" md="4">
+        <span class="text-body-1"> Imagen del torneo </span>
+      </v-col>
+      <v-col cols="12" lg="8" md="8">
+        <DragDropImage
+          ref="dragDropImageRef"
+          :image="imageForm"
+          @image-dropped="saveImageHandler"
+          @remove-image="removeImageHandler"
+        />
+        <span
+          class="text-error text-caption"
+          :class="
+            fields.image.fieldPropsValue['error-messages'][0] ? 'ml-2' : ''
+          "
+          >{{ fields.image.fieldPropsValue["error-messages"][0] ?? "" }}</span
+        >
       </v-col>
     </v-row>
   </v-container>

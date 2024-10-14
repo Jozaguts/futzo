@@ -1,25 +1,29 @@
 <script lang="ts" setup>
 import StepperDot from "~/components/shared/stepper-dot.vue";
 
-export interface FormSteps {
-  current: string;
-  completed: string[];
+interface FormSteps {
+  formSteps: {
+    current: string;
+    steps: Step[];
+  };
 }
 
-const steps = withDefaults(defineProps<FormSteps>(), {});
+interface Step {
+  step: string;
+  completed: boolean;
+  label: string;
+}
+
+const props = withDefaults(defineProps<FormSteps>(), {});
 </script>
 <template>
   <div class="steps-container">
     <StepperDot
-      :active="steps.current === 'basic-info'"
-      :completed="steps.completed.includes('basic-info')"
-      label="Información básica"
-    />
-    <v-divider />
-    <StepperDot
-      :active="steps.current === 'details-info'"
-      :completed="steps.completed.includes('details-info')"
-      label="Detalles del torneo"
+      v-for="(step, index) in props.formSteps.steps"
+      :active="props.formSteps.current === step.step"
+      :completed="step.completed"
+      :label="step.label"
+      :add-divider="index !== props.formSteps.steps.length - 1"
     />
   </div>
 </template>

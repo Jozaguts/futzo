@@ -32,7 +32,15 @@ export const usePlayerStore = defineStore("playerStore", () => {
   };
   const steps = ref<FormSteps>({
     current: "basic-info",
-    completed: [],
+    steps: [
+      { step: "basic-info", completed: false, label: "Información básica" },
+      { step: "details-info", completed: false, label: "Detalles del jugador" },
+      {
+        step: "contact-info",
+        completed: false,
+        label: "Información de contacto",
+      },
+    ],
   });
 
   return {

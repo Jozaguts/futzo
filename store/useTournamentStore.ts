@@ -20,7 +20,18 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
   const tournamentStoreRequest = ref({} as TournamentStoreRequest);
   const steps = ref<FormSteps>({
     current: "basic-info",
-    completed: [],
+    steps: [
+      {
+        step: "basic-info",
+        completed: false,
+        label: "Crea un torneo",
+      },
+      {
+        step: "details-info",
+        completed: false,
+        label: "Detalles del torneo",
+      },
+    ],
   });
   const nextGames = ref<Game[]>([
     {

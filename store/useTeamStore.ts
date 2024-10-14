@@ -22,79 +22,26 @@ export const useTeamStore = defineStore("teamStore", () => {
   const teamStoreRequest = ref<Partial<TeamStoreRequest>>(
     {} as TeamStoreRequest,
   );
-  //     {
-  //   team: {
-  //     name: "equipo 1",
-  //     phone: "+52 322 2397177",
-  //     email: "test@test.com",
-  //     tournament_id: 1,
-  //     address: {
-  //       description:
-  //         "La Sabana, San José Province, San José, Sabana, Costa Rica",
-  //       matched_substrings: { length: 9, offset: 0 },
-  //       place_id: "ChIJM_Dtpqv8oI8RyETi6jXqf_c",
-  //       reference: "ChIJM_Dtpqv8oI8RyETi6jXqf_c",
-  //       structured_formatting: {
-  //         main_text: "La Sabana",
-  //         main_text_matched_substrings: { length: 9, offset: 0 },
-  //         secondary_text: "San José Province, San José, Sabana, Costa Rica",
-  //       },
-  //       terms: [
-  //         {
-  //           offset: 0,
-  //           value: "La Sabana",
-  //         },
-  //         {
-  //           offset: 11,
-  //           value: "San José Province",
-  //         },
-  //         {
-  //           offset: 30,
-  //           value: "San José",
-  //         },
-  //         {
-  //           offset: 40,
-  //           value: "Sabana",
-  //         },
-  //       ],
-  //       types: [
-  //         "establishment",
-  //         "tourist_attraction",
-  //         "point_of_interest",
-  //         "park",
-  //       ],
-  //     },
-  //     category_id: 2,
-  //     image: new Image(),
-  //     colors: {
-  //       home: {
-  //         primary: "#000000",
-  //         secondary: "#000000",
-  //       },
-  //       away: {
-  //         primary: "#fff",
-  //         secondary: "#fff",
-  //       },
-  //     },
-  //     description: "description",
-  //   },
-  //   president: {
-  //     name: "president name",
-  //     email: "email@test.com",
-  //     phone: "+52 3222398299",
-  //     image: new File([], ""),
-  //   },
-  //   coach: {
-  //     name: "coach name",
-  //     email: "coach@test.com",
-  //     phone: "+52 3222398211",
-  //     image: new File([], ""),
-  //   },
-  // });
   const client = useSanctumClient();
   const steps = ref<FormSteps>({
     current: "createTeam",
-    completed: [],
+    steps: [
+      {
+        step: "createTeam",
+        completed: false,
+        label: "Crea un equipo",
+      },
+      {
+        step: "createDt",
+        completed: false,
+        label: "Crea el DT",
+      },
+      {
+        step: "createOwner",
+        completed: false,
+        label: "Crea el presidente",
+      },
+    ],
   });
   const isEdition = ref(false);
 

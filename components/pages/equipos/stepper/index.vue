@@ -49,9 +49,9 @@ const nextHandler = async () => {
     }
     const stepsOrder: CurrentStep[] = ["createTeam", "createDt", "createOwner"];
     const currentStepIndex = stepsOrder.indexOf(steps.value.current);
-    if (!steps.value.completed.includes(stepsOrder[currentStepIndex])) {
+    if (!steps.value.steps[currentStepIndex].completed) {
       // si el paso no está completado
-      steps.value.completed.push(stepsOrder[currentStepIndex]); // se agrega al array de completados
+      steps.value.steps[currentStepIndex].completed = true; // se agrega al array de completados
     }
     if (currentStepIndex === stepsOrder.length - 1) {
       // si es el último paso
@@ -90,7 +90,7 @@ const textButton = computed(() => {
 <template>
   <PerfectScrollbar :options="{ suppressScrollX: true }">
     <v-card-text class="pb-2" style="overflow-x: hidden">
-      <StepIndicator :current="steps.current" :completed="steps.completed" />
+      <StepIndicator :formSteps="steps" />
       <transition-slide
         group
         :offset="{

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { defineProps } from "vue";
 
-const { active, completed, label } = defineProps({
+const { active, completed, label, addDivider } = defineProps({
   active: {
     type: Boolean,
     default: false,
@@ -13,6 +13,10 @@ const { active, completed, label } = defineProps({
   label: {
     type: String,
     default: "",
+  },
+  addDivider: {
+    type: Boolean,
+    default: true,
   },
 });
 const color = computed(() => (active ? "#9155FD" : "#E0E0E0"));
@@ -66,6 +70,7 @@ const color = computed(() => (active ? "#9155FD" : "#E0E0E0"));
       }}</small>
     </div>
   </div>
+  <v-divider v-if="addDivider" />
 </template>
 <style>
 .step-dot-container {
@@ -74,6 +79,7 @@ const color = computed(() => (active ? "#9155FD" : "#E0E0E0"));
   flex-direction: column;
   align-items: center;
 }
+
 svg.step-dot {
   width: 2rem;
   height: 2rem;
@@ -82,6 +88,7 @@ svg.step-dot {
   border-radius: 100%;
   position: relative;
 }
+
 .dot-label {
   position: absolute;
   bottom: -1.5rem;
@@ -94,6 +101,7 @@ svg.step-dot {
   color: #344054;
   display: block;
 }
+
 .dot-label.active {
   color: #9155fd;
 }

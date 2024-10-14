@@ -145,8 +145,15 @@ export interface ImageForm {
 
 export interface FormSteps {
   current: CurrentStep;
-  completed: string[];
+  steps: TournamentSteps[];
 }
+
+export type TournamentSteps = {
+  step: CurrentStep;
+  completed: boolean;
+  label: FormLabelStep;
+};
+export type FormLabelStep = "Crea un torneo" | "Detalles del torneo";
 
 export type CurrentStep = "basic-info" | "details-info";
 
