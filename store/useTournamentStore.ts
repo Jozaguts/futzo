@@ -1,15 +1,27 @@
 import { defineStore } from "pinia";
-import type { Tournament, TournamentForm } from "~/models/tournament";
+import type {
+  FormSteps,
+  Tournament,
+  TournamentForm,
+  TournamentStoreRequest,
+} from "~/models/tournament";
 import type { Game } from "~/models/Game";
 import { useGlobalStore } from "~/store/useGlobalStore";
 import { useSanctumUser } from "#imports";
 import type { User } from "~/models/user";
+import { toast } from "vuetify-sonner";
+import prepareForm from "~/utils/prepareFormData";
 
 export const useTournamentStore = defineStore("tournamentStore", () => {
   const tournament = ref<Tournament | null>(null);
   const tournaments = ref<Tournament[]>([]);
   const noTournaments = computed(() => !tournaments.value.length);
   const search = ref("");
+  const tournamentStoreRequest = ref({} as TournamentStoreRequest);
+  const steps = ref<FormSteps>({
+    current: "basic-info",
+    completed: [],
+  });
   const nextGames = ref<Game[]>([
     {
       id: 1,
@@ -304,12 +316,14 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     loading.value = false;
   }
 
-  async function storeTournament(formData) {
+  async function storeTournament() {
+    const form = prepareForm(tournamentStoreRequest);
     return await useSanctumClient()("api/v1/admin/tournaments", {
       method: "POST",
-      body: formData,
+      body: form,
     })
       .then(async (response) => {
+        toast.success("Torneo creado");
         return response;
       })
       .catch((error) => {
@@ -317,7 +331,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
       });
   }
 
-  async function updateTournament(tournamentId, formData) {
+  async function updateTournament(tournamentId: number, formData: FormData) {
     return await useSanctumClient()(
       `api/v1/admin/tournaments/${tournamentId}`,
       {
@@ -333,7 +347,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
       });
   }
 
-  async function storeCategory(formData) {
+  async function storeCategory(formData: FormData) {
     const client = useSanctumClient();
     await useAsyncData("store-category", async () => {
       return await client("api/v1/admin/categories", {
@@ -403,9 +417,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     matchesByRound,
     loadTournaments,
     storeTournament,
-    storeCategory,
     fetchTournamentsByLeagueId,
-    getTournamentTypes,
     updateTournament,
     loading,
     tournamentTypes,
@@ -418,5 +430,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     markAsCompleted,
     noTournaments,
     search,
+    steps,
+    tournamentStoreRequest,
   };
 });

@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import type { FormSteps, Player, PlayerStoreRequest } from "~/models/player";
 import { toast } from "vuetify-sonner";
+import prepareForm from "~/utils/prepareFormData";
 
 export const usePlayerStore = defineStore("playerStore", () => {
   const players = ref<Player[]>([]);
@@ -13,7 +14,7 @@ export const usePlayerStore = defineStore("playerStore", () => {
     console.log(id);
   };
   const createPlayer = async () => {
-    const form = prepareForm();
+    const form = prepareForm(playerStoreRequest);
     const client = useSanctumClient();
     await client("/api/v1/admin/players", {
       method: "POST",
@@ -33,28 +34,7 @@ export const usePlayerStore = defineStore("playerStore", () => {
     current: "basic-info",
     completed: [],
   });
-  const prepareForm = (): FormData => {
-    const form = new FormData();
-    const appendData = (prefix: string, data: any) => {
-      for (const key in data) {
-        if (data[key] instanceof File) {
-          form.append(`${prefix}[${key}]`, data[key]);
-        } else if (data[key] instanceof Date) {
-          const date = data[key].toISOString().split("T")[0];
-          form.append(`${prefix}[${key}]`, date);
-        } else {
-          form.append(`${prefix}[${key}]`, data[key]);
-        }
-      }
-    };
 
-    for (const key in playerStoreRequest.value) {
-      const data = playerStoreRequest.value[key];
-      appendData(key, data);
-    }
-
-    return form;
-  };
   return {
     players,
     dialog,
