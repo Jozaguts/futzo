@@ -2,7 +2,7 @@
 <template>
   <v-table class="positions-table futzo-table">
     <template #top>
-      <h2 class="positions-table-title mt-0">Tabla de posicioness</h2>
+      <h2 class="positions-table-title mt-0">Tabla de posiciones</h2>
     </template>
     <template #wrapper>
       <div class="v-table__wrapper">
@@ -153,10 +153,12 @@
   background: var(--Colors-Base-White, #fff);
   border-radius: var(--radius-md, 8px);
 }
+
 .positions-table > .v-table__wrapper > table > tbody > tr:nth-child(odd) {
   border-bottom: 1px solid var(--Colors-Border-border-secondary, #eaecf0);
   background: var(--Colors-Background-bg-primary_hover, #f9fafb);
 }
+
 .positions-table-title {
   color: var(--Component-colors-Utility-Gray-utility-gray-800, #182230);
   font-size: 16px;
@@ -165,15 +167,18 @@
   line-height: 24px; /* 150% */
   margin: 1rem;
 }
+
 .positions-table > .v-table__wrapper > table {
   border-radius: var(--radius-md, 8px);
   border: 1px solid var(--Colors-Border-border-secondary, #eaecf0);
 }
+
 .positions-table > .v-table__wrapper > table > tbody > tr > td,
 table > tbody > tr {
   text-align: center !important;
   border-bottom: 1px solid #eaecf0 !important;
 }
+
 .positions-table > .v-table__wrapper > table > thead > tr > th {
   text-align: center !important;
   border-bottom: 1px solid #eaecf0 !important;

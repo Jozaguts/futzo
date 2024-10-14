@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { definePageMeta } from "#imports";
-import PositionsTable from "~/components/pages/equipos/positions-table";
-import LiveGames from "~/components/pages/equipos/live-games";
-import NextGamesToday from "~/components/pages/equipos/next-games-today";
+import PositionsTable from "~/components/pages/equipos/positions-table.vue";
+import LiveGames from "~/components/pages/equipos/live-games.vue";
+import NextGamesToday from "~/components/pages/equipos/next-games-today.vue";
 import NextGames from "~/components/pages/equipos/next-games.vue";
-import CreateTournamentDialog from "~/components/pages/torneos/Dialog.vue";
+import CreateTournamentDialog from "~/components/pages/torneos/dialog/index.vue";
 import PageLayout from "~/components/shared/page-layout/index.vue";
 import AppBar from "~/components/layout/app-bar.vue";
 import AppBarBtn from "~/components/pages/torneos/torneo/app-bar-btn.vue";
@@ -58,17 +58,19 @@ definePageMeta({
   grid-template-areas:
     "table-container games-container"
     "next-games games-container";
-  padding: 40px;
 }
+
 .table-container {
   grid-area: table-container;
   padding: 1rem;
   border-radius: var(--radius-2xl, 16px);
   background: var(--Colors-Base-White, #fff);
 }
+
 .games-container {
   grid-area: games-container;
 }
+
 .games-container > :first-child {
   margin-bottom: 2rem;
 }
@@ -76,15 +78,14 @@ definePageMeta({
 .live-games {
   display: flex;
   width: 100%;
-  padding: 0 1rem 0 1rem;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--spacing-xl, 16px);
 }
+
 .next-games-today {
   display: flex;
   width: 100%;
-  padding: 0 1rem 0 1rem;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--spacing-xl, 16px);
