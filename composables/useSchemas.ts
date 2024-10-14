@@ -22,8 +22,11 @@ export default function (schemaNAme: string, initialValues = {}) {
   );
   const fieldProps = reactive({} as any);
 
-  fields.forEach((field) => {
-    const [fieldValue, fieldPropsValue] = defineField(field, vuetifyConfig);
+  fields.forEach((field: MaybeRefOrGetter) => {
+    const [fieldValue, fieldPropsValue] = defineField(
+      field,
+      vuetifyConfig as any,
+    );
     fieldProps[field] = { fieldValue, fieldPropsValue };
   });
 
@@ -51,10 +54,9 @@ function getSchemaByName(name: string) {
       );
   };
   switch (name) {
-    case "create-tournament":
-      schemaFields.name = yusString()
-        .min(6, t("tournament_min"))
-        .required(t("forms.required"));
+    case "create-tournament-basic-info":
+      schemaFields.id = yup.number().nullable();
+      schemaFields.name = yusString().required(t("forms.required"));
       schemaFields.image = yup
         .mixed()
         .nullable()
@@ -70,12 +72,44 @@ function getSchemaByName(name: string) {
       schemaFields.tournament_format_id = yup
         .number()
         .required(t("forms.required"));
-      schemaFields.location = yup.object(); // club/lugar
-      schemaFields.city = yusString().required(t("forms.required"));
-      schemaFields.address = yusString().required(t("forms.required"));
+      break;
+    case "edit-tournament-basic-info":
+      schemaFields.id = yup.number().nullable();
+      schemaFields.name = yusString().required(t("forms.required"));
+      schemaFields.image = yup
+        .mixed()
+        .nullable()
+        .test(
+          "File is required",
+          "Solo imágenes .jgp, png, svg ",
+          (value: any) => {
+            if (value === undefined) return true;
+            return value?.type?.includes("image/") || typeof value === "string";
+          },
+        );
+      schemaFields.category_id = yup.number().required(t("forms.required"));
+      schemaFields.tournament_format_id = yup
+        .number()
+        .required(t("forms.required"));
+      break;
+    case "edit-tournament-details-info":
+      schemaFields.location = yup.object().nullable();
+      schemaFields.city = yusString().nullable();
+      schemaFields.address = yusString().nullable();
       schemaFields.start_date = yup.date().nullable();
       schemaFields.end_date = yup.date().nullable();
-      schemaFields.prize = yusString().required(t("forms.required"));
+      schemaFields.prize = yusString().nullable();
+      schemaFields.winner = yusString().nullable();
+      schemaFields.description = yusString().nullable();
+      schemaFields.status = yusString().nullable();
+      break;
+    case "create-tournament-details-info":
+      schemaFields.location = yup.object().nullable();
+      schemaFields.city = yusString().nullable();
+      schemaFields.address = yusString().nullable();
+      schemaFields.start_date = yup.date().nullable();
+      schemaFields.end_date = yup.date().nullable();
+      schemaFields.prize = yusString().nullable();
       schemaFields.winner = yusString().nullable();
       schemaFields.description = yusString().nullable();
       schemaFields.status = yusString().nullable();
@@ -277,7 +311,10 @@ function getSchemaByName(name: string) {
       schemaFields.new_password_confirmation = yup
         .string()
         .required(t("forms.required"))
-        .oneOf([yup.ref("new_password"), null], "Las contraseñas no coinciden");
+        .oneOf(
+          [yup.ref("new_password"), null as any],
+          "Las contraseñas no coinciden",
+        );
       break;
     case "create-player-basic-info":
       schemaFields.name = yusString().required(t("forms.required"));
