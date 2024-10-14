@@ -6,11 +6,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     if (user.value?.roles.includes("super administrador")) {
       return;
     }
-
-    if (
-      to.path !== "/bienvenido" &&
-      user.value?.league === "No league assigned"
-    ) {
+    if (to.path !== "/bienvenido" && user.value?.has_league === true) {
       return navigateTo({ name: "bienvenido" });
     }
   }
