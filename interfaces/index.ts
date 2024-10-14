@@ -1,72 +1,92 @@
-export  { IApiInstance } from "~/interfaces/api";
-import { FetchOptions, FetchRequest } from 'ofetch'
-
 export {};
 declare global {
   interface Window {
     FB: any;
   }
 }
+
 export interface Auth {
-  user: User | null
-  loggedIn: boolean
-  token: string | null
+  user: User | null;
+  loggedIn: boolean;
+  token: string | null;
 }
+
 export interface User {
-  id: number
-  name: string
-  email: string
-  roles: string[]
+  id: number;
+  name: string;
+  email: string;
+  roles: string[];
 }
 
-export type ApiFetch = <T>(
-  endpoint: FetchRequest,
-  options?: FetchOptions
-) => Promise<T>
-
-export type Csrf = Promise<void>
-
-export type Callback = (response: any) => void
-
-export interface SanctumAuthPlugin {
-  login: (data: any, callback?: Callback | undefined) => Promise<void>
-  logout: (callback?: Callback | undefined) => Promise<void>
-  getUser<T>(): Promise<T | undefined>
-}
-
-// @ts-ignore
-declare module 'vue/types/vue' {
-  interface Vue {
-    $sanctumAuth: SanctumAuthPlugin
-  }
-}
-
-interface PluginInjection {
-  $sanctumAuth: SanctumAuthPlugin
-  $apiFetch: ApiFetch
-  $csrf: Csrf
-}
-
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties extends PluginInjection {}
-}
 export interface Role {
   id: number;
   name: string;
   permissions: Permission[];
 }
+
 export interface Permission {
-  id: number,
-  name: string
+  id: number;
+  name: string;
 }
+
 export interface AutocompletePrediction {
-  description:           string;
-  matched_substrings:    MatchedSubstring[];
-  place_id:              string;
-  reference:             string;
+  address_components: AddressComponent[];
+  adr_address: string;
+  formatted_address: string;
+  geometry: Geometry;
+  icon: string;
+  icon_background_color: string;
+  icon_mask_base_uri: string;
+  name: string;
+  photos: Photo[];
+  place_id: string;
+  reference: string;
+  types: string[];
+  url: string;
+  utc_offset: number;
+  vicinity: string;
+  website: string;
+  html_attributions: any[];
+  utc_offset_minutes: number;
+}
+
+export interface AddressComponent {
+  long_name: string;
+  short_name: string;
+  types: string[];
+}
+
+export interface Geometry {
+  location: Location;
+  viewport: Viewport;
+}
+
+export interface Location {
+  lat: number;
+  lng: number;
+}
+
+export interface Viewport {
+  south: number;
+  west: number;
+  north: number;
+  east: number;
+}
+
+export interface Photo {
+  height: number;
+  html_attributions: string[];
+  width: number;
+}
+
+export interface Prediction {
+  description: string;
+  matched_substrings: MatchedSubstring[];
+  place_id: string;
+  reference: string;
   structured_formatting: StructuredFormatting;
-  terms:                 Term[];
-  types:                 string[];
+  terms: Term[];
+  types: string[];
 }
 
 export interface MatchedSubstring {
@@ -75,12 +95,12 @@ export interface MatchedSubstring {
 }
 
 export interface StructuredFormatting {
-  main_text:                    string;
+  main_text: string;
   main_text_matched_substrings: MatchedSubstring[];
-  secondary_text:               string;
+  secondary_text: string;
 }
 
 export interface Term {
   offset: number;
-  value:  string;
+  value: string;
 }

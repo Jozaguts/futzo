@@ -1,5 +1,3 @@
-import type { AutocompletePrediction } from "~/interfaces";
-
 export interface Tournament {
   id?: number | null;
   league_id?: number | null;
@@ -33,15 +31,23 @@ export interface TournamentForm {
 }
 
 export interface TournamentStoreRequest {
+  basic: BasicInfoForm;
+  details: DetailsInfoForm;
+}
+
+export interface BasicInfoForm {
   id?: number;
+  name: string;
   category_id: number;
+  tournament_format_id: number;
+  image?: File;
+}
+
+export interface DetailsInfoForm {
   description: string;
   end_date: string;
-  image?: File;
-  name: string;
   prize: string;
   start_date: string;
-  tournament_format_id: number;
   location: AutocompletePrediction;
 }
 
@@ -136,3 +142,12 @@ export interface ImageForm {
     action: string | null;
   };
 }
+
+export interface FormSteps {
+  current: CurrentStep;
+  completed: string[];
+}
+
+export type CurrentStep = "basic-info" | "details-info";
+
+export interface CreateTournamentForm extends TournamentStoreRequest {}
