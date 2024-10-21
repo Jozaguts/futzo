@@ -1,5 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  compatibilityDate: "2024-04-03",
+  devtools: { enabled: true },
   app: {
     head: {
       script: [
@@ -14,15 +16,19 @@ export default defineNuxtConfig({
       ],
     },
   },
-
+  // these 3 are necessary
   ssr: true,
-
-  css: ["~/assets/scss/main.scss"],
-
-  devtools: {
-    enabled: true,
+  vuetify: {
+    moduleOptions: {
+      styles: { configFile: "assets/scss/settings.scss" },
+    },
+    vuetifyOptions: {},
   },
-
+  features: {
+    inlineStyles: false,
+  },
+  // end these 3 are necessary
+  css: ["~/assets/scss/main.scss"],
   build: {
     transpile: [
       "vuetify",
@@ -31,19 +37,10 @@ export default defineNuxtConfig({
       "v-phone-input",
     ],
   },
-
-  googleFonts: {
-    families: {
-      Inter: "200..900",
-    },
-    display: "swap",
-  },
-
   modules: [
     "nuxt-icons",
     "vuetify-nuxt-module",
     "@formkit/auto-animate/nuxt",
-    // '@vite-pwa/nuxt',
     "@nuxtjs/i18n",
     "@vee-validate/nuxt",
     "nuxt-auth-sanctum",
@@ -51,32 +48,9 @@ export default defineNuxtConfig({
     "@nuxtjs/google-fonts",
     "@pinia/nuxt",
     "@vueuse/nuxt",
-    "nuxt-lodash",
     "@morev/vue-transitions/nuxt",
     "vue3-perfect-scrollbar/nuxt",
   ],
-
-  vuetify: {
-    moduleOptions: {
-      styles: { configFile: "/assets/scss/settings.scss" },
-      prefixComposables: true,
-    },
-    vuetifyOptions: {
-      /* vuetify options */
-    },
-    // moduleOptions: {
-    //   styles: { configFile: '/assets/scss/settings.scss' }
-    // },
-    // vuetifyOptions: './vuetify.config.ts' // <== you can omit it
-  },
-
-  features: {
-    inlineStyles: false,
-  },
-
-  // i18n: {
-  //   vueI18n: './i18n.config.ts' // if you are using custom path, default
-  // },
   sanctum: {
     baseUrl: process.env.NUXT_PUBLIC_URL_BACKEND, // Laravel API
     // origin: 'http://futzo.test', // Nuxt app, by default will be used 'useRequestURL().origin'
@@ -107,7 +81,15 @@ export default defineNuxtConfig({
       user: "/api/v1/me", // Endpoint that return current user information
     },
   },
-
+  vite: {
+    css: {
+      preprocessorOptions: {
+        sass: {
+          api: "modern",
+        },
+      },
+    },
+  },
   runtimeConfig: {
     googleMapsSecret: process.env.NUXT_GOOGLE_MAPS_API_KEY,
     public: {
@@ -116,6 +98,10 @@ export default defineNuxtConfig({
       appName: process.env.NUXT_PUBLIC_APP_NAME,
     },
   },
-
-  compatibilityDate: "2024-07-12",
+  googleFonts: {
+    families: {
+      Inter: "200..900",
+    },
+    display: "swap",
+  },
 });
