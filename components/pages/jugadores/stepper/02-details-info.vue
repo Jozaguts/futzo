@@ -146,5 +146,5 @@ onMounted(() => {
   </v-container>
 </template>
 <style>
-@import "assets/scss/pages/players.sass";
+@use "assets/scss/pages/players.sass";
 </style>

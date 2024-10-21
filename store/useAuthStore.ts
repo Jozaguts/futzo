@@ -5,7 +5,6 @@ import type {
   User,
 } from "~/models/user";
 import { toast } from "vuetify-sonner";
-import { useSanctumUser } from "#imports";
 
 export const useAuthStore = defineStore("authStore", () => {
   const user = useSanctumUser<User>();

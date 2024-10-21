@@ -28,10 +28,10 @@ onMounted(() => {
   </v-container>
 </template>
 <style lang="scss">
-@use "@/assets/scss/pages/page-auth.scss";
-.bg-auth-section {
-  background-image: url("~/assets/register-img.webp");
-  background-size: cover;
-  background-position: center;
-}
+//@use "@/assets/scss/pages/page-auth.scss";
+//.bg-auth-section {
+//  background-image: url("~/assets/register-img.webp");
+//  background-size: cover;
+//  background-position: center;
+//}
 </style>

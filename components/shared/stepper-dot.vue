@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { defineProps } from "vue";
-
 const { active, completed, label, addDivider } = defineProps({
   active: {
     type: Boolean,

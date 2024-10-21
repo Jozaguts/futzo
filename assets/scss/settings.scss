@@ -1,14 +1,13 @@
 @use 'vuetify/settings' with (
-  $body-font-family: "Inter",
+  $body-font-family: Inter,
   $button-height: 40px,
   $overlay-scrim-background: rgba(12, 17, 29, 1),
   $overlay-opacity: 0.9,
   $list-color: rgba(#424242, 1),
-  $list-item-nav-title-font-weight: 600 !important,
-  $list-item-nav-title-font-size: 16px !important,
-  $list-item-nav-title-line-height: 24px !important,
-  $list-item-padding: 16px 12px !important,
+  $list-item-nav-title-font-weight: 600,
+  $list-item-nav-title-font-size: 16px,
+  $list-item-nav-title-line-height: 24px,
+  $list-item-padding: 16px 12px,
   $app-bar-background: #F9FAFB,
   $toolbar-background: #F9FAFB,
-
 );

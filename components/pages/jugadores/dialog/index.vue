@@ -32,5 +32,5 @@ onMounted(() => {
   </v-dialog>
 </template>
 <style>
-@import "assets/scss/pages/create-team.sass";
+@use "assets/scss/pages/create-team.sass";
 </style>

@@ -17,15 +17,15 @@ const tab = ref(1);
         <template #prepend>
           <Avatar />
         </template>
-        <v-card-title class="card-title ml-2"> {{ user?.name }} </v-card-title>
-        <v-card-subtitle class="card-subtitle ml-2">{{
-          user?.email
-        }}</v-card-subtitle>
+        <v-card-title class="card-title ml-2"> {{ user?.name }}</v-card-title>
+        <v-card-subtitle class="card-subtitle ml-2"
+          >{{ user?.email }}
+        </v-card-subtitle>
       </v-card-item>
       <v-card-text>
         <v-tabs v-model="tab">
-          <v-tab :value="1"> Datos personales </v-tab>
-          <v-tab :value="2"> Contraseña </v-tab>
+          <v-tab :value="1"> Datos personales</v-tab>
+          <v-tab :value="2"> Contraseña</v-tab>
         </v-tabs>
         <v-tabs-window v-model="tab">
           <v-tabs-window-item :value="1" :key="1">
@@ -40,5 +40,5 @@ const tab = ref(1);
   </v-sheet>
 </template>
 <style lang="sass">
-@import "~/assets/scss/pages/configuration"
+@use "~/assets/scss/pages/configuration"
 </style>

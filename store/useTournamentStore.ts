@@ -7,7 +7,6 @@ import type {
 } from "~/models/tournament";
 import type { Game } from "~/models/Game";
 import { useGlobalStore } from "~/store/useGlobalStore";
-import { useSanctumUser } from "#imports";
 import type { User } from "~/models/user";
 import { toast } from "vuetify-sonner";
 import prepareForm from "~/utils/prepareFormData";
@@ -358,19 +357,6 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
       });
   }
 
-  async function storeCategory(formData: FormData) {
-    const client = useSanctumClient();
-    await useAsyncData("store-category", async () => {
-      return await client("api/v1/admin/categories", {
-        method: "POST",
-        body: formData,
-      });
-    }).then(async () => {
-      await loadTournaments();
-      // todo add toast alert
-    });
-  }
-
   async function fetchTournamentsByLeagueId() {
     const client = useSanctumClient();
     const user = useSanctumUser<User>();
@@ -397,11 +383,6 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     }).then(async () => {
       await loadTournaments();
     });
-  }
-
-  async function getTournamentTypes() {
-    const client = useSanctumClient();
-    tournamentTypes.value = await client("/api/v1/admin/tournaments/types");
   }
 
   async function markAsCompleted() {
