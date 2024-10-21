@@ -1,8 +1,8 @@
 import type { User } from "~/models/user";
 
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware(() => {
   const user = useSanctumUser<User>();
-  if (user.value?.roles[0] !== "super administrador") {
+  if (!user.value?.roles?.includes("super administrador")) {
     return abortNavigation();
   }
 });
