@@ -9,7 +9,6 @@
         { id: 4, name: '24 horas' },
       ]"
       :key="item.id"
-      v-bind="item"
       v-slot="{ isSelected, toggle }"
     >
       <v-btn
@@ -33,6 +32,7 @@
   font-weight: 600;
   line-height: 20px; /* 142.857% */
 }
+
 .dashboard-app-bar-btn-1 {
   border-top-left-radius: 8px !important;
   border-bottom-left-radius: 8px !important;
@@ -41,12 +41,14 @@
   border-bottom: 1px solid #e0e0e0;
   border-top: 1px solid #e0e0e0;
 }
+
 .dashboard-app-bar-btn-2,
 .dashboard-app-bar-btn-3 {
   border-bottom: 1px solid #e0e0e0;
   border-top: 1px solid #e0e0e0;
   border-right: 1px solid #e0e0e0;
 }
+
 .dashboard-app-bar-btn-4 {
   border-top-right-radius: 8px !important;
   border-bottom-right-radius: 8px !important;

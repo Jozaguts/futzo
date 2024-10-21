@@ -5,5 +5,10 @@ import { useTournamentStore } from "~/store";
 const { dialog } = storeToRefs(useTournamentStore());
 </script>
 <template>
-  <AppBarCatBtn text="Crear torneo" class="mr-8" @click="dialog = !dialog" />
+  <AppBarCatBtn
+    icon="plus"
+    text="Crear torneo"
+    class="mr-8"
+    @click="dialog = !dialog"
+  />
 </template>

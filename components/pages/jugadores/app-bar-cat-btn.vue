@@ -5,5 +5,10 @@ import { usePlayerStore } from "~/store";
 const { dialog } = storeToRefs(usePlayerStore());
 </script>
 <template>
-  <AppBarCatBtn text="Crear Jugador" class="mr-8" @click="dialog = !dialog" />
+  <AppBarCatBtn
+    icon="plus"
+    text="Crear Jugador"
+    class="mr-8"
+    @click="dialog = !dialog"
+  />
 </template>
