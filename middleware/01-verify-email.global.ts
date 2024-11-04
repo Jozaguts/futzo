@@ -1,16 +1,11 @@
-import type {User} from "~/models/user";
-const USER_NOT_VERIFIED = 401
+import type { User } from "~/models/user";
 
-export default defineNuxtRouteMiddleware((to, from) => {
-    if (process.client){
-       const user = useSanctumUser<User>()
-        const isLogged = user.value?.name != null
-        if (isLogged && !user.value?.verified && to.name !== 'index') {
-            return navigateTo({
-                name: 'index',
-                query: { code: 'USER_NOT_VERIFIED' }
-            });
-        }
-    }
-
-})
+export default defineNuxtRouteMiddleware((to) => {
+  // skip middleware on server
+  if (import.meta.server) return;
+  const user = useSanctumUser<User>();
+  const isLogin = !!user.value?.email;
+  if (isLogin && !user.value?.verified && to.name !== "verify-email") {
+    return navigateTo("/verify-email");
+  }
+});

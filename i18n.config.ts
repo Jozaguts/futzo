@@ -28,6 +28,8 @@ export default defineI18nConfig(() => ({
         input: {
           clear: "Limpiar",
           prependAction: "Prepend action",
+          appendAction: "Aplicar",
+          otp: "OTP",
         },
         noDataText: "No hay datos disponibles",
         pagination: {
