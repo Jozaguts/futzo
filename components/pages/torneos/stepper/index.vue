@@ -3,7 +3,12 @@ import BasicInfo from "~/components/pages/torneos/stepper/01-basicInfo.vue";
 import DetailsInfo from "~/components/pages/torneos/stepper/02-detailsInfo.vue";
 import StepIndicator from "~/components/shared/step-indicator.vue";
 import { useTournamentStore } from "~/store";
-import type { CreateTournamentForm, CurrentStep } from "~/models/tournament";
+import type {
+  BasicInfoForm,
+  CreateTournamentForm,
+  CurrentStep,
+  DetailsInfoForm,
+} from "~/models/tournament";
 
 const loading = ref(false);
 const { steps, isEdition, tournamentStoreRequest, dialog } =
@@ -12,6 +17,7 @@ const stepRef = ref<{ validate: Function; handleSubmit: Function }>({
   validate: Function,
   handleSubmit: Function,
 });
+console.log(steps.value);
 const backHandler = () => {
   if (steps.value.current === "basic-info") {
     dialog.value = false;
@@ -23,44 +29,52 @@ const backHandler = () => {
 };
 const nextHandler = async () => {
   const statusForm = await stepRef.value.validate();
-  const formValues = stepRef.value.handleSubmit(
-    (values: CreateTournamentForm) => values,
-  );
-  const tournamentStoreRequestValues = await formValues();
   if (statusForm.valid) {
-    if (steps.value.current === "basic-info") {
-      tournamentStoreRequest.value = {
-        ...tournamentStoreRequest.value,
-        basic: { ...tournamentStoreRequestValues },
-      };
-    }
-    if (steps.value.current === "details-info") {
-      tournamentStoreRequest.value = {
-        ...tournamentStoreRequest.value,
-        details: { ...tournamentStoreRequestValues },
-      };
-    }
+    const tournamentStoreRequestValues = await getFormValues();
+    fillTournamentStoreRequest(tournamentStoreRequestValues);
     const stepsOrder: CurrentStep[] = ["basic-info", "details-info"];
     const currentStepIndex = stepsOrder.indexOf(steps.value.current);
     if (!steps.value.steps[currentStepIndex].completed) {
       steps.value.steps[currentStepIndex].completed = true;
     }
-    if (currentStepIndex === stepsOrder.length - 1) {
-      loading.value = true;
-      if (isEdition.value) {
-        await useTournamentStore().updateTournament(
-          tournamentStoreRequest.value.basic.id as number,
-          tournamentStoreRequest.value,
-        );
-      } else {
-        await useTournamentStore().storeTournament();
-      }
-      loading.value = false;
-      return;
-    }
-    steps.value.current = stepsOrder[currentStepIndex + 1];
+    const isLastStep = currentStepIndex === stepsOrder.length - 1;
+    isLastStep
+      ? await saveHandler()
+      : (steps.value.current = stepsOrder[currentStepIndex + 1]);
   }
 };
+
+async function saveHandler() {
+  loading.value = true;
+  isEdition.value
+    ? await useTournamentStore().updateTournament()
+    : await useTournamentStore().storeTournament();
+  loading.value = false;
+}
+
+async function getFormValues() {
+  const formValues = stepRef.value.handleSubmit(
+    (values: CreateTournamentForm) => values,
+  );
+
+  return await formValues();
+}
+
+function fillTournamentStoreRequest(values: BasicInfoForm | DetailsInfoForm) {
+  if (steps.value.current === "basic-info") {
+    tournamentStoreRequest.value = {
+      ...tournamentStoreRequest.value,
+      basic: { ...(values as BasicInfoForm) },
+    };
+  }
+  if (steps.value.current === "details-info") {
+    tournamentStoreRequest.value = {
+      ...tournamentStoreRequest.value,
+      details: { ...(values as DetailsInfoForm) },
+    };
+  }
+}
+
 const textButtonCancel = computed(() => {
   if (steps.value.current === "basic-info") {
     return "Cancelar";
