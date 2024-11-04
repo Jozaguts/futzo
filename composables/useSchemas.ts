@@ -72,6 +72,8 @@ function getSchemaByName(name: string) {
       schemaFields.tournament_format_id = yup
         .number()
         .required(t("forms.required"));
+      schemaFields.start_date = yup.date().nullable();
+      schemaFields.end_date = yup.date().nullable();
       break;
     case "edit-tournament-basic-info":
       schemaFields.id = yup.number().nullable();
@@ -91,13 +93,13 @@ function getSchemaByName(name: string) {
       schemaFields.tournament_format_id = yup
         .number()
         .required(t("forms.required"));
+      schemaFields.start_date = yup.date().nullable();
+      schemaFields.end_date = yup.date().nullable();
       break;
     case "edit-tournament-details-info":
       schemaFields.location = yup.object().nullable();
       schemaFields.city = yusString().nullable();
       schemaFields.address = yusString().nullable();
-      schemaFields.start_date = yup.date().nullable();
-      schemaFields.end_date = yup.date().nullable();
       schemaFields.prize = yusString().nullable();
       schemaFields.winner = yusString().nullable();
       schemaFields.description = yusString().nullable();
@@ -107,8 +109,6 @@ function getSchemaByName(name: string) {
       schemaFields.location = yup.object().nullable();
       schemaFields.city = yusString().nullable();
       schemaFields.address = yusString().nullable();
-      schemaFields.start_date = yup.date().nullable();
-      schemaFields.end_date = yup.date().nullable();
       schemaFields.prize = yusString().nullable();
       schemaFields.winner = yusString().nullable();
       schemaFields.description = yusString().nullable();
