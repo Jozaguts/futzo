@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import Calendar from "~/components/pages/torneos/calendar.vue";
 import useSchemas from "~/composables/useSchemas";
 import { useTournamentStore } from "~/store";
 import type { AutocompletePrediction, Prediction } from "~/interfaces";
@@ -56,10 +55,6 @@ const searchHandler = async (place: string) => {
   if (response) {
     locationsFind.value = response;
   }
-};
-const setDates = (dates: string[]) => {
-  fields.start_date.fieldValue = dates[0];
-  fields.end_date.fieldValue = dates[1];
 };
 const search = useDebounceFn(async (place: string): Promise<Prediction[]> => {
   if (!window.google || !window.google.maps || !window.google.maps.places) {
@@ -166,19 +161,11 @@ defineExpose({
     </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Fechas del torneo </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8" id="test">
-        <Calendar ref="calendarRef" @selected-dates="setDates" />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
         <span class="text-body-1"> Premio </span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
         <v-text-field
-          placeholder="p.ej. 10:00 a 18:00"
+          placeholder="p.ej. trofeo y premio en efectivo..."
           density="compact"
           variant="outlined"
           v-model="fields.prize.fieldValue"

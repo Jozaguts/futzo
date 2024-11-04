@@ -4,9 +4,10 @@ import StepperContainer from "~/components/pages/torneos/stepper/index.vue";
 import { storeToRefs } from "pinia";
 import { useTournamentStore } from "~/store";
 
-const { steps, dialog } = storeToRefs(useTournamentStore());
+const { steps, dialog, tournamentStoreRequest } =
+  storeToRefs(useTournamentStore());
 const leaveHandler = () => {
-  console.log("leaveHandler");
+  useTournamentStore().$reset();
 };
 </script>
 <template>
@@ -22,6 +23,7 @@ const leaveHandler = () => {
       :style="{ overflow: $vuetify.display.mobile ? '' : 'hidden' }"
     >
       <HeaderCard />
+
       <StepperContainer :step="steps.current" />
     </v-card>
   </v-dialog>

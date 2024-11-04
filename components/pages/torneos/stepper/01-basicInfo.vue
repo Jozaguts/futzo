@@ -11,6 +11,7 @@ import {
 import { useTournamentStore } from "~/store";
 import { storeToRefs } from "pinia";
 import { useCategoryStore } from "~/store/useCategoryStore";
+import Calendar from "~/components/pages/torneos/calendar.vue";
 
 const { formats } = storeToRefs(useCategoryStore());
 const { isEdition, tournamentStoreRequest } = storeToRefs(useTournamentStore());
@@ -42,6 +43,10 @@ const removeImageHandler = () => {
   removeImage();
   fields.image.fieldValue = null;
 };
+const setDates = (dates: string[]) => {
+  fields.start_date.fieldValue = dates[0];
+  fields.end_date.fieldValue = dates[1];
+};
 </script>
 <template>
   <v-container class="container">
@@ -57,6 +62,26 @@ const removeImageHandler = () => {
           v-bind="fields.name.fieldPropsValue"
           density="compact"
         ></v-text-field>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" lg="4" md="4">
+        <span class="text-body-1"> Imagen del torneo </span>
+      </v-col>
+      <v-col cols="12" lg="8" md="8">
+        <DragDropImage
+          ref="dragDropImageRef"
+          :image="imageForm"
+          @image-dropped="saveImageHandler"
+          @remove-image="removeImageHandler"
+        />
+        <span
+          class="text-error text-caption"
+          :class="
+            fields.image.fieldPropsValue['error-messages'][0] ? 'ml-2' : ''
+          "
+          >{{ fields.image.fieldPropsValue["error-messages"][0] ?? "" }}</span
+        >
       </v-col>
     </v-row>
     <v-row>
@@ -99,22 +124,10 @@ const removeImageHandler = () => {
     </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Imagen del torneo </span>
+        <span class="text-body-1"> Fechas del torneo* </span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
-        <DragDropImage
-          ref="dragDropImageRef"
-          :image="imageForm"
-          @image-dropped="saveImageHandler"
-          @remove-image="removeImageHandler"
-        />
-        <span
-          class="text-error text-caption"
-          :class="
-            fields.image.fieldPropsValue['error-messages'][0] ? 'ml-2' : ''
-          "
-          >{{ fields.image.fieldPropsValue["error-messages"][0] ?? "" }}</span
-        >
+        <Calendar ref="calendarRef" @selected-dates="setDates" />
       </v-col>
     </v-row>
   </v-container>
