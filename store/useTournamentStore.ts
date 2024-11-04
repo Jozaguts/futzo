@@ -309,6 +309,14 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     total: 0,
   });
 
+  function $reset() {
+    tournamentStoreRequest.value = {} as TournamentStoreRequest;
+    steps.value.current = "basic-info";
+    steps.value.steps.map((step) => (step.completed = false));
+    isEdition.value = false;
+    tournamentId.value = null;
+  }
+
   async function loadTournaments() {
     loading.value = true;
     const client = useSanctumClient();
@@ -333,7 +341,10 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
       body: form,
     })
       .then(async (response) => {
+        await loadTournaments();
         toast.success("Torneo creado");
+        dialog.value = false;
+        $reset();
         return response;
       })
       .catch((error) => {
@@ -341,12 +352,13 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
       });
   }
 
-  async function updateTournament(tournamentId: number, formData: FormData) {
+  async function updateTournament() {
+    const form = prepareForm(tournamentStoreRequest);
     return await useSanctumClient()(
       `api/v1/admin/tournaments/${tournamentId}`,
       {
         method: "PUT",
-        body: formData,
+        body: form,
       },
     )
       .then(async (response) => {
@@ -410,6 +422,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     loadTournaments,
     storeTournament,
     fetchTournamentsByLeagueId,
+    $reset,
     updateTournament,
     loading,
     tournamentTypes,
