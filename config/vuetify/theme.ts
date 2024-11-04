@@ -33,7 +33,7 @@ const theme: VuetifyOptions["theme"] = {
       },
 
       variables: {
-        "border-color": "#E7E3FC",
+        "border-color": "#D0D5DD",
         "medium-emphasis-opacity": 0.68,
 
         // Shadows
