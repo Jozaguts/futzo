@@ -66,12 +66,12 @@ const pagination = defineModel("pagination", {
       >
       </v-checkbox-btn>
     </template>
-    <!--    item index colum-->
-    <template v-if="showIndex" #[`item.index`]="{ item, index }">
+    <!--index colum-->
+    <template v-if="showIndex" #[`item.index`]="{ index }">
       {{ index + 1 }}
     </template>
-    <!-- item name column-->
-    <template v-if="customName" #[`item.name`]="{ item, index }">
+    <!-- name column-->
+    <template v-if="customName" #[`item.name`]="{ item }">
       <v-avatar :image="item.image"></v-avatar>
       {{ item.name }}
     </template>
@@ -94,7 +94,7 @@ const pagination = defineModel("pagination", {
         <slot name="actions" :item="item"></slot>
       </div>
     </template>
-    <template #bottom="props">
+    <template #bottom>
       <v-divider />
       <v-pagination
         class="futzo-pagination"
