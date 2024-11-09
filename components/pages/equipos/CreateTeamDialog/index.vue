@@ -32,6 +32,6 @@ onMounted(() => {
     </v-card>
   </v-dialog>
 </template>
-<style>
-@use "assets/scss/pages/create-team.sass";
+<style lang="sass">
+@use "assets/scss/pages/create-team.sass"
 </style>

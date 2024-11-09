@@ -11,7 +11,6 @@ import {
   removeImage,
   saveImage,
 } from "~/composables/useImage";
-import validateAndFormatDate from "~/utils/dateCalendarValidation";
 
 const { isEdition, playerStoreRequest } = storeToRefs(usePlayerStore());
 const { teams } = storeToRefs(useTeamStore());
@@ -39,37 +38,17 @@ const formatDate = (date: Date) => {
     day: "numeric",
   });
 };
-const customPosition = () => ({ top: -100, left: "50%" });
+const customPosition = () => ({ top: -0, left: "50%" });
 const setTemporalDate = (date: string) => {
   temporalDate.value = formatDate(new Date(date));
   return temporalDate.value;
 };
 const updateCategory = (teamId: number) => {
-  const team = teams.value.find((team) => team.id === teamId);
+  const team = teams.value?.find((team) => team.id === teamId);
   if (team) {
     fields.category_id.fieldValue = team.category.id;
   }
 };
-const updateMonth = (direction: "back" | "forward") => {
-  if (!internalModelValue.value) {
-    internalModelValue.value = new Date();
-  }
-
-  const date = new Date(internalModelValue.value);
-  if (direction === "back") {
-    date.setMonth(date.getMonth() - 1);
-  } else {
-    date.setMonth(date.getMonth() + 1);
-  }
-  datepicker.value?.updateInternalModelValue(date);
-};
-const formatDateToInput = useDebounceFn((dateString: any) => {
-  const dates = validateAndFormatDate(dateString.target.value);
-  if (!!dates) {
-    temporalDate.value = dates?.format;
-    datepicker.value?.updateInternalModelValue(dates?.raw);
-  }
-}, 1000);
 onMounted(() => {
   useTeamStore().list();
   if (playerStoreRequest.value?.basic) {
@@ -138,58 +117,18 @@ defineExpose({
             :enable-time-picker="false"
             :alt-position="customPosition"
           >
-            <template #month-year="{ month, year, months }">
-              <div class="d-flex flex-column">
-                <div class="month-year-container">
-                  <div class="arrow-left" @click="updateMonth('back')">
-                    <nuxt-icon
-                      name="calendar-arrow-left"
-                      class="calendar-arrow-left"
-                      filled
-                    ></nuxt-icon>
-                  </div>
-                  <div class="date-container">
-                    <div class="month">
-                      {{ months[month]["text"] }}
-                    </div>
-                    <div class="year">
-                      {{ year }}
-                    </div>
-                  </div>
-                  <div class="arrow-right" @click="updateMonth('forward')">
-                    <nuxt-icon
-                      class="calendar-arrow-right"
-                      name="calendar-arrow-right"
-                      filled
-                    ></nuxt-icon>
-                  </div>
-                </div>
-                <div class="d-flex w-100">
-                  <v-text-field
-                    density="compact"
-                    label="DD-MM-YY"
-                    @keyup="formatDateToInput"
-                    v-model="temporalDate"
-                    clearable
-                  ></v-text-field>
-                </div>
-              </div>
-            </template>
             <template #action-row="{ selectDate }">
               <div class="action-row w-100">
-                <v-divider />
                 <div class="d-flex mt-2 justify-space-between w-100">
-                  <v-btn
-                    color="secondary"
+                  <button
                     class="select-button"
                     @click="datepicker?.closeMenu()"
-                    variant="outlined"
                   >
                     cancelar
-                  </v-btn>
-                  <v-btn class="select-button" @click="selectDate">
+                  </button>
+                  <button class="select-button" @click="selectDate">
                     Aplicar
-                  </v-btn>
+                  </button>
                 </div>
               </div>
             </template>
@@ -269,6 +208,7 @@ defineExpose({
     </v-row>
   </v-container>
 </template>
-<style>
-@use "assets/scss/pages/players.sass";
+<style lang="sass">
+@use "assets/scss/pages/players.sass"
+@use "assets/css/vue-datepicker-custom"
 </style>
