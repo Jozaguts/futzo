@@ -1,4 +1,4 @@
-import type { ImageForm } from "~/models/player";
+import type { ImageForm } from "~/models/Player";
 
 const imageForm = ref<ImageForm>({
   file: null,

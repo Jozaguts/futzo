@@ -355,7 +355,7 @@ function getSchemaByName(name: string) {
       schemaFields.category_id = yup.number().nullable();
       break;
     case "create-player-details-info":
-      schemaFields.position = yup.number().nullable();
+      schemaFields.position_id = yup.number().nullable();
       schemaFields.number = yup.number().nullable();
       schemaFields.height = yup.number().nullable();
       schemaFields.weight = yup.number().nullable();
@@ -363,7 +363,7 @@ function getSchemaByName(name: string) {
       schemaFields.medical_notes = yup.string().nullable();
       break;
     case "edit-player-details-info":
-      schemaFields.position = yup.number().nullable();
+      schemaFields.position_id = yup.number().nullable();
       schemaFields.number = yup.number().nullable();
       schemaFields.height = yup.number().nullable();
       schemaFields.weight = yup.number().nullable();

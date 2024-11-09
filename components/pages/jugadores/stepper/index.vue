@@ -4,7 +4,7 @@ import DetailsInfoStep from "~/components/pages/jugadores/stepper/02-details-inf
 import ContactInfoStep from "~/components/pages/jugadores/stepper/03-contact-info.vue";
 import StepIndicator from "~/components/shared/step-indicator.vue";
 import { usePlayerStore } from "~/store";
-import type { CreatePlayerForm, CurrentStep } from "~/models/player";
+import type { CreatePlayerForm, CurrentStep } from "~/models/Player";
 
 const loading = ref(false);
 const { steps, isEdition, playerStoreRequest, dialog } =

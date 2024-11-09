@@ -40,8 +40,8 @@ onMounted(() => {
           outlined
           item-value="id"
           :item-props="(item) => ({ title: item.abbr, subtitle: item.name })"
-          v-model="fields.position.fieldValue"
-          v-bind="fields.position.fieldPropsValue"
+          v-model="fields.position_id.fieldValue"
+          v-bind="fields.position_id.fieldPropsValue"
           density="compact"
         ></v-select>
       </v-col>
