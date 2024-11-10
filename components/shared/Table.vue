@@ -52,6 +52,7 @@ const pagination = defineModel("pagination", {
     :item-key="itemKey"
     items-per-page="10"
     show-select
+    :cell-props="{ class: 'text-capitalize' }"
     height="100%"
   >
     <!--    header-->
@@ -74,6 +75,18 @@ const pagination = defineModel("pagination", {
     <template v-if="customName" #[`item.name`]="{ item }">
       <v-avatar :image="item.image"></v-avatar>
       {{ item.name }}
+    </template>
+    <template #[`item.image`]="{ item }">
+      <v-avatar size="50" :image="item.image"></v-avatar>
+    </template>
+    <template #[`item.birthdate`]="{ item }">
+      <v-tooltip :text="item.birthdate.date">
+        <template v-slot:activator="{ props }">
+          <span v-bind="props" class="cursor-pointer">
+            {{ item.birthdate.age }}</span
+          >
+        </template>
+      </v-tooltip>
     </template>
     <template
       v-slot:item.data-table-select="{ internalItem, isSelected, toggleSelect }"
