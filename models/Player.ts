@@ -3,7 +3,7 @@ export interface Player {
   name: string;
   email: string;
   phone: string;
-  position: string;
+  position_id: number;
   team: string;
   league_id: number;
   league?: string;
