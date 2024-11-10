@@ -70,14 +70,13 @@ export default function getHeaders(tableName: string): Header[] {
       ];
     case "players":
       return [
-        { title: "Image", value: "imagen", sortable: false },
-        { title: "Nombre", value: "name", sortable: true },
-        { title: "Apellido/s", value: "last_name", sortable: true },
-        { title: "Fecha 🎂", value: "birthdate", sortable: true },
+        { title: "Imagen", value: "image", sortable: false },
+        { title: "Nombre", value: "full_name", sortable: true },
+        { title: "Edad", value: "birthdate", sortable: true },
         { title: "Nacionalidad", value: "nationality", sortable: true },
         { title: "Equipo", value: "team.name", sortable: true },
         { title: "Categoría", value: "category.name", sortable: true },
-        { title: "Rol", value: "rol", sortable: true },
+        { title: "Rol", value: "role.name", sortable: true },
         {
           title: "Posición",
           value: "position.abbr",
