@@ -116,6 +116,7 @@ defineExpose({
             @date-update="setTemporalDate"
             :enable-time-picker="false"
             :alt-position="customPosition"
+            :max-date="new Date()"
           >
             <template #action-row="{ selectDate }">
               <div class="action-row w-100">
