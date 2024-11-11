@@ -104,3 +104,11 @@ export interface Term {
   offset: number;
   value: string;
 }
+
+export type IStatStage = "last24Hrs" | "lastWeek" | "lastMonth" | "lastYear";
+export type ITeamStats = {
+  registeredTeams: IDashboardStatsValues;
+  activePlayers: IDashboardStatsValues;
+  completedGames: IDashboardStatsValues;
+};
+export type IDashboardStatsValues = { total: number; percentage: number };

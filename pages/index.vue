@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { useGlobalStore } from "~/store";
+import { useDashboardStore, useGlobalStore } from "~/store";
 import PageLayout from "~/components/shared/page-layout/index.vue";
 import AppBar from "~/components/layout/app-bar.vue";
 import AppBarBtn from "~/components/pages/dashboard/app-bar-btn.vue";
 import StatsCard from "~/components/pages/dashboard/stats-card.vue";
 import LastTeamsTable from "~/components/pages/dashboard/last-teams.vue";
 import DashboardNextGames from "~/components/pages/dashboard/dashboard-next-games.vue";
+
+const { range } = storeToRefs(useDashboardStore());
 
 watchEffect(() => {
   const route = useRoute();
@@ -17,6 +19,9 @@ watchEffect(() => {
     });
     router.replace("/");
   }
+});
+onMounted(() => {
+  useDashboardStore().byRange();
 });
 </script>
 <template>
