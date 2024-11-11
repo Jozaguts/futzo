@@ -15,25 +15,25 @@
     "@morev/vue-transitions": "^3.0.2",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@nuxtjs/i18n": "^8.5.5",
-    "@pinia/nuxt": "^0.5.5",
-    "@vee-validate/nuxt": "^4.14.3",
-    "@vee-validate/yup": "^4.14.3",
+    "@pinia/nuxt": "^0.7.0",
+    "@vee-validate/nuxt": "^4.14.7",
+    "@vee-validate/yup": "^4.14.7",
     "@vuepic/vue-datepicker": "^9.0.3",
-    "@vueuse/core": "^11.1.0",
-    "@vueuse/nuxt": "^11.1.0",
-    "nuxt": "^3.13.2",
-    "nuxt-auth-sanctum": "^0.5.0",
+    "@vueuse/core": "^11.2.0",
+    "@vueuse/nuxt": "^11.2.0",
+    "nuxt": "^3.14.159",
+    "nuxt-auth-sanctum": "^0.5.1",
     "nuxt-icons": "^3.2.1",
     "nuxt-typed-router": "^3.7.0",
-    "pinia": "^2.2.4",
-    "v-phone-input": "^4.3.2",
+    "pinia": "^2.2.6",
+    "v-phone-input": "^4.4.0",
     "vue": "latest",
     "vue-router": "latest",
     "vue3-perfect-scrollbar": "^2.0.0",
     "vuetify-nuxt-module": "^0.18.3",
-    "vuetify-sonner": "^0.3.19"
+    "vuetify-sonner": "^0.3.20"
   },
   "devDependencies": {
-    "sass-embedded": "^1.80.3"
+    "sass-embedded": "^1.80.6"
   }
 }
