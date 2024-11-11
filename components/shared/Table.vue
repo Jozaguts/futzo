@@ -33,6 +33,10 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  showFooter: {
+    type: Boolean,
+    default: true,
+  },
 });
 const search = defineModel("search", {
   type: String,
@@ -110,6 +114,7 @@ const pagination = defineModel("pagination", {
     <template #bottom>
       <v-divider />
       <v-pagination
+        v-if="showFooter"
         class="futzo-pagination"
         v-model="pagination.page"
         :length="pagination.total"
