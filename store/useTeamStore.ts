@@ -140,10 +140,11 @@ export const useTeamStore = defineStore("teamStore", () => {
     }
     return form;
   };
-  const getTeams = async () => {
+  const getTeams = async (sort = "asc", perPage = 10) => {
+    pagination.value.perPage = perPage;
     try {
       const response = await client(
-        `/api/v1/admin/teams?per_page=20&page=${pagination.value.to}`,
+        `/api/v1/admin/teams?per_page=${pagination.value.perPage}&page=${pagination.value.to}&sort=${sort}`,
       );
       pagination.value.total = response.meta.last_page;
       pagination.value.page = response.meta.current_page;
