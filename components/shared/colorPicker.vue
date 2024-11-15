@@ -26,7 +26,6 @@ const color = defineModel("color", {
         <v-color-picker
           width="230"
           elevation="0"
-          position="absolute"
           mode="hexa"
           v-model="color"
         ></v-color-picker>
