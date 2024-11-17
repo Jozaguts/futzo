@@ -7,7 +7,7 @@ import StatsCard from "~/components/pages/dashboard/stats-card.vue";
 import LastTeamsTable from "~/components/pages/dashboard/last-teams.vue";
 import DashboardNextGames from "~/components/pages/dashboard/dashboard-next-games.vue";
 
-const { range } = storeToRefs(useDashboardStore());
+const { teamStats } = storeToRefs(useDashboardStore());
 
 watchEffect(() => {
   const route = useRoute();
@@ -38,20 +38,23 @@ onMounted(() => {
         <v-row>
           <v-col>
             <StatsCard
-              title="jugadores totales"
-              :values="{ total: 2420, percentage: 40 }"
+              title="Equipos totales"
+              :values="teamStats.registeredTeams"
+              :isPositive="teamStats.registeredTeams.current > 0"
             ></StatsCard>
           </v-col>
           <v-col>
             <StatsCard
               title="jugadores activos"
-              :values="{ total: 1210, percentage: -10 }"
+              :values="teamStats.activePlayers"
+              :isPositive="teamStats.activePlayers.current > 0"
             ></StatsCard>
           </v-col>
           <v-col>
             <StatsCard
               title="juegos finalizados"
-              :values="{ total: 316, percentage: 20 }"
+              :values="teamStats.completedGames"
+              :isPositive="teamStats.completedGames.current > 0"
             ></StatsCard>
           </v-col>
         </v-row>

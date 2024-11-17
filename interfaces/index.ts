@@ -111,4 +111,9 @@ export type ITeamStats = {
   activePlayers: IDashboardStatsValues;
   completedGames: IDashboardStatsValues;
 };
-export type IDashboardStatsValues = { total: number; percentage: number };
+export type IDashboardStatsValues = {
+  total: number;
+  current: number;
+  dailyData: number[];
+  label: string;
+};
