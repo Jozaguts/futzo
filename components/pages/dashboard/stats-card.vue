@@ -1,19 +1,21 @@
 <script lang="ts" setup>
 import CardArrow from "~/components/pages/dashboard/card-arrow.vue";
 import Stats from "~/components/pages/dashboard/stats.vue";
+import type { IDashboardStatsValues } from "~/interfaces";
 
-type StatsCardValues = {
-  total: number;
-  percentage: number;
-};
-const props = defineProps({
+defineProps({
   title: {
     required: true,
     type: String,
   },
   values: {
     required: true,
-    type: Object as PropType<StatsCardValues>,
+    type: Object as PropType<IDashboardStatsValues>,
+  },
+  isPositive: {
+    required: true,
+    type: Boolean,
+    default: () => true,
   },
 });
 </script>
@@ -28,13 +30,11 @@ const props = defineProps({
               <p class="dashboard-stats-card--values-container__total">
                 {{ values.total }}
               </p>
-              <card-arrow :value="values.percentage" />
+              <card-arrow :value="values.current" :label="values.label" />
             </div>
           </v-col>
           <v-col cols="5">
-            <stats
-              :values="[0, 2, 4, 15, 5, 10, 8, 12, 9, 15, 13, 18, 16, 20, 22]"
-            ></stats>
+            <stats :isPositive="isPositive" :values="values.dailyData"></stats>
           </v-col>
         </v-row>
       </v-container>

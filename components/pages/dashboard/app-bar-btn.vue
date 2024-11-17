@@ -1,21 +1,32 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import type { IStatStage } from "~/interfaces";
+import { useDashboardStore } from "~/store";
+
+const { range } = storeToRefs(useDashboardStore());
+
+const ranges: { value: IStatStage; name: string }[] = [
+  { value: "lastYear", name: "12 meses" },
+  { value: "lastMonth", name: "30 días" },
+  { value: "lastWeek", name: "7 días" },
+  { value: "last24Hrs", name: "24 horas" },
+];
+watchEffect(() => {
+  useDashboardStore().byRange();
+});
+</script>
 <template>
-  <v-item-group mandatory model-value="1" class="mr-8">
+  <v-item-group mandatory v-model="range" class="mr-8">
     <v-item
-      v-for="item in [
-        { id: 1, name: '12 meses' },
-        { id: 2, name: '30 días' },
-        { id: 3, name: '7 días' },
-        { id: 4, name: '24 horas' },
-      ]"
-      :key="item.id"
+      v-for="item in ranges"
+      :key="item.value"
+      :value="item.value"
       v-slot="{ isSelected, toggle }"
     >
       <v-btn
         @click="toggle"
         rounded="0"
         :color="isSelected ? 'primary' : ''"
-        :class="['dashboard-app-bar-btn dashboard-app-bar-btn-' + item.id]"
+        :class="['dashboard-app-bar-btn dashboard-app-bar-btn-' + item.value]"
       >
         {{ item.name }}
       </v-btn>
@@ -33,7 +44,7 @@
   line-height: 20px; /* 142.857% */
 }
 
-.dashboard-app-bar-btn-1 {
+.dashboard-app-bar-btn-lastYear {
   border-top-left-radius: 8px !important;
   border-bottom-left-radius: 8px !important;
   border-left: 1px solid #e0e0e0;
@@ -42,14 +53,14 @@
   border-top: 1px solid #e0e0e0;
 }
 
-.dashboard-app-bar-btn-2,
-.dashboard-app-bar-btn-3 {
+.dashboard-app-bar-btn-lastMonth,
+.dashboard-app-bar-btn-lastWeek {
   border-bottom: 1px solid #e0e0e0;
   border-top: 1px solid #e0e0e0;
   border-right: 1px solid #e0e0e0;
 }
 
-.dashboard-app-bar-btn-4 {
+.dashboard-app-bar-btn-last24Hrs {
   border-top-right-radius: 8px !important;
   border-bottom-right-radius: 8px !important;
   border-right: 1px solid #e0e0e0;

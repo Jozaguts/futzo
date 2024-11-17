@@ -4,9 +4,12 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  label: {
+    type: String,
+    required: true,
+  },
 });
 const isNegative = computed(() => Number(props.value) <= 0);
-const text = computed(() => " vs último mes");
 </script>
 <template>
   <div>
@@ -19,11 +22,11 @@ const text = computed(() => " vs último mes");
       class="dashboard-stats-card--values-container__percentage"
       :class="isNegative ? 'negative' : 'positive'"
     >
-      {{ value }}%</span
+      {{ value }}
+    </span>
+    <span class="dashboard-stats-card--values-container__percentage text">
+      {{ label }}</span
     >
-    <span class="dashboard-stats-card--values-container__percentage text">{{
-      text
-    }}</span>
   </div>
 </template>
 <style>
