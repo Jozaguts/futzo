@@ -172,11 +172,7 @@ defineExpose({
           v-bind="fields.prize.fieldPropsValue"
         >
           <template #append-inner>
-            <nuxt-icon
-              name="help-circle"
-              filled
-              class="cursor-pointer"
-            ></nuxt-icon>
+            <Icon name="futzo-icon:help-circle" class="cursor-pointer"></Icon>
             <v-tooltip activator="parent">
               Este premio será otorgado al finalizar el torneo.
             </v-tooltip>

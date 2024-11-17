@@ -41,9 +41,9 @@
                     <span class="field">Campo 1</span>
                   </div>
                   <div class="btn-container">
-                    <nuxt-link>
+                    <nuxt-link class="d-flex align-center">
                       <span class="btn-text"> Ver detalles</span>
-                      <nuxt-icon name="arrow-right" filled />
+                      <Icon name="futzo-icon:arrow-right" />
                     </nuxt-link>
                   </div>
                 </div>
@@ -79,9 +79,9 @@
                     <span class="field">Campo 1</span>
                   </div>
                   <div class="btn-container">
-                    <nuxt-link>
+                    <nuxt-link class="d-flex align-center">
                       <span class="btn-text"> Ver detalles</span>
-                      <nuxt-icon name="arrow-right" filled />
+                      <Icon name="futzo-icon:arrow-right" />
                     </nuxt-link>
                   </div>
                 </div>

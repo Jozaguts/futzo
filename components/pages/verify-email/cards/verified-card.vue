@@ -5,11 +5,10 @@
     <v-card-item class="d-flex justify-center align-center">
       <v-card-title class="d-flex justify-center align-center">
         <div class="icon-container">
-          <nuxt-icon
-            name="check-circle"
-            filled
+          <Icon
+            name="futzo-icon:check-circle"
             class="mx-auto envelop-icon"
-          ></nuxt-icon>
+          ></Icon>
         </div>
       </v-card-title>
       <v-card-title class="text-center verify-card-title">
@@ -35,11 +34,7 @@
           class="d-flex justify-center align-center my-5 cursor-pointer"
           @click="$router.push('/login')"
         >
-          <nuxt-icon
-            name="arrow-left"
-            filled
-            class="arrow-left mx-1"
-          ></nuxt-icon>
+          <Icon name="futzo-icon:arrow-left" class="arrow-left mx-1"></Icon>
           <p class="text-body-1 font-weight-bold">Regresar a registrarme</p>
         </div>
       </div>

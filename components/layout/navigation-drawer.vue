@@ -9,7 +9,7 @@ const authStore = useAuthStore();
 const { user, isSuperAdmin } = storeToRefs(authStore);
 const adminLinks = reactive([
   {
-    icon: "roles",
+    icon: "futzo-icon:roles",
     title: "Roles y Permisos",
     to: "/roles-permisos",
     disabled: !isSuperAdmin.value,
@@ -19,22 +19,27 @@ if (!isSuperAdmin.value) {
   adminLinks.pop();
 }
 const links = reactive([
-  { icon: "home", title: "Dashboard", to: "/", disabled: false },
-  { icon: "trophy", title: "Torneos", to: "/torneos", disabled: false },
+  { icon: "futzo-icon:home", title: "Dashboard", to: "/", disabled: false },
   {
-    icon: "ion_shirt-sharp",
+    icon: "futzo-icon:trophy",
+    title: "Torneos",
+    to: "/torneos",
+    disabled: false,
+  },
+  {
+    icon: "futzo-icon:shirt-sharp",
     title: "Equipos",
     to: "/equipos",
     disabled: false,
   },
   {
-    icon: "players",
+    icon: "futzo-icon:players",
     title: "Jugadores",
     to: "/jugadores",
     disabled: false,
   },
   {
-    icon: "ball",
+    icon: "futzo-icon:ball",
     title: "MVP",
     to: "/mvp",
     disabled: false,
@@ -92,7 +97,7 @@ watchEffect(() => {
           :title="link.title"
         >
           <template #prepend>
-            <nuxt-icon :name="link.icon" class="mr-2 drawer-icon" />
+            <Icon :name="link.icon" class="mr-2 drawer-icon" />
           </template>
         </v-list-item>
       </template>
@@ -106,7 +111,7 @@ watchEffect(() => {
         :title="link.title"
       >
         <template #prepend>
-          <nuxt-icon :name="link.icon" class="mr-2 drawer-icon" />
+          <Icon :name="link.icon" class="mr-2 drawer-icon" />
         </template>
       </v-list-item>
     </v-list>
@@ -123,7 +128,7 @@ watchEffect(() => {
             title="Configuración"
           >
             <template #prepend>
-              <nuxt-icon name="settings-01" class="mr-2" filled />
+              <Icon name="futzo-icon:settings-01" class="mr-2" />
             </template>
           </v-list-item>
         </v-list>
@@ -138,13 +143,11 @@ watchEffect(() => {
             <template #title>
               <small> {{ user?.name }}</small>
             </template>
-            <template #subtitle>
-              {{ user?.email }}
-            </template>
+            <template #subtitle> {{ user?.email }}ss</template>
             <template v-slot:append>
               <v-btn @click="logout" variant="text" size="24">
                 <template #prepend>
-                  <nuxt-icon name="logout" filled></nuxt-icon>
+                  <Icon name="futzo-icon:logout" />
                 </template>
               </v-btn>
             </template>
@@ -162,14 +165,14 @@ watchEffect(() => {
             title="Configuración"
           >
             <template #prepend>
-              <nuxt-icon name="settings-01" class="mr-2" filled />
+              <Icon name="futzo-icon:settings-01" class="mr-2" />
             </template>
           </v-list-item>
         </v-list>
         <v-divider></v-divider>
         <v-btn @click="logout" variant="text">
           <template #prepend>
-            <nuxt-icon name="logout" class="mr-2" filled />
+            <Icon name="futzo-icon:logout" class="mr-2" />
           </template>
         </v-btn>
       </div>

@@ -43,9 +43,9 @@ watch(
   <VCard class="pa-2" max-width="448" elevation="0" color="background">
     <VCardItem class="justify-center text-center">
       <Logo width="165" class="mx-auto" />
-      <v-card-title class="text-black text-h4">{{
-        showRegisterForm ? "Crea tu cuenta" : "Iniciar sesión"
-      }}</v-card-title>
+      <v-card-title class="text-black text-h4"
+        >{{ showRegisterForm ? "Crea tu cuenta" : "Iniciar sesión" }}
+      </v-card-title>
       <v-card-subtitle>Administra torneos y ligas fácilmente.</v-card-subtitle>
     </VCardItem>
     <VCardText>
@@ -101,11 +101,11 @@ watch(
             <!-- remember me checkbox -->
             <div class="d-flex flex-column mb-4" v-if="showRegisterForm">
               <span>
-                <nuxt-icon name="check-circle" filled></nuxt-icon>
+                <Icon name="futzo-icon:check-circle"></Icon>
                 Al menos 8 caracteres
               </span>
               <span>
-                <nuxt-icon name="check-circle" filled></nuxt-icon>
+                <Icon name="futzo-icon:check-circle"></Icon>
                 Debe contener un carácter especial
               </span>
             </div>

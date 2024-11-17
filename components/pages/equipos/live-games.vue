@@ -19,7 +19,7 @@
               </td>
               <td class="data">
                 <div class="live">
-                  <nuxt-icon name="Ellipse-red" filled></nuxt-icon>
+                  <Icon name="futzo-icon:ellipse-red"></Icon>
                   <span>Live</span>
                 </div>
                 <div class="result">
@@ -46,7 +46,7 @@
               </td>
               <td class="data">
                 <div class="live">
-                  <nuxt-icon name="Ellipse-red" filled></nuxt-icon>
+                  <Icon name="futzo-icon:ellipse-red"></Icon>
                   <span>Live</span>
                 </div>
                 <div class="result">
@@ -73,7 +73,7 @@
               </td>
               <td class="data">
                 <div class="live">
-                  <nuxt-icon name="Ellipse-red" filled></nuxt-icon>
+                  <Icon name="futzo-icon:ellipse-red"></Icon>
                   <span>Live</span>
                 </div>
                 <div class="result">

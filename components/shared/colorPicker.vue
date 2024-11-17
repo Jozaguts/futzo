@@ -30,7 +30,7 @@ const color = defineModel("color", {
           v-model="color"
         ></v-color-picker>
       </v-card>
-      <nuxt-icon name="polygon" filled class="polygon"></nuxt-icon>
+      <Icon name="futzo-icon:polygon" class="polygon"></Icon>
     </v-dialog>
   </div>
 </template>

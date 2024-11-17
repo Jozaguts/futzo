@@ -40,11 +40,10 @@ const showInput = () => {
       height="28"
       @click="showInput"
     >
-      <nuxt-icon
+      <Icon
         class="image-plus-avatar"
-        name="image-plus-avatar"
-        filled
-      ></nuxt-icon>
+        name="futzo-icon:image-plus-avatar"
+      ></Icon>
     </v-btn>
     <v-file-input
       class="d-none"

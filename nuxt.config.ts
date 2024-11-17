@@ -27,6 +27,14 @@ export default defineNuxtConfig({
   features: {
     inlineStyles: false,
   },
+  icon: {
+    customCollections: [
+      {
+        prefix: "futzo-icon",
+        dir: "./assets/icons",
+      },
+    ],
+  },
   // end these 3 are necessary
   css: ["~/assets/scss/main.scss"],
   build: {
@@ -38,7 +46,6 @@ export default defineNuxtConfig({
     ],
   },
   modules: [
-    "nuxt-icons",
     "vuetify-nuxt-module",
     "@formkit/auto-animate/nuxt",
     "@nuxtjs/i18n",
@@ -50,6 +57,7 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "@morev/vue-transitions/nuxt",
     "vue3-perfect-scrollbar/nuxt",
+    "@nuxt/icon",
   ],
   sanctum: {
     baseUrl: process.env.NUXT_PUBLIC_URL_BACKEND, // Laravel API

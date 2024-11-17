@@ -134,7 +134,7 @@ const pagination = defineModel("pagination", {
             border="thin secondary"
           >
             <template #prepend>
-              <nuxt-icon name="arrow-left" filled></nuxt-icon>
+              <Icon name="futzo-icon:arrow-left"></Icon>
             </template>
             Anterior
           </v-btn>
@@ -151,7 +151,7 @@ const pagination = defineModel("pagination", {
             class="ml-auto"
           >
             <template #append>
-              <nuxt-icon name="arrow-right" filled></nuxt-icon>
+              <Icon name="futzo-icon:arrow-right"></Icon>
             </template>
             Siguiente
           </v-btn>

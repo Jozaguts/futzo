@@ -38,8 +38,8 @@ const showTeamHandler = (_team: TeamResponse) => {
   };
   dialog.value = true;
 };
-const paginationHandler = (page: number) => {
-  pagination.value.to = page;
+const paginationHandler = (_pagination) => {
+  pagination.value.to = _pagination.to + 1;
   useTeamStore().getTeams();
 };
 </script>

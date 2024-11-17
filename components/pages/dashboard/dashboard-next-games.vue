@@ -50,7 +50,7 @@ const desserts = [
       <v-btn variant="text" :ripple="false" to="/torneos">
         <span class="dashboard-btn-text"> Ver detalles</span>
         <template #append>
-          <nuxt-icon name="arrow-right" filled />
+          <Icon name="futzo-icon:arrow-right" />
         </template>
       </v-btn>
     </div>

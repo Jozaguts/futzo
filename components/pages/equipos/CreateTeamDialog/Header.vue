@@ -38,7 +38,7 @@ const subtitle = computed(() => {
         height="45"
         width="45"
       >
-        <nuxt-icon name="football" filled></nuxt-icon>
+        <Icon name="futzo-icon:football"></Icon>
       </v-sheet>
     </template>
     <template #title
@@ -46,7 +46,7 @@ const subtitle = computed(() => {
     >
     <template #subtitle>{{ subtitle }}</template>
     <template #append>
-      <nuxt-icon name="x-dialog" filled @click="dialog = false" />
+      <Icon name="futzo-icon:x-dialog" @click="dialog = false" />
     </template>
   </v-card-item>
   <v-divider></v-divider>

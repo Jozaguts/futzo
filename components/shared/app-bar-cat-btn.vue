@@ -6,14 +6,14 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   text: "prop name not set",
-  icon: "plus",
+  icon: "futzo-icon:plus",
 });
 const emits = defineEmits(["click"]);
 </script>
 <template>
   <v-btn class="app-bar-cat-btn" size="large" @click="emits('click')">
     <template #prepend>
-      <nuxt-icon :name="icon" filled />
+      <Icon :name="icon" />
     </template>
     {{ text }}
   </v-btn>
