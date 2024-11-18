@@ -4,10 +4,10 @@
     <v-layout>
       <v-app app>
         <ClientOnly>
-          <VSonner position="top-right" />
+          <Toaster position="top-right" offset="80px" :duration="3000" />
         </ClientOnly>
         <ClientOnly>
-          <Navigation> </Navigation>
+          <Navigation />
           <v-main v-show="show" class="v-main" app>
             <slot></slot>
           </v-main>
@@ -27,9 +27,9 @@
 
 <script setup lang="ts">
 import Navigation from "~/components/layout/navigation-drawer.vue";
-import { VSonner } from "vuetify-sonner";
 import { useGlobalStore } from "~/store";
 import { storeToRefs } from "pinia";
+import { Toaster } from "vue-sonner";
 
 const show = ref(false);
 const { rail } = storeToRefs(useGlobalStore());
@@ -48,6 +48,7 @@ const isNotConfigurationPage = computed(() => {
   padding-left: v-bind(paddingLeft);
   padding-bottom: 64px;
 }
+
 @media (min-width: 920px) {
   .v-main {
     padding-left: v-bind(paddingLeft);
