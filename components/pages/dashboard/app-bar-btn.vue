@@ -3,15 +3,16 @@ import type { IStatStage } from "~/interfaces";
 import { useDashboardStore } from "~/store";
 
 const { range } = storeToRefs(useDashboardStore());
-
 const ranges: { value: IStatStage; name: string }[] = [
   { value: "lastYear", name: "12 meses" },
   { value: "lastMonth", name: "30 días" },
   { value: "lastWeek", name: "7 días" },
   { value: "last24Hrs", name: "24 horas" },
 ];
-watchEffect(() => {
-  useDashboardStore().byRange();
+watch(range, (value, oldValue) => {
+  if (value !== oldValue) {
+    useDashboardStore().byRange();
+  }
 });
 </script>
 <template>
