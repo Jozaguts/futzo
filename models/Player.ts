@@ -72,3 +72,5 @@ export interface ContactInfoForm {
   phone: string;
   notes: string;
 }
+
+export interface PlayerResponse {}
