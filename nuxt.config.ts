@@ -22,7 +22,7 @@ export default defineNuxtConfig({
     moduleOptions: {
       styles: { configFile: "assets/scss/settings.scss" },
     },
-    vuetifyOptions: {},
+    vuetifyOptions: "./vuetify.config.ts",
   },
   features: {
     inlineStyles: false,
@@ -58,6 +58,7 @@ export default defineNuxtConfig({
     "@morev/vue-transitions/nuxt",
     "vue3-perfect-scrollbar/nuxt",
     "@nuxt/icon",
+    "vue-sonner/nuxt",
   ],
   sanctum: {
     baseUrl: process.env.NUXT_PUBLIC_URL_BACKEND, // Laravel API
