@@ -20,16 +20,21 @@ const initLeague = (name) => {
     },
   })
     .then((response) => {
-      globalStore.showSuccessNotification({
-        message: response?.message ?? "Liga creada",
-      });
+      useToast().toast(
+        "success",
+        "Liga Registrada",
+        "Tu liga ha sido registrada con éxito. ¡Comienza a jugar!",
+      );
       currentComponent.value = "CreatedLeague";
     })
     .catch((error) => console.error(error))
     .catch((error) => {
-      useGlobalStore().showErrorNotification({
-        message: error?.data?.message ?? "Ha ocurrido un error",
-      });
+      useToast().toast(
+        "error",
+        "Error al Registrar Liga",
+        error?.data?.message ??
+          "No se pudo registrar la liga. Por favor, intenta nuevamente.",
+      );
     })
     .finally(() => {});
 };

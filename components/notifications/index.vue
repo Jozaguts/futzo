@@ -1,6 +1,7 @@
 <script setup lang="ts">
 defineProps<{
   msg?: string;
+  description?: string;
   closeIcon: string;
   typeIcon: string;
   color: string;
@@ -12,12 +13,12 @@ defineProps<{
 <template>
   <div class="headless">
     <Icon :name="typeIcon" size="38" class="icon"></Icon>
-    <p class="headlessTitle">Event Created {{ msg }}</p>
+    <p class="headlessTitle">{{ msg }}</p>
     <button class="headlessClose" @click="$emit('closeToast')">
       <Icon :name="closeIcon" size="38"></Icon>
     </button>
     <p class="headlessDescription">
-      Today at 4:00pm - "Louvre Museum" Lorem ipsum dolor sit amet, consectetur
+      {{ description }}
     </p>
   </div>
 </template>

@@ -4,7 +4,8 @@ import type {
   UpdateUserPasswordForm,
   User,
 } from "~/models/user";
-import { toast } from "vuetify-sonner";
+
+const { toast } = useToast();
 
 export const useAuthStore = defineStore("authStore", () => {
   const user = useSanctumUser<User>();
@@ -19,7 +20,11 @@ export const useAuthStore = defineStore("authStore", () => {
     }).then(async () => {
       const { refreshIdentity } = useSanctumAuth();
       await refreshIdentity();
-      toast.success("Perfil actualizado");
+      toast(
+        "success",
+        "Perfil Actualizado",
+        "Tu perfil se ha actualizado exitosamente.",
+      );
     });
   };
   const updatePassword = (updateUserPasswordForm: UpdateUserPasswordForm) => {
@@ -32,12 +37,17 @@ export const useAuthStore = defineStore("authStore", () => {
       },
     })
       .then(() => {
-        toast.success("Contraseña actualizada");
+        toast(
+          "success",
+          "Contraseña actualizada",
+          "Tu contraseña se ha actualizado exitosamente.",
+        );
       })
       .catch((error) => {
         const message =
-          error?.data?.message || "Error al actualizar la contraseña";
-        toast.error(message);
+          error?.data?.message ||
+          "No se pudo actualizar la contraseña. Verifica tu información e inténtalo de nuevo.";
+        toast("error", "Error al Actualizar Contraseña", message);
       });
   };
   const updateImage = async (image: File) => {
@@ -51,11 +61,17 @@ export const useAuthStore = defineStore("authStore", () => {
       .then(async () => {
         const { refreshIdentity } = useSanctumAuth();
         await refreshIdentity();
-        toast.success("image actualizada");
+        toast(
+          "success",
+          "Imagen actualizada",
+          "Tu imagen se ha actualizado exitosamente.",
+        );
       })
       .catch((error) => {
-        const message = error?.data?.message || "Error al actualizar la imagen";
-        toast.error(message);
+        const message =
+          error?.data?.message ||
+          "No se pudo actualizar tu imagen. Verifica tu información e inténtalo de nuevo.";
+        toast("error", "Error al actualizar tu imagen", message);
       });
   };
 

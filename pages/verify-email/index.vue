@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import OtpCard from "~/components/pages/verify-email/cards/otp-card.vue";
 import VerifiedCard from "~/components/pages/verify-email/cards/verified-card.vue";
-import { useGlobalStore } from "~/store";
+
+const { toast } = useToast();
 
 definePageMeta({
   layout: "blank",
@@ -27,22 +28,28 @@ const verifyEmail = (code) => {
     },
   })
     .then((response) => {
-      useGlobalStore().showSuccessNotification({
-        message: response?.message ?? "Correo verificado",
-      });
+      toast(
+        "success",
+        "Correo Verificado",
+        "Tu correo ha sido verificado exitosamente.",
+      );
       currentComponent.value = "VerifiedCard";
     })
     .catch((error) => {
-      const errorMessage = error?.data?.message ?? "Ha ocurrido un error";
+      const errorMessage =
+        error?.data?.message ??
+        "La verificación de tu correo electrónico ha fallado. Por favor, vuelve a intentarlo.";
       if (error.response.status === 401) {
-        useGlobalStore().showErrorNotification({
-          message: errorMessage + "redirigiendo...",
-        });
+        toast(
+          "info",
+          "Redirigiendo...",
+          "Por favor, espera mientras te llevamos a la siguiente página.",
+        );
         setTimeoutId = setTimeout(() => {
           useRouter().push({ name: "login", params: { email: email } });
         }, 3000);
       } else {
-        useGlobalStore().showErrorNotification({ message: errorMessage });
+        toast("error", "Correo No Verificado", errorMessage);
       }
     });
 };

@@ -21,10 +21,11 @@ const colors = {
 type toastTypes = "success" | "warning" | "error" | "info";
 export const useToast = () => {
   const { $toast } = useNuxtApp();
-  const toast = (type: toastTypes, msg: string) => {
+  const toast = (type: toastTypes, msg: string, description?: string) => {
     return $toast.custom(markRaw(Notification), {
       componentProps: {
         msg,
+        description,
         closeIcon: `futzo-icon:${type}-close-alert`,
         typeIcon: `futzo-icon:${type}-alert`,
         color: colors[type].color,

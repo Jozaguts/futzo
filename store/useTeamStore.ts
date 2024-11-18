@@ -5,7 +5,8 @@ import type {
   TeamResponse,
   TeamStoreRequest,
 } from "~/models/Team";
-import { toast } from "vuetify-sonner";
+
+const { toast } = useToast();
 
 export const useTeamStore = defineStore("teamStore", () => {
   const dialog = ref(false);
@@ -54,14 +55,21 @@ export const useTeamStore = defineStore("teamStore", () => {
     })
       .then(async () => {
         await getTeams();
-        toast.success("Equipo creado");
+        toast(
+          "success",
+          "Equipo Creado",
+          "El nuevo equipo se ha creado exitosamente.",
+        );
 
         dialog.value = false;
       })
       .catch((error) => {
-        console.error(error.data?.errors);
-
-        toast.error(error.data?.message ?? "Error al crear equipo");
+        toast(
+          "error",
+          "Error al crear el equipo",
+          error.data?.message ??
+            "No se pudo crear el equipo. Verifica tu información e inténtalo de nuevo.",
+        );
       });
   };
   const updateTeam = async (teamId: number) => {
@@ -72,12 +80,20 @@ export const useTeamStore = defineStore("teamStore", () => {
     })
       .then(async () => {
         await getTeams();
-        toast.success("Equipo actualizado");
+        toast(
+          "success",
+          "Equipo actualizado",
+          "El equipo se ha actualizado exitosamente",
+        );
         dialog.value = false;
       })
       .catch((error) => {
-        console.error(error.data?.errors);
-        toast.error(error.data?.message ?? "Error al editar equipo");
+        toast(
+          "error",
+          "Error al actualizar el equipo",
+          error.data?.message ??
+            "No se pudo actualizar el equipo. Verifica tu información e inténtalo de nuevo.",
+        );
       });
   };
   const prepareForm = (): FormData => {

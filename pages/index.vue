@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useDashboardStore, useGlobalStore } from "~/store";
+import { useDashboardStore } from "~/store";
 import PageLayout from "~/components/shared/page-layout/index.vue";
 import AppBar from "~/components/layout/app-bar.vue";
 import AppBarBtn from "~/components/pages/dashboard/app-bar-btn.vue";
@@ -12,11 +12,12 @@ const { teamStats } = storeToRefs(useDashboardStore());
 watchEffect(() => {
   const route = useRoute();
   const router = useRouter();
-  const globalStore = useGlobalStore();
   if (route.query?.code === "USER_NOT_VERIFIED") {
-    globalStore.showErrorNotification({
-      message: "Correo electrónico no ha sido verificado",
-    });
+    useToast().toast(
+      "error",
+      "Correo No Verificado",
+      "Tu correo electrónico no ha sido verificado. Por favor, revisa tu bandeja de entrada.",
+    );
     router.replace("/");
   }
 });

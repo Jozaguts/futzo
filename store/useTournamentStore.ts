@@ -6,9 +6,7 @@ import type {
   TournamentStoreRequest,
 } from "~/models/tournament";
 import type { Game } from "~/models/Game";
-import { useGlobalStore } from "~/store/useGlobalStore";
 import type { User } from "~/models/user";
-import { toast } from "vuetify-sonner";
 import prepareForm from "~/utils/prepareFormData";
 
 export const useTournamentStore = defineStore("tournamentStore", () => {
@@ -342,13 +340,21 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     })
       .then(async (response) => {
         await loadTournaments();
-        toast.success("Torneo creado");
+        useToast().toast(
+          "success",
+          "Torneo Creado",
+          "El nuevo torneo se ha creado exitosamente.",
+        );
         dialog.value = false;
         $reset();
         return response;
       })
       .catch((error) => {
-        useGlobalStore().showErrorNotification({ message: error.data.message });
+        useToast().toast(
+          "error",
+          "Error al Crear Torneo",
+          "No se pudo crear el torneo. Por favor, intenta nuevamente.",
+        );
       });
   }
 
@@ -365,7 +371,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         return response;
       })
       .catch((error) => {
-        useGlobalStore().showErrorNotification({ message: error.data.message });
+        console.log({ error });
       });
   }
 

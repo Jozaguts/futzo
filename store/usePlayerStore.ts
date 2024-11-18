@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
 import type { FormSteps, Player, PlayerStoreRequest } from "~/models/Player";
-import { toast } from "vuetify-sonner";
 import prepareForm from "~/utils/prepareFormData";
+
+const { toast } = useToast();
 
 export const usePlayerStore = defineStore("playerStore", () => {
   const players = ref<Player[]>([]);
@@ -28,14 +29,23 @@ export const usePlayerStore = defineStore("playerStore", () => {
       body: form,
     })
       .then(async () => {
-        toast.success("Jugador creado");
+        toast(
+          "success",
+          "Jugador creado",
+          "El nuevo jugador se ha agregado exitosamente.",
+        );
         dialog.value = false;
         await getPlayers();
       })
       .catch((error) => {
         console.error(error.data?.errors);
 
-        toast.error(error.data?.message ?? "Error al crear Jugador");
+        toast(
+          "error",
+          "Error al crear al jugador",
+          error.data?.message ??
+            "No se pudo crear al jugador. Verifica tu información e inténtalo de nuevo.",
+        );
       });
   };
   const getPlayers = async () => {
