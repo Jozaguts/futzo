@@ -10,7 +10,7 @@ const toggleDialog = () => {
 <template>
   <AppBarCatBtn
     text="Crear Equipo"
-    icon="plus"
+    icon="futzo-icon:plus"
     class="mr-8"
     @click="toggleDialog"
   />

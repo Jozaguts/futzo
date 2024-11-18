@@ -6,7 +6,7 @@ const { dialog } = storeToRefs(useTournamentStore());
 </script>
 <template>
   <AppBarCatBtn
-    icon="plus"
+    icon="futzo-icon:plus"
     text="Crear torneo"
     class="mr-8"
     @click="dialog = !dialog"

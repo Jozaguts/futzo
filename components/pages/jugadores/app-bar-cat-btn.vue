@@ -6,7 +6,7 @@ const { dialog } = storeToRefs(usePlayerStore());
 </script>
 <template>
   <AppBarCatBtn
-    icon="plus"
+    icon="futzo-icon:plus"
     text="Crear Jugador"
     class="mr-8"
     @click="dialog = !dialog"
