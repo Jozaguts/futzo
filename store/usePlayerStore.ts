@@ -2,9 +2,8 @@ import { defineStore } from "pinia";
 import type { FormSteps, Player, PlayerStoreRequest } from "~/models/Player";
 import prepareForm from "~/utils/prepareFormData";
 
-const { toast } = useToast();
-
 export const usePlayerStore = defineStore("playerStore", () => {
+  const { toast } = useToast();
   const players = ref<Player[]>([]);
   const dialog = ref<boolean>(false);
   const search = ref<string>("");

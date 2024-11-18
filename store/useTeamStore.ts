@@ -6,9 +6,8 @@ import type {
   TeamStoreRequest,
 } from "~/models/Team";
 
-const { toast } = useToast();
-
 export const useTeamStore = defineStore("teamStore", () => {
+  const { toast } = useToast();
   const dialog = ref(false);
   const teams = ref<TeamResponse[]>();
   const team = ref<Team>();
