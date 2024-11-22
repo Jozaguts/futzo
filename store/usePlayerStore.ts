@@ -17,6 +17,7 @@ export const usePlayerStore = defineStore("playerStore", () => {
     total: 0,
     to: 1,
   });
+  const importModal = ref(false);
   const updatePlayer = async (id: number) => {
     console.log(id);
   };
@@ -83,6 +84,7 @@ export const usePlayerStore = defineStore("playerStore", () => {
     playerStoreRequest,
     playerId,
     pagination,
+    importModal,
     updatePlayer,
     createPlayer,
     getPlayers,
