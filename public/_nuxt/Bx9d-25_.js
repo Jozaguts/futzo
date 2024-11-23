@@ -1,0 +1,1 @@
+import{cT as o,cU as r,cV as t}from"./Bg0mMbJt.js";const n=o(()=>{var a,s,i;const e=r();if(!!((a=e.value)!=null&&a.email)&&!((i=(s=e.value)==null?void 0:s.roles)!=null&&i.includes("super administrador")))return t()});export{n as default};
