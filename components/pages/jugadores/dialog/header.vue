@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { usePlayerStore } from "~/store";
 
-const { dialog, steps, isEdition } = storeToRefs(usePlayerStore());
+const { dialog, isEdition } = storeToRefs(usePlayerStore());
 const title = isEdition.value ? "Editar jugador" : "Crear un jugador";
 const subtitle = isEdition.value
   ? "Modifica los detalles del jugador."

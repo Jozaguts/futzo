@@ -7,17 +7,7 @@ const { drawer, drawerWidth, isMobile, rail } = storeToRefs(useGlobalStore());
 const drawerRef = ref();
 const authStore = useAuthStore();
 const { user, isSuperAdmin } = storeToRefs(authStore);
-const adminLinks = reactive([
-  {
-    icon: "futzo-icon:roles",
-    title: "Roles y Permisos",
-    to: "/roles-permisos",
-    disabled: !isSuperAdmin.value,
-  },
-]);
-if (!isSuperAdmin.value) {
-  adminLinks.pop();
-}
+
 const links = reactive([
   { icon: "futzo-icon:home", title: "Dashboard", to: "/", disabled: false },
   {
@@ -85,22 +75,6 @@ watchEffect(() => {
     </v-list-item>
 
     <v-list density="compact" nav>
-      <template v-if="isSuperAdmin">
-        <v-list-item
-          density="compact"
-          v-for="link in adminLinks"
-          :key="link.title"
-          link
-          :to="link.to"
-          :disabled="link.disabled"
-          :prepend-icon="link.icon"
-          :title="link.title"
-        >
-          <template #prepend>
-            <Icon :name="link.icon" class="mr-2 drawer-icon" />
-          </template>
-        </v-list-item>
-      </template>
       <v-list-item
         density="compact"
         v-for="link in links"
