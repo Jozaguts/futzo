@@ -6,7 +6,13 @@ const intervalId = ref();
 const timeOutId = ref();
 const [parent] = useAutoAnimate();
 const status = ref("");
-
+const isValidFile = ref();
+const active = ref(false);
+const subtitle = ref("");
+const border = ref({
+  color: "#E4E7EC",
+  size: "1px",
+});
 const formatsEnabled = [
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   "application/vnd.ms-excel",
@@ -17,26 +23,34 @@ const validateFile = (item: File | undefined): boolean => {
 };
 
 watch(file, (value) => {
-  if (validateFile(value)) {
-    initAnimation();
-  } else {
-    showDrops.value = false;
-    active.value = false;
-  }
+  initAnimation();
+  isValidFile.value = validateFile(value);
+  // if () {
+  // } else {
+  //   showDrops.value = false;
+  //   active.value = false;
+  // }
 });
 watch(progress, (value) => {
   if (value === 100) {
     clearInterval(intervalId.value);
-    status.value = "listo";
+    status.value = "Listo";
+    const size = Number(file.value?.size);
+    if (isValidFile.value) {
+      subtitle.value = `${(size / 1024).toFixed(2)} KB ${progress.value}% ${status.value}`;
+    } else {
+      border.value.color = "#F04438";
+      border.value.size = "2px";
+      subtitle.value =
+        "Error en la carga, por favor intenta nuevamente. </br> <span class='font-weight-bold'>Formato no valido</span>";
+    }
   }
 });
-const active = ref(false);
-const fileSize = computed(() => {
-  const size = Number(file.value?.size);
-  return (size / 1024).toFixed(2);
-});
+
 const initAnimation = () => {
-  status.value = "cargando...";
+  status.value = "Cargando...";
+  const size = Number(file.value?.size);
+  subtitle.value = `${(size / 1024).toFixed(2)} KB ${progress.value}% ${status.value}`;
   showDrops.value = true;
   intervalId.value = setInterval(() => {
     if (progress.value === 100) {
@@ -62,20 +76,52 @@ onBeforeUnmount(() => {
         </div>
         <div class="content-container">
           <p class="title">{{ file?.name }}</p>
-          <p class="subtitle">
-            {{ fileSize }} KB – {{ progress }}% {{ status }}
-          </p>
+          <p class="subtitle" v-html="subtitle"></p>
         </div>
         <div class="progress-circular-container">
-          <v-progress-circular
-            :rotate="360"
-            color="primary"
-            :size="30"
-            width="4"
-            :model-value="progress"
-          ></v-progress-circular>
+          <transition-fade group :duration="100">
+            <v-progress-circular
+              key="progress-circular"
+              v-if="status === 'Cargando...'"
+              :rotate="360"
+              color="primary"
+              :size="30"
+              width="4"
+              :model-value="progress"
+            ></v-progress-circular>
+            <Icon
+              key="checkbox"
+              name="futzo-icon:check-box"
+              v-else-if="status === 'Listo' && isValidFile"
+            ></Icon>
+            <Icon
+              key="trash"
+              name="futzo-icon:trash-error"
+              size="30"
+              v-else-if="status === 'Listo' && !isValidFile"
+            ></Icon>
+          </transition-fade>
         </div>
       </div>
+    </div>
+    <div class="actions" v-if="progress === 100">
+      <v-btn
+        :size="44"
+        class="mr-1 rounded-lg"
+        color="secondary"
+        variant="outlined"
+        style="width: calc(50% - 4px)"
+      >
+        Cancelar
+      </v-btn>
+      <v-btn
+        :size="44"
+        class="ml-1 rounded-lg"
+        color="primary"
+        style="width: calc(50% - 4px)"
+      >
+        Confirmar
+      </v-btn>
     </div>
   </div>
 </template>
@@ -85,9 +131,11 @@ onBeforeUnmount(() => {
     width: 100%
 
 .drop-row
-    border: 1px solid #E4E7EC
+    border-color: v-bind('border.color')
+    border-width: v-bind('border.size')
+    border-style: solid
     border-radius: 12px
-    padding: 0 1rem
+    padding: 1rem
     width: 100%
     height: 100%
     min-height: 72px
@@ -164,4 +212,7 @@ onBeforeUnmount(() => {
 .progress-circular-container
     align-self: center
     justify-self: flex-end
+
+.actions
+    margin-top: 32px
 </style>

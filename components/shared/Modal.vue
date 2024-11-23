@@ -1,12 +1,18 @@
+<!--todo eliminar-->
 <template>
-  <VDialog :width="width" v-model="isActive" :scrollable="true" :persistent="persistent">
+  <VDialog
+    :width="width"
+    v-model="isActive"
+    :scrollable="true"
+    :persistent="persistent"
+  >
     <VCard>
       <template #title>
-       <h4 class="text-capitalize py-2"> {{title}}</h4>
+        <h4 class="text-capitalize py-2">{{ title }}</h4>
       </template>
-        <VCardText style="height: 430px;">
-         <slot name="content" />
-        </VCardText>
+      <VCardText style="height: 430px">
+        <slot name="content" />
+      </VCardText>
       <VCardActions>
         <slot name="actions" />
       </VCardActions>
@@ -14,21 +20,20 @@
   </VDialog>
 </template>
 <script lang="ts" setup>
-const isActive = ref(false)
+const isActive = ref(false);
 const props = defineProps({
   persistent: {
     type: Boolean,
-    default: false
+    default: false,
   },
   width: {
     type: Number,
-    default: 700
+    default: 700,
   },
-  title: String
-})
-const toggle = () => isActive.value = !isActive.value
+  title: String,
+});
+const toggle = () => (isActive.value = !isActive.value);
 defineExpose({
-  toggle
-})
-
+  toggle,
+});
 </script>
