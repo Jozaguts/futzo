@@ -6,14 +6,9 @@ const leagueName = computed(() => useAuthStore().user?.league?.name);
 const breadcrumbs = computed(() => {
   switch (routeName.value) {
     case "index":
-      return [
-        {
-          title: "Dashboard",
-          to: "/",
-        },
-      ];
-    case "torneos":
       return [leagueName.value];
+    case "torneos":
+      return ["Torneos"];
     case "torneos-torneo":
       return [
         {
