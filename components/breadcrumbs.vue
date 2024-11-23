@@ -33,8 +33,6 @@ const breadcrumbs = computed(() => {
       return ["Jugadores"];
     case "mvp":
       return ["MVP"];
-    case "roles-permisos":
-      return ["Roles y Permisos"];
     case "configuracion":
       return ["Configuración"];
     case "equipos-inscribir":
@@ -77,14 +75,16 @@ const breadcrumbs = computed(() => {
 </template>
 <style lang="sass">
 .v-breadcrumbs-item--disabled
-  opacity: 1
+    opacity: 1
+
 .text-breadcrumbs
-  color: #000
-  font-size: 36px
-  font-style: normal
-  font-weight: 600
-  line-height: 44px
-  letter-spacing: -0.72px
+    color: #000
+    font-size: 36px
+    font-style: normal
+    font-weight: 600
+    line-height: 44px
+    letter-spacing: -0.72px
+
 .text-breadcrumbs.text-primary
-  font-weight: 700
+    font-weight: 700
 </style>
