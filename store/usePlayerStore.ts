@@ -61,6 +61,33 @@ export const usePlayerStore = defineStore("playerStore", () => {
       console.log(error);
     }
   };
+  const importPlayersHandler = async (file: File) => {
+    const client = useSanctumClient();
+    const formData = new FormData();
+    formData.append("file", file);
+    await client("/api/v1/admin/players/import", {
+      method: "POST",
+      body: formData,
+    })
+      .then(async () => {
+        toast(
+          "success",
+          "Jugadores importados",
+          "Los jugadores han sido importados y registrados exitosamente.",
+        );
+        importModal.value = false;
+        await getPlayers();
+      })
+      .catch((error) => {
+        console.error(error.data?.errors);
+        toast(
+          "error",
+          "Error importar",
+          error.data?.message ??
+            "No se pudo importar el documento. Verifica su información e inténtalo de nuevo.",
+        );
+      });
+  };
   const steps = ref<FormSteps>({
     current: "basic-info",
     steps: [
@@ -88,5 +115,6 @@ export const usePlayerStore = defineStore("playerStore", () => {
     updatePlayer,
     createPlayer,
     getPlayers,
+    importPlayersHandler,
   };
 });

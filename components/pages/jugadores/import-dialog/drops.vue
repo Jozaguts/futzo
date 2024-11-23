@@ -25,11 +25,6 @@ const validateFile = (item: File | undefined): boolean => {
 watch(file, (value) => {
   initAnimation();
   isValidFile.value = validateFile(value);
-  // if () {
-  // } else {
-  //   showDrops.value = false;
-  //   active.value = false;
-  // }
 });
 watch(progress, (value) => {
   if (value === 100) {
@@ -66,6 +61,7 @@ onBeforeUnmount(() => {
   clearInterval(intervalId.value);
   clearTimeout(timeOutId.value);
 });
+const emits = defineEmits(["import-players"]);
 </script>
 <template>
   <div ref="parent" class="drops-container">
@@ -119,6 +115,7 @@ onBeforeUnmount(() => {
         class="ml-1 rounded-lg"
         color="primary"
         style="width: calc(50% - 4px)"
+        @click="() => emits('import-players')"
       >
         Confirmar
       </v-btn>

@@ -6,9 +6,13 @@ import { storeToRefs } from "pinia";
 import { usePlayerStore } from "~/store";
 
 const { importModal } = storeToRefs(usePlayerStore());
+const { importPlayersHandler } = usePlayerStore();
 const leaveHandler = () => {};
 
 const file = ref<File>();
+const eventHandler = () => {
+  importPlayersHandler(file.value as File);
+};
 </script>
 <template>
   <v-dialog
@@ -23,7 +27,7 @@ const file = ref<File>();
     >
       <HeaderCard @close="importModal = false" />
       <Form v-model:file="file" />
-      <Drops v-model:file="file" />
+      <Drops v-model:file="file" @import-players="eventHandler" />
     </v-card>
   </v-dialog>
 </template>
