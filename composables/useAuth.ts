@@ -3,10 +3,10 @@ import { FetchError } from "ofetch";
 export default function useAuth() {
   const showRegisterForm = ref(false);
   const form = ref({
-    name: "test",
-    email: "test@test.com",
-    password: "password",
-    password_confirmation: "password",
+    name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
     remember: false,
   });
   const isLoading = ref(false);

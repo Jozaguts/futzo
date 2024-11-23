@@ -18,7 +18,6 @@ const validateIsEmail = (email: string) => {
   const re = /\S+@\S+\.\S+/;
   return re.test(email);
 };
-
 watch(
   form,
   (value) => {
@@ -38,6 +37,13 @@ watch(
   },
   { deep: true },
 );
+
+onMounted(() => {
+  const route = useRoute();
+  if (route.query.email) {
+    form.value.email = route.query.email;
+  }
+});
 </script>
 <template>
   <VCard class="pa-2" max-width="448" elevation="0" color="background">
