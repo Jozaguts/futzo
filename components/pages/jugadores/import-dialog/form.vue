@@ -11,7 +11,7 @@ function onDrop(files: File[] | null) {
 }
 
 onMounted(() => {
-  const { isOverDropZone } = useDropZone(dropZoneRef, {
+  useDropZone(dropZoneRef, {
     onDrop,
     multiple: true,
     preventDefaultForUnhandled: false,
