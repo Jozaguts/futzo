@@ -8,13 +8,12 @@ import CreateTournamentDialog from "~/components/pages/torneos/dialog/index.vue"
 import PageLayout from "~/components/shared/page-layout/index.vue";
 import AppBar from "~/components/layout/app-bar.vue";
 import AppBarBtn from "~/components/pages/torneos/torneo/app-bar-btn.vue";
-import { useTournamentStore } from "~/store";
 
 definePageMeta({
   middleware: () => {
-    if (!useTournamentStore().tournamentId) {
-      useRouter().push({ name: "torneos" });
-    }
+    // if (!useTournamentStore().tournamentId) {
+    //   useRouter().push({ name: "torneos" });
+    // }
   },
 });
 </script>
