@@ -4,7 +4,7 @@ import getHeaders from "~/utils/headers-table";
 import CustomTable from "~/components/shared/Table.vue";
 
 const headers = getHeaders("teams");
-await useTeamStore().getTeams("desc", 5);
+await useTeamStore().getTeams();
 const { teams, search, pagination } = storeToRefs(useTeamStore());
 </script>
 <template>
@@ -15,7 +15,8 @@ const { teams, search, pagination } = storeToRefs(useTeamStore());
     :items="teams"
     itemKey="name"
     :search.sync="search"
-    :pagination.sync="pagination"
+    v-model:pagination="pagination"
+    :paginate="useTeamStore().getTeams"
     :custom-name="true"
     :show-footer="false"
   ></CustomTable>
