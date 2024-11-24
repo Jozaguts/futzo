@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import type { FormSteps, Player, PlayerStoreRequest } from "~/models/Player";
 import prepareForm from "~/utils/prepareFormData";
+import type { IPagination } from "~/interfaces";
 
 export const usePlayerStore = defineStore("playerStore", () => {
   const { toast } = useToast();
@@ -11,11 +12,12 @@ export const usePlayerStore = defineStore("playerStore", () => {
   const noPlayers = computed(() => players.value.length === 0);
   const playerStoreRequest = ref({} as PlayerStoreRequest);
   const playerId = ref(null);
-  const pagination = ref({
-    page: 1,
+  const pagination = ref<IPagination>({
+    currentPage: 1,
     perPage: 10,
     total: 0,
-    to: 1,
+    lastPage: 1,
+    sort: "asc",
   });
   const importModal = ref(false);
   const updatePlayer = async (id: number) => {
@@ -51,12 +53,12 @@ export const usePlayerStore = defineStore("playerStore", () => {
   const getPlayers = async () => {
     try {
       const client = useSanctumClient();
-      const response = await client(
-        `/api/v1/admin/players?per_page=${pagination.value.perPage}&page=${pagination.value.to}`,
-      );
-      pagination.value.total = response.meta.last_page;
-      pagination.value.page = response.meta.current_page;
-      players.value = response.data;
+      await client(
+        `/api/v1/admin/players?per_page=${pagination.value.perPage}&page=${pagination.value.currentPage}&sort=${pagination.value.sort}`,
+      ).then(({ data, pagination: _pagination }) => {
+        pagination.value = { ...pagination.value, ..._pagination };
+        players.value = data;
+      });
     } catch (error) {
       console.log(error);
     }

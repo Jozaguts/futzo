@@ -36,18 +36,18 @@ const handleShowTournament = (_tournament: Tournament) => {
     params: { torneo: _tournament.slug },
   });
 };
+onMounted(() => (pagination.value.currentPage = 1));
 </script>
 <template>
-  <!--  todo agregar un filtro de torneos en el header-->
   <CustomTable
     v-if="!noTournaments"
     :headers="headers"
     :items="tournaments"
     itemKey="name"
     :search.sync="search"
-    :pagination.sync="pagination"
-    @update:pagination="useTournamentStore().loadTournaments()"
+    v-model:pagination="pagination"
     :status-handler="setChipColor"
+    :paginate="useTournamentStore().loadTournaments"
   >
     <template #actions="{ item }">
       <v-btn

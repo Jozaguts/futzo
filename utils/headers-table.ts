@@ -86,6 +86,7 @@ export default function getHeaders(tableName: string): Header[] {
         { title: "#", value: "number", sortable: true },
         { title: "Altura", value: "height", sortable: true },
         { title: "Peso", value: "weight", sortable: true },
+        { title: "", value: "actions", sortable: false }, // todo add ver jugador
       ];
 
     default:

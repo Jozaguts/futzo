@@ -8,6 +8,7 @@ import type {
 import type { Game } from "~/models/Game";
 import type { User } from "~/models/user";
 import prepareForm from "~/utils/prepareFormData";
+import type { IPagination } from "~/interfaces";
 
 export const useTournamentStore = defineStore("tournamentStore", () => {
   const tournament = ref<Tournament | null>(null);
@@ -301,10 +302,12 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
   const isEdition = ref(false);
   const tournamentId = ref<number | null>(null);
   const tournamentToEdit = ref({} as TournamentForm);
-  const pagination = ref({
-    page: 1,
+  const pagination = ref<IPagination>({
+    currentPage: 1,
     perPage: 10,
+    lastPage: 1,
     total: 0,
+    sort: "asc",
   });
 
   function $reset() {
@@ -318,18 +321,14 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
   async function loadTournaments() {
     loading.value = true;
     const client = useSanctumClient();
-    const { data, meta } = await client(
-      `/api/v1/admin/tournaments?per_page=${pagination.value.perPage}&page=${pagination.value.page}`,
-    );
-    tournaments.value = data?.tournaments || [];
-    tournament.value = tournaments.value[0] || null;
-    categories.value = data?.categories || [];
-    pagination.value = {
-      page: meta.current_page,
-      perPage: meta.per_page,
-      total: meta.last_page,
-    };
-    loading.value = false;
+    await client(
+      `/api/v1/admin/tournaments?per_page=${pagination.value.perPage}&page=${pagination.value.currentPage}`,
+    )
+      .then(({ data, pagination: _pagination }) => {
+        tournaments.value = data || [];
+        pagination.value = { ...pagination.value, ..._pagination };
+      })
+      .finally(() => (loading.value = false));
   }
 
   async function storeTournament() {

@@ -14,20 +14,8 @@ const {
   search,
 } = storeToRefs(usePlayerStore());
 const headers = getHeaders("players");
-const showPlayerHandler = (_player: PlayerResponse) => {
-  const { president, coach, ...player } = _player;
-  playerId.value = _player.id;
-  isEdition.value = true;
-  playerStoreRequest.value = {
-    basic: {},
-    details: {},
-    contact: {},
-  };
-  dialog.value = true;
-};
-const paginationHandler = (page: number) => {
-  pagination.value.to = page;
-  usePlayerStore().getPlayers();
+const showPlayerHandler = (player: PlayerResponse) => {
+  console.log({ player: player });
 };
 </script>
 <template>
@@ -38,13 +26,17 @@ const paginationHandler = (page: number) => {
     :items="players"
     itemKey="name"
     :search.sync="search"
-    :pagination.sync="pagination"
-    @update:pagination="paginationHandler"
+    v-model:pagination="pagination"
+    :paginate="usePlayerStore().getPlayers"
     :custom-name="false"
   >
     <template #actions="{ item }">
-      <v-btn size="small" rounded="md" @click="showPlayerHandler(item)"
-        >Ver Equipo
+      <v-btn
+        size="small"
+        rounded="md"
+        disabled
+        @click="showPlayerHandler(item as unknown as PlayerResponse)"
+        >Ver Jugador
       </v-btn>
     </template>
   </CustomTable>

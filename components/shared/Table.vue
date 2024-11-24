@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { IPagination } from "~/interfaces";
+
 type Header = {
   title: string;
   value: string;
@@ -37,15 +39,16 @@ defineProps({
     type: Boolean,
     default: true,
   },
+  paginate: {
+    type: Function,
+    required: true,
+  },
 });
 const search = defineModel("search", {
   type: String,
   required: false,
 });
-const pagination = defineModel("pagination", {
-  type: Object as PropType<{ page: number; total: number }>,
-  required: true,
-});
+const pagination = defineModel<IPagination>("pagination", { required: true });
 </script>
 <template>
   <v-data-table
@@ -116,12 +119,10 @@ const pagination = defineModel("pagination", {
       <v-pagination
         v-if="showFooter"
         class="futzo-pagination"
-        v-model="pagination.page"
-        :length="pagination.total"
+        v-model="pagination.currentPage"
+        :length="pagination.lastPage"
         start="1"
-        @update:modelValue="
-          $emit('update:pagination', { ...pagination, page: $event })
-        "
+        @update:modelValue="() => paginate()"
       >
         <template #prev="props">
           <v-btn

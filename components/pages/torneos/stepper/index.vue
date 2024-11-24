@@ -17,7 +17,6 @@ const stepRef = ref<{ validate: Function; handleSubmit: Function }>({
   validate: Function,
   handleSubmit: Function,
 });
-console.log(steps.value);
 const backHandler = () => {
   if (steps.value.current === "basic-info") {
     dialog.value = false;

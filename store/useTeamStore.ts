@@ -5,6 +5,7 @@ import type {
   TeamResponse,
   TeamStoreRequest,
 } from "~/models/Team";
+import type { IPagination } from "~/interfaces";
 
 export const useTeamStore = defineStore("teamStore", () => {
   const { toast } = useToast();
@@ -13,11 +14,12 @@ export const useTeamStore = defineStore("teamStore", () => {
   const team = ref<Team>();
   const teamId = ref(0);
   const search = ref("");
-  const pagination = ref({
-    page: 1,
-    perPage: 10,
+  const pagination = ref<IPagination>({
+    currentPage: 1,
+    perPage: 2,
+    lastPage: 1,
     total: 0,
-    to: 1,
+    sort: "asc",
   });
   const teamStoreRequest = ref<Partial<TeamStoreRequest>>(
     {} as TeamStoreRequest,
@@ -155,15 +157,14 @@ export const useTeamStore = defineStore("teamStore", () => {
     }
     return form;
   };
-  const getTeams = async (sort = "asc", perPage = 10) => {
-    pagination.value.perPage = perPage;
+  const getTeams = async () => {
     try {
-      const response = await client(
-        `/api/v1/admin/teams?per_page=${pagination.value.perPage}&page=${pagination.value.to}&sort=${sort}`,
-      );
-      pagination.value.total = response.meta.last_page;
-      pagination.value.page = response.meta.current_page;
-      teams.value = response.data.teams;
+      await client(
+        `/api/v1/admin/teams?per_page=${pagination.value.perPage}&page=${pagination.value.currentPage}&sort=${pagination.value.sort}`,
+      ).then(({ data, pagination: _pagination }) => {
+        teams.value = data || [];
+        pagination.value = { ...pagination.value, ..._pagination };
+      });
     } catch (error) {
       console.log(error);
     }

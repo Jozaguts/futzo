@@ -8,8 +8,6 @@ import CreateTeamDialog from "~/components/pages/equipos/CreateTeamDialog/index.
 import TeamsTable from "~/components/pages/equipos/teams-table.vue";
 
 const teamStore = useTeamStore();
-const { teams } = storeToRefs(teamStore);
-
 onMounted(() => {
   teamStore.getTeams();
 });

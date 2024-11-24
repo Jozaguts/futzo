@@ -38,10 +38,6 @@ const showTeamHandler = (_team: TeamResponse) => {
   };
   dialog.value = true;
 };
-const paginationHandler = (_pagination) => {
-  pagination.value.to = _pagination.to + 1;
-  useTeamStore().getTeams();
-};
 </script>
 <template>
   <CustomTable
@@ -51,12 +47,15 @@ const paginationHandler = (_pagination) => {
     :items="teams"
     itemKey="name"
     :search.sync="search"
-    :pagination.sync="pagination"
-    @update:pagination="paginationHandler"
+    v-model:pagination="pagination"
+    :paginate="useTeamStore().getTeams"
     :custom-name="true"
   >
     <template #actions="{ item }">
-      <v-btn size="small" rounded="md" @click="showTeamHandler(item)"
+      <v-btn
+        size="small"
+        rounded="md"
+        @click="showTeamHandler(item as unknown as TeamResponse)"
         >Ver Equipo
       </v-btn>
     </template>

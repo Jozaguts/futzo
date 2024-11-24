@@ -117,3 +117,10 @@ export type IDashboardStatsValues = {
   dailyData: number[];
   label: string;
 };
+export type IPagination = {
+  currentPage: number;
+  perPage: number;
+  lastPage: number;
+  total: number;
+  sort: "asc" | "desc";
+};
