@@ -2,84 +2,145 @@
 import { useAuthStore } from "~/store";
 
 const routeName = computed(() => useRoute().name);
-const leagueName = computed(() => useAuthStore().user?.league?.name);
-const breadcrumbs = computed(() => {
+type Breadcrumbs = {
+  title: string;
+  href: string;
+  disabled: boolean;
+};
+
+const breadcrumbs = computed((): Breadcrumbs[] => {
   switch (routeName.value) {
     case "index":
-      return [leagueName.value];
+      return [
+        {
+          title: useAuthStore().user?.league?.name as string,
+          disabled: false,
+          href: "/",
+        },
+      ];
     case "torneos":
-      return ["Torneos"];
+      return [
+        {
+          title: "Torneos",
+          href: "torneos",
+          disabled: false,
+        },
+      ];
     case "torneos-torneo":
       return [
         {
-          title: leagueName.value,
-          to: "/torneos",
+          title: "Torneos",
+          href: "/torneos",
+          disabled: false,
         },
         {
-          title: useRoute().path.split("/")[2],
-          to: useRoute().path,
+          title: useRoute()
+            .params.torneo.toString()
+            .replace(/-/g, " ") as string,
+          href: ("/" + useRoute().params.torneo) as string,
+          disabled: true,
         },
       ];
-    case "calendario":
-      return ["Calendario"];
+    case "torneos-torneo-calendario":
+      return [
+        {
+          title: "Torneos",
+          href: "/torneos",
+          disabled: false,
+        },
+        {
+          title: useRoute()
+            .params.torneo.toString()
+            .replace(/-/g, " ") as string,
+          href: ("/torneos/" + useRoute().params.torneo) as string,
+          disabled: false,
+        },
+        {
+          title: "Calendario",
+          href: "calendario",
+          disabled: true,
+        },
+      ];
     case "equipos":
-      return ["Equipos"];
-    case "jugadores":
-      return ["Jugadores"];
-    case "mvp":
-      return ["MVP"];
-    case "configuracion":
-      return ["Configuración"];
-    case "equipos-inscribir":
       return [
         {
           title: "Equipos",
-          to: "/equipos",
+          href: "/equipos",
+          disabled: false,
         },
-        "Inscribir",
+      ];
+    case "jugadores":
+      return [
+        {
+          title: "Jugadores",
+          href: "/jugadores",
+          disabled: false,
+        },
+      ];
+    case "mvp":
+      return [
+        {
+          title: "MVP",
+          href: "/mvp",
+          disabled: false,
+        },
+      ];
+    case "configuracion":
+      return [
+        {
+          title: "Configuración",
+          href: "/configuracion",
+          disabled: false,
+        },
       ];
     default:
       return [
         {
-          title: "home",
-          to: "/",
-        },
-        {
-          title: "torneos",
-          to: "/torneos",
-        },
-        {
-          title: routeName.value,
-          to: useRoute().path,
+          title: "",
+          href: "/",
+          disabled: false,
         },
       ];
   }
 });
 </script>
 <template>
-  <v-breadcrumbs :items="breadcrumbs" :disabled="false">
-    <template v-slot:title="{ item, index }">
-      <span class="text-breadcrumbs" :class="index > 0 ? 'text-primary' : ''">{{
-        item.title
-      }}</span>
+  <v-breadcrumbs :items="breadcrumbs" active-class="active">
+    <template v-slot:item="{ item, index }">
+      <span
+        class="text-capitalize"
+        :class="[
+          item.disabled ? 'active' : 'cursor-pointer',
+          breadcrumbs.length > 1 ? 'text-breadcrumbs' : 'text-breadcrumb',
+        ]"
+        @click="() => $router.push(item.href as string)"
+      >
+        {{ item.title }}
+      </span>
     </template>
-    <template v-slot:divider>
-      <v-icon icon="mdi-chevron-right"></v-icon>
+    <template #divider>
+      <Icon
+        v-if="breadcrumbs.length > 0"
+        name="futzo-icon:breadcrumbs-arrow"
+        size="12"
+      />
     </template>
   </v-breadcrumbs>
 </template>
 <style lang="sass">
-.v-breadcrumbs-item--disabled
-    opacity: 1
-
 .text-breadcrumbs
-    color: #000
+    font-size: 20px
+    font-weight: 500
+    line-height: 30px
+    color: #182230
+
+.text-breadcrumb
     font-size: 36px
-    font-style: normal
     font-weight: 600
     line-height: 44px
-    letter-spacing: -0.72px
+    color: #000000
 
-.text-breadcrumbs.text-primary
+.text-breadcrumbs.active
+    color: #9155FD
     font-weight: 700
 </style>
