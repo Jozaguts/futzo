@@ -41,6 +41,9 @@ export default defineI18nConfig(() => ({
             page: "Pagina",
           },
         },
+        infiniteScroll: {
+          empty: "No hay mas registros",
+        },
       },
     },
   },
