@@ -12,8 +12,10 @@ import { useTournamentStore } from "~/store";
 import { storeToRefs } from "pinia";
 import { useCategoryStore } from "~/store/useCategoryStore";
 import Calendar from "~/components/pages/torneos/calendar.vue";
+import { useLeaguesStore } from "~/store/useLeaguesStore";
 
 const { formats } = storeToRefs(useCategoryStore());
+const { footballTypes } = useLeaguesStore();
 const { isEdition, tournamentStoreRequest } = storeToRefs(useTournamentStore());
 const { handleSubmit, resetForm, fields, validate, setValues } = useSchemas(
   isEdition.value
@@ -30,6 +32,9 @@ onMounted(() => {
     if (tournamentStoreRequest.value.basic.image) {
       dragDropImageRef.value?.loadImage();
     }
+  }
+  if (!isEdition.value) {
+    fields.football_type_id.fieldValue = 1;
   }
 });
 onUnmounted(() => {
@@ -99,6 +104,32 @@ const setDates = (dates: string[]) => {
           menu-icon="mdi-chevron-down"
           v-model="fields.tournament_format_id.fieldValue"
           v-bind="fields.tournament_format_id.fieldPropsValue"
+        >
+          <template v-slot:item="{ props, item }">
+            <v-list-item v-bind="props">
+              <v-tooltip activator="parent" location="end" max-width="300">
+                {{ item.raw.description }}
+              </v-tooltip>
+            </v-list-item>
+          </template>
+        </v-select>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" lg="4" md="4">
+        <span class="text-body-1"> Tipo* </span>
+      </v-col>
+      <v-col cols="12" lg="8" md="8">
+        <v-select
+          no-data-text="No hay formatos"
+          :items="footballTypes"
+          density="compact"
+          item-title="name"
+          item-value="id"
+          placeholder="Tipo"
+          menu-icon="mdi-chevron-down"
+          v-model="fields.football_type_id.fieldValue"
+          v-bind="fields.football_type_id.fieldPropsValue"
         >
           <template v-slot:item="{ props, item }">
             <v-list-item v-bind="props">

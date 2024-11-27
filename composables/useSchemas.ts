@@ -72,6 +72,9 @@ function getSchemaByName(name: string) {
       schemaFields.tournament_format_id = yup
         .number()
         .required(t("forms.required"));
+      schemaFields.football_type_id = yup
+        .number()
+        .required(t("forms.required"));
       schemaFields.start_date = yup.date().nullable();
       schemaFields.end_date = yup.date().nullable();
       break;
@@ -91,6 +94,9 @@ function getSchemaByName(name: string) {
         );
       schemaFields.category_id = yup.number().required(t("forms.required"));
       schemaFields.tournament_format_id = yup
+        .number()
+        .required(t("forms.required"));
+      schemaFields.football_type_id = yup
         .number()
         .required(t("forms.required"));
       schemaFields.start_date = yup.date().nullable();
@@ -122,9 +128,6 @@ function getSchemaByName(name: string) {
       schemaFields.location = yusString().nullable();
       schemaFields.description = yusString().nullable();
       schemaFields.creation_date = yup.date().nullable();
-      schemaFields.football_type_id = yup
-        .number()
-        .required(t("forms.required"));
       schemaFields.logo = yup
         .mixed()
         .test(
