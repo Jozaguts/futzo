@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { useTournamentStore } from "~/store";
 
-const { dialog, isEdition } = storeToRefs(useTournamentStore());
-const title = isEdition.value ? "Editar Torneo" : "Crear un torneo";
+const { calendarDialog, isEdition } = storeToRefs(useTournamentStore());
+const title = isEdition.value ? "Editar Calendario" : "Crear un calendario";
 const subtitle = isEdition.value
-  ? "Modifica los detalles del torneo."
-  : "Completa los detalles del torneo.";
+  ? "Modifica los detalles del calendario."
+  : "Completa los detalles del calendario.";
 </script>
 <template>
   <v-card-item>
@@ -16,7 +16,7 @@ const subtitle = isEdition.value
         height="45"
         width="45"
       >
-        <Icon name="futzo-icon:football"></Icon>
+        <Icon name="futzo-icon:calendar"></Icon>
       </v-sheet>
     </template>
     <template #title
@@ -24,8 +24,8 @@ const subtitle = isEdition.value
     >
     <template #subtitle>{{ subtitle }}</template>
     <template #append>
-      <Icon name="futzo-icon:x-dialog" @click="dialog = false" />
+      <Icon name="futzo-icon:x-dialog" @click="calendarDialog = false" />
     </template>
   </v-card-item>
-  <v-divider></v-divider>
+  <v-divider />
 </template>

@@ -2,7 +2,7 @@
 import { useTournamentStore } from "~/store";
 import NoCalendarSvg from "~/components/pages/torneos/NoCalendarSvg.vue";
 
-const { noTournaments, dialog } = storeToRefs(useTournamentStore());
+const { noTournaments, calendarDialog } = storeToRefs(useTournamentStore());
 </script>
 <template>
   <v-sheet
@@ -16,7 +16,7 @@ const { noTournaments, dialog } = storeToRefs(useTournamentStore());
         color="primary"
         variant="elevated"
         class="mt-4 text-body-1"
-        @click="dialog = !dialog"
+        @click="calendarDialog = !calendarDialog"
       >
         Crear Calendario
       </v-btn>

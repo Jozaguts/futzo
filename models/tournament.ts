@@ -51,6 +51,75 @@ export interface DetailsInfoForm {
   location: AutocompletePrediction;
 }
 
+export type CalendarStoreRequest = {
+  general: GeneralCalendarForm;
+  regular: RegularPhaseForm;
+  elimination: EliminationPhaseForm;
+};
+/**
+ * game_duration en EliminationPhaseForm
+ * Propósito: Especifica la duración de los partidos exclusivamente para la fase de eliminatoria.
+ *
+ * Contexto: Este campo pertenece a la configuración específica de la fase eliminatoria, permitiendo sobrescribir el valor general si es necesario.
+ *
+ * Uso Típico: Permite ajustar la duración de los partidos de eliminación de forma independiente:
+ *
+ * Ejemplo: Partidos de eliminación pueden requerir un ajuste:
+ * 120 minutos si incluye tiempo extra.
+ * 90 minutos si es un partido regular.
+ */
+export type GeneralCalendarForm = {
+  start_date: Date | null;
+  end_date: Date | null;
+  game_time: number;
+  time_between_games: number;
+  schedules_available: ScheduleAvailable;
+  venues: TournamentVenue[];
+};
+export type RegularPhaseForm = {
+  rounds: number; // Number of rounds (e.g., 1 for single round, 2 for home and away)
+  points: {
+    win: number; // Points for a win
+    draw: number; // Points for a draw
+    loss: number; // Points for a loss
+  };
+  tiebreakers: string[]; // Criteria for tiebreakers in order (e.g., ['goal_difference', 'goals_for', 'head_to_head'])
+};
+export type EliminationPhaseForm = {
+  qualified_teams: number; // Number of teams advancing to the elimination phase
+  game_duration: number; // Duration of each game in minutes
+  format: "single_game" | "home_and_away"; // Format of the elimination phase
+  tiebreakers: {
+    extra_time: boolean; // Whether extra time is allowed
+    penalties: boolean; // Whether penalties are used as a tiebreaker
+  };
+};
+
+export type ScheduleAvailable = {
+  day: string;
+  hours: string[];
+};
+export type TournamentVenue = {
+  id: number;
+  name: string;
+  city: string;
+  address: string;
+  tournament_availability: LocationAvailability;
+};
+export type LocationAvailability = {
+  monday?: TimeRange;
+  tuesday?: TimeRange;
+  wednesday?: TimeRange;
+  thursday?: TimeRange;
+  friday?: TimeRange;
+  saturday?: TimeRange;
+  sunday?: TimeRange;
+};
+export type TimeRange = {
+  start: string;
+  end: string;
+};
+
 export interface TournamentResponse {
   id: number;
   name: string;
@@ -147,6 +216,21 @@ export interface FormSteps {
   current: CurrentStep;
   steps: TournamentSteps[];
 }
+
+export type CalendarStepsForm = {
+  current: CurrentCalendarStep;
+  steps: CalendarSteps[];
+};
+export type CalendarSteps = {
+  step: CurrentCalendarStep;
+  completed: boolean;
+  label: CalendarLabelStep;
+};
+export type CurrentCalendarStep = "general" | "regular" | "elimination";
+export type CalendarLabelStep =
+  | "General"
+  | "Fase Regular"
+  | "Fase de Eliminación";
 
 export type TournamentSteps = {
   step: CurrentStep;

@@ -3,6 +3,7 @@ import AppBar from "~/components/layout/app-bar.vue";
 import PageLayout from "~/components/shared/page-layout/index.vue";
 import AppBarBtn from "~/components/pages/torneos/torneo/app-bar-btn.vue";
 import NoCalendar from "~/components/pages/torneos/no-calendar.vue";
+import CalendarDialog from "~/components/pages/torneos/calendario/dialog/index.vue";
 
 const data = [
   {
@@ -202,6 +203,8 @@ const load = ({ side, done }) => {
       </AppBar>
     </template>
     <template #default>
+      <NoCalendar />
+      <CalendarDialog />
       <!--        side="both"-->
       <!--      <v-sheet class="futzo-rounded fill-height pa-4">-->
       <!--        <v-infinite-scroll :items="data" @load="load" height="700">-->
@@ -257,7 +260,6 @@ const load = ({ side, done }) => {
       <!--          </template>-->
       <!--        </v-infinite-scroll>-->
       <!--      </v-sheet>-->
-      <NoCalendar />
     </template>
   </PageLayout>
 </template>

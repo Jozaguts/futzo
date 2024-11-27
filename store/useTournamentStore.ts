@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import type {
+  CalendarStepsForm,
+  CalendarStoreRequest,
   FormSteps,
   Tournament,
   TournamentForm,
@@ -15,7 +17,9 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
   const tournaments = ref<Tournament[]>([]);
   const noTournaments = computed(() => !tournaments.value.length);
   const search = ref("");
+  const calendarDialog = ref(false);
   const tournamentStoreRequest = ref({} as TournamentStoreRequest);
+  const calendarStoreRequest = ref({} as CalendarStoreRequest);
   const steps = ref<FormSteps>({
     current: "basic-info",
     steps: [
@@ -31,6 +35,27 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
       },
     ],
   });
+  const calendarSteps = ref<CalendarStepsForm>({
+    current: "general",
+    steps: [
+      {
+        step: "general",
+        completed: false,
+        label: "General",
+      },
+      {
+        step: "regular",
+        completed: false,
+        label: "Fase Regular",
+      },
+      {
+        step: "elimination",
+        completed: false,
+        label: "Fase de Eliminación",
+      },
+    ],
+  });
+
   const nextGames = ref<Game[]>([
     {
       id: 1,
@@ -300,6 +325,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
   const tournamentTypes = ref();
   const dialog = ref(false);
   const isEdition = ref(false);
+  const isCalendarEdition = ref(false);
   const tournamentId = ref<number | null>(null);
   const tournamentToEdit = ref({} as TournamentForm);
   const pagination = ref<IPagination>({
@@ -424,11 +450,6 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     roundsCount,
     matchesCount,
     matchesByRound,
-    loadTournaments,
-    storeTournament,
-    fetchTournamentsByLeagueId,
-    $reset,
-    updateTournament,
     loading,
     tournamentTypes,
     dialog,
@@ -442,5 +463,14 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     search,
     steps,
     tournamentStoreRequest,
+    calendarDialog,
+    calendarSteps,
+    calendarStoreRequest,
+    isCalendarEdition,
+    loadTournaments,
+    storeTournament,
+    fetchTournamentsByLeagueId,
+    $reset,
+    updateTournament,
   };
 });
