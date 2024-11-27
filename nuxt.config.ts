@@ -2,9 +2,10 @@
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   experimental: {
-    typedPages: true,
+    typedPages: false,
+    appManifest: true,
   },
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   app: {
     head: {
       script: [
@@ -42,7 +43,7 @@ export default defineNuxtConfig({
   css: ["~/assets/scss/main.scss"],
   build: {
     transpile: [
-      "vuetify",
+      // "vuetify",
       "@vuepic/vue-datepicker",
       "vue-sonner",
       "v-phone-input",
@@ -54,7 +55,7 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
     "@vee-validate/nuxt",
     "nuxt-auth-sanctum",
-    "nuxt-typed-router",
+    // "nuxt-typed-router",
     "@nuxtjs/google-fonts",
     "@pinia/nuxt",
     "@vueuse/nuxt",
@@ -94,16 +95,17 @@ export default defineNuxtConfig({
     },
   },
   vite: {
-    server: {
-      hmr: {
-        protocol: "ws",
-        host: "0.0.0.0",
-      },
-    },
+    // server: {
+    //   hmr: {
+    //     protocol: "ws",
+    //     host: "0.0.0.0",
+    //   },
+    // },
     css: {
       preprocessorOptions: {
-        sass: {
-          api: "modern",
+        scss: {
+          quietDeps: true,
+          api: "sass-embedded",
         },
       },
     },
