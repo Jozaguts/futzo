@@ -2,6 +2,7 @@
 import AppBar from "~/components/layout/app-bar.vue";
 import PageLayout from "~/components/shared/page-layout/index.vue";
 import AppBarBtn from "~/components/pages/torneos/torneo/app-bar-btn.vue";
+import NoCalendar from "~/components/pages/torneos/no-calendar.vue";
 
 const data = [
   {
@@ -23,6 +24,57 @@ const data = [
         details: {
           label1: "Fin",
           label2: "Mie. 27/11",
+        },
+      },
+      {
+        status: "schedule",
+        local: {
+          name: "America",
+          goals: 0,
+          winner: false,
+        },
+        visitante: {
+          name: "Toluca",
+          goals: 5,
+          winner: true,
+        },
+        details: {
+          label1: "Mie. 27/11",
+          label2: "7:00 PM",
+        },
+      },
+      {
+        status: "schedule",
+        local: {
+          name: "America",
+          goals: 0,
+          winner: false,
+        },
+        visitante: {
+          name: "Toluca",
+          goals: 5,
+          winner: true,
+        },
+        details: {
+          label1: "Mie. 27/11",
+          label2: "7:00 PM",
+        },
+      },
+      {
+        status: "schedule",
+        local: {
+          name: "America",
+          goals: 0,
+          winner: false,
+        },
+        visitante: {
+          name: "Toluca",
+          goals: 5,
+          winner: true,
+        },
+        details: {
+          label1: "Mie. 27/11",
+          label2: "7:00 PM",
         },
       },
       {
@@ -150,66 +202,68 @@ const load = ({ side, done }) => {
       </AppBar>
     </template>
     <template #default>
-      <v-sheet
-        class="futzo-rounded fill-height pa-4"
-        min-height="100%"
-        height="100%"
-      >
-        <v-infinite-scroll :items="data" @load="load" side="both" height="100%">
-          <template v-for="item in data" :key="item.id">
-            <v-container>
-              <v-row>
-                <v-col cols="12" class="pa-0">
-                  <div class="title-container">
-                    <p class="title">{{ item.jornada }}</p>
-                  </div>
-                </v-col>
-                <v-col
-                  v-for="match in item.matches"
-                  :key="match.local.name"
-                  cols="6"
-                  class="match-container"
-                >
-                  <div class="match">
-                    <div class="team home">
-                      <v-avatar
-                        :image="
-                          'https://ui-avatars.com/api/?name=' + match.local.name
-                        "
-                        size="24"
-                        class="image"
-                      ></v-avatar>
-                      <span class="name"> {{ match.local.name }}</span>
-                      <div class="result">{{ match.local.goals }}</div>
-                    </div>
-                    <div class="team away">
-                      <v-avatar
-                        class="image"
-                        size="24"
-                        :image="
-                          'https://ui-avatars.com/api/?name=' +
-                          match.visitante.name
-                        "
-                      ></v-avatar>
-                      <span class="name"> {{ match.visitante.name }}</span>
-                      <div class="result">{{ match.visitante.goals }}</div>
-                      <Icon class="flag" name="futzo-icon:match-polygon" />
-                    </div>
-                    <div class="details">
-                      <p>{{ match.details.label1 }}</p>
-                      <p>{{ match.details.label2 }}</p>
-                    </div>
-                  </div>
-                </v-col>
-              </v-row>
-            </v-container>
-          </template>
-        </v-infinite-scroll>
-      </v-sheet>
+      <!--        side="both"-->
+      <!--      <v-sheet class="futzo-rounded fill-height pa-4">-->
+      <!--        <v-infinite-scroll :items="data" @load="load" height="700">-->
+      <!--          <template v-for="item in data" :key="item.id">-->
+      <!--            <v-container>-->
+      <!--              <v-row>-->
+      <!--                <v-col cols="12" class="pa-0">-->
+      <!--                  <div class="title-container">-->
+      <!--                    <p class="title">{{ item.jornada }}</p>-->
+      <!--                  </div>-->
+      <!--                </v-col>-->
+      <!--                <v-col-->
+      <!--                  v-for="match in item.matches"-->
+      <!--                  :key="match.local.name"-->
+      <!--                  cols="12"-->
+      <!--                  md="2"-->
+      <!--                  lg="4"-->
+      <!--                  class="match-container"-->
+      <!--                >-->
+      <!--                  <div class="match">-->
+      <!--                    <div class="team home">-->
+      <!--                      <v-avatar-->
+      <!--                        :image="-->
+      <!--                          'https://ui-avatars.com/api/?name=' + match.local.name-->
+      <!--                        "-->
+      <!--                        size="24"-->
+      <!--                        class="image"-->
+      <!--                      ></v-avatar>-->
+      <!--                      <span class="name"> {{ match.local.name }}</span>-->
+      <!--                      <div class="result">{{ match.local.goals }}</div>-->
+      <!--                    </div>-->
+      <!--                    <div class="team away">-->
+      <!--                      <v-avatar-->
+      <!--                        class="image"-->
+      <!--                        size="24"-->
+      <!--                        :image="-->
+      <!--                          'https://ui-avatars.com/api/?name=' +-->
+      <!--                          match.visitante.name-->
+      <!--                        "-->
+      <!--                      ></v-avatar>-->
+      <!--                      <span class="name"> {{ match.visitante.name }}</span>-->
+      <!--                      <div class="result">{{ match.visitante.goals }}</div>-->
+      <!--                      <Icon class="flag" name="futzo-icon:match-polygon" />-->
+      <!--                    </div>-->
+      <!--                    <div class="details">-->
+      <!--                      <p>{{ match.details.label1 }}</p>-->
+      <!--                      <p>{{ match.details.label2 }}</p>-->
+      <!--                    </div>-->
+      <!--                  </div>-->
+      <!--                </v-col>-->
+      <!--              </v-row>-->
+      <!--            </v-container>-->
+      <!--          </template>-->
+      <!--        </v-infinite-scroll>-->
+      <!--      </v-sheet>-->
+      <NoCalendar />
     </template>
   </PageLayout>
 </template>
 <style lang="sass">
+
+
 .match-container
     border: 1px solid #eaecf0
 
