@@ -1,4 +1,4 @@
-@use 'vuetify/settings' with (
+@forward 'vuetify/settings' with (
   $body-font-family: Inter,
   $button-height: 40px,
   $overlay-scrim-background: rgba(12, 17, 29, 1),
@@ -10,4 +10,7 @@
   $list-item-padding: 16px 12px,
   $app-bar-background: #F9FAFB,
   $toolbar-background: #F9FAFB,
+  $field-control-padding-top: 8px,
+  $field-control-padding-bottom: 4px,
+  $field-control-padding-start: 16px,
 );

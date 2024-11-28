@@ -3,6 +3,24 @@ import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 
 const dates = ref([] as Date[]);
+const props = defineProps({
+  paddingBottom: {
+    type: String,
+    required: false,
+  },
+  paddingTop: {
+    type: String,
+    required: false,
+  },
+  multiCalendar: {
+    type: Boolean,
+    default: () => false,
+  },
+  positionValues: {
+    type: Object as PropType<{ top: number; left: number; transform: string }>,
+    default: () => ({ top: 300, left: 200, transform: "translate(50%)" }),
+  },
+});
 const emits = defineEmits(["selected-dates"]);
 const dp = ref();
 type DatePosition = 1 | 2;
@@ -17,11 +35,12 @@ const selectDate = () => {
 };
 const formatDate = (date: Date) => {
   const day = date.getDate();
-  const month = date.toLocaleDateString("es-MX", { month: "short" });
+  const month = date.toLocaleDateString("es-MX", {
+    month: "short",
+  });
   const year = date.getFullYear();
   return `${month} ${day}, ${year}`;
 };
-
 const customPosition = (
   inputElement?: HTMLElement,
 ): {
@@ -31,9 +50,9 @@ const customPosition = (
 } => {
   const inputRect = inputElement?.getBoundingClientRect() as DOMRect;
   return {
-    top: inputRect.top - 300,
-    left: inputRect.left - 200,
-    transform: "translate(50%)",
+    top: inputRect.top - props.positionValues.top,
+    left: inputRect.left - props.positionValues.left,
+    transform: props.positionValues.transform,
   };
 };
 const setDatesFromRequest = (_dates: Date[]) => {
@@ -48,7 +67,7 @@ defineExpose({
     ref="dp"
     v-model="dates"
     position="left"
-    range
+    :range="props.multiCalendar"
     utc
     locale="es"
     :teleport="true"
@@ -60,11 +79,18 @@ defineExpose({
     :alt-position="customPosition"
     :ui="{
       input: 'v-field__input',
-      menu: 'border rounded-lg',
+      menu: 'border rounded-lg calendar-custom-width',
       calendarCell: 'dp-custom-cell',
     }"
     placeholder="Selecciona las fechas del torneo"
   >
+    <template #dp-input="{ value }">
+      <v-text-field
+        :value="value"
+        density="compact"
+        variant="outlined"
+      ></v-text-field>
+    </template>
     <template #action-preview="{ value }">
       <div class="d-flex w-100 justify-between align-center">
         <span
@@ -94,53 +120,16 @@ defineExpose({
     </template>
   </vue-date-picker>
 </template>
-<style>
-.custom-field-date {
-  min-width: 122px;
-  min-height: 38px;
-}
+<style lang="scss">
+@use "@/assets/css/vue-datepicker-custom.css";
 
-.dp-custom-cell {
-  border-radius: 50%;
-}
-
-.dp__today {
-  border: 1px solid #9155fd;
-}
-
-.dp__active_date {
-  background-color: #9155fd;
-  color: white;
-}
-
-.dp__range_end,
-.dp__range_start,
-.dp__active_date {
-  background: #9155fd;
-}
-
-.dp__menu.dp__menu_index {
-  width: 600px !important;
-}
-
-:root {
-  --dp-button-height: 70px; /*Size for buttons in overlays*/
-  --dp-month-year-row-height: 70px; /*Height of the month-year select row*/
-  --dp-month-year-row-button-size: 70px;
-  --dp-cell-size: 40px; /*Width and height of calendar cell*/
-  --dp-cell-padding: 5px; /*Padding in the cell*/
-  --dp-common-padding: 10px; /*Common padding used*/
-  --dp-input-icon-padding: 35px;
-  --dp-button-icon-height: 15px; /*Icon sizing in buttons*/
-
-  --dp-input-padding: 6px 30px 6px 12px; /*Padding in the input*/
-  --dp-menu-min-width: 260px; /*Adjust the min width of the menu*/
-  --dp-action-buttons-padding: 2px 5px; /*Adjust padding for the action buttons in action row*/
-  --dp-row-margin: 10px 0; /*Adjust the spacing between rows in the calendar*/
-  --dp-calendar-header-cell-padding: 1rem; /*Adjust padding in calendar header cells*/
-  --dp-two-calendars-spacing: 10px; /*Space between multiple calendars*/
-  --dp-overlay-col-padding: 3px; /*Padding in the overlay column*/
-  --dp-time-inc-dec-button-size: 32px; /*Sizing for arrow buttons in the time picker*/
-  --dp-menu-padding: 12px 16px; /*Menu padding*/
+.dp__input_wrap
+  > .v-input
+  > .v-input__control
+  > .v-field
+  > .v-field__field
+  > input.v-field__input {
+  padding-top: v-bind(paddingTop);
+  padding-bottom: v-bind(paddingBottom);
 }
 </style>

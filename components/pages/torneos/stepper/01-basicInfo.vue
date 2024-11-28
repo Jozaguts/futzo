@@ -158,7 +158,12 @@ const setDates = (dates: string[]) => {
         <span class="text-body-1"> Fechas del torneo* </span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
-        <Calendar ref="calendarRef" @selected-dates="setDates" />
+        <Calendar
+          :custom-class="{ paddingTop: 0, paddingBottom: 0 }"
+          ref="calendarRef"
+          @selected-dates="setDates"
+          :multi-calendar="true"
+        />
       </v-col>
     </v-row>
   </v-container>

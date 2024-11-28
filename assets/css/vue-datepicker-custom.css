@@ -63,3 +63,52 @@
     /*border: none;*/
     line-height: calc(var(--dp-font-size) * 2.2);
 }
+
+.custom-field-date {
+    min-width: 122px;
+    min-height: 38px;
+}
+
+.dp-custom-cell {
+    border-radius: 50%;
+}
+
+.dp__today {
+    border: 1px solid #9155fd;
+}
+
+.dp__active_date {
+    background-color: #9155fd;
+    color: white;
+}
+
+.dp__range_end,
+.dp__range_start,
+.dp__active_date {
+    background: #9155fd;
+}
+
+.calendar-custom-width {
+    width: 600px;
+}
+
+:root {
+    --dp-button-height: 40px; /*Size for buttons in overlays*/
+    --dp-month-year-row-height: 30px; /*Height of the month-year select row*/
+    --dp-month-year-row-button-size: 30px;
+    --dp-cell-size: 40px; /*Width and height of calendar cell*/
+    --dp-cell-padding: 5px; /*Padding in the cell*/
+    --dp-common-padding: 10px; /*Common padding used*/
+    --dp-input-icon-padding: 35px;
+    --dp-button-icon-height: 15px; /*Icon sizing in buttons*/
+
+    --dp-input-padding: 6px 30px 6px 12px; /*Padding in the input*/
+    --dp-menu-min-width: 260px; /*Adjust the min width of the menu*/
+    --dp-action-buttons-padding: 2px 5px; /*Adjust padding for the action buttons in action row*/
+    --dp-row-margin: 10px 0; /*Adjust the spacing between rows in the calendar*/
+    --dp-calendar-header-cell-padding: 1rem; /*Adjust padding in calendar header cells*/
+    --dp-two-calendars-spacing: 10px; /*Space between multiple calendars*/
+    --dp-overlay-col-padding: 3px; /*Padding in the overlay column*/
+    --dp-time-inc-dec-button-size: 32px; /*Sizing for arrow buttons in the time picker*/
+    --dp-menu-padding: 12px 16px; /*Menu padding*/
+}
