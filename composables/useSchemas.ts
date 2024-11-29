@@ -54,6 +54,87 @@ function getSchemaByName(name: string) {
       );
   };
   switch (name) {
+    case "create-location":
+      schemaFields.location = yup.object().nullable();
+      schemaFields.city = yusString().nullable();
+      schemaFields.address = yusString().nullable();
+      break;
+    case "create-calendar":
+      schemaFields.start_date = yup.date().required(t("forms.required"));
+      schemaFields.end_date = yup.date().required(t("forms.required"));
+      schemaFields.game_time = yup.number().required(t("forms.required"));
+      schemaFields.time_between_games = yup
+        .number()
+        .required(t("forms.required"));
+      schemaFields.schedules_available = yup.array().of(
+        yup.object().shape({
+          day: yup.string(),
+          hours: yup.array().of(
+            yup.object().shape({
+              to: yup.string(),
+              from: yup.string(),
+            }),
+          ),
+        }),
+      );
+      schemaFields.venues = yup.object().shape({
+        id: yup.number(),
+        name: yup.string(),
+        city: yup.string(),
+        address: yup.object({}),
+        tournament_availability: yup.object().shape({
+          monday: yup
+            .object()
+            .shape({
+              start: yup.string(),
+              end: yup.string(),
+            })
+            .nullable(),
+          tuesday: yup
+            .object()
+            .shape({
+              start: yup.string(),
+              end: yup.string(),
+            })
+            .nullable(),
+          wednesday: yup
+            .object()
+            .shape({
+              start: yup.string(),
+              end: yup.string(),
+            })
+            .nullable(),
+          thursday: yup
+            .object()
+            .shape({
+              start: yup.string(),
+              end: yup.string(),
+            })
+            .nullable(),
+          friday: yup
+            .object()
+            .shape({
+              start: yup.string(),
+              end: yup.string(),
+            })
+            .nullable(),
+          saturday: yup
+            .object()
+            .shape({
+              start: yup.string(),
+              end: yup.string(),
+            })
+            .nullable(),
+          sunday: yup
+            .object()
+            .shape({
+              start: yup.string(),
+              end: yup.string(),
+            })
+            .nullable(),
+        }),
+      });
+      break;
     case "create-tournament-basic-info":
       schemaFields.id = yup.number().nullable();
       schemaFields.name = yusString().required(t("forms.required"));

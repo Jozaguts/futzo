@@ -97,7 +97,15 @@ export type EliminationPhaseForm = {
 
 export type ScheduleAvailable = {
   day: string;
-  hours: string[];
+  label: string;
+  hours: {
+    from: CalendarTypePicker;
+    to: CalendarTypePicker;
+  };
+};
+export type CalendarTypePicker = {
+  hours: number;
+  minutes: number;
 };
 export type TournamentVenue = {
   id: number;
