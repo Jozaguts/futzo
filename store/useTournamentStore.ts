@@ -440,6 +440,13 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     );
   }
 
+  const schedules = {
+    settings: async () => {
+      console.log(tournamentId.value);
+      return tournamentId.value;
+    },
+  };
+
   return {
     tournaments,
     tournament,
@@ -467,6 +474,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     calendarSteps,
     calendarStoreRequest,
     isCalendarEdition,
+    schedules,
     loadTournaments,
     storeTournament,
     fetchTournamentsByLeagueId,

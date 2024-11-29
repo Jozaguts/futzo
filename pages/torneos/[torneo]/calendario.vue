@@ -3,195 +3,20 @@ import AppBar from "~/components/layout/app-bar.vue";
 import PageLayout from "~/components/shared/PageLayout.vue";
 import AppBarBtn from "~/components/pages/torneos/torneo/app-bar-btn.vue";
 import NoCalendar from "~/components/pages/torneos/no-calendar.vue";
-import CalendarDialog from "~/components/pages/torneos/calendario/dialog/index.vue";
+import { definePageMeta } from "#imports";
+import { useTournamentStore } from "~/store";
 
-const data = [
-  {
-    id: 4,
-    jornada: "Jornada 4 de 39",
-    matches: [
-      {
-        status: "done",
-        local: {
-          name: "Cruz azul",
-          goals: 3,
-          winner: true,
-        },
-        visitante: {
-          name: "Tijuana",
-          goals: 0,
-          winner: false,
-        },
-        details: {
-          label1: "Fin",
-          label2: "Mie. 27/11",
-        },
-      },
-      {
-        status: "schedule",
-        local: {
-          name: "America",
-          goals: 0,
-          winner: false,
-        },
-        visitante: {
-          name: "Toluca",
-          goals: 5,
-          winner: true,
-        },
-        details: {
-          label1: "Mie. 27/11",
-          label2: "7:00 PM",
-        },
-      },
-      {
-        status: "schedule",
-        local: {
-          name: "America",
-          goals: 0,
-          winner: false,
-        },
-        visitante: {
-          name: "Toluca",
-          goals: 5,
-          winner: true,
-        },
-        details: {
-          label1: "Mie. 27/11",
-          label2: "7:00 PM",
-        },
-      },
-      {
-        status: "schedule",
-        local: {
-          name: "America",
-          goals: 0,
-          winner: false,
-        },
-        visitante: {
-          name: "Toluca",
-          goals: 5,
-          winner: true,
-        },
-        details: {
-          label1: "Mie. 27/11",
-          label2: "7:00 PM",
-        },
-      },
-      {
-        status: "schedule",
-        local: {
-          name: "America",
-          goals: 0,
-          winner: false,
-        },
-        visitante: {
-          name: "Toluca",
-          goals: 5,
-          winner: true,
-        },
-        details: {
-          label1: "Mie. 27/11",
-          label2: "7:00 PM",
-        },
-      },
-    ],
-  },
-  {
-    id: 5,
-    jornada: "Jornada 14 de 39",
-    matches: [
-      {
-        status: "done",
-        local: {
-          name: "barcelona",
-          goals: 1,
-          winner: false,
-        },
-        visitante: {
-          name: "Atletico",
-          goals: 1,
-          winner: false,
-        },
-        details: {
-          label1: "Fin",
-          label2: "Mie. 27/11",
-        },
-      },
-      {
-        status: "done",
-        local: {
-          name: "Real madrid",
-          goals: 1,
-          winner: false,
-        },
-        visitante: {
-          name: "Girona",
-          goals: 2,
-          winner: true,
-        },
-        details: {
-          label1: "Fin",
-          label2: "Mie. 27/11",
-        },
-      },
-      {
-        status: "done",
-        local: {
-          name: "Villareal",
-          goals: 2,
-          winner: true,
-        },
-        visitante: {
-          name: "Leganes",
-          goals: 1,
-          winner: false,
-        },
-        details: {
-          label1: "Fin",
-          label2: "Mie. 27/11",
-        },
-      },
-    ],
-  },
-];
-
-const load = ({ side, done }) => {
-  setTimeout(() => {
-    if (side === "start") {
-      const newItems = Array.from({ length: 10 }, (_, i) => ({
-        id: data[0].id - (10 - i), // Generar IDs decrecientes desde el primero
-        jornada: `Jornada ${data[0].id - (10 - i)} de 39`, // Ajustar la jornada
-        matches: data[0].matches.map((match) => ({
-          ...match, // Copiar los datos del partido
-          status: "schedule", // Cambiar el estado a "schedule" para diferenciar los nuevos
-          details: {
-            label1: "Próx.",
-            label2: "Mie. 27/11", // Ajustar detalles si es necesario
-          },
-        })),
-      })).filter((item) => item.id >= 0); // Filtrar solo IDs válidos
-      data.unshift(...newItems); // Agregar al inicio del arreglo
-      done("empty");
-    } else if (side === "end") {
-      const newItems = Array.from({ length: 10 }, (_, i) => ({
-        id: data.at(-1).id + i + 1, // Generar IDs incrementales desde el último
-        jornada: `Jornada ${data.at(-1).id + i + 1} de 39`, // Ajustar la jornada
-        matches: data.at(-1).matches.map((match) => ({
-          ...match, // Copiar los datos del partido
-          status: "schedule", // Cambiar el estado a "schedule" para diferenciar los nuevos
-          details: {
-            label1: "Próx.",
-            label2: "Mie. 27/11", // Ajustar detalles si es necesario
-          },
-        })),
-      }));
-
-      data.push(...newItems); // Agregar al final del arreglo
-      done("ok");
-    }
-  }, 1000);
-};
+definePageMeta({
+  middleware: [
+    function () {
+      if (import.meta.server) return;
+      const { tournamentId } = storeToRefs(useTournamentStore());
+      if (!tournamentId.value) {
+        useRouter().push({ name: "torneos" });
+      }
+    },
+  ],
+});
 </script>
 <template>
   <PageLayout>
@@ -204,7 +29,7 @@ const load = ({ side, done }) => {
     </template>
     <template #default>
       <NoCalendar />
-      <CalendarDialog />
+      <LazyPagesTorneosCalendarioDialog />
       <!--        side="both"-->
       <!--      <v-sheet class="futzo-rounded fill-height pa-4">-->
       <!--        <v-infinite-scroll :items="data" @load="load" height="700">-->
@@ -264,8 +89,6 @@ const load = ({ side, done }) => {
   </PageLayout>
 </template>
 <style lang="sass">
-
-
 .match-container
     border: 1px solid #eaecf0
 
@@ -335,3 +158,153 @@ const load = ({ side, done }) => {
 .match:first-child > .team
     border-right: 1px solid #eaecf0
 </style>
+<!--// const data = [-->
+<!--//   {-->
+<!--//     id: 4,-->
+<!--//     jornada: "Jornada 4 de 39",-->
+<!--//     matches: [-->
+<!--//       {-->
+<!--//         status: "done",-->
+<!--//         local: {-->
+<!--//           name: "Cruz azul",-->
+<!--//           goals: 3,-->
+<!--//           winner: true,-->
+<!--//         },-->
+<!--//         visitante: {-->
+<!--//           name: "Tijuana",-->
+<!--//           goals: 0,-->
+<!--//           winner: false,-->
+<!--//         },-->
+<!--//         details: {-->
+<!--//           label1: "Fin",-->
+<!--//           label2: "Mie. 27/11",-->
+<!--//         },-->
+<!--//       },-->
+<!--//       {-->
+<!--//         status: "schedule",-->
+<!--//         local: {-->
+<!--//           name: "America",-->
+<!--//           goals: 0,-->
+<!--//           winner: false,-->
+<!--//         },-->
+<!--//         visitante: {-->
+<!--//           name: "Toluca",-->
+<!--//           goals: 5,-->
+<!--//           winner: true,-->
+<!--//         },-->
+<!--//         details: {-->
+<!--//           label1: "Mie. 27/11",-->
+<!--//           label2: "7:00 PM",-->
+<!--//         },-->
+<!--//       },-->
+<!--//       {-->
+<!--//         status: "schedule",-->
+<!--//         local: {-->
+<!--//           name: "America",-->
+<!--//           goals: 0,-->
+<!--//           winner: false,-->
+<!--//         },-->
+<!--//         visitante: {-->
+<!--//           name: "Toluca",-->
+<!--//           goals: 5,-->
+<!--//           winner: true,-->
+<!--//         },-->
+<!--//         details: {-->
+<!--//           label1: "Mie. 27/11",-->
+<!--//           label2: "7:00 PM",-->
+<!--//         },-->
+<!--//       },-->
+<!--//       {-->
+<!--//         status: "schedule",-->
+<!--//         local: {-->
+<!--//           name: "America",-->
+<!--//           goals: 0,-->
+<!--//           winner: false,-->
+<!--//         },-->
+<!--//         visitante: {-->
+<!--//           name: "Toluca",-->
+<!--//           goals: 5,-->
+<!--//           winner: true,-->
+<!--//         },-->
+<!--//         details: {-->
+<!--//           label1: "Mie. 27/11",-->
+<!--//           label2: "7:00 PM",-->
+<!--//         },-->
+<!--//       },-->
+<!--//       {-->
+<!--//         status: "schedule",-->
+<!--//         local: {-->
+<!--//           name: "America",-->
+<!--//           goals: 0,-->
+<!--//           winner: false,-->
+<!--//         },-->
+<!--//         visitante: {-->
+<!--//           name: "Toluca",-->
+<!--//           goals: 5,-->
+<!--//           winner: true,-->
+<!--//         },-->
+<!--//         details: {-->
+<!--//           label1: "Mie. 27/11",-->
+<!--//           label2: "7:00 PM",-->
+<!--//         },-->
+<!--//       },-->
+<!--//     ],-->
+<!--//   },-->
+<!--//   {-->
+<!--//     id: 5,-->
+<!--//     jornada: "Jornada 14 de 39",-->
+<!--//     matches: [-->
+<!--//       {-->
+<!--//         status: "done",-->
+<!--//         local: {-->
+<!--//           name: "barcelona",-->
+<!--//           goals: 1,-->
+<!--//           winner: false,-->
+<!--//         },-->
+<!--//         visitante: {-->
+<!--//           name: "Atletico",-->
+<!--//           goals: 1,-->
+<!--//           winner: false,-->
+<!--//         },-->
+<!--//         details: {-->
+<!--//           label1: "Fin",-->
+<!--//           label2: "Mie. 27/11",-->
+<!--//         },-->
+<!--//       },-->
+<!--//       {-->
+<!--//         status: "done",-->
+<!--//         local: {-->
+<!--//           name: "Real madrid",-->
+<!--//           goals: 1,-->
+<!--//           winner: false,-->
+<!--//         },-->
+<!--//         visitante: {-->
+<!--//           name: "Girona",-->
+<!--//           goals: 2,-->
+<!--//           winner: true,-->
+<!--//         },-->
+<!--//         details: {-->
+<!--//           label1: "Fin",-->
+<!--//           label2: "Mie. 27/11",-->
+<!--//         },-->
+<!--//       },-->
+<!--//       {-->
+<!--//         status: "done",-->
+<!--//         local: {-->
+<!--//           name: "Villareal",-->
+<!--//           goals: 2,-->
+<!--//           winner: true,-->
+<!--//         },-->
+<!--//         visitante: {-->
+<!--//           name: "Leganes",-->
+<!--//           goals: 1,-->
+<!--//           winner: false,-->
+<!--//         },-->
+<!--//         details: {-->
+<!--//           label1: "Fin",-->
+<!--//           label2: "Mie. 27/11",-->
+<!--//         },-->
+<!--//       },-->
+<!--//     ],-->
+<!--//   },-->
+<!--// ];-->

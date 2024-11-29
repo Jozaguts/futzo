@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 const dialog = defineModel<boolean>();
 const emits = defineEmits(["leaving"]);
 defineProps({
@@ -14,9 +13,6 @@ defineProps({
   loading: {
     type: Boolean,
     default: false,
-  },
-  actions: {
-    type: Object as PropType<{ primary: string; secondary: string }>,
   },
 });
 </script>
@@ -65,26 +61,7 @@ defineProps({
         <slot name="v-card-text" />
       </v-card-text>
       <v-card-actions class="d-flex px-6 pb-6 justify-space-between">
-        <slot name="actions">
-          <v-btn
-            width="50%"
-            min-height="44"
-            variant="outlined"
-            color="secondary"
-            density="comfortable"
-            size="large"
-            >{{ actions?.secondary }}
-          </v-btn>
-          <v-btn
-            width="50%"
-            min-height="44"
-            variant="elevated"
-            color="primary"
-            density="comfortable"
-            size="large"
-            >{{ actions?.primary }}
-          </v-btn>
-        </slot>
+        <slot name="actions"></slot>
       </v-card-actions>
     </v-card>
   </v-dialog>
