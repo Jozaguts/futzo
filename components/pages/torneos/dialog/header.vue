@@ -16,7 +16,7 @@ const subtitle = isEdition.value
         height="45"
         width="45"
       >
-        <Icon name="futzo-icon:football"></Icon>
+        <Icon name="mdi-light:trophy"></Icon>
       </v-sheet>
     </template>
     <template #title

@@ -16,7 +16,7 @@ const subtitle = isEdition.value
         height="45"
         width="45"
       >
-        <Icon name="futzo-icon:calendar"></Icon>
+        <Icon name="line-md:calendar"></Icon>
       </v-sheet>
     </template>
     <template #title

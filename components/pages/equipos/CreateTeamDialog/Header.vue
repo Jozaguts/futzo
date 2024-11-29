@@ -38,7 +38,7 @@ const subtitle = computed(() => {
         height="45"
         width="45"
       >
-        <Icon name="futzo-icon:football"></Icon>
+        <Icon name="fluent:people-team-20-regular"></Icon>
       </v-sheet>
     </template>
     <template #title
