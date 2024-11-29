@@ -36,6 +36,13 @@ const handleShowTournament = (_tournament: Tournament) => {
   });
 };
 onMounted(() => (pagination.value.currentPage = 1));
+const scheduleHandler = (model: Tournament) => {
+  tournamentId.value = model.id as number;
+  useRouter().push({
+    name: "torneos-torneo-calendario",
+    params: { torneo: model.slug },
+  });
+};
 </script>
 <template>
   <Table
@@ -55,15 +62,13 @@ onMounted(() => (pagination.value.currentPage = 1));
         rounded="md"
         variant="outlined"
         class="mr-2 show-calendar-btn"
-        @click="
-          $router.push({
-            name: 'torneos-torneo-calendario',
-            params: { torneo: item.slug },
-          })
-        "
+        @click="() => scheduleHandler(item as Tournament)"
         >Ver calendario
       </v-btn>
-      <v-btn size="small" rounded="md" @click="handleShowTournament(item)"
+      <v-btn
+        size="small"
+        rounded="md"
+        @click="() => handleShowTournament(item as Tournament)"
         >Ver Torneo
       </v-btn>
     </template>
