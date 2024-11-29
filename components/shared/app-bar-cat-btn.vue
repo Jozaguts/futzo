@@ -2,23 +2,37 @@
 interface Props {
   text: string;
   icon: string;
+  variant:
+    | "text"
+    | "flat"
+    | "elevated"
+    | "tonal"
+    | "outlined"
+    | "plain"
+    | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   text: "prop name not set",
   icon: "futzo-icon:plus",
+  variant: "elevated",
 });
 const emits = defineEmits(["click"]);
 </script>
 <template>
-  <v-btn class="app-bar-cat-btn" size="large" @click="emits('click')">
+  <v-btn
+    :variant="props.variant"
+    class="app-bar-cat-btn"
+    size="large"
+    @click="emits('click')"
+  >
     <template #prepend>
       <Icon :name="icon" />
     </template>
     {{ text }}
   </v-btn>
 </template>
-<style>
+<style scoped>
 .app-bar-cat-btn {
   max-height: 42px;
   border-radius: 8px;
