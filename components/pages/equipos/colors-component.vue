@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import ColorPicker from "~/components/shared/colorPicker.vue";
 import { useTeamStore } from "~/store";
 
 const store = useTeamStore();

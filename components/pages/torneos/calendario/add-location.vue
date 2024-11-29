@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useLocationStore } from "~/store";
-import CustomDialog from "@/components/shared/custom-dialog/index.vue";
 import type { AutocompletePrediction, Prediction } from "~/interfaces";
 import useSchemas from "~/composables/useSchemas";
 
@@ -77,7 +76,7 @@ const search = useDebounceFn(async (place: string): Promise<Prediction[]> => {
 }, 400);
 </script>
 <template>
-  <CustomDialog
+  <Dialog
     max-width="600"
     title="Crear Nueva Locación"
     subtitle="Registra una nueva locación para el torneo.<br/>  Una vez creada, podrás configurar su disponibilidad."
@@ -159,5 +158,5 @@ const search = useDebounceFn(async (place: string): Promise<Prediction[]> => {
     <template #actions>
       <v-btn block variant="elevated">Crear locación</v-btn>
     </template>
-  </CustomDialog>
+  </Dialog>
 </template>

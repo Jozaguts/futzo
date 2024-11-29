@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useDashboardStore } from "~/store";
-import PageLayout from "~/components/shared/page-layout/index.vue";
 import AppBar from "~/components/layout/app-bar.vue";
 import AppBarBtn from "~/components/pages/dashboard/app-bar-btn.vue";
 import StatsCard from "~/components/pages/dashboard/stats-card.vue";

@@ -2,7 +2,7 @@
 import General from "~/components/pages/torneos/calendario/stepper/01-general.vue";
 import Regular from "~/components/pages/torneos/calendario/stepper/02-regular-phase.vue";
 import Elimination from "~/components/pages/torneos/calendario/stepper/03-elimination-phase.vue";
-import StepIndicator from "~/components/shared/step-indicator.vue";
+import IndicatorStep from "~/components/shared/IndicatorStep.vue";
 import { useTournamentStore } from "~/store";
 import type {
   CalendarStoreRequest,
@@ -115,71 +115,63 @@ const textButton = computed(() => {
 });
 </script>
 <template>
-  <PerfectScrollbar
-    :options="{
-      suppressScrollX: true,
-    }"
-  >
-    <v-card-text>
-      <v-container class="pa-0">
-        <v-row>
-          <v-col>
-            <StepIndicator :form-steps="calendarSteps" />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <transition-slide
-              group
-              :offset="{
-                enter: ['-100%', 0],
-                leave: ['100%', 0],
-              }"
-            >
-              <General
-                ref="stepRef"
-                v-if="calendarSteps.current === 'general'"
-                :key="calendarSteps.current"
-              />
-              <Regular
-                ref="stepRef"
-                v-if="calendarSteps.current === 'regular'"
-                :key="calendarSteps.current"
-              />
-              <Elimination
-                ref="stepRef"
-                v-if="calendarSteps.current === 'elimination'"
-                :key="calendarSteps.current"
-              />
-            </transition-slide>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="6">
-            <v-btn
-              variant="outlined"
-              block
-              color="secondary"
-              density="comfortable"
-              size="large"
-              @click="backHandler"
-              >{{ textButtonCancel }}
-            </v-btn>
-          </v-col>
-          <v-col cols="6">
-            <v-btn
-              variant="elevated"
-              block
-              color="primary"
-              density="comfortable"
-              size="large"
-              :loading="loading"
-              @click="nextHandler"
-              >{{ textButton }}
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-card-text>
-  </PerfectScrollbar>
+  <v-container class="pa-0">
+    <v-row>
+      <v-col>
+        <IndicatorStep :form-steps="calendarSteps" />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <transition-slide
+          group
+          :offset="{
+            enter: ['-100%', 0],
+            leave: ['100%', 0],
+          }"
+        >
+          <General
+            ref="stepRef"
+            v-if="calendarSteps.current === 'general'"
+            :key="calendarSteps.current"
+          />
+          <Regular
+            ref="stepRef"
+            v-if="calendarSteps.current === 'regular'"
+            :key="calendarSteps.current"
+          />
+          <Elimination
+            ref="stepRef"
+            v-if="calendarSteps.current === 'elimination'"
+            :key="calendarSteps.current"
+          />
+        </transition-slide>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="6">
+        <v-btn
+          variant="outlined"
+          block
+          color="secondary"
+          density="comfortable"
+          size="large"
+          @click="backHandler"
+          >{{ textButtonCancel }}
+        </v-btn>
+      </v-col>
+      <v-col cols="6">
+        <v-btn
+          variant="elevated"
+          block
+          color="primary"
+          density="comfortable"
+          size="large"
+          :loading="loading"
+          @click="nextHandler"
+          >{{ textButton }}
+        </v-btn>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>

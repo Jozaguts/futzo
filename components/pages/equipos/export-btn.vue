@@ -1,6 +1,4 @@
-<script lang="ts" setup>
-import AppBarSecondaryBtn from "~/components/shared/app-bar-secondary-btn.vue";
-</script>
+<script lang="ts" setup></script>
 <template>
-  <AppBarSecondaryBtn text="Export .csv" class="mr-4" />
+  <SecondaryBtn text="Export .csv" class="mr-4" />
 </template>

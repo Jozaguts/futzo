@@ -5,7 +5,7 @@ import LiveGames from "~/components/pages/equipos/live-games.vue";
 import NextGamesToday from "~/components/pages/equipos/next-games-today.vue";
 import NextGames from "~/components/pages/equipos/next-games.vue";
 import CreateTournamentDialog from "~/components/pages/torneos/dialog/index.vue";
-import PageLayout from "~/components/shared/page-layout/index.vue";
+import PageLayout from "~/components/shared/PageLayout.vue";
 import AppBar from "~/components/layout/app-bar.vue";
 import AppBarBtn from "~/components/pages/torneos/torneo/app-bar-btn.vue";
 

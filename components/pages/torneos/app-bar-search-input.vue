@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import SearchInput from "~/components/shared/SearchInput.vue";
 import { useTournamentStore } from "~/store";
 
 const { search } = storeToRefs(useTournamentStore());

@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import { useTeamStore } from "~/store";
 import getHeaders from "~/utils/headers-table";
-import CustomTable from "~/components/shared/Table.vue";
 
 const headers = getHeaders("teams");
 await useTeamStore().getTeams();
 const { teams, search, pagination } = storeToRefs(useTeamStore());
 </script>
 <template>
-  <CustomTable
+  <Table
     v-if="teams?.length"
     :headers="headers"
     :show-index="true"
@@ -19,5 +18,5 @@ const { teams, search, pagination } = storeToRefs(useTeamStore());
     :paginate="useTeamStore().getTeams"
     :custom-name="true"
     :show-footer="false"
-  ></CustomTable>
+  ></Table>
 </template>

@@ -20,6 +20,10 @@ export default defineNuxtConfig({
       ],
     },
   },
+  components: [
+    { path: "~/components/shared", pathPrefix: false },
+    "~/components",
+  ],
   // these 3 are necessary
   ssr: true,
   vuetify: {

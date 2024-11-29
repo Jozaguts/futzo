@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import AppBar from "~/components/layout/app-bar.vue";
-import PageLayout from "~/components/shared/page-layout/index.vue";
+import PageLayout from "~/components/shared/PageLayout.vue";
 import AppBarBtn from "~/components/pages/torneos/torneo/app-bar-btn.vue";
 import NoCalendar from "~/components/pages/torneos/no-calendar.vue";
 import CalendarDialog from "~/components/pages/torneos/calendario/dialog/index.vue";

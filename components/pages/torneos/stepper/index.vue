@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import BasicInfo from "~/components/pages/torneos/stepper/01-basicInfo.vue";
 import DetailsInfo from "~/components/pages/torneos/stepper/02-detailsInfo.vue";
-import StepIndicator from "~/components/shared/step-indicator.vue";
+import IndicatorStep from "~/components/shared/IndicatorStep.vue";
 import { useTournamentStore } from "~/store";
 import type {
   BasicInfoForm,
@@ -102,7 +102,7 @@ const textButton = computed(() => {
       <v-container class="pa-0">
         <v-row>
           <v-col>
-            <StepIndicator :form-steps="steps" />
+            <IndicatorStep :form-steps="steps" />
           </v-col>
         </v-row>
         <v-row>

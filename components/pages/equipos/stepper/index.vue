@@ -2,7 +2,7 @@
 import createTeamStep from "~/components/pages/equipos/stepper/01-create-team.vue";
 import createDtStep from "~/components/pages/equipos/stepper/02-create-dt.vue";
 import createOwnerStep from "~/components/pages/equipos/stepper/03-create-owner.vue";
-import StepIndicator from "~/components/shared/step-indicator.vue";
+import IndicatorStep from "~/components/shared/IndicatorStep.vue";
 import { useTeamStore } from "~/store";
 import type { CreateTeamForm, CurrentStep } from "~/models/Team";
 
@@ -90,7 +90,7 @@ const textButton = computed(() => {
 <template>
   <PerfectScrollbar :options="{ suppressScrollX: true }">
     <v-card-text class="pb-2" style="overflow-x: hidden">
-      <StepIndicator :formSteps="steps" />
+      <IndicatorStep :formSteps="steps" />
       <transition-slide
         group
         :offset="{

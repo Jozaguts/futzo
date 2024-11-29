@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import useSchemas from "~/composables/useSchemas";
-import CustomBtn from "~/components/shared/app-bar-cat-btn.vue";
 import Calendar from "~/components/pages/torneos/calendar.vue";
 import type { ScheduleAvailable } from "~/models/tournament";
 import AddLocationDialog from "~/components/pages/torneos/calendario/add-location.vue";
@@ -189,12 +188,12 @@ const tab = ref(1);
         </v-autocomplete>
       </v-col>
       <v-col cols="3">
-        <CustomBtn
+        <PrimaryBtn
           @click="locationDialog = !locationDialog"
           text="Locación"
           icon="futzo-icon:plus"
           variant="outlined"
-        ></CustomBtn>
+        ></PrimaryBtn>
         <AddLocationDialog v-model="locationDialog" />
       </v-col>
       <v-col cols="12">

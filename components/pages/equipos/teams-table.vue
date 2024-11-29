@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useTeamStore } from "~/store";
 import type { TeamResponse } from "~/models/Team";
-import CustomTable from "~/components/shared/Table.vue";
 import getHeaders from "~/utils/headers-table";
 
 const {
@@ -40,7 +39,7 @@ const showTeamHandler = (_team: TeamResponse) => {
 };
 </script>
 <template>
-  <CustomTable
+  <Table
     v-if="teams?.length"
     :headers="headers"
     :show-index="true"
@@ -59,5 +58,5 @@ const showTeamHandler = (_team: TeamResponse) => {
         >Ver Equipo
       </v-btn>
     </template>
-  </CustomTable>
+  </Table>
 </template>

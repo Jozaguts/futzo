@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useTournamentStore } from "~/store";
-import CustomTable from "~/components/shared/Table.vue";
 import getHeaders from "~/utils/headers-table";
 import type { Tournament } from "~/models/tournament";
 import { useRouter } from "#app";
@@ -39,7 +38,7 @@ const handleShowTournament = (_tournament: Tournament) => {
 onMounted(() => (pagination.value.currentPage = 1));
 </script>
 <template>
-  <CustomTable
+  <Table
     v-if="!noTournaments"
     :headers="headers"
     :items="tournaments"
@@ -68,7 +67,7 @@ onMounted(() => (pagination.value.currentPage = 1));
         >Ver Torneo
       </v-btn>
     </template>
-  </CustomTable>
+  </Table>
 </template>
 <style scoped>
 .show-calendar-btn {

@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import StepperDot from "~/components/shared/stepper-dot.vue";
-
 interface FormSteps {
   formSteps: {
     current: string;
@@ -18,7 +16,7 @@ const props = withDefaults(defineProps<FormSteps>(), {});
 </script>
 <template>
   <div class="steps-container">
-    <StepperDot
+    <DotStepper
       v-for="(step, index) in props.formSteps.steps"
       :active="props.formSteps.current === step.step"
       :completed="step.completed"
@@ -29,9 +27,9 @@ const props = withDefaults(defineProps<FormSteps>(), {});
 </template>
 <style lang="sass" scoped>
 .steps-container
-  display: flex
-  align-items: center
-  max-width: 80%
-  margin: 1rem auto 3rem auto
-  position: relative
+    display: flex
+    align-items: center
+    max-width: 80%
+    margin: 1rem auto 3rem auto
+    position: relative
 </style>

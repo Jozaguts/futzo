@@ -2,7 +2,6 @@
 import getHeaders from "~/utils/headers-table";
 import { usePlayerStore } from "~/store";
 import type { PlayerResponse } from "~/models/Player";
-import CustomTable from "~/components/shared/Table.vue";
 
 const {
   players,
@@ -19,7 +18,7 @@ const showPlayerHandler = (player: PlayerResponse) => {
 };
 </script>
 <template>
-  <CustomTable
+  <Table
     v-if="players?.length"
     :headers="headers"
     :show-index="false"
@@ -39,5 +38,5 @@ const showPlayerHandler = (player: PlayerResponse) => {
         >Ver Jugador
       </v-btn>
     </template>
-  </CustomTable>
+  </Table>
 </template>
