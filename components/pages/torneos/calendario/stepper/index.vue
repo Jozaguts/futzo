@@ -12,6 +12,8 @@ import type {
   RegularPhaseForm,
 } from "~/models/tournament";
 
+type StepRef = { validate: Function; handleSubmit: Function };
+
 const loading = ref(false);
 const {
   calendarSteps,
@@ -19,10 +21,11 @@ const {
   calendarStoreRequest,
   calendarDialog,
 } = storeToRefs(useTournamentStore());
-const stepRef = ref<{ validate: Function; handleSubmit: Function }>({
-  validate: Function,
-  handleSubmit: Function,
-});
+// const stepRef = ref<{ validate: Function; handleSubmit: Function }>({
+//   validate: Function,
+//   handleSubmit: Function,
+// });
+const stepRef = defineModel<StepRef>("stepRef");
 const backHandler = () => {
   if (calendarSteps.value.current === "general") {
     calendarDialog.value = false;
@@ -37,7 +40,7 @@ const backHandler = () => {
   calendarSteps.value.current = stepsOrder[currentStepIndex - 1];
 };
 const nextHandler = async () => {
-  const statusForm = await stepRef.value.validate();
+  const statusForm = await stepRef.value?.validate();
   if (statusForm.valid) {
     const calendarStoreRequestValues = await getFormValues();
     fillTournamentStoreRequest(calendarStoreRequestValues);
@@ -95,24 +98,6 @@ function fillTournamentStoreRequest(
     };
   }
 }
-
-const textButtonCancel = computed(() => {
-  if (calendarSteps.value.current === "general") {
-    return "Cancelar";
-  } else {
-    return "Regresar";
-  }
-});
-const textButton = computed(() => {
-  switch (calendarSteps.value.current) {
-    case "general":
-      return "Siguiente";
-    case "regular":
-      return "Siguiente";
-    default:
-      return "Crear calendario";
-  }
-});
 </script>
 <template>
   <v-container class="pa-0">
@@ -146,31 +131,6 @@ const textButton = computed(() => {
             :key="calendarSteps.current"
           />
         </transition-slide>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="6">
-        <v-btn
-          variant="outlined"
-          block
-          color="secondary"
-          density="comfortable"
-          size="large"
-          @click="backHandler"
-          >{{ textButtonCancel }}
-        </v-btn>
-      </v-col>
-      <v-col cols="6">
-        <v-btn
-          variant="elevated"
-          block
-          color="primary"
-          density="comfortable"
-          size="large"
-          :loading="loading"
-          @click="nextHandler"
-          >{{ textButton }}
-        </v-btn>
       </v-col>
     </v-row>
   </v-container>
