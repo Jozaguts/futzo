@@ -55,12 +55,6 @@ const customPosition = (
     transform: props.positionValues.transform,
   };
 };
-const setDatesFromRequest = (_dates: Date[]) => {
-  dates.value = _dates;
-};
-defineExpose({
-  setDatesFromRequest,
-});
 </script>
 <template>
   <vue-date-picker
@@ -74,6 +68,7 @@ defineExpose({
     :min-date="new Date()"
     :multi-calendars="{ solo: true }"
     hide-input-icon
+    @update:model-value="() => emits('selected-dates', dates)"
     :enable-time-picker="false"
     month-name-format="long"
     :alt-position="customPosition"
