@@ -5,3 +5,7 @@ export type Location = {
   address: string;
   autocomplete_prediction: object;
 };
+
+export type LocationStoreRequest = {
+  tags: string[];
+} & Location;

@@ -1,3 +1,26 @@
+export type TournamentLocationStoreRequest = {
+  tournamentId: number;
+  location: Location;
+  tags: string[];
+};
+
+export interface TournamentLocation extends Location {
+  pivot: {
+    tournament_id: number;
+    location_id: number;
+    availability: LocationAvailability[];
+  };
+  tags: Tag[];
+}
+
+export type Tag = {
+  id: number;
+  name: { es: string };
+  slug: { es: string };
+  type: string | null;
+  order_count: number;
+};
+
 export interface Tournament {
   id?: number | null;
   league_id?: number | null;
@@ -163,7 +186,6 @@ export interface Location {
   name: string;
   city: string;
   address: string;
-  availability: Availability;
   autocomplete_prediction: AutocompletePrediction;
 }
 
