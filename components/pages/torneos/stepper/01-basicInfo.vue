@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { storeToRefs } from "pinia";
 import DragDropImage from "~/components/pages/torneos/drag-drop-image.vue";
 import useSchemas from "~/composables/useSchemas";
 import CategorySelectComponent from "~/components/inputs/CategoriesSelect.vue";
@@ -8,14 +9,12 @@ import {
   removeImage,
   saveImage,
 } from "~/composables/useImage";
-import { useTournamentStore } from "~/store";
-import { storeToRefs } from "pinia";
-import { useCategoryStore } from "~/store/useCategoryStore";
+import { useCategoryStore, useLeaguesStore, useTournamentStore } from "~/store";
 import Calendar from "~/components/pages/torneos/calendar.vue";
-import { useLeaguesStore } from "~/store/useLeaguesStore";
+import { FUTBOL_11_ID } from "~/utils/constants";
 
+const { footballTypes } = storeToRefs(useLeaguesStore());
 const { formats } = storeToRefs(useCategoryStore());
-const { footballTypes } = useLeaguesStore();
 const { isEdition, tournamentStoreRequest } = storeToRefs(useTournamentStore());
 const { handleSubmit, resetForm, fields, validate, setValues } = useSchemas(
   isEdition.value
@@ -34,7 +33,7 @@ onMounted(() => {
     }
   }
   if (!isEdition.value) {
-    fields.football_type_id.fieldValue = 1;
+    fields.football_type_id.fieldValue = FUTBOL_11_ID;
   }
 });
 onUnmounted(() => {
