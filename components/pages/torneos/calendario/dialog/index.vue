@@ -3,7 +3,12 @@ import StepperContainer from "~/components/pages/torneos/calendario/stepper/inde
 import { storeToRefs } from "pinia";
 import { useTournamentStore } from "~/store";
 
-const { calendarSteps, calendarDialog } = storeToRefs(useTournamentStore());
+const {
+  calendarSteps,
+  calendarDialog,
+  selectedLocations,
+  selectedLocationsHasError,
+} = storeToRefs(useTournamentStore());
 const leaveHandler = () => {
   useTournamentStore().$reset();
 };
@@ -15,6 +20,13 @@ const {
   backHandler,
   nextHandler,
 } = useDialog(calendarSteps, calendarDialog);
+const handleChange = () => {
+  if (selectedLocations.value.length === 0) {
+    selectedLocationsHasError.value = true;
+  } else {
+    nextHandler();
+  }
+};
 </script>
 <template>
   <Dialog
@@ -48,7 +60,7 @@ const {
         color="primary"
         density="comfortable"
         size="large"
-        @click="nextHandler"
+        @click="handleChange"
         >{{ primaryTextBtn }}
       </v-btn>
     </template>
