@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+import { formatDate } from "~/utils/dateCalendarValidation";
 
-const dates = ref([] as Date[]);
+const dates = defineModel<Date[]>("dates");
 const props = defineProps({
   paddingBottom: {
     type: String,
@@ -33,14 +34,6 @@ const selectDate = () => {
   dp.value.selectDate();
   emits("selected-dates", dates.value);
 };
-const formatDate = (date: Date) => {
-  const day = date.getDate();
-  const month = date.toLocaleDateString("es-MX", {
-    month: "short",
-  });
-  const year = date.getFullYear();
-  return `${month} ${day}, ${year}`;
-};
 const customPosition = (
   inputElement?: HTMLElement,
 ): {
@@ -62,13 +55,12 @@ const customPosition = (
     v-model="dates"
     position="left"
     :range="props.multiCalendar"
-    utc
+    :format="formatDate"
     locale="es"
     :teleport="true"
     :min-date="new Date()"
     :multi-calendars="{ solo: true }"
     hide-input-icon
-    @update:model-value="() => emits('selected-dates', dates)"
     :enable-time-picker="false"
     month-name-format="long"
     :alt-position="customPosition"

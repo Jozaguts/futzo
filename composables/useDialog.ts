@@ -23,7 +23,6 @@ export const useDialog = (steps: Ref<Steps>, dialog: Ref<boolean>) => {
     return steps.value.current === lastItem.step ? "Crear" : "Siguiente";
   });
   const backHandler = () => {
-    console.log("backHandler");
     if (steps.value.current === firstItem.step) {
       dialog.value = false;
       return;
@@ -37,12 +36,9 @@ export const useDialog = (steps: Ref<Steps>, dialog: Ref<boolean>) => {
     steps.value.current = stepsOrder[currentStepIndex - 1];
   };
   const nextHandler = async () => {
-    console.log("nextHandler");
-    console.log(stepRef.value);
     const statusForm = await stepRef.value.validate();
-    console.log(statusForm);
+
     if (statusForm.valid) {
-      console.log("isValid");
       // const calendarStoreRequestValues = await getFormValues();
       // fillTournamentStoreRequest(calendarStoreRequestValues);
       //
