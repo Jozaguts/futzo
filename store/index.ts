@@ -6,3 +6,5 @@ export { usePlayerStore } from "@/store/usePlayerStore";
 export { usePositionsStore } from "@/store/usePositionsStore";
 export { useDashboardStore } from "@/store/useDashboardStore";
 export { useLocationStore } from "@/store/useLocationStore";
+export { useLeaguesStore } from "@/store/useLeaguesStore";
+export { useCategoryStore } from "@/store/useCategoryStore";

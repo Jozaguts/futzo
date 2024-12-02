@@ -5,6 +5,8 @@ import type {
   FormSteps,
   Tournament,
   TournamentForm,
+  TournamentLocation,
+  TournamentLocationStoreRequest,
   TournamentStoreRequest,
 } from "~/models/tournament";
 import type { Game } from "~/models/Game";
@@ -55,7 +57,6 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
       },
     ],
   });
-
   const nextGames = ref<Game[]>([
     {
       id: 1,
@@ -335,6 +336,12 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     total: 0,
     sort: "asc",
   });
+  const tournamentLocations = ref<TournamentLocation[]>(
+    [] as TournamentLocation[],
+  );
+  const tournamentLocationStoreRequest = ref<TournamentLocationStoreRequest>();
+  const selectedLocations = ref<TournamentLocation[]>([]);
+  const selectedLocationsHasError = ref(false);
 
   function $reset() {
     tournamentStoreRequest.value = {} as TournamentStoreRequest;
@@ -374,7 +381,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         $reset();
         return response;
       })
-      .catch((error) => {
+      .catch(() => {
         useToast().toast(
           "error",
           "Error al Crear Torneo",
@@ -407,8 +414,8 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
       `/api/v1/admin/leagues/${user.value?.league?.id}/tournaments`,
     );
     tournaments.value = data || [];
-    // todo revisar la manera en la que contamos el teamcoutn y machesByRound
-    // creo deberia ser un computed que se actualice cuando cambie el valor de tournaments
+    // todo revisar la manera en la que contamos el teamCount y machesByRound
+    // creo debería ser un computed que se actualice cuando cambie el valor de tournaments
 
     // console.log({tournaments:tournaments.value })
     // teamsCount.value = data.teams_count || 0;
@@ -440,11 +447,33 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     );
   }
 
-  const schedules = {
-    settings: async () => {
-      console.log(tournamentId.value);
-      return tournamentId.value;
-    },
+  const settingsSchedule = async () => {
+    const client = useSanctumClient();
+    return await client(
+      `api/v1/admin/tournaments/${tournamentId.value}/schedule/settings`,
+    );
+  };
+  const getTournamentLocations = async () => {
+    const client = useSanctumClient();
+    client(`/api/v1/admin/tournaments/${tournamentId.value}/locations`).then(
+      (data) => {
+        tournamentLocations.value = data;
+      },
+    );
+  };
+  const storeTournamentLocation = async () => {
+    const client = useSanctumClient();
+    await client(`/api/v1/admin/tournaments/${tournamentId.value}/locations`, {
+      method: "POST",
+      body: tournamentLocationStoreRequest.value,
+    }).then(async () => {
+      useToast().toast(
+        "success",
+        "Locación del torneo",
+        "La Locación del torneo ha sido agregada correctamente.",
+      );
+      await getTournamentLocations();
+    });
   };
 
   return {
@@ -474,11 +503,17 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     calendarSteps,
     calendarStoreRequest,
     isCalendarEdition,
-    schedules,
+    tournamentLocations,
+    tournamentLocationStoreRequest,
+    selectedLocations,
+    selectedLocationsHasError,
+    getTournamentLocations,
+    settingsSchedule,
     loadTournaments,
     storeTournament,
     fetchTournamentsByLeagueId,
     $reset,
     updateTournament,
+    storeTournamentLocation,
   };
 });

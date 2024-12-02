@@ -1,25 +1,31 @@
 import { defineStore } from "pinia";
-import type { Location } from "~/models/Location";
+import type { Location, LocationStoreRequest } from "~/models/Location";
 
 export const useLocationStore = defineStore("locationStore", () => {
   const locations = ref<Location[]>();
-  const locationStoreRequest = ref<Location>();
+  const locationStoreRequest = ref<LocationStoreRequest>();
   const locationDialog = ref(false);
 
-  function getLocations(): void {
+  async function getLocations(): Promise<void> {
     const client = useSanctumClient();
-    client("/api/v1/admin/locations").then(({ data }) => {
+    await client("/api/v1/admin/locations").then((data) => {
       locations.value = data;
     });
   }
 
-  function storeLocation(): void {
+  async function storeLocation(): Promise<void> {
     const client = useSanctumClient();
-    client("/api/v1/admin/locations", {
+    await client("/api/v1/admin/locations", {
       method: "POST",
       body: locationStoreRequest.value,
-    }).then(() => {
-      getLocations();
+    }).then(async () => {
+      await getLocations();
+      const { toast } = useToast();
+      toast(
+        "success",
+        "Locación creada",
+        "La  nueva locación se ha agregado exitosamente.",
+      );
     });
   }
 
