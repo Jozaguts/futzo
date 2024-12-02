@@ -50,12 +50,22 @@ const getMonthNumber = (month: string): number => {
 
   return parseInt(month, 10); // Si es numérico, devolver el número
 };
-const formatDate = (date: Date): string => {
-  return new Date(date).toLocaleDateString("es-MX", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+const formatDate = (date: Date): string | string[] => {
+  if (Array.isArray(date)) {
+    return date.map((date) => {
+      return new Date(date).toLocaleDateString("es-MX", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    });
+  } else {
+    return new Date(date).toLocaleDateString("es-MX", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  }
 };
 
 const getFullYear = (year: string): number => {
@@ -77,7 +87,7 @@ const getFullYear = (year: string): number => {
 };
 const validateAndFormatDate = (
   input: string,
-): { format: string; raw: Date } | null => {
+): { format: string | string[]; raw: Date } | null => {
   const separators = input.split(separatorPattern);
 
   if (separators.length !== 3) {
@@ -109,4 +119,4 @@ const validateAndFormatDate = (
     raw: formattedDate,
   };
 };
-export default validateAndFormatDate;
+export { validateAndFormatDate, formatDate };
