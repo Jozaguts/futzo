@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import AppBar from "~/components/layout/app-bar.vue";
+import AppBar from "~/components/layout/AppBar.vue";
 import PlayersNavbarButtons from "~/components/pages/jugadores/players-navbar-buttons.vue";
 import { usePlayerStore } from "~/store";
 import NoPlayers from "~/components/pages/jugadores/no-players.vue";

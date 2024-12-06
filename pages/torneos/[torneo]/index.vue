@@ -6,7 +6,7 @@ import NextGamesToday from "~/components/pages/equipos/next-games-today.vue";
 import NextGames from "~/components/pages/equipos/next-games.vue";
 import CreateTournamentDialog from "~/components/pages/torneos/dialog/index.vue";
 import PageLayout from "~/components/shared/PageLayout.vue";
-import AppBar from "~/components/layout/app-bar.vue";
+import AppBar from "~/components/layout/AppBar.vue";
 import AppBarBtn from "~/components/pages/torneos/torneo/app-bar-btn.vue";
 
 definePageMeta({

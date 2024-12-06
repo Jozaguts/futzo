@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useTournamentStore } from "~/store";
 import { onMounted } from "#imports";
-import AppBar from "~/components/layout/app-bar.vue";
+import AppBar from "~/components/layout/AppBar.vue";
 import TournamentAppBarButtons from "~/components/pages/torneos/tournament-app-bar-buttons.vue";
 import TournamentTable from "~/components/pages/torneos/tournament-table.vue";
 import NoTournaments from "~/components/pages/torneos/no-tournament.vue";

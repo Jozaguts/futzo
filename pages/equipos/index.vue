@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useTeamStore } from "~/store/useTeamStore";
-import AppBar from "~/components/layout/app-bar.vue";
+import AppBar from "~/components/layout/AppBar.vue";
 import AppBarButtons from "~/components/pages/equipos/team-navbar-buttons.vue";
 import NoTeams from "~/components/pages/equipos/NoTeams.vue";
 import CreateTeamDialog from "~/components/pages/equipos/CreateTeamDialog/index.vue";

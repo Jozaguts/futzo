@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import AppBar from "~/components/layout/app-bar.vue";
+import AppBar from "~/components/layout/AppBar.vue";
 import PageLayout from "~/components/shared/PageLayout.vue";
 import AppBarBtn from "~/components/pages/torneos/torneo/app-bar-btn.vue";
 import NoCalendar from "~/components/pages/torneos/no-calendar.vue";

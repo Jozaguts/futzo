@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import AppBar from "~/components/layout/app-bar.vue";
+import AppBar from "~/components/layout/AppBar.vue";
 import { defineProps } from "vue";
 import "vue3-perfect-scrollbar/style.css";
 // Define los tipos para las propiedades
