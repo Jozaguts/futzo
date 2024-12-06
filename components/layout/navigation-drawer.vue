@@ -29,9 +29,9 @@ const links = reactive([
     disabled: false,
   },
   {
-    icon: "futzo-icon:ball",
-    title: "MVP",
-    to: "/mvp",
+    icon: "mdi:soccer-field",
+    title: "Locaciones",
+    to: "/locaciones",
     disabled: false,
   },
 ]);

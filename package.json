@@ -33,6 +33,7 @@
     "vuetify-sonner": "^0.3.20"
   },
   "devDependencies": {
+    "@iconify-json/line-md": "^1.2.2",
     "@nuxt/icon": "^1.7.5",
     "sass-embedded": "^1.80.6"
   }
