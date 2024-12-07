@@ -63,7 +63,8 @@ const scheduleHandler = (model: Tournament) => {
         variant="outlined"
         class="mr-2 show-calendar-btn"
         @click="() => scheduleHandler(item as Tournament)"
-        >Ver calendario
+      >
+        <Icon name="futzo-icon:calendar" size="large"></Icon>
       </v-btn>
       <v-btn
         size="small"
