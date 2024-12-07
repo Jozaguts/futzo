@@ -4,8 +4,7 @@ import StepperContainer from "~/components/pages/torneos/stepper/index.vue";
 import { storeToRefs } from "pinia";
 import { useTournamentStore } from "~/store";
 
-const { steps, dialog, tournamentStoreRequest } =
-  storeToRefs(useTournamentStore());
+const { steps, dialog } = storeToRefs(useTournamentStore());
 const leaveHandler = () => {
   useTournamentStore().$reset();
 };

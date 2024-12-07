@@ -14,12 +14,11 @@ export default function (schemaNAme: string, initialValues = {}) {
 
   const fields = Object.keys(schema.fields);
 
-  const { defineField, handleSubmit, resetForm, validate, setValues } = useForm(
-    {
+  const { defineField, handleSubmit, resetForm, validate, setValues, meta } =
+    useForm({
       validationSchema: schema,
       initialValues,
-    },
-  );
+    });
   const fieldProps = reactive({} as any);
 
   fields.forEach((field: MaybeRefOrGetter) => {
@@ -36,6 +35,7 @@ export default function (schemaNAme: string, initialValues = {}) {
     fields: fieldProps,
     validate,
     setValues,
+    meta,
   };
 }
 
@@ -77,63 +77,62 @@ function getSchemaByName(name: string) {
           ),
         }),
       );
-      schemaFields.venues = yup.object().shape({
-        id: yup.number(),
-        name: yup.string(),
-        city: yup.string(),
-        address: yup.object({}),
-        tournament_availability: yup.object().shape({
-          monday: yup
-            .object()
-            .shape({
-              start: yup.string(),
-              end: yup.string(),
-            })
-            .nullable(),
-          tuesday: yup
-            .object()
-            .shape({
-              start: yup.string(),
-              end: yup.string(),
-            })
-            .nullable(),
-          wednesday: yup
-            .object()
-            .shape({
-              start: yup.string(),
-              end: yup.string(),
-            })
-            .nullable(),
-          thursday: yup
-            .object()
-            .shape({
-              start: yup.string(),
-              end: yup.string(),
-            })
-            .nullable(),
-          friday: yup
-            .object()
-            .shape({
-              start: yup.string(),
-              end: yup.string(),
-            })
-            .nullable(),
-          saturday: yup
-            .object()
-            .shape({
-              start: yup.string(),
-              end: yup.string(),
-            })
-            .nullable(),
-          sunday: yup
-            .object()
-            .shape({
-              start: yup.string(),
-              end: yup.string(),
-            })
-            .nullable(),
+      schemaFields.venues = yup.array().of(
+        yup.object().shape({
+          id: yup.number().required(t("forms.required")),
+          days: yup.object().shape({
+            monday: yup
+              .object()
+              .shape({
+                start: yup.string(),
+                end: yup.string(),
+              })
+              .nullable(),
+            tuesday: yup
+              .object()
+              .shape({
+                start: yup.string(),
+                end: yup.string(),
+              })
+              .nullable(),
+            wednesday: yup
+              .object()
+              .shape({
+                start: yup.string(),
+                end: yup.string(),
+              })
+              .nullable(),
+            thursday: yup
+              .object()
+              .shape({
+                start: yup.string(),
+                end: yup.string(),
+              })
+              .nullable(),
+            friday: yup
+              .object()
+              .shape({
+                start: yup.string(),
+                end: yup.string(),
+              })
+              .nullable(),
+            saturday: yup
+              .object()
+              .shape({
+                start: yup.string(),
+                end: yup.string(),
+              })
+              .nullable(),
+            sunday: yup
+              .object()
+              .shape({
+                start: yup.string(),
+                end: yup.string(),
+              })
+              .nullable(),
+          }),
         }),
-      });
+      );
       break;
     case "create-tournament-basic-info":
       schemaFields.id = yup.number().nullable();

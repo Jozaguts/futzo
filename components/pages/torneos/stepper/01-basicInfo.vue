@@ -10,7 +10,6 @@ import {
   saveImage,
 } from "~/composables/useImage";
 import { useCategoryStore, useLeaguesStore, useTournamentStore } from "~/store";
-import Calendar from "~/components/pages/torneos/calendar.vue";
 import { FUTBOL_11_ID } from "~/utils/constants";
 
 const { footballTypes } = storeToRefs(useLeaguesStore());
@@ -21,10 +20,14 @@ const { handleSubmit, resetForm, fields, validate, setValues } = useSchemas(
     ? "edit-tournament-basic-info"
     : "create-tournament-basic-info",
 );
-defineExpose({
-  validate,
-  handleSubmit,
-});
+const saveImageHandler = (image: File) => {
+  saveImage(image);
+  fields.image.fieldValue = image;
+};
+const removeImageHandler = () => {
+  removeImage();
+  fields.image.fieldValue = null;
+};
 onMounted(() => {
   if (tournamentStoreRequest.value?.basic) {
     setValues({ ...tournamentStoreRequest.value.basic });
@@ -39,40 +42,29 @@ onMounted(() => {
 onUnmounted(() => {
   resetForm();
 });
-const saveImageHandler = (image: File) => {
-  saveImage(image);
-  fields.image.fieldValue = image;
-};
-const removeImageHandler = () => {
-  removeImage();
-  fields.image.fieldValue = null;
-};
-const setDates = (dates: string[]) => {
-  fields.start_date.fieldValue = dates[0];
-  fields.end_date.fieldValue = dates[1];
-};
+defineExpose({
+  validate,
+  handleSubmit,
+});
 </script>
 <template>
   <v-container class="container">
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Nombre del torneo* </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <v-text-field
-          placeholder="p.ej. Torneo de verano"
-          outlined
-          v-model="fields.name.fieldValue"
-          v-bind="fields.name.fieldPropsValue"
-          density="compact"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Imagen del torneo </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
+    <BaseInput
+      v-model="fields.name"
+      label="Nombre del torneo*"
+      placeholder="p.ej. Torneo de verano"
+    />
+    <BaseInput label="Fecha de inicio*">
+      <template #input>
+        <BaseCalendarInput
+          v-model:start_date="fields.start_date.fieldValue"
+          v-model:end_date="fields.end_date.fieldValue"
+          :multiCalendar="true"
+        />
+      </template>
+    </BaseInput>
+    <BaseInput label="Imagen del torneo">
+      <template #input>
         <DragDropImage
           ref="dragDropImageRef"
           :image="imageForm"
@@ -86,13 +78,10 @@ const setDates = (dates: string[]) => {
           "
           >{{ fields.image.fieldPropsValue["error-messages"][0] ?? "" }}</span
         >
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Formato* </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
+      </template>
+    </BaseInput>
+    <BaseInput label="Formato*">
+      <template #input>
         <v-select
           no-data-text="No hay formatos"
           :items="formats"
@@ -112,13 +101,10 @@ const setDates = (dates: string[]) => {
             </v-list-item>
           </template>
         </v-select>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Tipo* </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
+      </template>
+    </BaseInput>
+    <BaseInput label="Tipo de torneo*">
+      <template #input>
         <v-select
           no-data-text="No hay formatos"
           :items="footballTypes"
@@ -138,32 +124,16 @@ const setDates = (dates: string[]) => {
             </v-list-item>
           </template>
         </v-select>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Categoría* </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
+      </template>
+    </BaseInput>
+    <BaseInput label="Categoría*">
+      <template #input>
         <CategorySelectComponent
           :disabled="false"
           v-model="fields.category_id.fieldValue"
           :errors="fields.category_id.fieldPropsValue"
         />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Fechas del torneo* </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <Calendar
-          :custom-class="{ paddingTop: 0, paddingBottom: 0 }"
-          ref="calendarRef"
-          @selected-dates="setDates"
-          :multi-calendar="true"
-        />
-      </v-col>
-    </v-row>
+      </template>
+    </BaseInput>
   </v-container>
 </template>

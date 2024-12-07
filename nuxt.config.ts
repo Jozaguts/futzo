@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     typedPages: false,
     appManifest: true,
   },
-  devtools: { enabled: false },
+  devtools: { enabled: true },
   app: {
     head: {
       script: [
@@ -22,6 +22,7 @@ export default defineNuxtConfig({
   },
   components: [
     { path: "~/components/shared", pathPrefix: false },
+    { path: "~/components/inputs/forms", pathPrefix: false },
     "~/components",
   ],
   // these 3 are necessary
