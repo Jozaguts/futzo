@@ -59,7 +59,7 @@ defineExpose({
         <BaseCalendarInput
           v-model:start_date="fields.start_date.fieldValue"
           v-model:end_date="fields.end_date.fieldValue"
-          :multiCalendar="true"
+          :multiCalendar="isEdition"
         />
       </template>
     </BaseInput>
