@@ -73,14 +73,34 @@ export const useAuthStore = defineStore("authStore", () => {
         toast("error", "Error al actualizar tu imagen", message);
       });
   };
+  const reSendCode = (email: string) => {
+    const client = useSanctumClient();
+    client(`api/v1/verify-code/resend?email=${email}`)
+      .then((response) => {
+        useToast().toast(
+          "success",
+          "Código reenviado",
+          "Tu código de verificación ha sido reenviado exitosamente. Revisa tu correo electrónico.",
+        );
+      })
+      .catch((error) => {
+        toast(
+          "error",
+          "Error al reenviar el código",
+          error?.data?.message ??
+            "Ha ocurrido un error al intentar reenviar tu código de verificación. Por favor, intenta nuevamente más tarde.",
+        );
+      });
+  };
 
   return {
     role,
     isSuperAdmin,
     user,
-    updateUser,
     image,
+    updateUser,
     updateImage,
     updatePassword,
+    reSendCode,
   };
 });

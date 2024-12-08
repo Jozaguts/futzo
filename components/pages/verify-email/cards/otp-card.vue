@@ -1,6 +1,13 @@
 <script setup lang="ts">
+import { useAuthStore } from "~/store";
+
 const code = ref("");
 const email = useRoute().query.email ?? "";
+const resendCode = () => {
+  if (email) {
+    useAuthStore().reSendCode(email as string);
+  }
+};
 </script>
 <template>
   <v-card width="100%" max-width="540" max-height="550" class="verify-card">
@@ -39,7 +46,9 @@ const email = useRoute().query.email ?? "";
         </v-btn>
         <div class="verify-card-options-container">
           <p class="verify-card-didnt-get-email">¿No recibiste el correo?</p>
-          <v-btn variant="text" class="mx-0 px-0">Reenviar</v-btn>
+          <v-btn variant="text" class="mx-0 px-0" @click="resendCode"
+            >Reenviar
+          </v-btn>
         </div>
         <div
           class="d-flex justify-center align-center my-5 cursor-pointer"
