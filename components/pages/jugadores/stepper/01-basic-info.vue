@@ -1,16 +1,10 @@
 <script lang="ts" setup>
 import DragDropImage from "~/components/pages/torneos/drag-drop-image.vue";
 import useSchemas from "~/composables/useSchemas";
-import VueDatePicker, { type DatePickerInstance } from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { usePlayerStore, useTeamStore } from "~/store";
 import { useCategoryStore } from "~/store/useCategoryStore";
-import {
-  dragDropImageRef,
-  imageForm,
-  removeImage,
-  saveImage,
-} from "~/composables/useImage";
+import { dragDropImageRef } from "~/composables/useImage";
 
 const { isEdition, playerStoreRequest } = storeToRefs(usePlayerStore());
 const { teams } = storeToRefs(useTeamStore());
@@ -19,30 +13,6 @@ const { handleSubmit, resetForm, fields, validate, setValues } = useSchemas(
   isEdition.value ? "edit-player-basic-info" : "create-player-basic-info",
   { nationality: "Mexicana" },
 );
-
-const datepicker = ref<DatePickerInstance>(null);
-const temporalDate = ref();
-const internalModelValue = ref();
-const saveImageHandler = (image: File) => {
-  saveImage(image);
-  fields.image.fieldValue = image;
-};
-const removeImageHandler = () => {
-  removeImage();
-  fields.image.fieldValue = null;
-};
-const formatDate = (date: Date) => {
-  return new Date(date).toLocaleDateString("es-MX", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-};
-const customPosition = () => ({ top: -0, left: "50%" });
-const setTemporalDate = (date: string) => {
-  temporalDate.value = formatDate(new Date(date));
-  return temporalDate.value;
-};
 const updateCategory = (teamId: number) => {
   const team = teams.value?.find((team) => team.id === teamId);
   if (team) {
@@ -69,103 +39,32 @@ defineExpose({
 </script>
 <template>
   <v-container class="pt-0">
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Nombre(s) del jugador*</span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <v-text-field
-          placeholder="p.ej. Cristiano"
-          outlined
-          v-model="fields.name.fieldValue"
-          v-bind="fields.name.fieldPropsValue"
-          density="compact"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Apellido(s) del jugador*</span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <v-text-field
-          placeholder="p.ej. Ronaldo"
-          outlined
-          v-model="fields.last_name.fieldValue"
-          v-bind="fields.last_name.fieldPropsValue"
-          density="compact"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Fecha de nacimiento*</span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8" classs="position-relative">
-        <client-only>
-          <VueDatePicker
-            :config="{
-              keepViewOnOffsetClick: true,
-            }"
-            ref="datepicker"
-            locale="es"
-            @internal-model-change="internalModelValue = $event"
-            :format="setTemporalDate"
-            v-model="fields.birthdate.fieldValue"
-            month-name-format="long"
-            @date-update="setTemporalDate"
-            :enable-time-picker="false"
-            :alt-position="customPosition"
-            :max-date="new Date()"
-          >
-            <template #action-row="{ selectDate }">
-              <div class="action-row w-100">
-                <div class="d-flex mt-2 justify-space-between w-100">
-                  <button
-                    class="select-button"
-                    @click="datepicker?.closeMenu()"
-                  >
-                    cancelar
-                  </button>
-                  <button class="select-button" @click="selectDate">
-                    Aplicar
-                  </button>
-                </div>
-              </div>
-            </template>
-          </VueDatePicker>
-        </client-only>
-        <div class="text-error ml-3 pt-1 text-caption">
-          {{ fields.birthdate.fieldPropsValue["error-messages"][0] ?? "" }}
-        </div>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1">Nacionalidad*</span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <v-text-field
-          placeholder="p.ej. Mexicana"
-          outlined
-          v-model="fields.nationality.fieldValue"
-          v-bind="fields.nationality.fieldPropsValue"
-          density="compact"
-        >
-        </v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1">Imagen del jugador* </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <DragDropImage
-          ref="dragDropImageRef"
-          :image="imageForm"
-          @image-dropped="saveImageHandler"
-          @remove-image="removeImageHandler"
+    <BaseInput
+      label="Nombre(s) del jugador*"
+      placeholder="p.ej. Cristiano"
+      v-model="fields.name"
+    ></BaseInput>
+    <BaseInput
+      placeholder="p.ej. Ronaldo"
+      label="Apellido(s) del jugador*"
+      v-model="fields.last_name"
+    />
+    <BaseInput label="Fecha de nacimiento*">
+      <template #input>
+        <BaseCalendarInput
+          v-model:start_date="fields.birthdate.fieldValue"
+          :multiCalendar="false"
         />
+      </template>
+    </BaseInput>
+    <BaseInput
+      v-model="fields.nationality"
+      label="Nacionalidad*"
+      placeholder="p.ej. Mexicana"
+    ></BaseInput>
+    <BaseInput label="Imagen del jugador">
+      <template #input>
+        <DragDropImage v-model="fields.image.fieldValue" />
         <span
           class="text-error text-caption"
           :class="
@@ -173,13 +72,10 @@ defineExpose({
           "
           >{{ fields.image.fieldPropsValue["error-messages"][0] ?? "" }}</span
         >
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Equipo</span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
+      </template>
+    </BaseInput>
+    <BaseInput label="Equipo">
+      <template #input>
         <v-autocomplete
           item-value="id"
           item-title="name"
@@ -189,13 +85,10 @@ defineExpose({
           :items="teams"
           @update:model-value="updateCategory"
         />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1">Categoría</span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
+      </template>
+    </BaseInput>
+    <BaseInput label="Categoría">
+      <template #input>
         <v-select
           item-value="id"
           item-title="name"
@@ -205,8 +98,8 @@ defineExpose({
           v-bind="fields.category_id.fieldPropsValue"
           :items="categories"
         />
-      </v-col>
-    </v-row>
+      </template>
+    </BaseInput>
   </v-container>
 </template>
 <style lang="sass">
