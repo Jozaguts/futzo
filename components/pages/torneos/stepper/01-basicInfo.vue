@@ -3,12 +3,6 @@ import { storeToRefs } from "pinia";
 import DragDropImage from "~/components/pages/torneos/drag-drop-image.vue";
 import useSchemas from "~/composables/useSchemas";
 import CategorySelectComponent from "~/components/inputs/CategoriesSelect.vue";
-import {
-  dragDropImageRef,
-  imageForm,
-  removeImage,
-  saveImage,
-} from "~/composables/useImage";
 import { useCategoryStore, useLeaguesStore, useTournamentStore } from "~/store";
 import { FUTBOL_11_ID } from "~/utils/constants";
 
@@ -20,19 +14,11 @@ const { handleSubmit, resetForm, fields, validate, setValues } = useSchemas(
     ? "edit-tournament-basic-info"
     : "create-tournament-basic-info",
 );
-const saveImageHandler = (image: File) => {
-  saveImage(image);
-  fields.image.fieldValue = image;
-};
-const removeImageHandler = () => {
-  removeImage();
-  fields.image.fieldValue = null;
-};
 onMounted(() => {
   if (tournamentStoreRequest.value?.basic) {
     setValues({ ...tournamentStoreRequest.value.basic });
     if (tournamentStoreRequest.value.basic.image) {
-      dragDropImageRef.value?.loadImage();
+      fields.image = tournamentStoreRequest.value.basic.image;
     }
   }
   if (!isEdition.value) {
@@ -65,12 +51,7 @@ defineExpose({
     </BaseInput>
     <BaseInput label="Imagen del torneo">
       <template #input>
-        <DragDropImage
-          ref="dragDropImageRef"
-          :image="imageForm"
-          @image-dropped="saveImageHandler"
-          @remove-image="removeImageHandler"
-        />
+        <DragDropImage v-model="fields.image.fieldValue" />
         <span
           class="text-error text-caption"
           :class="

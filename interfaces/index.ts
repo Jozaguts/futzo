@@ -1,3 +1,5 @@
+import type { ImageForm } from "~/models/tournament";
+
 export {};
 declare global {
   interface Window {
@@ -123,4 +125,12 @@ export type IPagination = {
   lastPage: number;
   total: number;
   sort: "asc" | "desc";
+};
+export type DragAndDrop = {
+  dragging: boolean;
+  dropped: boolean;
+  interval: number;
+  value: number;
+  bufferValue: number;
+  image: ImageForm;
 };

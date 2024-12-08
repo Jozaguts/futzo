@@ -1,41 +1,49 @@
 <script setup lang="ts">
-import type { ImageForm } from "~/models/tournament";
+import type { DragAndDrop } from "~/interfaces";
+import { MAX_SIZE } from "~/utils/constants";
 
-const state = reactive({
+const image = defineModel<File | null>({ default: null });
+const state = reactive<DragAndDrop>({
   dragging: false,
   dropped: false,
-  interval: null as number,
+  interval: 1,
   value: 10,
   bufferValue: 20,
+  image: {
+    file: image.value,
+    name: "",
+    size: 0,
+    hasError: false,
+    errors: {
+      name: null,
+      description: null,
+      action: null,
+    },
+  },
 });
+const inputRef = ref<HTMLElement>();
 const border = computed(() => {
-  if (image.value.hasError) return "";
-  return !state.dragging && !state.dropped
-    ? "primary thin"
-    : "primary sm opacity-100";
+  if (state.image.hasError) return "";
+  return `primary ${state.dragging || state.dropped ? "sm opacity-100" : "thin"}`;
 });
-const emits = defineEmits(["removeImage", "imageDropped"]);
-const MAX_SIZE = 2.0;
 
-const props = defineProps<{ image: ImageForm }>();
-const image = ref(props.image);
-const imageRef = ref(null);
-const formatImageName = computed(() => {
-  return (
-    image.value.name.replace(/[-_]/g, " ").charAt(0).toUpperCase() +
-    image.value.name.slice(1).replace(/[-_]/g, " ").substring(0, 20) +
-    (image.value.name.length > 20 ? "..." : "")
-  );
+const imageName = computed(() => {
+  const formattedName = state.image.name.replace(/[-_]/g, " ");
+  const capitalized =
+    formattedName.charAt(0).toUpperCase() + formattedName.slice(1);
+  return capitalized.length > 20
+    ? `${capitalized.substring(0, 20)}...`
+    : capitalized;
 });
 const validateSize = () => {
-  const imageSize = image.value.size / (1024 * 1024);
-  if (imageSize > MAX_SIZE) {
-    image.value.errors = {
-      name: imageSize.toFixed(2) + "MB",
+  const imageSizeMB = Number((state.image.size / (1024 * 1024)).toFixed(2));
+  if (imageSizeMB > MAX_SIZE) {
+    state.image.errors = {
+      name: `${imageSizeMB}MB`,
       description: "La imagen es muy pesada, prueba con otra.",
       action: "reintentar",
     };
-    image.value.hasError = true;
+    state.image.hasError = true;
   }
 };
 
@@ -43,38 +51,37 @@ const eventHandler = (e: DragEvent | Event) => {
   e.preventDefault();
   // console.log(e)
   state.dragging = false;
-  let files = [];
+  let files = [] as File[];
   if (e.type === "drop") {
-    files = e.dataTransfer.files;
+    const event = e as DragEvent;
+    files = event?.dataTransfer?.files as unknown as File[];
   } else if (e.type === "change") {
-    files = (e.target as HTMLInputElement).files;
+    files = (e.target as HTMLInputElement).files as unknown as File[];
   }
   if (files.length) {
     startBuffer();
     state.dropped = true;
-    image.value.file = files[0];
-    image.value.name = files[0].name;
-    image.value.size = files[0].size;
-    emits("imageDropped", files[0]);
+    image.value = files[0];
+    state.image.name = files[0].name;
+    state.image.size = files[0].size;
   }
 };
 const startBuffer = () => {
-  const updateValue = (val) => Math.min(val + Math.random() * 10, 100);
+  const updateValue = (val: number) => Math.min(val + Math.random() * 10, 100);
   state.interval = setInterval(() => {
-    if (image.value.hasError) {
+    if (state.image.hasError) {
       clearInterval(state.interval);
       return;
     }
     state.value = updateValue(state.value);
     state.bufferValue = updateValue(state.bufferValue);
-  }, 100);
+  }, 100) as unknown as number;
 };
 const removeImage = () => {
-  image.value.file = null;
-  image.value.name = "";
-  image.value.size = 0;
-  image.value.hasError = false;
-  image.value.errors = {
+  state.image.name = "";
+  state.image.size = 0;
+  state.image.hasError = false;
+  state.image.errors = {
     name: "",
     description: "",
     action: "",
@@ -83,13 +90,13 @@ const removeImage = () => {
   state.dropped = false;
   state.value = 10;
   state.bufferValue = 20;
-  emits("removeImage");
+  image.value = null;
 };
 const loadImage = () => {
   state.value = 100;
   state.bufferValue = 100;
   state.dropped = true;
-  image.value.name = "imagen.jpg";
+  state.image.name = "imagen.jpg";
 };
 watch(
   () => state.value,
@@ -100,7 +107,7 @@ watch(
   },
 );
 watch(
-  () => image.value.size,
+  () => state.image.size,
   () => {
     validateSize();
   },
@@ -109,7 +116,7 @@ onBeforeMount(() => {
   clearInterval(state.interval);
 });
 const showInput = () => {
-  const input = imageRef.value.$el.querySelector("input");
+  const input = inputRef.value?.$el?.querySelector("input");
   input.click();
 };
 defineExpose({
@@ -120,7 +127,7 @@ defineExpose({
   <div
     class="d-flex"
     :class="
-      image.hasError
+      state.image.hasError
         ? ' border-error border-md border-opacity-100  rounded rounded-lg'
         : ''
     "
@@ -158,7 +165,7 @@ defineExpose({
           <v-file-input
             :hidden="true"
             class="d-none"
-            ref="imageRef"
+            ref="inputRef"
             @change="eventHandler"
           ></v-file-input>
           <v-btn
@@ -178,7 +185,7 @@ defineExpose({
       >
         <div class="d-flex justify-space-between w-100 align-center">
           <p class="text-body-1">
-            {{ image.hasError ? image.errors?.name : formatImageName }}
+            {{ state.image.hasError ? state.image.errors?.name : imageName }}
           </p>
           <v-btn
             :icon="true"
@@ -190,7 +197,7 @@ defineExpose({
             @click="removeImage"
           >
             <Icon
-              v-if="!image.hasError"
+              v-if="!state.image.hasError"
               name="futzo-icon:trash"
               class="trash"
             ></Icon>
@@ -202,7 +209,7 @@ defineExpose({
           </v-btn>
         </div>
         <div
-          v-if="!image.hasError"
+          v-if="!state.image.hasError"
           class="d-flex w-100 justify-center align-center"
         >
           <v-progress-linear
@@ -215,14 +222,14 @@ defineExpose({
           <span class="ml-2 text-caption"> {{ state.value.toFixed(0) }}%</span>
         </div>
         <div v-else class="w-100">
-          <p class="text-caption">{{ image.errors?.description }}</p>
+          <p class="text-caption">{{ state.image.errors?.description }}</p>
           <v-btn
             @click="removeImage"
             density="compact"
             class="pa-0 text-capitalize"
             variant="text"
           >
-            {{ image.errors?.action }}
+            {{ state.image.errors?.action }}
           </v-btn>
         </div>
       </div>
