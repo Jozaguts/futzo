@@ -23,12 +23,11 @@ defineProps<{
   </div>
 </template>
 
-<style scoped>
+<style>
 :root {
-  --gray1: "#fcfcfc";
-  --gray4: "#f8f8f8";
-  --gray10: "#858585";
-  --gray12: "#171717";
+  --gray4: #f8f8f8;
+  --descriptionColor: #4d5761;
+  --titleColor: #111927;
 }
 
 .headless {
@@ -58,7 +57,7 @@ defineProps<{
 
 .headlessDescription {
   margin: 0;
-  color: var(--gray10);
+  color: var(--descriptionColor);
   font-size: 14px;
   line-height: 1;
   grid-area: content;
@@ -67,7 +66,7 @@ defineProps<{
 
 .headlessTitle {
   font-size: 14px;
-  color: var(--gray12);
+  color: var(--titleColor);
   font-weight: 500;
   line-height: 1;
   grid-area: title;
@@ -80,7 +79,7 @@ defineProps<{
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--gray10);
+  color: var(--descriptionColor);
   padding: 0;
   background: transparent;
   border: none;
@@ -89,6 +88,6 @@ defineProps<{
 }
 
 .headlessClose:hover {
-  color: var(--gray12);
+  color: var(--titleColor);
 }
 </style>
