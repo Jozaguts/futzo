@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import AuthProvider from "~/components/authentication/AuthProvider.vue";
+import { object, string } from "yup";
 
 const {
   isLoading,
@@ -14,13 +15,18 @@ const containSpecialCharacter = ref(false);
 const isPasswordVisible = ref(false);
 const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 const disabledButton = ref(true);
+const phoneEmailErroMessage = ref("");
+const prependInnerIcon = ref("mdi-account");
+const prefix = ref("");
+
 const validateIsEmail = (email: string) => {
   const re = /\S+@\S+\.\S+/;
   return re.test(email);
 };
+
 watch(
   form,
-  (value) => {
+  async (value) => {
     if (value.password) {
       atLest8Characters.value = value.password.length >= 8;
       containSpecialCharacter.value = specialCharacters.test(value.password);
@@ -34,14 +40,57 @@ watch(
         form.value.password === "" ||
         !validateIsEmail(form.value.email);
     }
+    if (value.email) {
+      const startsWithNumber = /^\d/.test(value.email);
+      if (startsWithNumber) {
+        prefix.value = "+";
+        prependInnerIcon.value = "mdi-phone";
+      } else {
+        prependInnerIcon.value = "mdi-email";
+      }
+      await emailValidationMessage();
+    } else {
+      prependInnerIcon.value = "mdi-account";
+      prefix.value = "";
+      await emailValidationMessage();
+    }
   },
   { deep: true },
 );
-
+const emailValidationMessage = async () => {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const phoneRegex = /^\+\d{2}\d{10}$/;
+  const schema = object().shape({
+    input: string()
+      .required("El campo es obligatorio.")
+      .test(
+        "is-email-or-phone",
+        "Debe ser un correo electrónico o un número de teléfono válido.",
+        (value) => {
+          const validEmail = emailRegex.test(value);
+          const validPhone = phoneRegex.test(value);
+          if (validEmail) {
+            prependInnerIcon.value = "mdi-email";
+          } else if (validPhone) {
+            prependInnerIcon.value = "mdi-phone";
+          }
+          return validEmail || validPhone;
+        },
+      ),
+  });
+  schema
+    .validate({ input: form.value.email })
+    .then(() => {
+      phoneEmailErroMessage.value = "";
+    })
+    .catch((err) => {
+      phoneEmailErroMessage.value = err.errors[0];
+    });
+};
 onMounted(() => {
   const route = useRoute();
   if (route.query.email) {
-    form.value.email = route.query.email;
+    form.value.email = route.query.email as string;
   }
 });
 </script>
@@ -81,12 +130,18 @@ onMounted(() => {
             </VCol>
           </transition>
           <VCol cols="12">
-            <label for="correo" class="text-caption">Correo electrónico*</label>
+            <label for="correo" class="text-caption"
+              >Teléfono o Correo electrónico *</label
+            >
             <VTextField
-              v-model="form.email"
-              type="email"
-              placeholder="Tu correo@futzo.io"
+              :prefix="prefix"
+              v-model.trim="form.email"
+              placeholder="ingresa tu teléfono o correo electrónico "
               density="compact"
+              :error-messages="phoneEmailErroMessage"
+              hint="+52 222 222 2222 o ejemplo@correo.com"
+              persistent-hint
+              :prepend-inner-icon="prependInnerIcon"
             />
           </VCol>
           <!-- password -->
