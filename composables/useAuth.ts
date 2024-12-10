@@ -5,6 +5,7 @@ export default function useAuth() {
   const form = ref({
     name: "",
     email: "",
+    phone: "",
     password: "",
     password_confirmation: "",
     remember: false,
