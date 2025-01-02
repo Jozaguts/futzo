@@ -10,7 +10,7 @@ definePageMeta({
 });
 </script>
 <template>
-    <v-container>
+    <v-container class="mb-8">
         <v-row>
             <v-col cols="12">
                 <v-empty-state
