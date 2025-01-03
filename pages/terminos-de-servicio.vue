@@ -18,7 +18,7 @@ definePageMeta({
                     title="Última actualización: 01-Ene-2025"
                 >
                     <template #media>
-                        <Icon name="futzo-icon:futzo-horizontal" size="100"></Icon>
+                        <Icon @click="$router.push({name:'index'})" class="cursor-pointer" name="futzo-icon:futzo-horizontal" size="100"></Icon>
                     </template>
                     <v-container>
                         <v-row>
@@ -270,6 +270,50 @@ definePageMeta({
                                         Estos términos se rigen por las leyes de los Estados Unidos
                                         Mexicanos. Cualquier controversia será resuelta ante los
                                         tribunales competentes de la Ciudad de México.
+                                    </p>
+                                </div>
+                                <div class="term-container">
+                                    <h3 class="text-subtitle-1">
+                                        Uso de Servicios de Registro y Verificación
+                                    </h3>
+                                    <p class="text-body-1">
+                                        Futzo integra servicios de terceros como Google, Facebook y WhatsApp para el registro, autenticación y verificación de usuarios. Al utilizar
+                                        estos servicios, el Usuario acepta las siguientes condiciones:
+                                    </p>
+                                    <p class="text-body-1">
+                                        Registro y Autenticación con Google y Facebook:
+                                    </p>
+                                    <ul class="term-list">
+                                        <li class="term-list-item">El Usuario debe autorizar a Futzo para acceder a los datos mínimos requeridos para completar el proceso de
+                                            registro (nombre, correo electrónico, etc.).
+                                        </li>
+                                        <li class="term-list-item">Futzo no será responsable por problemas relacionados con las cuentas de Google o Facebook (por ejemplo, pérdida
+                                            de acceso a estas cuentas).
+                                        </li>
+                                    </ul>
+                                    <p class="text-body-1">
+                                        Verificación mediante WhatsApp OTP:
+                                    </p>
+                                    <ul class="term-list">
+                                        <li class="term-list-item">El Usuario debe proporcionar un número telefónico válido para completar el proceso de verificación.</li>
+                                        <li class="term-list-item">Es responsabilidad del Usuario proteger el código de verificación y no compartirlo con terceros.</li>
+                                        <li class="term-list-item">El incumplimiento de esta regla puede resultar en la suspensión de la cuenta.</li>
+                                    </ul>
+                                    <p class="text-body-1">
+                                        Responsabilidad del Usuario:
+                                    </p>
+                                    <ul class="term-list">
+                                        <li class="term-list-item">El Usuario debe garantizar que la información proporcionada durante el registro sea verídica y actualizada.</li>
+                                        <li class="term-list-item">Futzo no será responsable por el uso indebido de los servicios de terceros, como la transmisión incorrecta de
+                                            códigos OTP o problemas técnicos ajenos a la plataforma.
+                                        </li>
+                                    </ul>
+                                    <p class="text-body-1">
+                                        Políticas de Terceros:
+                                    </p>
+                                    <p class="text-body-1">
+                                        Al utilizar Google, Facebook o WhatsApp como parte del proceso, el Usuario está sujeto a las políticas de privacidad de estas plataformas,
+                                        además de las políticas de Futzo.
                                     </p>
                                 </div>
                                 <div class="term-container">

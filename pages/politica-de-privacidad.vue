@@ -18,7 +18,7 @@ definePageMeta({
                     title="Última actualización: 01-Ene-2025"
                 >
                     <template #media>
-                        <Icon name="futzo-icon:futzo-horizontal" size="100"></Icon>
+                        <Icon @click="$router.push({name:'index'})" class="cursor-pointer" name="futzo-icon:futzo-horizontal" size="100"></Icon>
                     </template>
                     <v-container>
                         <v-row>
@@ -152,6 +152,46 @@ definePageMeta({
                                         aviso, se podrá
                                         presentar por correo certificado, tomando como fecha de presentación el día en que llegue al domicilio señalado en el presente
                                         documento.</p>
+                                    <h3 class="text-subtitle-1">Registro, Autenticación y Verificación</h3>
+                                    <p class="text-body-1">
+                                        Futzo utiliza servicios de terceros para facilitar el proceso de registro, autenticación y verificación de usuarios. A continuación, se
+                                        describen los detalles del tratamiento de datos relacionados con estos servicios:
+                                    </p>
+                                    <p class="text-body-1">
+                                        Google y Facebook
+                                    </p>
+                                    <ul class="term-list">
+                                        <li class="term-list-item">
+                                            Datos Recabados: Nombre, correo electrónico, foto de perfil y cualquier otra información que el Titular autorice explícitamente a
+                                            compartir a través de las APIs de Google y Facebook.
+                                        </li>
+                                        <li class="term-list-item">Finalidad: Permitir el registro e inicio de sesión de forma rápida y segura</li>
+                                    </ul>
+                                    <p class="text-body-1">Referencias a Políticas Externas:</p>
+                                    <ul class="term-list">
+                                        <li class="term-list-item"><a href="https://policies.google.com/privacy">Política de Privacidad de Google</a></li>
+                                        <li class="term-list-item"><a href="https://www.facebook.com/policy.php">Política de Privacidad de Facebook</a></li>
+                                    </ul>
+                                    <p class="text-body-1">
+                                        Verificación por WhatsApp OTP
+                                    </p>
+                                    <p class="text-body-1">
+                                        Datos Utilizados: Número de teléfono móvil.
+                                    </p>
+                                    <p class="text-body-1">
+                                        Finalidad: Validar la identidad del usuario mediante un código de verificación enviado a través de WhatsApp.
+                                    </p>
+                                    <p class="text-body-1">
+                                        Proveedores Externos: El servicio de envío de mensajes OTP es operado por terceros autorizados, quienes cumplen con estrictas medidas de
+                                        seguridad y
+                                        confidencialidad.
+                                    </p>
+                                    <h3 class="text-subtitle-1">Limitaciones y Seguridad</h3>
+                                    <p class="text-body-1">
+                                        Los datos compartidos con Google, Facebook o WhatsApp se utilizan exclusivamente para los fines especificados. Futzo no almacena ni
+                                        utiliza información
+                                        más allá de la autorizada por el Titular.
+                                    </p>
                                     <h3 class="text-subtitle-1">Cuestionarios y encuestas</h3>
                                     <p class="text-body-1">
                                         Ocasionalmente podemos solicitar a los visitantes de nuestro Sitio Web que rellenen cuestionarios y encuestas de opinión en línea sobre sus
