@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import AuthProvider from "~/components/authentication/AuthProvider.vue";
 import {ref} from "vue";
-import PasswordRules from "~/components/authentication/components/password-rules.vue";
+import PasswordRules from "~/components/authentication/components/PasswordRules.vue";
 import SearchCountry from "~/components/authentication/components/SearchCountry.vue";
+import ErrorMessages from "~/components/authentication/components/ErrorMessages.vue";
 
 const {
     name,
@@ -34,25 +35,25 @@ const areaCodeHandler = (code: string) => {
 </script>
 
 <template>
-    <VCard class="pa-2" max-width="448" elevation="0" color="background">
-        <VCardItem class="justify-center text-center">
+    <v-card class="pa-2" max-width="448" elevation="0" color="background">
+        <v-card-item class="justify-center text-center">
             <Logo width="165" class="mx-auto"/>
             <v-card-title class="text-black text-h4">{{ title }}</v-card-title>
             <v-card-subtitle>Administra torneos y ligas fácilmente.</v-card-subtitle>
-        </VCardItem>
-        <VCardText>
-            <VForm @submit.prevent="submitHandler" class="px-4">
-                <VRow>
-                    <VCol cols="12" class="text-center mt-8 pb-0">
+        </v-card-item>
+        <v-card-text>
+            <v-form @submit.prevent="submitHandler" class="px-4">
+                <v-row>
+                    <v-col cols="12" class="text-center mt-8 pb-0">
                         <AuthProvider/>
-                    </VCol>
-                    <VCol cols="12" class="d-flex align-center">
+                    </v-col>
+                    <v-col cols="12" class="d-flex align-center">
                         <VDivider/>
                         <span class="mx-4 separator-text">o</span>
                         <VDivider/>
-                    </VCol>
+                    </v-col>
                     <v-expand-transition>
-                        <VCol key="name" cols="12" v-if="showRegisterForm" class="pb-0">
+                        <v-col key="name" cols="12" v-if="showRegisterForm" class="pb-0">
                             <label for="nombre" class="input-label">Nombre*</label>
                             <VTextField
                                 tabindex="1"
@@ -66,9 +67,9 @@ const areaCodeHandler = (code: string) => {
                                         errors?.name
                                     }}</small>
                             </div>
-                        </VCol>
+                        </v-col>
                     </v-expand-transition>
-                    <VCol cols="12" class="pb-0">
+                    <v-col cols="12" class="pb-0">
                         <label for="correo" class="input-label"
                         >Teléfono o Correo electrónico *</label
                         >
@@ -93,9 +94,9 @@ const areaCodeHandler = (code: string) => {
                                     errors?.username
                                 }}</small>
                         </div>
-                    </VCol>
+                    </v-col>
                     <!-- password -->
-                    <VCol cols="12" class="pb-0">
+                    <v-col cols="12" class="pb-0">
                         <label for="password" class="input-label">Contraseña*</label>
                         <VTextField
                             tabindex="3"
@@ -114,8 +115,8 @@ const areaCodeHandler = (code: string) => {
                                     errors?.password
                                 }}</small>
                         </div>
-                    </VCol>
-                    <VCol cols="12" class="pb-0">
+                    </v-col>
+                    <v-col cols="12" class="pb-0">
                         <v-expand-transition>
                             <PasswordRules
                                 :model-value="password as string"
@@ -142,7 +143,7 @@ const areaCodeHandler = (code: string) => {
                             </v-checkbox>
                         </div>
                         <!--                                             login button-->
-                        <VBtn
+                        <v-btn
                             block
                             tabindex="4"
                             type="submit"
@@ -152,7 +153,7 @@ const areaCodeHandler = (code: string) => {
                             class="text-capitalize"
                         >
                             {{ showRegisterForm ? "Empezar" : "Iniciar sesión" }}
-                        </VBtn>
+                        </v-btn>
                         <div
                             class="text-caption text-secondary text-justify mt-2 ml-1"
                             v-auto-animate="{ duration: 100 }"
@@ -168,22 +169,14 @@ const areaCodeHandler = (code: string) => {
                                 >
                             </p>
                         </div>
-                    </VCol>
-                    <VCol class="d-flex align-content-center justify-start py-0">
-                        <small class="text-red pl-2 font-weight-bold" v-if="errorMessage">
-                            * {{ errorMessage }}
-                            <span>
-                <v-btn
-                    variant="text"
-                    class="text-primary"
-                    :to="'/verify-email?email=' + username"
-                >Verificar</v-btn
-                >
-              </span>
-                        </small>
-                    </VCol>
+                    </v-col>
+                    <ErrorMessages
+                        v-model:errors="errorMessage"
+                        :username="username"
+                        :area-code="areaCode"
+                    />
                     <!--                     create account -->
-                    <VCol cols="12" class="text-center text-base pb-0">
+                    <v-col cols="12" class="text-center text-base pb-0">
             <span>{{
                     showRegisterForm ? "¿Ya tienes cuenta?" : "¿No tienes cuenta? "
                 }}</span>
@@ -195,9 +188,9 @@ const areaCodeHandler = (code: string) => {
                         >
                             {{ showRegisterForm ? "Iniciar sesión" : "Crea una cuenta" }}
                         </a>
-                    </VCol>
-                </VRow>
-            </VForm>
-        </VCardText>
-    </VCard>
+                    </v-col>
+                </v-row>
+            </v-form>
+        </v-card-text>
+    </v-card>
 </template>

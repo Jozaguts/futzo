@@ -3,7 +3,7 @@ export default defineNitroPlugin((nitroApp) => {
     nitroApp.hooks.hook('render:html', (html, { event }) => {
        // remove query string from url to avoid showing loader on email verification page
         const url = event.node.req.originalUrl.split('?')[0]
-        if (url === '/verify-email') return
+        if (url === '/verificar') return
         html.head.push(`
         <style id="loader-styles">
         root {
@@ -55,7 +55,7 @@ export default defineNitroPlugin((nitroApp) => {
         html.head.push(`
         <script async>
         window.addEventListener('load', function () {
-            
+
             document.querySelector('#loading-bg').classList.add('d-none')
             document.querySelector('#loader-styles').remove()
         })

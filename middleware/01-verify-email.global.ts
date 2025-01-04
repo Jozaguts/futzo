@@ -5,7 +5,7 @@ export default defineNuxtRouteMiddleware((to) => {
   if (import.meta.server) return;
   const user = useSanctumUser<User>();
   const isLogin = !!user.value?.email;
-  if (isLogin && !user.value?.verified && to.name !== "verify-email") {
-    return navigateTo("/verify-email");
+  if (isLogin && !user.value?.verified && to.name !== "verificar") {
+    return navigateTo("/verificar");
   }
 });

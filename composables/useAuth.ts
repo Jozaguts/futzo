@@ -82,7 +82,7 @@ export default function useAuth() {
                     "Verificación de Cuenta",
                     "Por favor, revisa tu correo y sigue las instrucciones para completar la verificación de tu cuenta.",
                 );
-                useRouter().push("/verify-email?email=" + username.value);
+                useRouter().push("/verificar?email=" + username.value);
                 showRegisterForm.value = false;
             })
             .catch((error: FetchError) => {
@@ -118,7 +118,7 @@ export default function useAuth() {
 
     const onSuccess = (values: AuthForm) => {
         let form = {
-            [isPhone.value ? 'phone' : 'email']: `${areaCode.value}${values.username}`,
+            [isPhone.value ? 'phone' : 'email']: `${isPhone.value ? areaCode.value : ''}${values.username}`,
             password: values.password
         };
         if (values?.isSignUp) {
