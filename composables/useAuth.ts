@@ -59,9 +59,14 @@ export default function useAuth() {
     const showVerificationLink = ref(false);
     const areaCode = ref("+52");
 
-    async function signIn(username: string, password: string, remember: boolean) {
+    async function signIn(form: Partial<AuthForm>) {
+        errorMessage.value = ''
         const {login} = useSanctumAuth();
-        return await login({username, password, remember});
+        return await login({...form})
+            .catch((error: FetchError) => {
+                const {message, code} = useApiError(error);
+                errorMessage.value = message;
+            });
     }
 
     async function signUp(form: Partial<AuthForm>) {
@@ -69,7 +74,7 @@ export default function useAuth() {
         return await client("/auth/register", {
             method: "POST",
             body: JSON.stringify(form),
-        });
+        })
     }
 
     function signUpHandler(form: Partial<AuthForm>) {
