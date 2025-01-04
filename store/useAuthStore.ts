@@ -72,7 +72,7 @@ export const useAuthStore = defineStore("authStore", () => {
     const reSendCode = (param: string, type: string) => {
         const client = useSanctumClient();
         client(`api/v1/verify-code/resend?${type}=${param}`)
-            .then((response) => {
+            .then(() => {
                 useToast().toast(
                     "success",
                     "Código reenviado",

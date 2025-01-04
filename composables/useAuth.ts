@@ -56,15 +56,14 @@ export default function useAuth() {
     const showRegisterForm = ref(true);
     const isLoading = ref(false);
     const errorMessage = ref("");
-    const showVerificationLink = ref(false);
     const areaCode = ref("+52");
 
     async function signIn(form: Partial<AuthForm>) {
         errorMessage.value = ''
         const {login} = useSanctumAuth();
-        return await login({...form})
+        await login({...form})
             .catch((error: FetchError) => {
-                const {message, code} = useApiError(error);
+                const {message} = useApiError(error);
                 errorMessage.value = message;
             });
     }
@@ -100,25 +99,6 @@ export default function useAuth() {
             .finally(() => {
                 isLoading.value = false;
             });
-    }
-
-    function signInHandler({username, password}: { username: string, password: string }) {
-        errorMessage.value = "";
-        isLoading.value = true;
-        signIn(username, password, true)
-            .catch((error: FetchError) => {
-                const {code, message} = useApiError(error);
-                if (
-                    message === "Su dirección de correo electrónico no está verificada."
-                ) {
-                    showVerificationLink.value = true;
-                }
-                errorMessage.value = message;
-            })
-            .finally(() => {
-                isLoading.value = false;
-            });
-        // todo si el mensaje de error es Su dirección de correo electrónico no está verificada monstrar un link para el reenvio del correo
     }
 
     const onSuccess = (values: AuthForm) => {

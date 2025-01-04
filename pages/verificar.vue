@@ -33,7 +33,7 @@ const verify = (code?: string) => {
             [param.value.type]: param.value.value,
         },
     })
-        .then((response) => {
+        .then(() => {
             toast(
                 "success",
                 "Cuenta Verificada",
