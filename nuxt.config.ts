@@ -35,7 +35,7 @@ export default defineNuxtConfig({
     ssr: true,
     vuetify: {
         moduleOptions: {
-            styles: {configFile: "assets/scss/settings.scss"},
+            styles: {configFile: "assets/scss/components.scss"},
         },
         vuetifyOptions: "./vuetify.config.ts",
     },
@@ -51,7 +51,7 @@ export default defineNuxtConfig({
         ],
     },
     // end these 3 are necessary
-    css: ["~/assets/scss/main.scss"],
+    css: ["~/assets/scss/main.scss", "~/assets/scss/globals.scss"],
     build: {
         transpile: [
             // "vuetify",
@@ -116,7 +116,7 @@ export default defineNuxtConfig({
             preprocessorOptions: {
                 scss: {
                     quietDeps: true,
-                    api: "sass-embedded",
+                    api: "modern-compiler",
                 },
             },
         },

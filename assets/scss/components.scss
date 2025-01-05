@@ -1,0 +1,15 @@
+@forward 'vuetify/settings' with (
+  $button-height: 40px,
+  $overlay-scrim-background: rgba(12, 17, 29, 1),
+  $overlay-opacity: 0.9,
+  $list-color: rgba(#424242, 1),
+  $list-item-nav-title-font-weight: 600,
+  $list-item-nav-title-font-size: 16px,
+  $list-item-nav-title-line-height: 24px,
+  $list-item-padding: 16px 12px,
+  $app-bar-background: #f9fafb,
+  $toolbar-background: #f9fafb,
+  $field-control-padding-top: 8px,
+  $field-control-padding-bottom: 4px,
+  $field-control-padding-start: 16px
+);
