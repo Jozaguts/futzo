@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import AppBar from "~/components/layout/AppBar.vue";
+import NoLocations from "~/components/pages/ubicaciones/NoLocations.vue";
 import "vue3-perfect-scrollbar/style.css";
 // Define los tipos para las propiedades
 type Schedule = {
@@ -34,10 +35,6 @@ type Location = {
   availability: Availability;
   tags: Tag[];
 };
-
-defineProps<{
-  locations: Location[];
-}>();
 
 const capitalize = (str: string): string =>
     str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
@@ -92,6 +89,7 @@ const locations: Location[] = [
       </AppBar>
     </template>
     <template #default>
+      <NoLocations/>
     </template>
   </PageLayout>
 </template>

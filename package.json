@@ -23,6 +23,7 @@
     "@vueuse/nuxt": "^12.3.0",
     "nuxt": "^3.15.0",
     "nuxt-auth-sanctum": "^0.5.4",
+    "nuxt-svgo": "4.0.11",
     "nuxt-typed-router": "^3.7.2",
     "pinia": "^2.3.0",
     "v-phone-input": "^4.4.0",
@@ -39,5 +40,6 @@
     "@iconify-json/mdi": "^1.2.2",
     "@nuxt/icon": "^1.10.3",
     "sass-embedded": "^1.83.1"
-  }
+  },
+  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
 }
