@@ -29,7 +29,7 @@ const links = reactive([
     disabled: false,
   },
   {
-    icon: "mdi:soccer-field",
+    icon: "futzo-icon:location",
     title: "Ubicaciones",
     to: "/ubicaciones",
     disabled: false,
