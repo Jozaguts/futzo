@@ -80,13 +80,13 @@ export default function useAuth() {
         errorMessage.value = "";
         isLoading.value = true;
         signUp(form)
-            .then(() => {
+            .then(async () => {
                 useToast().toast(
                     "info",
                     "Verificación de Cuenta",
                     "Por favor, revisa tu correo y sigue las instrucciones para completar la verificación de tu cuenta.",
                 );
-                useRouter().push("/verificar?email=" + username.value);
+                await useRouter().push("/verificar?email=" + username.value);
                 showRegisterForm.value = false;
             })
             .catch((error: FetchError) => {
@@ -107,10 +107,10 @@ export default function useAuth() {
             password: values.password
         };
         if (values?.isSignUp) {
-            form.name = values.name
+            form.name = values.name as string
             signUpHandler(form)
         } else {
-            signIn(form)
+            (async () => await signIn(form))()
         }
     }
     const onInvalidSubmit = (values: any | AuthForm) => {

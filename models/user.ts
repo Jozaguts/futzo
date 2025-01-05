@@ -1,11 +1,11 @@
 export type AuthForm = {
-    isSignUp: boolean,
-    inputType: string,
-    name: string,
-    password: string,
-    username: string,
-    terms: boolean,
-    remember: boolean
+    remember?: boolean | null | undefined;
+    name?: string | null | undefined;
+    inputType?: string | null | undefined;
+    isSignUp: boolean | null;
+    terms: NonNullable<boolean | undefined>;
+    password: string;
+    username: string;
 }
 
 export interface User {

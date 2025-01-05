@@ -10,15 +10,25 @@ const props = defineProps({
         required: true,
     },
 })
+const modelValue = defineModel<string>('modelValue', {
+    type: String,
+    default: '',
+})
+const atLestIcon = computed(() => {
+    return modelValue.value.length > 7 ? 'futzo-icon:check-icon' : 'futzo-icon:check-icon-secondary'
+})
+const specialCharacterIcon = computed(() => {
+    return specialCharacters.test(modelValue.value as string) ? 'futzo-icon:check-icon' : 'futzo-icon:check-icon-secondary'
+})
 const rules = computed(() => {
     return [
         {
             text: 'Al menos 8 caracteres',
-            icon: props.modelValue?.length > 7 ? 'futzo-icon:check-icon' : 'futzo-icon:check-icon-secondary'
+            icon: atLestIcon.value
         },
         {
             text: 'Debe contener un carácter especial',
-            icon: specialCharacters.test(props.modelValue) ? 'futzo-icon:check-icon' : 'futzo-icon:check-icon-secondary'
+            icon: specialCharacterIcon.value
         }
     ]
 })

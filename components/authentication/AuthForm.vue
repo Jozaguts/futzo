@@ -119,7 +119,7 @@ const areaCodeHandler = (code: string) => {
                     <v-col cols="12" class="pb-0">
                         <v-expand-transition>
                             <PasswordRules
-                                :model-value="password as string"
+                                v-model:model-value="password"
                                 :show="showRegisterForm"
                             />
                         </v-expand-transition>
