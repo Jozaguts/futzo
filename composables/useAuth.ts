@@ -12,7 +12,6 @@ export default function useAuth() {
         validationSchema: toTypedSchema(
             object({
                 isSignUp: boolean().nullable().default(true),
-                terms: boolean().required("Debes aceptar los términos y condiciones").default(false),
                 remember: boolean().nullable(),
                 name: string().nullable()
                     .when('isSignUp', {
@@ -50,7 +49,6 @@ export default function useAuth() {
     const [name] = reactive(defineField("name"))
     const [password] = reactive(defineField("password"))
     const [username] = reactive(defineField("username"))
-    const [terms] = reactive(defineField("terms"))
     const [remember] = reactive(defineField("remember"))
     const [isSignUp] = reactive(defineField("isSignUp"))
     const showRegisterForm = ref(true);
@@ -130,11 +128,11 @@ export default function useAuth() {
         name,
         password,
         username,
-        terms,
         remember,
         errors,
         meta,
         areaCode,
+        isSignUp,
         showRegisterFormHandler,
         submitHandler,
     };

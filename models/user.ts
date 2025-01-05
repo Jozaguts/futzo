@@ -3,7 +3,6 @@ export type AuthForm = {
     name?: string | null | undefined;
     inputType?: string | null | undefined;
     isSignUp: boolean | null;
-    terms: NonNullable<boolean | undefined>;
     password: string;
     username: string;
 }
