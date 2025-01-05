@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import { useResizeObserver } from "@vueuse/core";
-import { useAuthStore, useGlobalStore } from "~/store";
-import { storeToRefs } from "pinia";
+import {useResizeObserver} from "@vueuse/core";
+import {useAuthStore, useGlobalStore} from "~/store";
+import {storeToRefs} from "pinia";
 
-const { drawer, drawerWidth, isMobile, rail } = storeToRefs(useGlobalStore());
+const {drawer, drawerWidth, isMobile, rail} = storeToRefs(useGlobalStore());
 const drawerRef = ref();
 const authStore = useAuthStore();
-const { user, isSuperAdmin } = storeToRefs(authStore);
+const {user, isSuperAdmin} = storeToRefs(authStore);
 
 const links = reactive([
-  { icon: "futzo-icon:home", title: "Dashboard", to: "/", disabled: false },
+  {icon: "futzo-icon:home", title: "Dashboard", to: "/", disabled: false},
   {
     icon: "futzo-icon:trophy",
     title: "Torneos",
@@ -30,15 +30,15 @@ const links = reactive([
   },
   {
     icon: "mdi:soccer-field",
-    title: "Locaciones",
-    to: "/locaciones",
+    title: "Ubicaciones",
+    to: "/ubicaciones",
     disabled: false,
   },
 ]);
-const { logout } = useSanctumAuth();
+const {logout} = useSanctumAuth();
 useResizeObserver(drawerRef, (entries) => {
   const entry = entries[0];
-  const { width } = entry.contentRect;
+  const {width} = entry.contentRect;
   drawerWidth.value = width;
 });
 watchEffect(() => {
@@ -48,44 +48,44 @@ watchEffect(() => {
 
 <template>
   <v-navigation-drawer
-    permanent
-    v-model="drawer"
-    :rail="rail"
-    rail-width="56"
-    @click="rail = false"
-    app
+      permanent
+      v-model="drawer"
+      :rail="rail"
+      rail-width="56"
+      @click="rail = false"
+      app
   >
     <v-list-item nav ref="drawerRef">
-      <Logo />
+      <Logo/>
       <template #prepend>
         <v-btn
-          v-if="rail"
-          variant="text"
-          icon="mdi-menu"
-          @click.stop="rail = !rail"
+            v-if="rail"
+            variant="text"
+            icon="mdi-menu"
+            @click.stop="rail = !rail"
         ></v-btn>
       </template>
       <template #append>
         <v-btn
-          icon="mdi-chevron-left"
-          variant="text"
-          @click.stop="rail = !rail"
+            icon="mdi-chevron-left"
+            variant="text"
+            @click.stop="rail = !rail"
         ></v-btn>
       </template>
     </v-list-item>
 
     <v-list density="compact" nav>
       <v-list-item
-        density="compact"
-        v-for="link in links"
-        :key="link.title"
-        link
-        :to="link.to"
-        :disabled="link.disabled"
-        :title="link.title"
+          density="compact"
+          v-for="link in links"
+          :key="link.title"
+          link
+          :to="link.to"
+          :disabled="link.disabled"
+          :title="link.title"
       >
         <template #prepend>
-          <Icon :name="link.icon" class="mr-2 drawer-icon" />
+          <Icon :name="link.icon" class="mr-2 drawer-icon"/>
         </template>
       </v-list-item>
     </v-list>
@@ -94,15 +94,15 @@ watchEffect(() => {
       <div v-if="!rail">
         <v-list density="compact" nav>
           <v-list-item
-            density="compact"
-            key="configuration"
-            link
-            to="/configuracion"
-            :disabled="false"
-            title="Configuración"
+              density="compact"
+              key="configuration"
+              link
+              to="/configuracion"
+              :disabled="false"
+              title="Configuración"
           >
             <template #prepend>
-              <Icon name="futzo-icon:settings-01" class="mr-2" />
+              <Icon name="futzo-icon:settings-01" class="mr-2"/>
             </template>
           </v-list-item>
         </v-list>
@@ -121,7 +121,7 @@ watchEffect(() => {
             <template v-slot:append>
               <v-btn @click="logout" variant="text" size="24">
                 <template #prepend>
-                  <Icon name="futzo-icon:logout" />
+                  <Icon name="futzo-icon:logout"/>
                 </template>
               </v-btn>
             </template>
@@ -131,22 +131,22 @@ watchEffect(() => {
       <div v-else class="text-center">
         <v-list density="compact" nav>
           <v-list-item
-            density="compact"
-            key="configuration"
-            link
-            to="/configuracion"
-            :disabled="false"
-            title="Configuración"
+              density="compact"
+              key="configuration"
+              link
+              to="/configuracion"
+              :disabled="false"
+              title="Configuración"
           >
             <template #prepend>
-              <Icon name="futzo-icon:settings-01" class="mr-2" />
+              <Icon name="futzo-icon:settings-01" class="mr-2"/>
             </template>
           </v-list-item>
         </v-list>
         <v-divider></v-divider>
         <v-btn @click="logout" variant="text">
           <template #prepend>
-            <Icon name="futzo-icon:logout" class="mr-2" />
+            <Icon name="futzo-icon:logout" class="mr-2"/>
           </template>
         </v-btn>
       </div>

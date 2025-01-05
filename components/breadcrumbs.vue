@@ -77,11 +77,11 @@ const breadcrumbs = computed((): Breadcrumbs[] => {
           disabled: false,
         },
       ]
-    case 'locaciones':
+    case 'ubicaciones':
       return [
         {
-          title: 'Locaciones',
-          href: '/locaciones',
+          title: 'Ubicaciones',
+          href: '/ubicaciones',
           disabled: false,
         },
       ]

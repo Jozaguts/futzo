@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { useLocationStore, useTournamentStore } from "~/store";
-import type { TournamentLocation } from "~/models/tournament";
+import {useLocationStore, useTournamentStore} from "~/store";
+import type {TournamentLocation} from "~/models/tournament";
 import AddLocationDialog from "~/components/pages/torneos/calendario/add-location.vue";
 
-const { locationDialog } = storeToRefs(useLocationStore());
-const { selectedLocationsHasError } = storeToRefs(useTournamentStore());
+const {locationDialog} = storeToRefs(useLocationStore());
+const {selectedLocationsHasError} = storeToRefs(useTournamentStore());
 const selectedLocations = defineModel<TournamentLocation[]>(
-  "selectedLocations",
-  { default: [] },
+    "selectedLocations",
+    {default: []},
 );
 defineProps({
   locations: {
@@ -17,12 +17,12 @@ defineProps({
 });
 
 function selectLocationHandler(
-  location: TournamentLocation,
-  isSelected: { value: boolean },
+    location: TournamentLocation,
+    isSelected: { value: boolean },
 ) {
   if (location) {
     if (
-      !selectedLocations.value.some((_location) => _location.id === location.id)
+        !selectedLocations.value.some((_location) => _location.id === location.id)
     ) {
       selectedLocations.value.push(location);
     }
@@ -34,18 +34,18 @@ function selectLocationHandler(
 
 function removeTag(location: TournamentLocation) {
   selectedLocations.value = selectedLocations.value.filter(
-    (_location) => _location.id !== location.id,
+      (_location) => _location.id !== location.id,
   );
 }
 
 watch(
-  selectedLocations,
-  () => {
-    if (selectedLocations.value.length > 0) {
-      selectedLocationsHasError.value = false;
-    }
-  },
-  { deep: true },
+    selectedLocations,
+    () => {
+      if (selectedLocations.value.length > 0) {
+        selectedLocationsHasError.value = false;
+      }
+    },
+    {deep: true},
 );
 </script>
 <template>
@@ -53,41 +53,41 @@ watch(
     <div class="pa-4">
       <p class="text-caption">
         <span :class="selectedLocationsHasError ? 'text-error' : ''"
-          >Selecciona las locaciones donde se jugarán los partidos.</span
+        >Selecciona las ubicaciones donde se jugarán los partidos.</span
         >
-        Si necesitas agregar una nueva locación, haz clic en 'Agregar Locación'.
+        Si necesitas agregar una nueva ubicación, haz clic en 'Agregar Ubicación'.
       </p>
       <v-responsive class="overflow-y-auto" max-height="280">
         <v-chip-group filter multiple class="mt-3" column v>
           <v-chip
-            v-for="location in locations"
-            :key="location.id"
-            :value="location.id"
-            selected-class="text-primary"
-            @group:selected="(e) => selectLocationHandler(location, e)"
+              v-for="location in locations"
+              :key="location.id"
+              :value="location.id"
+              selected-class="text-primary"
+              @group:selected="(e) => selectLocationHandler(location, e)"
           >
             <span class="d-inline-block text-truncate" style="max-width: 100px">
               {{
                 location?.tags?.length
-                  ? location.tags[0].name.es
-                  : location?.name
+                    ? location.tags[0].name.es
+                    : location?.name
               }}
             </span>
           </v-chip>
         </v-chip-group>
       </v-responsive>
     </div>
-    <v-divider />
+    <v-divider/>
     <div class="pa-2">
       <v-btn
-        color="primary"
-        size="small"
-        block
-        text="Agregar Nueva Locación"
-        variant="outlined"
-        @click="locationDialog = !locationDialog"
+          color="primary"
+          size="small"
+          block
+          text="Agregar Nueva Ubicación"
+          variant="outlined"
+          @click="locationDialog = !locationDialog"
       ></v-btn>
     </div>
   </v-sheet>
-  <AddLocationDialog v-model="locationDialog" />
+  <AddLocationDialog v-model="locationDialog"/>
 </template>
