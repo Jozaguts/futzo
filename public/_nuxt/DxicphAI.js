@@ -1,0 +1,1 @@
+import{b7 as u,bH as l,J as p,r as o,bI as b}from"./D38D1crN.js";const m=u("global",()=>{const{mobile:e}=l(),s=p(()=>e.value),t=o(!0),a=o(b().$config.public.appName),r=o(!1),n=o(0),c=o(!0),i=o(!0);return{isLoading:t,drawer:i,appName:a,isMobile:s,rail:r,drawerWidth:n,showFooter:c}});export{m as u};
