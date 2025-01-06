@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import {useTournamentStore} from "~/store";
+import {useLocationStore} from "~/store";
 import NoLocation from "~/assets/images/no-locations.svg";
 
-const {noTournaments, dialog} = storeToRefs(useTournamentStore());
+const {locationDialog, locations, noLocations} = storeToRefs(useLocationStore());
 </script>
 <template>
   <v-sheet
-      v-if="noTournaments"
+      v-if="noLocations"
       class="custom-v-sheet d-flex justify-center align-center fill-height"
   >
     <div class="d-flex flex-column align-center">
@@ -17,7 +17,7 @@ const {noTournaments, dialog} = storeToRefs(useTournamentStore());
           color="primary"
           variant="elevated"
           class="mt-4 text-body-1"
-          @click="dialog = !dialog"
+          @click="locationDialog = !locationDialog"
       >
         Crear una ubicación
       </v-btn>
