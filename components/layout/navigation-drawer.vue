@@ -9,30 +9,34 @@ const authStore = useAuthStore();
 const {user, isSuperAdmin} = storeToRefs(authStore);
 
 const links = reactive([
-  {icon: "futzo-icon:home", title: "Dashboard", to: "/", disabled: false},
+  {icon: "futzo-icon:home", title: "Dashboard", to: "/", disabled: false, class: 'mr-2 drawer-icon filled',},
   {
     icon: "futzo-icon:trophy",
     title: "Torneos",
     to: "/torneos",
     disabled: false,
+    class: 'mr-2 drawer-icon filled',
   },
   {
     icon: "futzo-icon:shirt-sharp",
     title: "Equipos",
     to: "/equipos",
     disabled: false,
+    class: 'mr-2 drawer-icon filled',
   },
   {
     icon: "futzo-icon:players",
     title: "Jugadores",
     to: "/jugadores",
     disabled: false,
+    class: 'mr-2 drawer-icon filled',
   },
   {
     icon: "futzo-icon:location",
     title: "Ubicaciones",
     to: "/ubicaciones",
     disabled: false,
+    class: 'mr-2 drawer-icon',
   },
 ]);
 const {logout} = useSanctumAuth();
@@ -84,8 +88,8 @@ watchEffect(() => {
           :disabled="link.disabled"
           :title="link.title"
       >
-        <template #prepend>
-          <Icon :name="link.icon" class="mr-2 drawer-icon"/>
+        <template #prepend="{isActive}">
+          <Icon :name="link.icon" :class="link.class" mode="svg"/>
         </template>
       </v-list-item>
     </v-list>
@@ -153,3 +157,13 @@ watchEffect(() => {
     </template>
   </v-navigation-drawer>
 </template>
+<style>
+.v-list-item--active .v-list-item__prepend svg.drawer-icon g path {
+  stroke: white !important;
+}
+
+.v-list-item--active .v-list-item__prepend svg.drawer-icon.filled g path,
+.v-list-item--active .v-list-item__prepend svg.drawer-icon.filled g g path {
+  fill: white !important;
+}
+</style>
