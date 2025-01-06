@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import AppBar from "~/components/layout/AppBar.vue";
 import NoLocations from "~/components/pages/ubicaciones/NoLocations.vue";
-import "vue3-perfect-scrollbar/style.css";
+import DialogLocation from "~/components/pages/ubicaciones/dialog/index.vue";
+
 // Define los tipos para las propiedades
 type Schedule = {
   start: string;
@@ -90,6 +91,7 @@ const locations: Location[] = [
     </template>
     <template #default>
       <NoLocations/>
+      <DialogLocation/>
     </template>
   </PageLayout>
 </template>

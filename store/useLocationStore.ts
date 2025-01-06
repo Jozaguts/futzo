@@ -5,6 +5,7 @@ export const useLocationStore = defineStore('locationStore', () => {
     const locations = ref<Location[]>();
     const locationStoreRequest = ref<LocationStoreRequest>();
     const locationDialog = ref(false);
+    const isEdition = ref(false);
 
     async function getLocations(): Promise<void> {
         const client = useSanctumClient();
@@ -38,6 +39,7 @@ export const useLocationStore = defineStore('locationStore', () => {
         locationStoreRequest,
         locationDialog,
         noLocations,
+        isEdition,
         storeLocation,
         getLocations,
     };
