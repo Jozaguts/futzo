@@ -4,29 +4,53 @@ import {useLocationStore} from "~/store";
 const {locationDialog, isEdition} = storeToRefs(useLocationStore());
 const title = isEdition.value ? "Editar ubicación" : "Crear una Ubicación";
 const subtitle = isEdition.value
-    ? "Modifica los detalles de la Ubicación."
-    : "Completa los detalles de la Ubicación.";
+    ? "Registra una nueva ubicación para el torneo. Una vez creada, podrás configurar su <br/> disponibilidad.."
+    : "Registra una nueva ubicación para el torneo. Una vez creada, podrás configurar su  <br/> disponibilidad.";
 
 </script>
 <template>
-  <v-card-item>
+  <v-card-item class="custom-card-item">
     <template #prepend>
       <v-sheet
           border="primary thin"
           class="mx-auto d-flex justify-center align-center mr-2 rounded-lg"
-          height="45"
-          width="45"
+          height="48"
+          width="48"
       >
-        <Icon name="futzo-icon:marker-pin"></Icon>
+        <Icon size="24" name="futzo-icon:marker-pin"></Icon>
       </v-sheet>
     </template>
-    <template #title
-    ><span class="">{{ title }}</span></template
-    >
-    <template #subtitle>{{ subtitle }}</template>
-    <template #append>
-      <Icon name="futzo-icon:x-dialog" @click="locationDialog = false"/>
+    <template #title><span class="title-dialog">{{ title }}</span></template>
+    <template #subtitle><span v-html="subtitle" class="subtitle-dialog"/>
+    </template>
+    <template #append class="test">
+      <Icon size="24" class="cursor-pointer custom-close-icon" name="futzo-icon:x-dialog" @click="locationDialog = false"/>
     </template>
   </v-card-item>
   <v-divider></v-divider>
 </template>
+<style scoped>
+.title-dialog {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 28px;
+  color: #101828FF;
+}
+
+.subtitle-dialog {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: #475467FF;
+}
+
+.custom-card-item {
+  padding: 16px 12px !important;
+}
+
+.custom-close-icon {
+  position: absolute;
+  top: 18px;
+  right: 16px;
+}
+</style>

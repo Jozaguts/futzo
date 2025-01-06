@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import HeaderCard from "~/components/pages/ubicaciones/dialog/Header.vue";
+import AddLocationForm from "~/components/pages/ubicaciones/AddLocationForm.vue";
 import {storeToRefs} from "pinia";
 import {useLocationStore} from "~/store";
 
@@ -7,6 +8,7 @@ const {locationDialog} = storeToRefs(useLocationStore());
 const leaveHandler = () => {
   // useLocationStore()?.$reset();
 };
+
 </script>
 <template>
   <v-dialog
@@ -21,7 +23,7 @@ const leaveHandler = () => {
         :style="{ overflow: $vuetify.display.mobile ? '' : 'hidden' }"
     >
       <HeaderCard/>
-
+      <AddLocationForm/>
     </v-card>
   </v-dialog>
 </template>
