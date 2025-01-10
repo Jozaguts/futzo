@@ -92,6 +92,7 @@ const locations: Location[] = [
     <template #default>
       <NoLocations/>
       <DialogLocation/>
+
     </template>
   </PageLayout>
 </template>

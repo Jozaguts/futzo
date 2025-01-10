@@ -1,86 +1,107 @@
 <script lang="ts" setup>
-import {object, string} from "yup";
-import type {AutocompletePrediction, Prediction} from "~/interfaces";
-import search from "~/utils/googleSearch";
+import {array, object, string} from 'yup'
+import type {AutocompletePrediction, Prediction} from '~/interfaces'
+import search from '~/utils/googleSearch'
+import type {Location} from '~/models/tournament'
+import {useLocationStore} from '~/store'
+import {ref} from 'vue'
+import type {LocationStoreRequest} from "~/models/Location";
 
-type LocationForm = {
-  location: any;
-  city: string;
-  address: string;
-}
-const {defineField, errors} = useForm<LocationForm>({
+const {locationStoreRequest} = storeToRefs(useLocationStore())
+const {defineField, errors, handleSubmit, resetForm} = useForm<LocationStoreRequest>({
   validationSchema: toTypedSchema(
-      object(
-          {
-            location: object()
-                .required("El campo es requerido"),
-            city: string().required("El campo es requerido"),
-            address: string().required("El campo es requerido"),
+      object({
+        name: string().transform((value) => {
+          handleSelectLocation(value)
+          if (value) {
+            autocomplete_prediction.value = value
+            return value.structured_formatting.secondary_text
+          } else {
+            city.value = ''
+            address.value = ''
+            autocomplete_prediction.value = {}
           }
-      ))
+        }).required('El campo es requerido'),
+        city: string().required('El campo es requerido'),
+        address: string().required('El campo es requerido'),
+        autocomplete_prediction: object().required('El campo es requerido'),
+        tags: array().of(string()),
+      })
+  ),
 })
-const [location] = reactive(defineField('location'))
+const [name] = reactive(defineField('name'))
 const [city] = reactive(defineField('city'))
 const [address] = reactive(defineField('address'))
-const tags = ref<string[]>([]);
-const tag = ref<string>();
-let foundedLocations = ref([] as Prediction[]);
+const [tags] = reactive(defineField('tags'))
+const [autocomplete_prediction] = reactive(defineField('autocomplete_prediction'))
+const tag = ref<string>()
+let foundedLocations = ref([] as Location[])
+const emits = defineEmits(['location-added'])
 
-const handleSelectLocation = (place: AutocompletePrediction) => {
-  const placeId = place?.place_id;
+const handleSelectLocation = (place: Prediction): void => {
+  const placeId = place?.place_id
   if (!placeId) {
-    address.value = "";
-    city.value = "";
-    return;
+    return
   }
   if (!window.google || !window.google.maps || !window.google.maps.places) {
-    console.error("Google Maps JavaScript API library is not loaded.");
-    return;
+    console.error('Google Maps JavaScript API library is not loaded.')
+    return
   }
 
   const placesService = new window.google.maps.places.PlacesService(
-      document.createElement("div"),
-  );
-  placesService.getDetails(
-      {placeId},
-      (place: AutocompletePrediction, status: string) => {
-        if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
-          console.error("Error fetching place details:", status);
-          return;
-        }
+      document.createElement('div')
+  )
+  placesService.getDetails({placeId}, (place: AutocompletePrediction, status: string) => {
 
-        const addressComponents = place.address_components;
-        const _address = place.formatted_address;
+    if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
+      console.error('Error fetching place details:', status)
+      return
+    }
 
-        let _city = "";
-        for (const component of addressComponents) {
-          if (component.types.includes("locality")) {
-            _city = component.long_name;
-            break;
-          }
-        }
+    const addressComponents = place.address_components
 
-        address.value = _address;
-        city.value = _city;
-      },
-  );
-};
+    for (const component of addressComponents) {
+      if (component.types.includes('locality')) {
+        city.value = component.long_name
+        address.value = place.formatted_address
+      }
+    }
+  })
+
+}
 const searchHandler = async (place: string) => {
-  const response = await search(place);
+  const response = await search(place)
   if (response) {
-    foundedLocations.value = response;
+    foundedLocations.value = response
   }
-};
+}
+
 const tagHandler = () => {
-  if (!tag.value) return;
-  if (!tags.value.includes(tag.value)) {
-    tags.value.push(tag.value);
-    tag.value = "";
-  }
-};
+  if (!tag.value || tags.value?.includes(tag.value)) return;
+  tags.value = tags.value ? [...tags.value, tag.value] : [tag.value];
+  tag.value = '';
+}
+
 const removeTag = (tag: string) => {
-  tags.value = tags.value.filter((t) => t !== tag);
-};
+  const index = tags?.value?.findIndex((t) => t === tag);
+  if (index !== -1) {
+    tags.value?.splice(index as number, 1);
+  }
+}
+const saveLocationHandler = handleSubmit(async (values) => {
+  locationStoreRequest.value = {...values, tags: tags.value as string[]};
+  useLocationStore().storeLocation()
+      .then(() => {
+        resetForm()
+        emits('location-added')
+      })
+});
+const itemProps = (item: Prediction) => {
+  return {
+    title: item.structured_formatting.main_text,
+    subtitle: item.structured_formatting.secondary_text,
+  }
+}
 </script>
 
 <template>
@@ -92,34 +113,19 @@ const removeTag = (tag: string) => {
         </v-col>
         <v-col cols="12" lg="8" md="8">
           <v-autocomplete
-              v-model="location"
+              v-model="name"
               placeholder="Selecciona una opción..."
-              @update:modelValue="handleSelectLocation"
               :items="foundedLocations"
               outlined
               return-object
+              :item-props="itemProps"
               hide-selected
               clear-on-select
               clearable
               no-filter
-              :error-messages="errors.location"
+              :error-messages="errors.name"
               @update:search="searchHandler($event)"
           >
-            <template v-slot:item="{ props, item }">
-              <v-list-item
-                  v-bind="props"
-                  two-line
-                  :title="item.value.structured_formatting.main_text"
-                  :subtitle="item.value.structured_formatting.secondary_text"
-              ></v-list-item>
-            </template>
-            <template v-slot:selection="{ item }">
-              <v-list-item>
-                <v-list-item-title
-                    v-text="item.value.structured_formatting.main_text"
-                ></v-list-item-title>
-              </v-list-item>
-            </template>
           </v-autocomplete>
         </v-col>
       </v-row>
@@ -133,7 +139,7 @@ const removeTag = (tag: string) => {
               density="compact"
               variant="outlined"
               readonly
-              v-model="city"
+              :value="city"
               :error-messages="errors.city"
           ></v-text-field>
         </v-col>
@@ -148,8 +154,7 @@ const removeTag = (tag: string) => {
               density="compact"
               variant="outlined"
               readonly
-              v-model="address"
-              :error-messages="errors.address"
+              :value="address"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -163,8 +168,8 @@ const removeTag = (tag: string) => {
               density="compact"
               variant="outlined"
               hint="Presiona ENTER o + para agregar"
-              v-model.trim="tag"
               @keyup.enter="tagHandler"
+              v-model="tag"
               persistent-hint
           >
             <template #append>
@@ -174,11 +179,11 @@ const removeTag = (tag: string) => {
               </v-btn>
             </template>
           </v-text-field>
-          <v-chip-group colum variant="outlined">
+          <v-chip-group colum variant="outlined" center-active>
             <v-chip
                 color="primary"
-                v-for="(tag, index) in tags"
-                :key="index"
+                v-for="(tag) in tags"
+                :key="tag"
                 :value="tag"
                 @click:close="removeTag(tag)"
                 closable
@@ -191,7 +196,7 @@ const removeTag = (tag: string) => {
       <v-row>
         <v-col cols="12 d-flex justify-space-between">
           <SecondaryBtn class="bg-white w-btn " text="Cancelar"/>
-          <PrimaryBtn class="w-btn" text="Crear ubicación" icon="''" variant="elevated"/>
+          <PrimaryBtn class="w-btn" text="Crear ubicación" icon="''" variant="elevated" @click="saveLocationHandler"/>
         </v-col>
       </v-row>
     </v-container>

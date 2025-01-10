@@ -23,7 +23,7 @@ const leaveHandler = () => {
         :style="{ overflow: $vuetify.display.mobile ? '' : 'hidden' }"
     >
       <HeaderCard/>
-      <AddLocationForm/>
+      <AddLocationForm @location-added="() => locationDialog = false"/>
     </v-card>
   </v-dialog>
 </template>
