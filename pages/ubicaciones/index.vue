@@ -2,6 +2,7 @@
 import AppBar from "~/components/layout/AppBar.vue";
 import NoLocations from "~/components/pages/ubicaciones/NoLocations.vue";
 import DialogLocation from "~/components/pages/ubicaciones/dialog/index.vue";
+import LocationCardContainer from "~/components/pages/ubicaciones/LocationCardContainer.vue";
 
 // Define los tipos para las propiedades
 type Schedule = {
@@ -39,37 +40,37 @@ type Location = {
 
 const capitalize = (str: string): string =>
     str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-const locations: Location[] = [
-  {
-    id: 1,
-    name: "Estadio Central",
-    address: {
-      street: "Av. Principal #123",
-      city: "Ciudad Central",
-    },
-    availability: {
-      monday: {start: "08:00", end: "20:00"},
-      tuesday: {start: "10:00", end: "18:00"},
-      wednesday: null,
-      thursday: null,
-      friday: {start: "08:00", end: "20:00"},
-      saturday: {start: "09:00", end: "14:00"},
-      sunday: null,
-    },
-    tags: [
-      {id: 1, name: "Lun."},
-      {id: 2, name: "Mar."},
-      {id: 2, name: "Mie."},
-      {id: 3, name: "Jue."},
-      {id: 3, name: "Vie."},
-      {id: 3, name: "Sab."},
-      {id: 3, name: "Dom."},
-      // { id: 1, name: "Césped Natural" },
-      // { id: 2, name: "Estadio Cubierto" },
-      // { id: 3, name: "Capacidad: 10,000" },
-    ],
-  },
-];
+// const locations: Location[] = [
+//   {
+//     id: 1,
+//     name: "Estadio Central",
+//     address: {
+//       street: "Av. Principal #123",
+//       city: "Ciudad Central",
+//     },
+//     availability: {
+//       monday: {start: "08:00", end: "20:00"},
+//       tuesday: {start: "10:00", end: "18:00"},
+//       wednesday: null,
+//       thursday: null,
+//       friday: {start: "08:00", end: "20:00"},
+//       saturday: {start: "09:00", end: "14:00"},
+//       sunday: null,
+//     },
+//     tags: [
+//       {id: 1, name: "Lun."},
+//       {id: 2, name: "Mar."},
+//       {id: 2, name: "Mie."},
+//       {id: 3, name: "Jue."},
+//       {id: 3, name: "Vie."},
+//       {id: 3, name: "Sab."},
+//       {id: 3, name: "Dom."},
+//       // { id: 1, name: "Césped Natural" },
+//       // { id: 2, name: "Estadio Cubierto" },
+//       // { id: 3, name: "Capacidad: 10,000" },
+//     ],
+//   },
+// ];
 </script>
 
 <template>
@@ -92,7 +93,7 @@ const locations: Location[] = [
     <template #default>
       <NoLocations/>
       <DialogLocation/>
-
+      <LocationCardContainer/>
     </template>
   </PageLayout>
 </template>

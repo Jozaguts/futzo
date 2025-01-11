@@ -1,11 +1,14 @@
 export type Location = {
-  id?: number;
-  name: string;
-  city: string;
-  address: string;
-  autocomplete_prediction: object;
+    id?: number;
+    name: string;
+    city: string;
+    address: string;
+    autocomplete_prediction: object;
 };
 
 export type LocationStoreRequest = {
-  tags: string[];
+    tags: string[];
 } & Location;
+export type LocationCard = {
+    image: string
+} & LocationStoreRequest;
