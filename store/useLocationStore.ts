@@ -1,8 +1,8 @@
 import {defineStore} from 'pinia';
-import type {Location, LocationStoreRequest} from '~/models/Location';
+import type {LocationCard, LocationStoreRequest} from '~/models/Location';
 
 export const useLocationStore = defineStore('locationStore', () => {
-    const locations = ref<Location[]>();
+    const locations = ref<LocationCard[]>();
     const locationStoreRequest = ref<LocationStoreRequest>();
     const locationDialog = ref(false);
     const isEdition = ref(false);
@@ -33,7 +33,11 @@ export const useLocationStore = defineStore('locationStore', () => {
     const noLocations = computed(
         () => !locations.value || locations.value.length === 0
     );
-
+    onMounted(async () => {
+        if (!locations.value) {
+            await getLocations();
+        }
+    });
     return {
         locations,
         locationStoreRequest,
