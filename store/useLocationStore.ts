@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia';
 import type {LocationCard, LocationStoreRequest} from '~/models/Location';
+import {useApiError} from "~/composables/useApiError";
 
 export const useLocationStore = defineStore('locationStore', () => {
     const locations = ref<LocationCard[]>();
@@ -7,6 +8,10 @@ export const useLocationStore = defineStore('locationStore', () => {
     const locationDialog = ref(false);
     const isEdition = ref(false);
     const toUpdate = ref<LocationCard>();
+    const locationToDelete = ref<{ id: number | null, show: boolean }>({
+        id: null,
+        show: false
+    });
 
     async function getLocations(): Promise<void> {
         const client = useSanctumClient();
@@ -28,7 +33,16 @@ export const useLocationStore = defineStore('locationStore', () => {
                 'Ubicación creada',
                 'La  nueva ubicación se ha agregado exitosamente.'
             );
-        });
+        })
+            .catch((error) => {
+                const {message} = useApiError(error);
+                const {toast} = useToast();
+                toast(
+                    'error',
+                    'Error al crear la ubicación',
+                    message ?? 'Ocurrió un error al intentar crear la ubicación.'
+                );
+            });
     }
 
     async function updateLocation(): Promise<void> {
@@ -62,6 +76,7 @@ export const useLocationStore = defineStore('locationStore', () => {
         noLocations,
         isEdition,
         toUpdate,
+        locationToDelete,
         storeLocation,
         updateLocation,
         getLocations,

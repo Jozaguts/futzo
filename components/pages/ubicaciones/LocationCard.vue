@@ -3,14 +3,18 @@ import type {LocationCard} from "~/models/Location";
 import CardMenu from "~/components/pages/ubicaciones/CardMenu.vue";
 import {useLocationStore} from "~/store";
 
-const {location} = defineProps<{ location: LocationCard }>()
-const clickHandler = (action: 'ELiminar' | 'Editar') => {
-  if (action === 'Editar') {
-    useLocationStore().isEdition = true
-    useLocationStore().locationDialog = true
-    useLocationStore().toUpdate = location
-  }
+const {isEdition, locationDialog, locationToDelete, toUpdate} = storeToRefs(useLocationStore())
 
+const {location} = defineProps<{ location: LocationCard }>()
+const clickHandler = (action: 'Eliminar' | 'Editar') => {
+  if (action === 'Editar') {
+    isEdition.value = true
+    locationDialog.value = true
+    toUpdate.value = location
+  } else if (action === 'Eliminar') {
+    locationToDelete.value.id = location.id as number
+    locationToDelete.value.show = true
+  }
 }
 </script>
 <template>

@@ -3,7 +3,10 @@ import AppBar from "~/components/layout/AppBar.vue";
 import NoLocations from "~/components/pages/ubicaciones/NoLocations.vue";
 import DialogLocation from "~/components/pages/ubicaciones/dialog/index.vue";
 import LocationCardContainer from "~/components/pages/ubicaciones/LocationCardContainer.vue";
+import ConfirmDialog from "~/components/shared/confirm-dialog.vue";
 import {useLocationStore} from "~/store";
+
+const {isEdition, locationDialog, locationToDelete} = storeToRefs(useLocationStore())
 
 // Define los tipos para las propiedades
 type Schedule = {
@@ -73,8 +76,11 @@ const capitalize = (str: string): string =>
 //   },
 // ];
 const showStoreLocationDialog = () => {
-  useLocationStore().isEdition = false
-  useLocationStore().locationDialog = true
+  isEdition.value = false
+  locationDialog.value = true
+}
+const deleteLocationHandler = () => {
+  console.log('Location deleted')
 }
 </script>
 
@@ -100,6 +106,11 @@ const showStoreLocationDialog = () => {
       <NoLocations/>
       <DialogLocation/>
       <LocationCardContainer/>
+      <ConfirmDialog
+          v-model:model="locationToDelete.show"
+          title="¿Estás seguro que quieres eliminar esta ubicación?"
+          @action-confirmed="deleteLocationHandler"
+      />
     </template>
   </PageLayout>
 </template>
