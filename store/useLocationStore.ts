@@ -1,6 +1,7 @@
 import {defineStore} from 'pinia';
 import type {LocationCard, LocationStoreRequest} from '~/models/Location';
 import {useApiError} from "~/composables/useApiError";
+import type {IPagination} from "~/interfaces";
 
 export const useLocationStore = defineStore('locationStore', () => {
     const locations = ref<LocationCard[]>();
@@ -12,11 +13,31 @@ export const useLocationStore = defineStore('locationStore', () => {
         id: null,
         show: false
     });
+    const pagination = ref<IPagination>({
+        currentPage: 1,
+        perPage: 8,
+        lastPage: 1,
+        total: 0,
+        sort: "asc",
+    });
 
     async function getLocations(): Promise<void> {
         const client = useSanctumClient();
-        await client('/api/v1/admin/locations').then((data) => {
-            locations.value = data;
+        await client(
+            `/api/v1/admin/locations?per_page=${pagination.value.perPage}&page=${pagination.value.currentPage}&sort=${pagination.value.sort}`,
+        ).then(({data, meta}) => {
+            pagination.value = {
+                currentPage: meta.current_page,
+                lastPage: meta.last_page,
+                perPage: meta.per_page,
+                total: meta.total,
+                sort: pagination.value.sort
+            }
+            if (pagination.value.currentPage > 1) {
+                locations.value = [...locations.value as LocationCard[], ...data];
+            } else {
+                locations.value = data;
+            }
         });
     }
 
@@ -77,6 +98,7 @@ export const useLocationStore = defineStore('locationStore', () => {
         isEdition,
         toUpdate,
         locationToDelete,
+        pagination,
         storeLocation,
         updateLocation,
         getLocations,
