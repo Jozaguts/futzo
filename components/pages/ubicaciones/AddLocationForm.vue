@@ -7,7 +7,7 @@ import {useLocationStore} from '~/store'
 import {ref} from 'vue'
 import type {LocationStoreRequest} from "~/models/Location";
 
-const {locationStoreRequest} = storeToRefs(useLocationStore())
+const {locationStoreRequest, isEdition} = storeToRefs(useLocationStore())
 const {defineField, errors, handleSubmit, resetForm} = useForm<LocationStoreRequest>({
   validationSchema: toTypedSchema(
       object({
@@ -37,7 +37,6 @@ const [autocomplete_prediction] = reactive(defineField('autocomplete_prediction'
 const tag = ref<string>()
 let foundedLocations = ref([] as Location[])
 const emits = defineEmits(['location-added'])
-
 const handleSelectLocation = (place: Prediction): void => {
   const placeId = place?.place_id
   if (!placeId) {
@@ -75,13 +74,11 @@ const searchHandler = async (place: string) => {
     foundedLocations.value = response
   }
 }
-
 const tagHandler = () => {
   if (!tag.value || tags.value?.includes(tag.value)) return;
   tags.value = tags.value ? [...tags.value, tag.value] : [tag.value];
   tag.value = '';
 }
-
 const removeTag = (tag: string) => {
   const index = tags?.value?.findIndex((t) => t === tag);
   if (index !== -1) {
@@ -90,11 +87,20 @@ const removeTag = (tag: string) => {
 }
 const saveLocationHandler = handleSubmit(async (values) => {
   locationStoreRequest.value = {...values, tags: tags.value as string[]};
-  useLocationStore().storeLocation()
-      .then(() => {
-        resetForm()
-        emits('location-added')
-      })
+  if (isEdition.value) {
+    useLocationStore().updateLocation()
+        .then(() => {
+          resetForm()
+          emits('location-added')
+        })
+  } else {
+    useLocationStore().storeLocation()
+        .then(() => {
+          resetForm()
+          emits('location-added')
+        })
+  }
+
 });
 const itemProps = (item: Prediction) => {
   return {
@@ -102,6 +108,16 @@ const itemProps = (item: Prediction) => {
     subtitle: item.structured_formatting.secondary_text,
   }
 }
+onMounted(() => {
+  if (isEdition.value) {
+    const {toUpdate} = useLocationStore()
+    name.value = toUpdate?.autocomplete_prediction as unknown as string
+    if (toUpdate?.tags.length) {
+      tags.value = toUpdate.tags
+    }
+  }
+})
+const textButton = computed(() => isEdition.value ? 'Guardar Cambios' : 'Crear ubicación')
 </script>
 
 <template>
@@ -196,7 +212,7 @@ const itemProps = (item: Prediction) => {
       <v-row>
         <v-col cols="12 d-flex justify-space-between">
           <SecondaryBtn class="bg-white w-btn " text="Cancelar"/>
-          <PrimaryBtn class="w-btn" text="Crear ubicación" icon="''" variant="elevated" @click="saveLocationHandler"/>
+          <PrimaryBtn class="w-btn" :text="textButton" icon="''" variant="elevated" @click="saveLocationHandler"/>
         </v-col>
       </v-row>
     </v-container>

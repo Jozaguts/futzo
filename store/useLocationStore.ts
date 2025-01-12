@@ -6,6 +6,7 @@ export const useLocationStore = defineStore('locationStore', () => {
     const locationStoreRequest = ref<LocationStoreRequest>();
     const locationDialog = ref(false);
     const isEdition = ref(false);
+    const toUpdate = ref<LocationCard>();
 
     async function getLocations(): Promise<void> {
         const client = useSanctumClient();
@@ -30,6 +31,22 @@ export const useLocationStore = defineStore('locationStore', () => {
         });
     }
 
+    async function updateLocation(): Promise<void> {
+        const client = useSanctumClient();
+        await client(`/api/v1/admin/locations/${toUpdate.value?.id}`, {
+            method: 'PUT',
+            body: locationStoreRequest.value,
+        }).then(async () => {
+            await getLocations();
+            const {toast} = useToast();
+            toast(
+                'success',
+                'Ubicación actualizada',
+                'La ubicación se ha actualizado exitosamente.'
+            );
+        });
+    }
+
     const noLocations = computed(
         () => !locations.value || locations.value.length === 0
     );
@@ -44,7 +61,9 @@ export const useLocationStore = defineStore('locationStore', () => {
         locationDialog,
         noLocations,
         isEdition,
+        toUpdate,
         storeLocation,
+        updateLocation,
         getLocations,
     };
 });

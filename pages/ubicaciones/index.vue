@@ -3,6 +3,7 @@ import AppBar from "~/components/layout/AppBar.vue";
 import NoLocations from "~/components/pages/ubicaciones/NoLocations.vue";
 import DialogLocation from "~/components/pages/ubicaciones/dialog/index.vue";
 import LocationCardContainer from "~/components/pages/ubicaciones/LocationCardContainer.vue";
+import {useLocationStore} from "~/store";
 
 // Define los tipos para las propiedades
 type Schedule = {
@@ -71,6 +72,10 @@ const capitalize = (str: string): string =>
 //     ],
 //   },
 // ];
+const showStoreLocationDialog = () => {
+  useLocationStore().isEdition = false
+  useLocationStore().locationDialog = true
+}
 </script>
 
 <template>
@@ -85,6 +90,7 @@ const capitalize = (str: string): string =>
                 icon="futzo-icon:plus"
                 variant="tonal"
                 class="mr-8"
+                @click="showStoreLocationDialog"
             ></PrimaryBtn>
           </div>
         </template>

@@ -1,13 +1,16 @@
 <script lang="ts" setup>
 import type {LocationCard} from "~/models/Location";
 import CardMenu from "~/components/pages/ubicaciones/CardMenu.vue";
+import {useLocationStore} from "~/store";
 
 const {location} = defineProps<{ location: LocationCard }>()
 const clickHandler = (action: 'ELiminar' | 'Editar') => {
-  console.log({
-    locationId: location.id,
-    action
-  })
+  if (action === 'Editar') {
+    useLocationStore().isEdition = true
+    useLocationStore().locationDialog = true
+    useLocationStore().toUpdate = location
+  }
+
 }
 </script>
 <template>
