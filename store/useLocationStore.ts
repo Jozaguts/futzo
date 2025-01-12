@@ -82,6 +82,25 @@ export const useLocationStore = defineStore('locationStore', () => {
         });
     }
 
+    async function deleteLocation(): Promise<void> {
+        const client = useSanctumClient();
+        await client(`/api/v1/admin/locations/${locationToDelete.value.id}`, {
+            method: 'DELETE',
+        }).then(async () => {
+                await getLocations();
+                const {toast} = useToast();
+                toast(
+                    'success',
+                    'Ubicación eliminada',
+                    'La ubicación se ha eliminado exitosamente.'
+                );
+                locations.value = locations.value?.filter((location) => location.id !== locationToDelete.value.id);
+                locationToDelete.value.show = false;
+                locationToDelete.value.id = null;
+            }
+        );
+    }
+
     const noLocations = computed(
         () => !locations.value || locations.value.length === 0
     );
@@ -99,6 +118,7 @@ export const useLocationStore = defineStore('locationStore', () => {
         toUpdate,
         locationToDelete,
         pagination,
+        deleteLocation,
         storeLocation,
         updateLocation,
         getLocations,

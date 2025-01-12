@@ -1,9 +1,13 @@
 <script lang="ts" setup>
 const model = defineModel('model', {type: Boolean, default: false})
+const loading = defineModel('loading', {type: Boolean, default: false})
 const {title} = defineProps({
   title: {type: String, default: '¿Estás seguro que quieres eliminar esta ubicación?'},
 })
 const emits = defineEmits(['action-confirmed'])
+const deleteHandler = () => {
+  emits('action-confirmed')
+}
 </script>
 <template>
   <v-dialog
@@ -24,8 +28,9 @@ const emits = defineEmits(['action-confirmed'])
 
       <v-card-actions>
         <div class="d-flex  align-center w-100">
-          <v-btn @click="() => emits('action-confirmed')" class="cancel-btn" color="rgba(52, 64, 84, 1)">Eliminar</v-btn>
-          <v-btn @click="() => model = false" variant="elevated" class="confirm-btn" border="sm" color="rgba(232, 69, 74, 1)">Eliminar
+          <v-btn @click="() =>  model = false " class="cancel-btn" color="rgba(52, 64, 84, 1)">Cancelar</v-btn>
+          <v-btn :loading="loading"
+                 @click="deleteHandler" variant="elevated" class="confirm-btn" border="sm" color="rgba(232, 69, 74, 1)">Eliminar
             definitivamente
           </v-btn>
         </div>

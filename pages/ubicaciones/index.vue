@@ -79,8 +79,13 @@ const showStoreLocationDialog = () => {
   isEdition.value = false
   locationDialog.value = true
 }
+const isLoading = ref(false)
 const deleteLocationHandler = () => {
-  console.log('Location deleted')
+  isLoading.value = true
+  useLocationStore().deleteLocation()
+      .finally(() => {
+        isLoading.value = false
+      })
 }
 </script>
 
@@ -108,6 +113,7 @@ const deleteLocationHandler = () => {
       <LocationCardContainer/>
       <ConfirmDialog
           v-model:model="locationToDelete.show"
+          v-model:loading="isLoading"
           title="¿Estás seguro que quieres eliminar esta ubicación?"
           @action-confirmed="deleteLocationHandler"
       />
