@@ -90,9 +90,62 @@ function getSchemaByName(name: string) {
             });
             break;
         case "create-location":
-            schemaFields.location = yup.object().nullable();
+            schemaFields.name = yupString().nullable();
             schemaFields.city = yupString().nullable();
             schemaFields.address = yupString().nullable();
+            schemaFields.tags = yupString().nullable();
+            schemaFields.autocomplete_prediction = yupString().nullable();
+            break;
+        case "availability-locations":
+            schemaFields.monday = yup
+                .object()
+                .shape({
+                    start: yup.string(),
+                    end: yup.string(),
+                })
+                .nullable();
+            schemaFields.tuesday = yup
+                .object()
+                .shape({
+                    start: yup.string(),
+                    end: yup.string(),
+                })
+                .nullable();
+            schemaFields.wednesday = yup
+                .object()
+                .shape({
+                    start: yup.string(),
+                    end: yup.string(),
+                })
+                .nullable();
+            schemaFields.thursday = yup
+                .object()
+                .shape({
+                    start: yup.string(),
+                    end: yup.string(),
+                })
+                .nullable();
+            schemaFields.friday = yup
+                .object()
+                .shape({
+                    start: yup.string(),
+                    end: yup.string(),
+                })
+                .nullable();
+            schemaFields.saturday = yup
+                .object()
+                .shape({
+                    start: yup.string(),
+                    end: yup.string(),
+                })
+                .nullable();
+            schemaFields.sunday = yup
+                .object()
+                .shape({
+                    start: yup.string(),
+                    end: yup.string(),
+                })
+                .nullable();
             break;
         case "create-calendar":
             schemaFields.start_date = yup.date().required(t("forms.required"));
