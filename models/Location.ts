@@ -36,6 +36,11 @@ export type LocationAvailability = {
     sunday?: TimeRange;
 };
 export type TimeRange = {
-    start: string;
-    end: string;
+    enabled: boolean;
+    start: AvailabilityTime;
+    end: AvailabilityTime;
 };
+export type AvailabilityTime = {
+    hours: string,
+    minutes: string
+}
