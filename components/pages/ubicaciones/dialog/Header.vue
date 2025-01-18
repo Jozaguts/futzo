@@ -45,7 +45,7 @@ const subtitle = isEdition.value
 }
 
 .custom-card-item {
-  padding: 16px 12px !important;
+  padding: 16px 24px !important;
 }
 
 .custom-close-icon {
