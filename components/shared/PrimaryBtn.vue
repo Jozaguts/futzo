@@ -1,33 +1,35 @@
 <script lang="ts" setup>
 interface Props {
   text: string;
-  icon: string;
+  icon?: string;
   variant:
-    | "text"
-    | "flat"
-    | "elevated"
-    | "tonal"
-    | "outlined"
-    | "plain"
-    | undefined;
+      | "text"
+      | "flat"
+      | "elevated"
+      | "tonal"
+      | "outlined"
+      | "plain"
+      | undefined;
+  showIcon?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   text: "prop name not set",
   icon: "futzo-icon:plus",
   variant: "elevated",
+  showIcon: true,
 });
 const emits = defineEmits(["click"]);
 </script>
 <template>
   <v-btn
-    :variant="props.variant"
-    class="app-bar-cat-btn"
-    size="large"
-    @click="emits('click')"
+      :variant="props.variant"
+      class="app-bar-cat-btn"
+      size="large"
+      @click="emits('click')"
   >
     <template #prepend>
-      <Icon :name="icon" />
+      <Icon v-if="props.showIcon" :name="props.icon"/>
     </template>
     {{ text }}
   </v-btn>
