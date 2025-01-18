@@ -1,7 +1,8 @@
 import {defineStore} from 'pinia';
-import type {LocationCard, LocationStoreRequest} from '~/models/Location';
+import type {FormSteps, LocationCard, LocationStoreRequest} from '~/models/Location';
 import {useApiError} from "~/composables/useApiError";
 import type {IPagination} from "~/interfaces";
+import {ref} from "vue";
 
 export const useLocationStore = defineStore('locationStore', () => {
     const locations = ref<LocationCard[]>();
@@ -20,6 +21,21 @@ export const useLocationStore = defineStore('locationStore', () => {
         total: 0,
         sort: "asc",
     });
+    const formSteps = ref<FormSteps>({
+        current: 'location',
+        steps: [
+            {
+                step: "location",
+                completed: false,
+                label: "Ubicación",
+            },
+            {
+                step: "availability",
+                completed: false,
+                label: "Disponibilidad",
+            },
+        ],
+    })
 
     async function getLocations(): Promise<void> {
         const client = useSanctumClient();
@@ -118,6 +134,7 @@ export const useLocationStore = defineStore('locationStore', () => {
         toUpdate,
         locationToDelete,
         pagination,
+        formSteps,
         deleteLocation,
         storeLocation,
         updateLocation,

@@ -12,3 +12,30 @@ export type LocationStoreRequest = {
 export type LocationCard = {
     image: string
 } & LocationStoreRequest;
+
+export interface FormSteps {
+    current: CurrentStep;
+    steps: LocationSteps[];
+}
+
+export type LocationSteps = {
+    step: CurrentStep;
+    completed: boolean;
+    label: FormLabelStep;
+};
+export type CurrentStep = "location" | "availability";
+export type FormLabelStep = "Ubicación" | "Disponibilidad";
+
+export type LocationAvailability = {
+    monday?: TimeRange;
+    tuesday?: TimeRange;
+    wednesday?: TimeRange;
+    thursday?: TimeRange;
+    friday?: TimeRange;
+    saturday?: TimeRange;
+    sunday?: TimeRange;
+};
+export type TimeRange = {
+    start: string;
+    end: string;
+};
