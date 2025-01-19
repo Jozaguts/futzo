@@ -3,7 +3,7 @@ import {useLocationStore} from '~/store'
 import IndicatorStep from "~/components/shared/IndicatorStep.vue";
 import LocationStep from "~/components/pages/ubicaciones/stepper/LocationStep.vue";
 import AvailabilityStep from "~/components/pages/ubicaciones/stepper/AvailabilityStep.vue";
-import type {CurrentStep, LocationStoreRequest} from "~/models/Location";
+import type {CurrentStep, LocationAvailability, LocationStoreRequest} from "~/models/Location";
 
 const {locationStoreRequest, isEdition, formSteps} = storeToRefs(useLocationStore())
 const emits = defineEmits(['next', 'back', 'close'])
@@ -26,10 +26,12 @@ const textButton = computed(() => {
     return isEdition.value ? 'Guardar Cambios' : 'Crear ubicación'
   }
 })
+const backTextButton = computed(() => formSteps.value.current === 'location' ? 'Cancelar' : 'Anterior')
 const nextStepHandler = async () => {
   const statusForm = await stepRef.value.validate();
   if (statusForm.valid) {
     const values = await getFormValues();
+
     fillLocationStoreRequest(values)
     const stepsOrder: CurrentStep[] = ["location", "availability"];
     const currentStepIndex = stepsOrder.indexOf(formSteps.value.current);
@@ -46,23 +48,25 @@ const nextStepHandler = async () => {
 
 async function saveHandler() {
   isEdition.value
-      ? await useLocationStore().storeLocation()
-      : await useLocationStore().updateLocation();
+      ? await useLocationStore().updateLocation()
+      : await useLocationStore().storeLocation();
 }
 
 function fillLocationStoreRequest(values: LocationStoreRequest) {
   if (formSteps.value.current === "location") {
     locationStoreRequest.value = values
+  } else {
+    locationStoreRequest.value.availability = values as unknown as LocationAvailability[]
+
   }
-  // if (steps.value.current === "details-info") {
-  //   tournamentStoreRequest.value = {
-  //     ...tournamentStoreRequest.value,
-  //     details: { ...(values as DetailsInfoForm) },
-  //   };
-  // }
+
 }
 
 const backStepHandler = () => {
+  if (formSteps.value.current === 'location') {
+    emits('close')
+    locationStoreRequest.value = null as LocationStoreRequest
+  }
   formSteps.value.current = 'location'
 }
 
@@ -119,7 +123,7 @@ async function getFormValues() {
       </v-row>
       <v-row>
         <v-col cols="12 d-flex justify-space-between">
-          <SecondaryBtn class="bg-white w-btn " text="Cancelar" @click="backStepHandler"/>
+          <SecondaryBtn class="bg-white w-btn " :text="backTextButton" @click="backStepHandler"/>
           <PrimaryBtn :show-icon="false" class="w-btn" :text="textButton" variant="elevated" @click="nextStepHandler"/>
         </v-col>
       </v-row>

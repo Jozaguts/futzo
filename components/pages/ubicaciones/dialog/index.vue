@@ -3,10 +3,12 @@ import HeaderCard from "~/components/pages/ubicaciones/dialog/Header.vue";
 import LocationStepper from "~/components/pages/ubicaciones/stepper/index.vue";
 import {storeToRefs} from "pinia";
 import {useLocationStore} from "~/store";
+import type {LocationStoreRequest} from "~/models/Location";
 
-const {locationDialog} = storeToRefs(useLocationStore());
+const {locationDialog, locationStoreRequest, formSteps} = storeToRefs(useLocationStore());
 const leaveHandler = () => {
-  // useLocationStore()?.$reset();
+  locationStoreRequest.value = {} as LocationStoreRequest;
+  formSteps.value.current = 'location';
 };
 
 </script>
