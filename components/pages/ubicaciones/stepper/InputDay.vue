@@ -18,7 +18,7 @@ const props = defineProps({
     </v-col>
     <v-col v-if="day.enabled" cols="12" lg="8" md="8">
       <div class="d-flex justify-space-between">
-        <VueDatePicker v-model="day.start" time-picker class="custom-dp-location">
+        <VueDatePicker v-model="day.start" time-picker class="custom-dp-location" :is24="false">
           <template #dp-input="{ value }">
             <v-text-field :value="value"
                           density="compact"
@@ -32,7 +32,7 @@ const props = defineProps({
             </v-text-field>
           </template>
         </VueDatePicker>
-        <VueDatePicker class="custom-dp-location" v-model="day.end" time-picker>
+        <VueDatePicker class="custom-dp-location" v-model="day.end" time-picker :is24="false">
           <template #dp-input="{ value }">
             <v-text-field
                 class="custom-location-input"
@@ -60,7 +60,7 @@ const props = defineProps({
   padding-inline: 0
 
 .custom-location-input > .v-input__control > .v-field > .v-field__field > input
-  text-indent: 32px
+  text-indent: 4px
   font-weight: 900
 
 .day-disabled

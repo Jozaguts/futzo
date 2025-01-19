@@ -12,86 +12,86 @@ const {defineField, errors, handleSubmit, resetForm, validate} = useForm<Locatio
             .shape({
               enabled: yup.boolean().default(false),
               start: object().shape({
-                hours: yup.string().default('00'),
+                hours: yup.string().default('09'),
                 minutes: yup.string().default('00'),
               }),
               end: object().shape({
                 hours: yup.string().default('23'),
-                minutes: yup.string().default('59'),
+                minutes: yup.string().default('00'),
               }),
-            }).nullable(),
+            }),
         tuesday: object()
             .shape({
-              enabled: yup.boolean().default(true),
+              enabled: yup.boolean().default(false),
               start: object().shape({
-                hours: yup.string().default('00'),
+                hours: yup.string().default('09'),
                 minutes: yup.string().default('00'),
               }),
               end: object().shape({
                 hours: yup.string().default('23'),
-                minutes: yup.string().default('59'),
+                minutes: yup.string().default('00'),
               }),
-            }).nullable(),
+            }),
         wednesday: object()
             .shape({
-              enabled: yup.boolean().default(true),
+              enabled: yup.boolean().default(false),
               start: object().shape({
-                hours: yup.string().default('00'),
+                hours: yup.string().default('09'),
                 minutes: yup.string().default('00'),
               }),
               end: object().shape({
                 hours: yup.string().default('23'),
-                minutes: yup.string().default('59'),
+                minutes: yup.string().default('00'),
               }),
-            }).nullable(),
+            }),
         thursday: object()
             .shape({
-              enabled: yup.boolean().default(true),
+              enabled: yup.boolean().default(false),
               start: object().shape({
-                hours: yup.string().default('00'),
+                hours: yup.string().default('09'),
                 minutes: yup.string().default('00'),
               }),
               end: object().shape({
                 hours: yup.string().default('23'),
-                minutes: yup.string().default('59'),
+                minutes: yup.string().default('00'),
               }),
-            }).nullable(),
+            }),
         friday: object()
             .shape({
               enabled: yup.boolean().default(true),
               start: object().shape({
-                hours: yup.string().default('00'),
+                hours: yup.string().default('09'),
                 minutes: yup.string().default('00'),
               }),
               end: object().shape({
                 hours: yup.string().default('23'),
-                minutes: yup.string().default('59'),
+                minutes: yup.string().default('00'),
               }),
-            }).nullable(),
+            }),
         saturday: object()
             .shape({
               enabled: yup.boolean().default(true),
               start: object().shape({
-                hours: yup.string().default('00'),
+                hours: yup.string().default('09'),
                 minutes: yup.string().default('00'),
               }),
               end: object().shape({
                 hours: yup.string().default('23'),
-                minutes: yup.string().default('59'),
+                minutes: yup.string().default('00'),
               }),
-            }).nullable(),
+            }),
         sunday: object()
             .shape({
               enabled: yup.boolean().default(true),
               start: object().shape({
-                hours: yup.string().default('00'),
+                hours: yup.string().default('09'),
                 minutes: yup.string().default('00'),
               }),
               end: object().shape({
                 hours: yup.string().default('23'),
-                minutes: yup.string().default('59'),
+                minutes: yup.string().default('00'),
               }),
-            }).nullable(),
+            }),
       })
   ),
 })
