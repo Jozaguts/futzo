@@ -91,6 +91,12 @@ const removeTag = (tag: string) => {
   }
 }
 onMounted(() => {
+  if (locationStoreRequest.value?.address) {
+    name.value = locationStoreRequest.value?.autocomplete_prediction
+  }
+  if (locationStoreRequest.value?.tags) {
+    tags.value = locationStoreRequest.value.tags
+  }
   if (isEdition.value) {
     const {toUpdate} = useLocationStore()
     name.value = toUpdate?.autocomplete_prediction as unknown as string

@@ -8,6 +8,7 @@ export type Location = {
 
 export type LocationStoreRequest = {
     tags: string[];
+    availability: LocationAvailability[]
 } & Location;
 export type LocationCard = {
     image: string
