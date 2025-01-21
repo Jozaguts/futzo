@@ -62,14 +62,15 @@ export const useLocationStore = defineStore('locationStore', () => {
         await client('/api/v1/admin/locations', {
             method: 'POST',
             body: locationStoreRequest.value,
-        }).then(async () => {
-            await getLocations();
+        }).then(async (location: LocationCard) => {
+            locations.value?.splice(0, 0, location);
             const {toast} = useToast();
             toast(
                 'success',
                 'Ubicación creada',
                 'La  nueva ubicación se ha agregado exitosamente.'
             );
+            locationDialog.value = false;
         })
             .catch((error) => {
                 const {message} = useApiError(error);
