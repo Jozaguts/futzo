@@ -1,18 +1,20 @@
 import {defineStore} from "pinia";
 import type {
-  CalendarStepsForm,
-  CalendarStoreRequest,
-  FormSteps,
-  Tournament,
-  TournamentForm,
-  TournamentLocation,
-  TournamentLocationStoreRequest,
-  TournamentStoreRequest,
+    CalendarStepsForm,
+    CalendarStoreRequest,
+    FormSteps,
+    Tournament,
+    TournamentForm,
+    TournamentLocation,
+    TournamentLocationStoreRequest,
+    TournamentStoreRequest,
 } from "~/models/tournament";
 import type {Game} from "~/models/Game";
 import type {User} from "~/models/user";
 import prepareForm from "~/utils/prepareFormData";
 import type {IPagination} from "~/interfaces";
+import {useAuthStore} from "~/store/useAuthStore";
+import type {Schedule} from "~/models/Schedule";
 
 export const useTournamentStore = defineStore("tournamentStore", () => {
     const tournament = ref<Tournament | null>(null);
@@ -342,6 +344,22 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     const tournamentLocationStoreRequest = ref<TournamentLocationStoreRequest>();
     const selectedLocations = ref<TournamentLocation[]>([]);
     const selectedLocationsHasError = ref(false);
+    const isLoadingSchedules = ref(false);
+    const schedules = ref<Schedule[]>([]);
+    const noSchedules = computed(() => schedules.value.length === 0);
+    const scheduleDialog = ref(false)
+
+    const fetchSchedule = async () => {
+        isLoadingSchedules.value = true;
+        const client = useSanctumClient();
+        const {user} = useAuthStore();
+        const {tournamentId} = useTournamentStore();
+        schedules.value = await client(`/api/v1/admin/tournaments/${tournamentId}/schedule`)
+            .finally(() => {
+                    isLoadingSchedules.value = false;
+                }
+            );
+    };
 
     function $reset() {
         tournamentStoreRequest.value = {} as TournamentStoreRequest;
@@ -507,6 +525,11 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         tournamentLocationStoreRequest,
         selectedLocations,
         selectedLocationsHasError,
+        isLoadingSchedules,
+        schedules,
+        noSchedules,
+        scheduleDialog,
+        fetchSchedule,
         getTournamentLocations,
         settingsSchedule,
         loadTournaments,
