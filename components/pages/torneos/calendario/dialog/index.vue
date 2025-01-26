@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import StepperContainer from "~/components/pages/torneos/calendario/stepper/index.vue";
-import { storeToRefs } from "pinia";
-import { useTournamentStore } from "~/store";
+import {storeToRefs} from "pinia";
+import {useTournamentStore} from "~/store";
 
 const {
   calendarSteps,
-  calendarDialog,
+  scheduleDialog,
   selectedLocations,
   selectedLocationsHasError,
 } = storeToRefs(useTournamentStore());
@@ -19,7 +19,7 @@ const {
   stepRef,
   backHandler,
   nextHandler,
-} = useDialog(calendarSteps, calendarDialog);
+} = useDialog(calendarSteps, scheduleDialog);
 const handleChange = () => {
   if (selectedLocations.value.length === 0) {
     selectedLocationsHasError.value = true;
@@ -30,38 +30,38 @@ const handleChange = () => {
 </script>
 <template>
   <Dialog
-    title="Crear un calendario"
-    subtitle="Completa los detalles del calendario."
-    :actions="{
+      title="Crear un calendario"
+      subtitle="Completa los detalles del calendario."
+      :actions="{
       primary: primaryTextBtn,
       secondary: secondaryTextBtn,
     }"
-    :loading="false"
-    v-model="calendarDialog"
+      :loading="false"
+      v-model="scheduleDialog"
   >
     <template #v-card-text>
-      <StepperContainer v-model:step-ref="stepRef" />
+      <StepperContainer v-model:step-ref="stepRef"/>
     </template>
     <template #actions>
       <v-btn
-        width="50%"
-        min-height="44"
-        variant="outlined"
-        color="secondary"
-        density="comfortable"
-        size="large"
-        @click="backHandler"
-        >{{ secondaryTextBtn }}
+          width="50%"
+          min-height="44"
+          variant="outlined"
+          color="secondary"
+          density="comfortable"
+          size="large"
+          @click="backHandler"
+      >{{ secondaryTextBtn }}
       </v-btn>
       <v-btn
-        width="50%"
-        min-height="44"
-        variant="elevated"
-        color="primary"
-        density="comfortable"
-        size="large"
-        @click="handleChange"
-        >{{ primaryTextBtn }}
+          width="50%"
+          min-height="44"
+          variant="elevated"
+          color="primary"
+          density="comfortable"
+          size="large"
+          @click="handleChange"
+      >{{ primaryTextBtn }}
       </v-btn>
     </template>
   </Dialog>
