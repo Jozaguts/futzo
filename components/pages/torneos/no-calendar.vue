@@ -1,24 +1,29 @@
 <script lang="ts" setup>
-import { useTournamentStore } from "~/store";
+import {useTournamentStore} from "~/store";
 import NoCalendarSvg from "~/components/pages/torneos/NoCalendarSvg.vue";
 
-const { noTournaments, calendarDialog } = storeToRefs(useTournamentStore());
+const {scheduleDialog, isLoadingSchedules, noSchedules} = storeToRefs(useTournamentStore());
+const textButton = computed(() => {
+  if (isLoadingSchedules.value) return "Cargando...";
+  return "Crear calendario";
+});
 </script>
 <template>
   <v-sheet
-    class="custom-v-sheet d-flex justify-center align-center fill-height"
+      v-if="noSchedules"
+      class="custom-v-sheet d-flex justify-center align-center fill-height"
   >
     <div class="d-flex flex-column align-center">
       <h2 class="card-title">No hay calendario aún</h2>
-      <NoCalendarSvg />
+      <NoCalendarSvg/>
       <p class="card-sub-title">Crea un calendario para verlo aquí.</p>
       <v-btn
-        color="primary"
-        variant="elevated"
-        class="mt-4 text-body-1"
-        @click="calendarDialog = !calendarDialog"
+          color="primary"
+          variant="elevated"
+          class="mt-4 text-body-1"
+          @click="scheduleDialog = !scheduleDialog"
       >
-        Crear Calendario
+        {{ textButton }}
       </v-btn>
     </div>
   </v-sheet>
