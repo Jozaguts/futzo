@@ -99,4 +99,4 @@ export const useAuthStore = defineStore("authStore", () => {
         updatePassword,
         reSendCode,
     };
-});
+}, {persist: true});
