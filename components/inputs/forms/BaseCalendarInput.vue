@@ -2,12 +2,12 @@
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import useCalendar from "~/composables/useCalendar";
-import type { DatePickerAttributes } from "~/models/Schedule";
-import { isDate } from "date-fns";
+import type {DatePickerAttributes} from "~/models/Schedule";
+import {isDate} from "date-fns";
 
 const startDate = defineModel<Date>("start_date");
 const endDate = defineModel<Date>("end_date");
-const dates = ref<Date | Date[]>([]);
+const dates = ref<Date | Date[]>();
 const props = defineProps({
   paddingBottom: {
     type: String,
@@ -27,10 +27,10 @@ const props = defineProps({
       left: number;
       transform: string;
     }>,
-    default: () => ({ top: 300, left: 200, transform: "translate(50%)" }),
+    default: () => ({top: 300, left: 200, transform: "translate(50%)"}),
   },
 });
-const { getDate, formatDate, customPosition, selectDate, dp } = useCalendar();
+const {getDate, formatDate, customPosition, selectDate, dp} = useCalendar();
 
 const attr: DatePickerAttributes = {
   position: "left",
@@ -49,62 +49,71 @@ const attr: DatePickerAttributes = {
   },
 };
 if (props.multiCalendar) {
-  attr["multi-calendars"] = { solo: true };
+  attr["multi-calendars"] = {solo: true};
   attr.ui.menu += " calendar-custom-width";
   attr.range = true;
 }
 watch(
-  dates,
-  (value) => {
-    if (value) {
-      if (isDate(value)) {
-        startDate.value = value;
-      } else if (Array.isArray(value)) {
-        startDate.value = value[0];
-        endDate.value = value[1];
+    dates,
+    (value) => {
+      if (value) {
+        if (isDate(value)) {
+          startDate.value = value;
+        } else if (Array.isArray(value)) {
+          startDate.value = value[0];
+          endDate.value = value[1];
+        }
       }
-    }
-  },
-  { deep: true },
+    },
+    {deep: true},
 );
+onMounted(() => {
+  if (props.multiCalendar) {
+    dates.value = [startDate.value, endDate.value];
+  } else {
+    if (startDate.value) {
+      dates.value = startDate.value;
+    }
+  }
+});
 </script>
 <template>
   <vue-date-picker
-    :format="formatDate"
-    :alt-position="customPosition"
-    v-bind="{ ...attr }"
-    v-model="dates"
+      :format="formatDate"
+      :alt-position="customPosition"
+      v-bind="{ ...attr }"
+      v-model="dates"
   >
     <template v-if="multiCalendar" #dp-input="{ value }">
       <v-text-field
-        :value="value"
-        density="compact"
-        variant="outlined"
+          :value="value"
+          density="compact"
+          variant="outlined"
       ></v-text-field>
     </template>
     <template v-if="multiCalendar" #action-preview="{ value }">
       <div class="d-flex w-100 justify-between align-center">
         <span
-          class="custom-field-date border-thin border-secondary border-opacity-100 px-4 py-2 mr-2 rounded text-body-2"
-          >{{ getDate(value, 1) }}</span
+            class="custom-field-date border-thin border-secondary border-opacity-100 px-4 py-2 mr-2 rounded text-body-2"
+        >{{ getDate(value, 1) }}</span
         >
         <span>-</span>
         <span
-          class="custom-field-date border-thin border-secondary border-opacity-100 px-4 py-2 ml-2 rounded text-body-2"
-          >{{ getDate(value, 2) }}</span
+            class="custom-field-date border-thin border-secondary border-opacity-100 px-4 py-2 ml-2 rounded text-body-2"
+        >{{ getDate(value, 2) }}</span
         >
       </div>
     </template>
     <template v-if="multiCalendar" #action-buttons>
       <button
-        @click="() => dp.closeMenu()"
-        class="mx-2 bg-surface border-thin border-secondary px-4 py-1 rounded"
+          @click="() => dp.closeMenu()"
+          class="mx-2 bg-surface border-thin border-secondary px-4 py-1 rounded"
       >
         Cancelar
       </button>
       <button
-        class="bg-primary border-primary border-thin px-4 py-1 rounded"
-        @click="selectDate"
+          class="bg-primary border-primary border-thin px-4 py-1 rounded"
+          @click="selectDate"
       >
         Aplicar
       </button>
@@ -125,11 +134,11 @@ watch(
 @use "@/assets/css/vue-datepicker-custom.css";
 
 .dp__input_wrap
-  > .v-input
-  > .v-input__control
-  > .v-field
-  > .v-field__field
-  > input.v-field__input {
+> .v-input
+> .v-input__control
+> .v-field
+> .v-field__field
+> input.v-field__input {
   padding-top: v-bind(paddingTop);
   padding-bottom: v-bind(paddingBottom);
 }
