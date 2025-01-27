@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import AuthProvider from '~/components/authentication/AuthProvider.vue'
 import {ref} from 'vue'
-import PasswordRules from '~/components/authentication/components/PasswordRules.vue'
 import SearchCountry from '~/components/authentication/components/SearchCountry.vue'
 import ErrorMessages from '~/components/authentication/components/ErrorMessages.vue'
+import PasswordRules from "~/components/authentication/components/PasswordRules.vue";
 
 const {
   name,
@@ -125,12 +125,7 @@ const isDisabled = computed(() => {
             </div>
           </v-col>
           <v-col cols="12" class="pb-0">
-            <v-expand-transition>
-              <PasswordRules
-                  v-model:model-value="password"
-                  :show="showRegisterForm"
-              />
-            </v-expand-transition>
+
             <div
                 v-if="!showRegisterForm"
                 class="d-flex align-center justify-space-between flex-wrap mt-1 mb-4"
@@ -165,6 +160,12 @@ const isDisabled = computed(() => {
             >
               {{ showRegisterForm ? 'Empezar' : 'Iniciar sesión' }}
             </v-btn>
+            <v-expand-transition>
+              <PasswordRules
+                  v-model:model-value="password"
+                  :show="showRegisterForm"
+              />
+            </v-expand-transition>
             <div
                 class="text-caption text-secondary text-justify mt-2 ml-1"
                 v-auto-animate="{ duration: 100 }"
