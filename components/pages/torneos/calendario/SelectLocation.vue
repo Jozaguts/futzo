@@ -1,24 +1,23 @@
 <script lang="ts" setup>
-import {useLocationStore} from "~/store";
+import {useLocationStore, useTournamentStore} from '~/store'
 
-const props = defineProps(
-    {
-      multiple: {
-        type: Boolean,
-        default: true,
-      },
-      chips: {
-        type: Boolean,
-        default: true,
-      },
-      closableChips: {
-        type: Boolean,
-        default: true,
-      },
-    }
-)
+const props = defineProps({
+  multiple: {
+    type: Boolean,
+    default: true,
+  },
+  chips: {
+    type: Boolean,
+    default: true,
+  },
+  closableChips: {
+    type: Boolean,
+    default: true,
+  },
+})
 const search = ref('')
 const {locations} = storeToRefs(useLocationStore())
+const {scheduleStoreRequest} = storeToRefs(useTournamentStore())
 
 const searchHandler = useDebounceFn((place: string) => {
   useLocationStore().getLocations(place)
@@ -29,14 +28,21 @@ watchEffect(() => {
   }
 })
 const items = computed(() => locations.value ?? [])
-const itemProps = {
-  class: 'd-inline-block text-truncate',
-  style: 'max-width: 200px',
-}
+
 </script>
 <template>
-  <v-select max-width="400px" :items="items" :multiple="props.multiple" :chips="props.chips" :closable-chips="props.closableChips" item-title="name" item-value="id"
-            :item-props="itemProps">
+  <v-select
+      v-model="scheduleStoreRequest.general.locations"
+      max-width="400px"
+      :items="items"
+      :multiple="true"
+      :chips="props.chips"
+      :closable-chips="props.closableChips"
+      item-title="name"
+      item-value="id"
+      return-object
+      @update:model-value="($event) => $emit('update:modelValue', $event)"
+  >
     <template #prepend-item>
       <div>
         <div class="select-search">
@@ -54,7 +60,6 @@ const itemProps = {
           <span class="create-location__text">Crear nueva ubicación</span>
         </div>
       </div>
-
     </template>
   </v-select>
 </template>

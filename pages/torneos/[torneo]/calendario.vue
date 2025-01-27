@@ -3,33 +3,36 @@ import AppBar from "~/components/layout/AppBar.vue";
 import PageLayout from "~/components/shared/PageLayout.vue";
 import AppBarBtn from "~/components/pages/torneos/torneo/app-bar-btn.vue";
 import NoCalendar from "~/components/pages/torneos/no-calendar.vue";
-import { definePageMeta } from "#imports";
-import { useTournamentStore } from "~/store";
+import {definePageMeta} from "#imports";
+import {useTournamentStore} from "~/store";
 
 definePageMeta({
   middleware: [
     function () {
       if (import.meta.server) return;
-      const { tournamentId } = storeToRefs(useTournamentStore());
+      const {tournamentId} = storeToRefs(useTournamentStore());
       if (!tournamentId.value) {
-        useRouter().push({ name: "torneos" });
+        useRouter().push({name: "torneos"});
       }
     },
   ],
 });
+onMounted(async () => {
+  await useTournamentStore().fetchSchedule();
+})
 </script>
 <template>
   <PageLayout>
     <template #app-bar>
       <AppBar>
         <template #buttons>
-          <AppBarBtn />
+          <AppBarBtn/>
         </template>
       </AppBar>
     </template>
     <template #default>
-      <NoCalendar />
-      <LazyPagesTorneosCalendarioDialog />
+      <NoCalendar/>
+      <LazyPagesTorneosCalendarioDialog/>
       <!--        side="both"-->
       <!--      <v-sheet class="futzo-rounded fill-height pa-4">-->
       <!--        <v-infinite-scroll :items="data" @load="load" height="700">-->
@@ -90,73 +93,73 @@ definePageMeta({
 </template>
 <style lang="sass">
 .match-container
-    border: 1px solid #eaecf0
+  border: 1px solid #eaecf0
 
 .title-container
-    background: #eaecf0
-    border: 1px solid #eaecf0
-    border-radius: 2px
+  background: #eaecf0
+  border: 1px solid #eaecf0
+  border-radius: 2px
 
 .title
-    color: #111927
-    font-size: 12px
-    font-weight: 400
-    padding: 8px
+  color: #111927
+  font-size: 12px
+  font-weight: 400
+  padding: 8px
 
 .match
-    padding: 8px 0
-    display: grid
-    grid-template-areas: "home details" "away details"
-    gap: 0
-    grid-template-rows: 1fr 1fr
-    grid-template-columns: 70% 30%
-    place-items: center
+  padding: 8px 0
+  display: grid
+  grid-template-areas: "home details" "away details"
+  gap: 0
+  grid-template-rows: 1fr 1fr
+  grid-template-columns: 70% 30%
+  place-items: center
 
-    > .details
-        grid-area: details
-        display: flex
-        flex-direction: column
-        align-items: center
-        justify-content: center
-        align-content: center
-        font-size: 12px
+  > .details
+    grid-area: details
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    align-content: center
+    font-size: 12px
 
-    > .home
-        grid-area: home
+  > .home
+    grid-area: home
 
-    > .away
-        grid-area: away
+  > .away
+    grid-area: away
 
 
-    > .team
-        font-size: 14px
-        line-height: 32px
-        display: flex
-        width: 100%
-        align-items: center
-        position: relative
+  > .team
+    font-size: 14px
+    line-height: 32px
+    display: flex
+    width: 100%
+    align-items: center
+    position: relative
 
-        > .image
-            margin-right: 16px
+    > .image
+      margin-right: 16px
 
-        > .name
-            font-size: 14px
+    > .name
+      font-size: 14px
 
-        > .result
-            margin-left: auto
-            padding: 0 16px
+    > .result
+      margin-left: auto
+      padding: 0 16px
 
-        > .flag
-            width: 9px
-            height: 14px
-            position: absolute
-            right: 0
-            margin-left: 8px
-            background: #eaecf0
-            clip-path: polygon(100% 0, 0 52%, 100% 100%)
+    > .flag
+      width: 9px
+      height: 14px
+      position: absolute
+      right: 0
+      margin-left: 8px
+      background: #eaecf0
+      clip-path: polygon(100% 0, 0 52%, 100% 100%)
 
 .match:first-child > .team
-    border-right: 1px solid #eaecf0
+  border-right: 1px solid #eaecf0
 </style>
 <!--// const data = [-->
 <!--//   {-->

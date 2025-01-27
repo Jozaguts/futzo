@@ -13,8 +13,7 @@ import type {Game} from "~/models/Game";
 import type {User} from "~/models/user";
 import prepareForm from "~/utils/prepareFormData";
 import type {IPagination} from "~/interfaces";
-import {useAuthStore} from "~/store/useAuthStore";
-import type {Schedule} from "~/models/Schedule";
+import type {Schedule, ScheduleSettings} from "~/models/Schedule";
 
 export const useTournamentStore = defineStore("tournamentStore", () => {
     const tournament = ref<Tournament | null>(null);
@@ -348,11 +347,27 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     const schedules = ref<Schedule[]>([]);
     const noSchedules = computed(() => schedules.value.length === 0);
     const scheduleDialog = ref(false)
+    const scheduleStoreRequest = ref({
+        general: {
+            start_date: new Date(),
+            game_time: 90,
+            time_between_games: 0,
+            locations: [],
+            errors: {
+                start_date: '',
+                game_time: '',
+                time_between_games: '',
+                locations: '',
+            },
+        },
+        regular: {},
+        elimination: {},
+    });
+    const scheduleSettings = ref<ScheduleSettings>();
 
     const fetchSchedule = async () => {
         isLoadingSchedules.value = true;
         const client = useSanctumClient();
-        const {user} = useAuthStore();
         const {tournamentId} = useTournamentStore();
         schedules.value = await client(`/api/v1/admin/tournaments/${tournamentId}/schedule`)
             .finally(() => {
@@ -467,7 +482,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
 
     const settingsSchedule = async () => {
         const client = useSanctumClient();
-        return await client(
+        scheduleSettings.value = await client(
             `api/v1/admin/tournaments/${tournamentId.value}/schedule/settings`,
         );
     };
@@ -495,6 +510,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     };
 
     return {
+        scheduleStoreRequest,
         tournaments,
         tournament,
         nextGames,
@@ -529,6 +545,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         schedules,
         noSchedules,
         scheduleDialog,
+        scheduleSettings,
         fetchSchedule,
         getTournamentLocations,
         settingsSchedule,

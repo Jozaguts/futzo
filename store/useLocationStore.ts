@@ -37,10 +37,11 @@ export const useLocationStore = defineStore('locationStore', () => {
         ],
     })
 
-    async function getLocations(): Promise<void> {
+    async function getLocations(search?: string): Promise<void> {
         const client = useSanctumClient();
-        await client(
-            `/api/v1/admin/locations?per_page=${pagination.value.perPage}&page=${pagination.value.currentPage}&sort=${pagination.value.sort}`,
+        const url = `/api/v1/admin/locations?per_page=${pagination.value.perPage}&page=${pagination.value.currentPage}&sort=${pagination.value.sort}`
+
+        await client(url + (search ? `&search=${search}` : '')
         ).then(({data, meta}) => {
             pagination.value = {
                 currentPage: meta.current_page,
