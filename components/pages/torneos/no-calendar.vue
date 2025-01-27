@@ -2,11 +2,16 @@
 import {useTournamentStore} from "~/store";
 import NoCalendarSvg from "~/components/pages/torneos/NoCalendarSvg.vue";
 
-const {scheduleDialog, isLoadingSchedules, noSchedules} = storeToRefs(useTournamentStore());
+const {scheduleDialog, isLoadingSchedules, noSchedules, scheduleStoreRequest} = storeToRefs(useTournamentStore());
 const textButton = computed(() => {
   if (isLoadingSchedules.value) return "Cargando...";
   return "Crear calendario";
 });
+const dialogHandler = async () => {
+  await useTournamentStore()
+      .settingsSchedule()
+  scheduleDialog.value = !scheduleDialog.value;
+};
 </script>
 <template>
   <v-sheet
@@ -21,7 +26,7 @@ const textButton = computed(() => {
           color="primary"
           variant="elevated"
           class="mt-4 text-body-1"
-          @click="scheduleDialog = !scheduleDialog"
+          @click="dialogHandler"
       >
         {{ textButton }}
       </v-btn>
