@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { useTournamentStore } from "~/store";
+import {useTournamentStore} from "~/store";
 import getHeaders from "~/utils/headers-table";
-import type { Tournament } from "~/models/tournament";
-import { useRouter } from "#app";
+import type {Tournament} from "~/models/tournament";
+import {useRouter} from "#app";
 
 const {
   noTournaments,
@@ -32,45 +32,46 @@ const handleShowTournament = (_tournament: Tournament) => {
   tournament.value = _tournament;
   useRouter().push({
     name: "torneos-torneo",
-    params: { torneo: _tournament.slug },
+    params: {torneo: _tournament.slug},
   });
 };
 onMounted(() => (pagination.value.currentPage = 1));
 const scheduleHandler = (model: Tournament) => {
   tournamentId.value = model.id as number;
+  tournament.value = model;
   useRouter().push({
     name: "torneos-torneo-calendario",
-    params: { torneo: model.slug },
+    params: {torneo: model.slug},
   });
 };
 </script>
 <template>
   <Table
-    v-if="!noTournaments"
-    :headers="headers"
-    :items="tournaments"
-    itemKey="name"
-    :search.sync="search"
-    v-model:pagination="pagination"
-    :status-handler="setChipColor"
-    :paginate="useTournamentStore().loadTournaments"
+      v-if="!noTournaments"
+      :headers="headers"
+      :items="tournaments"
+      itemKey="name"
+      :search.sync="search"
+      v-model:pagination="pagination"
+      :status-handler="setChipColor"
+      :paginate="useTournamentStore().loadTournaments"
   >
     <template #actions="{ item }">
       <v-btn
-        color="on-background"
-        size="small"
-        rounded="md"
-        variant="outlined"
-        class="mr-2 show-calendar-btn"
-        @click="() => scheduleHandler(item as Tournament)"
+          color="on-background"
+          size="small"
+          rounded="md"
+          variant="outlined"
+          class="mr-2 show-calendar-btn"
+          @click="() => scheduleHandler(item as Tournament)"
       >
         <Icon name="futzo-icon:calendar" size="large"></Icon>
       </v-btn>
       <v-btn
-        size="small"
-        rounded="md"
-        @click="() => handleShowTournament(item as Tournament)"
-        >Ver Torneo
+          size="small"
+          rounded="md"
+          @click="() => handleShowTournament(item as Tournament)"
+      >Ver Torneo
       </v-btn>
     </template>
   </Table>
