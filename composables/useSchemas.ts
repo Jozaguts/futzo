@@ -248,6 +248,10 @@ function getSchemaByName(name: string) {
                 .required(t("forms.required"));
             schemaFields.start_date = yup.date().nullable();
             schemaFields.end_date = yup.date().nullable();
+            schemaFields.minMax = yup.array().required(t("forms.required")).default([8, 30])
+                .test('minMax', 'El mínimo debe ser menor que el máximo', function (value) {
+                    return value[0] < value[1];
+                })
             break;
         case "edit-tournament-basic-info":
             schemaFields.id = yup.number().nullable();
@@ -263,6 +267,10 @@ function getSchemaByName(name: string) {
                         return value?.type?.includes("image/") || typeof value === "string";
                     },
                 );
+            schemaFields.minMax = yup.array().required(t("forms.required")).default([8, 30])
+                .test('minMax', 'El mínimo debe ser menor que el máximo', function (value) {
+                    return value[0] < value[1];
+                })
             schemaFields.category_id = yup.number().required(t("forms.required"));
             schemaFields.tournament_format_id = yup
                 .number()
