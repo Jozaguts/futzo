@@ -1,3 +1,12 @@
+export type Tiebreaker = {
+    id: number;
+    rule: string;
+    is_active: string;
+    priority: number;
+    deleted_at?: null;
+    created_at?: Date;
+    updated_at?: Date;
+}
 export type DatePickerAttributes = {
     position: "left" | "right";
     locale: "es" | "en";
@@ -31,6 +40,7 @@ export interface ScheduleSettings {
     format: Format;
     footballType: FootballType;
     locations: Location[];
+    tiebreakers: Tiebreaker[];
 }
 
 export interface FootballType {
