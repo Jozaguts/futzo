@@ -18,6 +18,10 @@ defineProps({
     type: String,
     required: true,
   },
+  sublabel: {
+    type: String,
+    required: false,
+  }
 });
 </script>
 
@@ -25,7 +29,8 @@ defineProps({
   <v-row>
     <v-col cols="12" lg="4" md="4">
       <slot name="label">
-        <span class="text-body-1"> {{ label }} </span>
+        <span class="d-block text-body-1"> {{ label }} </span>
+        <small v-if="sublabel">{{ sublabel }}</small>
       </slot>
     </v-col>
     <v-col cols="12" lg="8" md="8">
