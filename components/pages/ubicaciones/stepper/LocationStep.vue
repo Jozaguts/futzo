@@ -15,7 +15,7 @@ const {defineField, errors, handleSubmit, resetForm, validate} = useForm<Locatio
           handleSelectLocation(value)
           if (value) {
             autocomplete_prediction.value = value
-            return value.structured_formatting.secondary_text
+            return value?.structured_formatting?.secondary_text
           } else {
             city.value = ''
             address.value = ''
@@ -38,8 +38,8 @@ let foundedLocations = ref([] as Location[])
 const tag = ref<string>()
 const itemProps = (item: Prediction) => {
   return {
-    title: item.structured_formatting.main_text,
-    subtitle: item.structured_formatting.secondary_text,
+    title: item?.structured_formatting?.main_text,
+    subtitle: item?.structured_formatting?.secondary_text,
   }
 }
 const handleSelectLocation = (place: Prediction): void => {
