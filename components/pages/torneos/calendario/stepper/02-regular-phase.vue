@@ -7,10 +7,21 @@ const form = ref({
   round_trip: false,
   group_stage: false,
 });
+const totalTeams = computed(() => {
+  return scheduleSettings.value?.teams
+})
 </script>
 <template>
   <v-container class="container">
-
+    <v-row>
+      <v-col cols="12" lg="4" md="4">
+        <span class="text-body-1">Tipo de torneo: </span>
+      </v-col>
+      <v-col cols="12" lg="8" md="8">
+        <p class="text-body-1">{{ scheduleSettings.format.name }}</p>
+        <small class="text-caption text-medium-emphasis">{{ scheduleSettings.format.description }}</small>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
         <span class="text-body-1"> Ida y Vuelta? </span>
@@ -21,22 +32,10 @@ const form = ref({
     </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Grupos o tabla general </span>
+        <span class="text-body-1 d-block">Total de equipos registrados:</span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
-        <v-radio-group
-            v-model="form.group_stage"
-            inline
-        >
-          <v-radio
-              label="Grupos"
-              :value="true"
-          ></v-radio>
-          <v-radio
-              label="Tabla general"
-              :value="false"
-          ></v-radio>
-        </v-radio-group>
+        <p class="text-body-1">{{ totalTeams }}</p>
       </v-col>
     </v-row>
     <v-row>

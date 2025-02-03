@@ -1,3 +1,10 @@
+export type Phase = 'Fase de Grupos | Tabla general' | 'Octavos de Final' | 'Cuartos de Final' | 'Semifinales' | 'Final';
+export type EliminationPhase = {
+    id: number;
+    name: Phase;
+    is_active: boolean;
+    is_completed: boolean;
+}
 export type Tiebreaker = {
     id: number;
     rule: string;
@@ -41,6 +48,8 @@ export interface ScheduleSettings {
     footballType: FootballType;
     locations: Location[];
     tiebreakers: Tiebreaker[];
+    phases: EliminationPhase[];
+    teams: number;
 }
 
 export interface FootballType {
