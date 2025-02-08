@@ -3,14 +3,8 @@ import General from "~/components/pages/torneos/calendario/stepper/01-general.vu
 import Regular from "~/components/pages/torneos/calendario/stepper/02-regular-phase.vue";
 import Elimination from "~/components/pages/torneos/calendario/stepper/03-elimination-phase.vue";
 import IndicatorStep from "~/components/shared/IndicatorStep.vue";
-import { useTournamentStore } from "~/store";
-import type {
-  CalendarStoreRequest,
-  CurrentCalendarStep,
-  EliminationPhaseForm,
-  GeneralCalendarForm,
-  RegularPhaseForm,
-} from "~/models/tournament";
+import {useTournamentStore} from "~/store";
+import type {CalendarStoreRequest, CurrentCalendarStep, EliminationPhaseForm, GeneralCalendarForm, RegularPhaseForm,} from "~/models/tournament";
 
 type StepRef = { validate: Function; handleSubmit: Function };
 
@@ -55,80 +49,84 @@ const nextHandler = async () => {
     }
     const isLastStep = currentStepIndex === stepsOrder.length - 1;
     isLastStep
-      ? await saveHandler()
-      : (calendarSteps.value.current = stepsOrder[currentStepIndex + 1]);
+        ? await saveHandler()
+        : (calendarSteps.value.current = stepsOrder[currentStepIndex + 1]);
   }
 };
 
 async function saveHandler() {
   loading.value = true;
   isCalendarEdition.value
-    ? await useTournamentStore().updateTournament()
-    : await useTournamentStore().storeTournament();
+      ? await useTournamentStore().updateTournament()
+      : await useTournamentStore().storeTournament();
   loading.value = false;
 }
 
 async function getFormValues() {
   const formValues = stepRef.value.handleSubmit(
-    (values: CalendarStoreRequest) => values,
+      (values: CalendarStoreRequest) => values,
   );
 
   return await formValues();
 }
 
 function fillTournamentStoreRequest(
-  values: GeneralCalendarForm | RegularPhaseForm | EliminationPhaseForm,
+    values: GeneralCalendarForm | RegularPhaseForm | EliminationPhaseForm,
 ) {
   if (calendarSteps.value.current === "general") {
     calendarStoreRequest.value = {
       ...calendarStoreRequest.value,
-      general: { ...(values as GeneralCalendarForm) },
+      general: {...(values as GeneralCalendarForm)},
     };
   }
   if (calendarSteps.value.current === "regular") {
     calendarStoreRequest.value = {
       ...calendarStoreRequest.value,
-      regular: { ...(values as RegularPhaseForm) },
+      regular: {...(values as RegularPhaseForm)},
     };
   }
   if (calendarSteps.value.current === "elimination") {
     calendarStoreRequest.value = {
       ...calendarStoreRequest.value,
-      elimination: { ...(values as EliminationPhaseForm) },
+      elimination: {...(values as EliminationPhaseForm)},
     };
   }
 }
+
+onMounted(() => {
+  // ScheduleStoreRequest
+})
 </script>
 <template>
   <v-container class="pa-0">
     <v-row>
       <v-col>
-        <IndicatorStep :form-steps="calendarSteps" />
+        <IndicatorStep :form-steps="calendarSteps"/>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
         <transition-slide
-          group
-          :offset="{
+            group
+            :offset="{
             enter: ['-100%', 0],
             leave: ['100%', 0],
           }"
         >
           <General
-            ref="stepRef"
-            v-if="calendarSteps.current === 'general'"
-            :key="calendarSteps.current"
+              ref="stepRef"
+              v-if="calendarSteps.current === 'general'"
+              :key="calendarSteps.current"
           />
           <Regular
-            ref="stepRef"
-            v-if="calendarSteps.current === 'regular'"
-            :key="calendarSteps.current"
+              ref="stepRef"
+              v-if="calendarSteps.current === 'regular'"
+              :key="calendarSteps.current"
           />
           <Elimination
-            ref="stepRef"
-            v-if="calendarSteps.current === 'elimination'"
-            :key="calendarSteps.current"
+              ref="stepRef"
+              v-if="calendarSteps.current === 'elimination'"
+              :key="calendarSteps.current"
           />
         </transition-slide>
       </v-col>

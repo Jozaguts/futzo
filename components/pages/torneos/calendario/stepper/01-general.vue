@@ -1,33 +1,41 @@
 <script lang="ts" setup>
-import SelectLocation from "~/components/pages/torneos/calendario/SelectLocation.vue";
-import {useTournamentStore} from "~/store";
+import {useTournamentStore} from '~/store'
+import SelectLocation from '~/components/pages/torneos/calendario/SelectLocation.vue'
+import type {Location} from '~/models/Schedule'
+import useSchemas from "~/composables/useSchemas";
 
-const [parent] = useAutoAnimate();
-const {tournament, scheduleSettings, scheduleStoreRequest} = storeToRefs(useTournamentStore());
-const formatDate = (date: string): Date => {
-  const [year, month, day] = date.split("-");
-  return new Date(Number(year), Number(month) - 1, Number(day));
-};
-const locationHandler = (value: any) => {
-  if (value.length) scheduleStoreRequest.value.general.locations = []
-  const locations = value.map((item) => {
-    return {
-      id: item.id,
-      name: item.name
-    }
-  });
-  scheduleStoreRequest.value.general.locations = locations
-};
+const [parent] = useAutoAnimate()
+const {validate: validateGeneral, setValues, fields, handleSubmit, setFieldValue} = useSchemas("calendar-general-step");
+const {tournament, scheduleSettings, scheduleStoreRequest} =
+    storeToRefs(useTournamentStore())
+const formatDate = (date: string): Date | string => {
+  const [year, month, day] = date.split('-')
+  return new Date(Number(year), Number(month) - 1, Number(day))
+}
+const locationHandler = (value: Location[]) => {
 
+  const locations = fields.locations.fieldValue = value.map<{
+    id: number
+    name: string
+  }>((item: Location) => ({
+    id: item.id,
+    name: item.name,
+  }))
+  setFieldValue('locations', locations)
+}
 onMounted(async () => {
-  scheduleStoreRequest.value.general = {
-    ...scheduleStoreRequest.value.general,
-    start_date: scheduleStoreRequest.value.general.start_date ?? formatDate(scheduleSettings.value?.start_date),
-    game_time: scheduleStoreRequest.value.general.game_time ?? scheduleSettings.value?.game_time,
-    time_between_games: scheduleStoreRequest.value.general.time_between_games ?? scheduleSettings.value?.time_between_games,
-  }
-});
+  setValues({
+    tournament_id: scheduleStoreRequest.value.general.tournament_id,
+    tournament_format_id: scheduleStoreRequest.value.general.tournament_format_id,
+    football_type_id: scheduleStoreRequest.value.general.football_type_id,
+    start_date: formatDate(scheduleStoreRequest.value.general.start_date as string),
+    game_time: scheduleStoreRequest.value.general.game_time,
+    time_between_games: scheduleStoreRequest.value.general.time_between_games,
+    locations: scheduleStoreRequest.value.general.locations,
+  })
+})
 </script>
+
 <template>
   <v-container class="container">
     <v-row>
@@ -35,11 +43,16 @@ onMounted(async () => {
         <span class="text-body-1"> Nombre del torneo </span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
-        <v-text-field
+        <v-select
             density="compact"
-            :value="tournament?.name"
+            item-value="id"
+            item-title="name"
+            :items="[tournament]"
+            return-object
             disabled
             variant="outlined"
+            v-model="fields.tournament_id.fieldValue"
+            v-bind="fields.tournament_id.fieldPropsValue"
         />
       </v-col>
     </v-row>
@@ -48,13 +61,18 @@ onMounted(async () => {
         <span class="text-body-1">Formato del torneo </span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
-        <v-text-field
+        <v-select
             density="compact"
-            :value="scheduleSettings?.format?.name"
+            item-value="id"
+            item-title="name"
+            :items="[scheduleSettings.format]"
+            return-object
             disabled
             variant="outlined"
             persistent-hint
             :hint="scheduleSettings?.format?.description"
+            v-model="fields.tournament_format_id.fieldValue"
+            v-bind="fields.tournament_format_id.fieldPropsValue"
         />
       </v-col>
     </v-row>
@@ -63,13 +81,18 @@ onMounted(async () => {
         <span class="text-body-1">Estilo</span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
-        <v-text-field
+        <v-select
             density="compact"
-            :value="scheduleSettings?.footballType?.name"
+            item-value="id"
+            item-title="name"
+            :items="[scheduleSettings.footballType]"
+            return-object
             disabled
             variant="outlined"
             persistent-hint
-            :hint="scheduleSettings?.footballType?.description"
+            :hint="scheduleSettings?.footballType.description"
+            v-model="fields.football_type_id.fieldValue"
+            v-bind="fields.football_type_id.fieldPropsValue"
         />
       </v-col>
     </v-row>
@@ -78,19 +101,13 @@ onMounted(async () => {
         <span class="text-body-1"> Fecha de inicio del torneo* </span>
       </v-col>
       <v-col cols="12" lg="8" md="8" ref="parent">
-
-        <BaseCalendarInput
-            v-if="scheduleStoreRequest.general.start_date"
-            v-model:start_date="scheduleStoreRequest.general.start_date"
-            :multiCalendar="false"
-        />
-        <!--        <div ref="parent">-->
-        <!--          <small-->
-        <!--              v-if="fields.start_date.fieldPropsValue['error-messages'][0]"-->
-        <!--              class="text-red ml-4"-->
-        <!--          >{{ fields.start_date.fieldPropsValue["error-messages"][0] }}</small-->
-        <!--          >-->
-        <!--        </div>-->
+        <client-only>
+          <BaseCalendarInput
+              v-model:start_date="fields.start_date.fieldValue"
+              :multiCalendar="false"
+          />
+        </client-only>
+        <small v-if="fields.start_date.fieldPropsValue['error-messages']" class="text-error text-caption">{{ fields.start_date.fieldPropsValue['error-messages'][0] }}</small>
       </v-col>
     </v-row>
     <v-row>
@@ -102,8 +119,9 @@ onMounted(async () => {
             type="number"
             variant="outlined"
             density="compact"
-            v-model="scheduleStoreRequest.general.game_time"
-            min="0"
+            :min="0"
+            v-model="fields.game_time.fieldValue"
+            v-bind="fields.game_time.fieldPropsValue"
         />
       </v-col>
     </v-row>
@@ -116,7 +134,8 @@ onMounted(async () => {
             type="number"
             variant="outlined"
             density="compact"
-            v-model="scheduleStoreRequest.general.time_between_games"
+            v-model="fields.time_between_games.fieldValue"
+            v-bind="fields.time_between_games.fieldPropsValue"
             min="0"
         />
       </v-col>
@@ -127,16 +146,13 @@ onMounted(async () => {
       </v-col>
       <v-col cols="12" lg="8" md="8">
         <SelectLocation @update:model-value="locationHandler"></SelectLocation>
-
-        <div ref="parent">
+        <div v-auto-animate>
           <small
-              v-if="scheduleStoreRequest.general.errors.locations"
+              v-if="!!fields.locations.fieldPropsValue['error-messages']"
               class="text-red ml-4"
-          >{{ scheduleStoreRequest.general.errors.locations }}</small
-          >
+          >{{ fields.locations.fieldPropsValue['error-messages'][0] }}</small>
         </div>
       </v-col>
     </v-row>
   </v-container>
 </template>
-

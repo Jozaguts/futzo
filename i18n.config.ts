@@ -6,12 +6,18 @@ export default defineI18nConfig(() => ({
         es: {
             forms: {
                 required: "Campo es requerido",
+                email: "Correo electrónico inválido",
+                password: "La contraseña debe tener al menos 6 caracteres",
+                password_confirmation: "Las contraseñas no coinciden",
+                number: "Número inválido",
+                zeroIsValid: "Campo es requerido, cero es un valor válido",
             },
             tournament_min: "El nombre del torneo debe tener al menos 6 caracteres",
             league_min: "El nombre de la liga debe tener al menos 6 caracteres",
             fields: {
                 email: "Correo electrónico",
                 name: "Nombre",
+                number: "Número",
             },
             $vuetify: {
                 open: "Abrir",

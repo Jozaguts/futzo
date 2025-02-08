@@ -5,7 +5,7 @@ import useCalendar from "~/composables/useCalendar";
 import type {DatePickerAttributes} from "~/models/Schedule";
 import {isDate} from "date-fns";
 
-const startDate = defineModel<Date>("start_date");
+const startDate = defineModel<Date | string>("start_date");
 const endDate = defineModel<Date>("end_date");
 const dates = ref<Date | Date[]>();
 const props = defineProps({
@@ -56,6 +56,7 @@ if (props.multiCalendar) {
 watch(
     dates,
     (value) => {
+      console.log('fired')
       if (value) {
         if (isDate(value)) {
           startDate.value = value;
@@ -63,6 +64,9 @@ watch(
           startDate.value = value[0];
           endDate.value = value[1];
         }
+      } else {
+        startDate.value = null;
+        endDate.value = null;
       }
     },
     {deep: true},
@@ -79,6 +83,7 @@ onMounted(() => {
 </script>
 <template>
   <vue-date-picker
+      @cleared="() => (dates = null)"
       :format="formatDate"
       :alt-position="customPosition"
       v-bind="{ ...attr }"

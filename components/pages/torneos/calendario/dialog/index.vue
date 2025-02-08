@@ -17,24 +17,21 @@ const leaveHandler = () => {
   useTournamentStore().$reset();
 };
 const {
-  settings,
   secondaryTextBtn,
   primaryTextBtn,
-  stepRef,
   backHandler,
-  nextHandler,
 } = useDialog(calendarSteps, scheduleDialog);
 const handleChange = async () => {
+  console.log('calendarSteps')
   let hasErrors = false;
   if (calendarSteps.value.current === 'general') {
-    scheduleStoreRequest.value.general.errors.locations = ''
-    const {errors, ...values} = scheduleStoreRequest.value.general
     fields.locations.fieldValue = scheduleStoreRequest.value.general.locations
     fields.start_date.fieldValue = scheduleStoreRequest.value.general.start_date
     fields.game_time.fieldValue = scheduleStoreRequest.value.general.game_time
     fields.time_between_games.fieldValue = scheduleStoreRequest.value.general.time_between_games
     const validate = handleSubmit(value => {
-      if (value.locations.length === 0) {
+      console.log(value)
+      if (value?.locations?.length === 0) {
         hasErrors = true
         scheduleStoreRequest.value.general.errors.locations = 'Debes seleccionar al menos una ubicación'
       }
@@ -66,7 +63,7 @@ const nextStep = () => {
       v-model="scheduleDialog"
   >
     <template #v-card-text>
-      <StepperContainer v-model:step-ref="stepRef"/>
+      <StepperContainer/>
     </template>
     <template #actions>
       <v-btn

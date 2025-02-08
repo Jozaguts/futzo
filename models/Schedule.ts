@@ -1,3 +1,38 @@
+import type {LocationAvailability} from "~/models/Location";
+
+export type ScheduleStoreRequest = {
+    general: FormGeneralScheduleRequest,
+    regular_phase?: FormRegularPhaseStep
+    elimination_phase?: FormEliminationPhaseStep
+    locations_availability?: FormLocationAvailabilityStep[]
+}
+export type FormGeneralScheduleRequest = {
+    tournament_id: number;
+    tournament_format_id: number;
+    football_type_id: number;
+    start_date: string | Date;
+    game_time: number;
+    time_between_games: number;
+    locations: FormGeneralLocation[];
+}
+export type FormGeneralLocation = {
+    id: number;
+    name: string;
+}
+export type FormRegularPhaseStep = {
+    round_trip: boolean,
+    total_teams: number;
+    tiebreakers: Tiebreaker[];
+}
+export type FormEliminationPhaseStep = {
+    teams_to_next_round: number,
+    round_trip: boolean,
+    phases: EliminationPhase[],
+}
+export type FormLocationAvailabilityStep = {
+    location_id: number;
+    availability: LocationAvailability[]
+}
 export type Phase = 'Fase de Grupos | Tabla general' | 'Octavos de Final' | 'Cuartos de Final' | 'Semifinales' | 'Final';
 export type EliminationPhase = {
     id: number;
@@ -40,16 +75,18 @@ export interface Schedule {
 export type DatePosition = 1 | 2;
 
 export interface ScheduleSettings {
-    start_date: Date;
+    start_date: Date | string;
     end_date: null;
     game_time: number;
+    min_teams: number;
+    max_teams: number;
     time_between_games: number;
+    teams: number;
     format: Format;
     footballType: FootballType;
     locations: Location[];
     tiebreakers: Tiebreaker[];
-    phases: EliminationPhase[];
-    teams: number;
+    phases: Phase[];
 }
 
 export interface FootballType {
@@ -84,6 +121,7 @@ export interface Location {
     tags: any[];
 }
 
+
 export interface AutocompletePrediction {
     terms: Term[];
     types: string[];
@@ -115,3 +153,4 @@ export interface Pivot {
     location_id: number;
     availability: null;
 }
+

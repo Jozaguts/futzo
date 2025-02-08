@@ -13,7 +13,18 @@ import type {Game} from "~/models/Game";
 import type {User} from "~/models/user";
 import prepareForm from "~/utils/prepareFormData";
 import type {IPagination} from "~/interfaces";
-import type {Schedule, ScheduleSettings} from "~/models/Schedule";
+import type {
+    FootballType,
+    Format,
+    FormEliminationPhaseStep,
+    FormGeneralScheduleRequest,
+    FormLocationAvailabilityStep,
+    FormRegularPhaseStep,
+    Schedule,
+    ScheduleSettings,
+    ScheduleStoreRequest
+} from "~/models/Schedule";
+import type {Ref} from "vue";
 
 export const useTournamentStore = defineStore("tournamentStore", () => {
     const tournament = ref<Tournament | null>(null);
@@ -347,24 +358,47 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     const schedules = ref<Schedule[]>([]);
     const noSchedules = computed(() => schedules.value.length === 0);
     const scheduleDialog = ref(false)
-    const scheduleStoreRequest = ref({
-        general: {
-            start_date: new Date(),
-            game_time: 90,
-            time_between_games: 0,
-            locations: [],
-            errors: {
-                start_date: '',
-                game_time: '',
-                time_between_games: '',
-                locations: '',
-            },
-        },
-        regular: {},
-        elimination: {},
+    const scheduleStoreRequest = ref<ScheduleStoreRequest>({
+        general: {} as FormGeneralScheduleRequest,
+        regular_phase: {} as FormRegularPhaseStep,
+        elimination_phase: {} as FormEliminationPhaseStep,
+        locations_availability: {} as FormLocationAvailabilityStep[],
     });
-    const scheduleSettings = ref<ScheduleSettings>();
+    const scheduleSettings = ref<ScheduleSettings>({
+        start_date: new Date(),
+        end_date: null,
+        game_time: 0,
+        min_teams: 0,
+        max_teams: 0,
+        time_between_games: 0,
+        teams: 0,
+        format: {} as Format,
+        footballType: {} as FootballType,
+        locations: [],
+        tiebreakers: [],
+        phases: []
+    });
 
+    const settingsSchedule = async () => {
+        const client = useSanctumClient();
+        const {data} = await useAsyncData<ScheduleSettings>('tournament-settings', () =>
+            client(
+                `api/v1/admin/tournaments/${tournamentId.value}/schedule/settings`,
+            )
+        ) as { data: Ref<ScheduleSettings> };
+        const generalSchedule = {} as FormGeneralScheduleRequest
+        generalSchedule.tournament_id = tournamentId.value as number;
+        generalSchedule.tournament_format_id = data.value.format.id;
+        generalSchedule.football_type_id = data.value.footballType.id;
+        generalSchedule.start_date = data.value.start_date;
+        generalSchedule.game_time = data.value.game_time;
+        generalSchedule.time_between_games = data.value.time_between_games;
+        generalSchedule.locations = data.value.locations;
+        scheduleStoreRequest.value = {
+            general: generalSchedule,
+        }
+        scheduleSettings.value = data.value;
+    };
     const fetchSchedule = async () => {
         isLoadingSchedules.value = true;
         const client = useSanctumClient();
@@ -480,12 +514,6 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         );
     }
 
-    const settingsSchedule = async () => {
-        const client = useSanctumClient();
-        scheduleSettings.value = await client(
-            `api/v1/admin/tournaments/${tournamentId.value}/schedule/settings`,
-        );
-    };
     const getTournamentLocations = async () => {
         const client = useSanctumClient();
         client(`/api/v1/admin/tournaments/${tournamentId.value}/locations`).then(
