@@ -66,6 +66,26 @@ function getSchemaByName(name: string) {
     let schemaFields = {} as any;
     const {t} = useI18n();
     switch (name) {
+        case 'calendar-regular-step':
+            schemaFields.round_trip = yup
+                .boolean()
+                .required(t('forms.required'))
+                .default(false);
+            schemaFields.tiebreakers = yup
+                .array()
+                .of(
+                    yup.object().shape({
+                        id: yup.number().required(t('forms.required')),
+                        rule: yup.string().required(t('forms.required')),
+                        priority: yup.number().required(t('forms.required')),
+                        is_active: yup.boolean().required(t('forms.required')),
+                        tournament_configuration_id: yup
+                            .number()
+                            .required(t('forms.required')),
+                    })
+                )
+                .required();
+            break;
         case 'calendar-general-step':
             schemaFields.tournament_id = yup.number().required(t('forms.required'));
             schemaFields.tournament_format_id = yup

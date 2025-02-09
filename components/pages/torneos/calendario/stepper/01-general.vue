@@ -5,7 +5,7 @@ import type {Location} from '~/models/Schedule'
 import useSchemas from "~/composables/useSchemas";
 
 const [parent] = useAutoAnimate()
-const {validate, setValues, fields, handleSubmit, setFieldValue, meta, resetForm} = useSchemas("calendar-general-step");
+const {setValues, fields, setFieldValue, meta} = useSchemas("calendar-general-step");
 const {tournament, scheduleSettings, scheduleStoreRequest} =
     storeToRefs(useTournamentStore())
 const formatDate = (date: string): Date | string => {
@@ -23,6 +23,9 @@ const locationHandler = (value: Location[]) => {
   }))
   setFieldValue('locations', locations)
 }
+const totalTeams = computed(() => {
+  return scheduleSettings.value?.teams
+})
 onMounted(async () => {
   setValues({
     tournament_id: scheduleStoreRequest.value.general.tournament_id,
@@ -35,7 +38,6 @@ onMounted(async () => {
   })
 })
 const isValid = computed(() => {
-  console.log(meta.value.valid)
   return meta.value.valid
 })
 defineExpose({
@@ -101,6 +103,16 @@ defineExpose({
             v-model="fields.football_type_id.fieldValue"
             v-bind="fields.football_type_id.fieldPropsValue"
         />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" lg="4" md="4">
+        <span class="text-body-1 d-block">Total de equipos registrados:</span>
+      </v-col>
+      <v-col cols="12" lg="8" md="8">
+        <p class="text-body-1">
+          <v-chip color="primary" readonly variant="outlined">{{ totalTeams }}</v-chip>
+        </p>
       </v-col>
     </v-row>
     <v-row>

@@ -82,6 +82,7 @@ export interface ScheduleSettings {
     max_teams: number;
     time_between_games: number;
     teams: number;
+    round_trip: boolean;
     format: Format;
     footballType: FootballType;
     locations: Location[];
