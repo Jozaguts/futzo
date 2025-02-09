@@ -5,7 +5,7 @@ import type {Location} from '~/models/Schedule'
 import useSchemas from "~/composables/useSchemas";
 
 const [parent] = useAutoAnimate()
-const {validate: validateGeneral, setValues, fields, handleSubmit, setFieldValue} = useSchemas("calendar-general-step");
+const {validate, setValues, fields, handleSubmit, setFieldValue, meta, resetForm} = useSchemas("calendar-general-step");
 const {tournament, scheduleSettings, scheduleStoreRequest} =
     storeToRefs(useTournamentStore())
 const formatDate = (date: string): Date | string => {
@@ -14,7 +14,7 @@ const formatDate = (date: string): Date | string => {
 }
 const locationHandler = (value: Location[]) => {
 
-  const locations = fields.locations.fieldValue = value.map<{
+  const locations = value.map<{
     id: number
     name: string
   }>((item: Location) => ({
@@ -33,6 +33,13 @@ onMounted(async () => {
     time_between_games: scheduleStoreRequest.value.general.time_between_games,
     locations: scheduleStoreRequest.value.general.locations,
   })
+})
+const isValid = computed(() => {
+  console.log(meta.value.valid)
+  return meta.value.valid
+})
+defineExpose({
+  isValid,
 })
 </script>
 

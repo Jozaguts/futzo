@@ -56,7 +56,6 @@ if (props.multiCalendar) {
 watch(
     dates,
     (value) => {
-      console.log('fired')
       if (value) {
         if (isDate(value)) {
           startDate.value = value;

@@ -2,41 +2,30 @@
 import StepperContainer from "~/components/pages/torneos/calendario/stepper/index.vue";
 import {storeToRefs} from "pinia";
 import {useTournamentStore} from "~/store";
-import useSchemas from "~/composables/useSchemas";
 import type {CurrentCalendarStep} from "~/models/tournament";
 
 const {
   calendarSteps,
   scheduleDialog,
-  selectedLocations,
-  selectedLocationsHasError,
-  scheduleStoreRequest,
 } = storeToRefs(useTournamentStore());
-const {validate: validateGeneral, setValues, fields, handleSubmit} = useSchemas("create-calendar");
-const leaveHandler = () => {
-  useTournamentStore().$reset();
-};
+
 const {
   secondaryTextBtn,
   primaryTextBtn,
   backHandler,
 } = useDialog(calendarSteps, scheduleDialog);
+const stepContainerRef = ref();
+const leaveHandler = () => {
+  useTournamentStore().$reset();
+};
 const handleChange = async () => {
-  console.log('calendarSteps')
-  let hasErrors = false;
+  let hasErrors = !stepContainerRef.value.hasValidForm();
   if (calendarSteps.value.current === 'general') {
-    fields.locations.fieldValue = scheduleStoreRequest.value.general.locations
-    fields.start_date.fieldValue = scheduleStoreRequest.value.general.start_date
-    fields.game_time.fieldValue = scheduleStoreRequest.value.general.game_time
-    fields.time_between_games.fieldValue = scheduleStoreRequest.value.general.time_between_games
-    const validate = handleSubmit(value => {
-      console.log(value)
-      if (value?.locations?.length === 0) {
-        hasErrors = true
-        scheduleStoreRequest.value.general.errors.locations = 'Debes seleccionar al menos una ubicación'
-      }
-    })
-    await validate()
+    console.log();
+  } else if (calendarSteps.value.current === 'regular') {
+    console.log();
+  } else if (calendarSteps.value.current === 'elimination') {
+    console.log();
   }
   if (!hasErrors) {
     nextStep();
@@ -63,7 +52,7 @@ const nextStep = () => {
       v-model="scheduleDialog"
   >
     <template #v-card-text>
-      <StepperContainer/>
+      <StepperContainer ref="stepContainerRef"/>
     </template>
     <template #actions>
       <v-btn

@@ -379,6 +379,10 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         phases: []
     });
 
+    const isValidForm = (form: TournamentStoreRequest) => {
+        
+    }
+
     const settingsSchedule = async () => {
         const client = useSanctumClient();
         const {data} = await useAsyncData<ScheduleSettings>('tournament-settings', () =>
