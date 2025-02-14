@@ -66,7 +66,64 @@ function getSchemaByName(name: string) {
     let schemaFields = {} as any;
     const {t} = useI18n();
     switch (name) {
-        case 'calendar-locations-step':
+        case 'calendar-location-step':
+            schemaFields.tournament_id = yup.number().required(t('forms.required'));
+            schemaFields.availability = yup.array().of(
+                yup.object().shape({
+                    id: yup.number().required(t("forms.required")),
+                    days: yup.object().shape({
+                        monday: yup
+                            .object()
+                            .shape({
+                                start: yup.string(),
+                                end: yup.string(),
+                            })
+                            .nullable(),
+                        tuesday: yup
+                            .object()
+                            .shape({
+                                start: yup.string(),
+                                end: yup.string(),
+                            })
+                            .nullable(),
+                        wednesday: yup
+                            .object()
+                            .shape({
+                                start: yup.string(),
+                                end: yup.string(),
+                            })
+                            .nullable(),
+                        thursday: yup
+                            .object()
+                            .shape({
+                                start: yup.string(),
+                                end: yup.string(),
+                            })
+                            .nullable(),
+                        friday: yup
+                            .object()
+                            .shape({
+                                start: yup.string(),
+                                end: yup.string(),
+                            })
+                            .nullable(),
+                        saturday: yup
+                            .object()
+                            .shape({
+                                start: yup.string(),
+                                end: yup.string(),
+                            })
+                            .nullable(),
+                        sunday: yup
+                            .object()
+                            .shape({
+                                start: yup.string(),
+                                end: yup.string(),
+                            })
+                            .nullable(),
+                    }),
+                }),
+            );
             break;
         case 'calendar-elimination-step':
             schemaFields.elimination_round_trip = yup
@@ -80,7 +137,7 @@ function getSchemaByName(name: string) {
                     is_active: yup.boolean().required(t('forms.required')),
                     is_completed: yup.boolean().required(t('forms.required')),
                 })
-            )
+            );
             break;
         case 'calendar-regular-step':
             schemaFields.round_trip = yup
@@ -249,62 +306,7 @@ function getSchemaByName(name: string) {
             //         ),
             //     }),
             // );
-            // schemaFields.venues = yup.array().of(
-            //     yup.object().shape({
-            //         id: yup.number().required(t("forms.required")),
-            //         days: yup.object().shape({
-            //             monday: yup
-            //                 .object()
-            //                 .shape({
-            //                     start: yup.string(),
-            //                     end: yup.string(),
-            //                 })
-            //                 .nullable(),
-            //             tuesday: yup
-            //                 .object()
-            //                 .shape({
-            //                     start: yup.string(),
-            //                     end: yup.string(),
-            //                 })
-            //                 .nullable(),
-            //             wednesday: yup
-            //                 .object()
-            //                 .shape({
-            //                     start: yup.string(),
-            //                     end: yup.string(),
-            //                 })
-            //                 .nullable(),
-            //             thursday: yup
-            //                 .object()
-            //                 .shape({
-            //                     start: yup.string(),
-            //                     end: yup.string(),
-            //                 })
-            //                 .nullable(),
-            //             friday: yup
-            //                 .object()
-            //                 .shape({
-            //                     start: yup.string(),
-            //                     end: yup.string(),
-            //                 })
-            //                 .nullable(),
-            //             saturday: yup
-            //                 .object()
-            //                 .shape({
-            //                     start: yup.string(),
-            //                     end: yup.string(),
-            //                 })
-            //                 .nullable(),
-            //             sunday: yup
-            //                 .object()
-            //                 .shape({
-            //                     start: yup.string(),
-            //                     end: yup.string(),
-            //                 })
-            //                 .nullable(),
-            //         }),
-            //     }),
-            // );
+
             break;
         case 'create-tournament-basic-info':
             schemaFields.id = yup.number().nullable();
