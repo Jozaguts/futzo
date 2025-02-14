@@ -68,6 +68,11 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
                 completed: false,
                 label: "Fase de Eliminación",
             },
+            {
+                step: "locations",
+                completed: false,
+                label: "Ubicaciones",
+            }
         ],
     });
     const nextGames = ref<Game[]>([

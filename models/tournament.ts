@@ -256,11 +256,12 @@ export type CalendarSteps = {
     completed: boolean;
     label: CalendarLabelStep;
 };
-export type CurrentCalendarStep = "general" | "regular" | "elimination";
+export type CurrentCalendarStep = "general" | "regular" | "elimination" | 'locations';
 export type CalendarLabelStep =
     | "General"
     | "Fase Regular"
-    | "Fase de Eliminación";
+    | "Fase de Eliminación"
+    | "Ubicaciones";
 
 export type TournamentSteps = {
     step: CurrentStep;

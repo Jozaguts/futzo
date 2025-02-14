@@ -20,19 +20,20 @@ const leaveHandler = () => {
 };
 const handleChange = async () => {
   let hasErrors = !stepContainerRef.value.hasValidForm();
+  console.log({hasErrors})
   if (calendarSteps.value.current === 'general') {
-    console.log();
+    console.log('general');
   } else if (calendarSteps.value.current === 'regular') {
-    console.log();
+    console.log('regular');
   } else if (calendarSteps.value.current === 'elimination') {
-    console.log();
+    console.log('elimination');
   }
   if (!hasErrors) {
     nextStep();
   }
 };
 const nextStep = () => {
-  const stepsOrder: CurrentCalendarStep[] = ['general', 'regular', 'elimination'];
+  const stepsOrder: CurrentCalendarStep[] = ['general', 'regular', 'elimination', 'locations'];
   const currentStepIndex = stepsOrder.indexOf(calendarSteps.value.current);
   if (!calendarSteps.value.steps[currentStepIndex].completed) {
     calendarSteps.value.steps[currentStepIndex].completed = true;
