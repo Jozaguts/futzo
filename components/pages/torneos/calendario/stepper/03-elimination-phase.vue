@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import {useTournamentStore} from '~/store'
+import type {EliminationPhase, Phase} from "~/models/Schedule";
 
 const {scheduleSettings} = storeToRefs(useTournamentStore())
 const chipEventHandler = (value: number[]) => {
@@ -15,31 +16,23 @@ const activePhases = ref(
 const totalTeams = computed(() => {
   return scheduleSettings.value?.teams
 })
-const disabledOption = (phase) => {
-  console.log({phase: phase.name})
-  if (phase.name === 'Fase de grupos' || phase.name === 'Tabla general') {
-    return true
-  }
-  if (totalTeams.value < 16 && phase.name === 'Octavos de Final') {
-    return true
-  }
-  if (totalTeams.value < 8 && phase.name === 'Cuartos de final') {
-    return true
-  }
-}
-// cuantos avanzan a la siguiente ronda?
+const disabledOption = (phase: EliminationPhase) => {
+  return phase.name === 'Fase de grupos' || phase.name === 'Tabla general' ||
+      (totalTeams.value < 16 && phase.name === 'Octavos de Final') ||
+      (totalTeams.value < 8 && phase.name === 'Cuartos de Final');
+};
 const teamsToNextRound = computed(() => {
   const phases = scheduleSettings.value.phases;
-  const getPhase = (name) => phases.find((phase) => phase.name === name);
+  const getPhase = (name: Phase) => phases.find((phase) => phase.name === name);
   const roundOfSixteen = getPhase('Octavos de Final');
   const quarterFinals = getPhase('Cuartos de Final');
   const semiFinals = getPhase('Semifinales');
   const final = getPhase('Final');
 
-  if (totalTeams.value > 16 && roundOfSixteen.is_active) return 16;
-  if (totalTeams.value > 8 && quarterFinals.is_active) return 8;
-  if (totalTeams.value > 4 && semiFinals.is_active) return 4;
-  if (totalTeams.value > 2 && final.is_active) return 2;
+  if (totalTeams.value > 16 && roundOfSixteen?.is_active) return 16;
+  if (totalTeams.value > 8 && quarterFinals?.is_active) return 8;
+  if (totalTeams.value > 4 && semiFinals?.is_active) return 4;
+  if (totalTeams.value > 2 && final?.is_active) return 2;
   return 1;
 });
 const form = ref({
