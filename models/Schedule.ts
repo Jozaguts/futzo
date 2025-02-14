@@ -33,7 +33,7 @@ export type FormLocationAvailabilityStep = {
     location_id: number;
     availability: LocationAvailability[]
 }
-export type Phase = 'Fase de Grupos | Tabla general' | 'Octavos de Final' | 'Cuartos de Final' | 'Semifinales' | 'Final';
+export type Phase = 'Fase de grupos' | 'Tabla general' | 'Octavos de Final' | 'Cuartos de Final' | 'Semifinales' | 'Final';
 export type EliminationPhase = {
     id: number;
     name: Phase;
@@ -87,7 +87,7 @@ export interface ScheduleSettings {
     footballType: FootballType;
     locations: Location[];
     tiebreakers: Tiebreaker[];
-    phases: Phase[];
+    phases: EliminationPhase[];
 }
 
 export interface FootballType {

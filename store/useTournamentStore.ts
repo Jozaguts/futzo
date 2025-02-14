@@ -14,6 +14,7 @@ import type {User} from "~/models/user";
 import prepareForm from "~/utils/prepareFormData";
 import type {IPagination} from "~/interfaces";
 import type {
+    EliminationPhase,
     FootballType,
     Format,
     FormEliminationPhaseStep,
@@ -367,6 +368,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     const scheduleSettings = ref<ScheduleSettings>({
         start_date: new Date(),
         end_date: null,
+        round_trip: false,
         game_time: 0,
         min_teams: 0,
         max_teams: 0,
@@ -376,11 +378,11 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         footballType: {} as FootballType,
         locations: [],
         tiebreakers: [],
-        phases: []
+        phases: [] as EliminationPhase[]
     });
 
     const isValidForm = (form: TournamentStoreRequest) => {
-        
+
     }
 
     const settingsSchedule = async () => {
