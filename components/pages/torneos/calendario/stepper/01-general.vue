@@ -9,7 +9,9 @@ const {setValues, fields, setFieldValue, meta} = useSchemas("calendar-general-st
 const {tournament, scheduleSettings, scheduleStoreRequest} =
     storeToRefs(useTournamentStore())
 const formatDate = (date: string): Date | string => {
-  const [year, month, day] = date.split('-')
+  if (!date) return ''
+
+  const [year, month, day] = date?.split('-')
   return new Date(Number(year), Number(month) - 1, Number(day))
 }
 const locationHandler = (value: Location[]) => {
@@ -78,11 +80,10 @@ defineExpose({
             return-object
             disabled
             variant="outlined"
-            persistent-hint
-            :hint="scheduleSettings?.format?.description"
             v-model="fields.tournament_format_id.fieldValue"
             v-bind="fields.tournament_format_id.fieldPropsValue"
         />
+        <p class="ml-2 text-caption text-medium-emphasis">{{ scheduleSettings?.format?.description }}</p>
       </v-col>
     </v-row>
     <v-row>
@@ -98,11 +99,10 @@ defineExpose({
             return-object
             disabled
             variant="outlined"
-            persistent-hint
-            :hint="scheduleSettings?.footballType.description"
             v-model="fields.football_type_id.fieldValue"
             v-bind="fields.football_type_id.fieldPropsValue"
         />
+        <p class="ml-2 text-caption text-medium-emphasis">{{ scheduleSettings?.footballType.description }}</p>
       </v-col>
     </v-row>
     <v-row>
