@@ -66,6 +66,22 @@ function getSchemaByName(name: string) {
     let schemaFields = {} as any;
     const {t} = useI18n();
     switch (name) {
+        case 'calendar-locations-step':
+            break;
+        case 'calendar-elimination-step':
+            schemaFields.elimination_round_trip = yup
+                .boolean()
+                .required(t('forms.required'))
+                .default(true);
+            schemaFields.eliminationPhases = yup.array().of(
+                yup.object().shape({
+                    id: yup.number().required(t('forms.required')),
+                    name: yup.string().required(t('forms.required')),
+                    is_active: yup.boolean().required(t('forms.required')),
+                    is_completed: yup.boolean().required(t('forms.required')),
+                })
+            )
+            break;
         case 'calendar-regular-step':
             schemaFields.round_trip = yup
                 .boolean()

@@ -369,6 +369,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         start_date: new Date(),
         end_date: null,
         round_trip: false,
+        elimination_round_trip: true,
         game_time: 0,
         min_teams: 0,
         max_teams: 0,

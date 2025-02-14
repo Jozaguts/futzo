@@ -83,6 +83,7 @@ export interface ScheduleSettings {
     time_between_games: number;
     teams: number;
     round_trip: boolean;
+    elimination_round_trip: boolean;
     format: Format;
     footballType: FootballType;
     locations: Location[];

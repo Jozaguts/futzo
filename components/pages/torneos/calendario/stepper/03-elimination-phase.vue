@@ -7,12 +7,18 @@ const chipEventHandler = (value: number[]) => {
   scheduleSettings.value?.phases.map(
       (phase) => (phase.is_active = value.includes(phase.id))
   )
+  fields.eliminationPhases.fieldValue = scheduleSettings.value?.phases.filter((phase) => phase.is_active);
 }
+const {fields, meta} = useSchemas('calendar-elimination-step', {
+  elimination_round_trip: scheduleSettings.value.elimination_round_trip,
+  eliminationPhases: scheduleSettings.value.phases,
+})
 const activePhases = ref(
     scheduleSettings.value?.phases
         .filter((phase) => phase.is_active)
         .map((phase) => phase.id)
 )
+
 const totalTeams = computed(() => {
   return scheduleSettings.value?.teams
 })
@@ -35,9 +41,13 @@ const teamsToNextRound = computed(() => {
   if (totalTeams.value > 2 && final?.is_active) return 2;
   return 1;
 });
-const form = ref({
-  round_trip: true,
-});
+
+const isValid = computed(() => {
+  return meta.value.valid
+})
+defineExpose({
+  isValid,
+})
 </script>
 <template>
   <v-container class="container">
@@ -54,7 +64,7 @@ const form = ref({
         <span class="text-body-1"> Ida y Vuelta? </span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
-        <v-switch v-model="form.round_trip"></v-switch>
+        <v-switch v-model="fields.elimination_round_trip.fieldValue"></v-switch>
       </v-col>
     </v-row>
     <v-row>
