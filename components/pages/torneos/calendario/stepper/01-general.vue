@@ -15,15 +15,15 @@ const formatDate = (date: string): Date | string => {
   return new Date(Number(year), Number(month) - 1, Number(day))
 }
 const locationHandler = (value: Location[]) => {
-
-  const locations = value.map<{
-    id: number
-    name: string
-  }>((item: Location) => ({
-    id: item.id,
-    name: item.name,
-  }))
-  setFieldValue('locations', locations)
+  // const locations = value.map<{
+  //   id: number
+  //   name: string
+  // }>((item: Location) => ({
+  //   id: item.id,
+  //   name: item.name,
+  // }))
+  setFieldValue('locations', value)
+  // scheduleStoreRequest.value.general.locations = value
 }
 const totalTeams = computed(() => {
   return scheduleSettings.value?.teams
@@ -36,7 +36,7 @@ onMounted(async () => {
     start_date: formatDate(scheduleStoreRequest.value.general.start_date as string),
     game_time: scheduleStoreRequest.value.general.game_time,
     time_between_games: scheduleStoreRequest.value.general.time_between_games,
-    locations: scheduleStoreRequest.value.general.locations,
+    // locations: scheduleStoreRequest.value.general.locations,
   })
 })
 const isValid = computed(() => {
@@ -164,7 +164,11 @@ defineExpose({
         <span class="text-body-1"> Ubicaciones* </span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
-        <SelectLocation @update:model-value="locationHandler"></SelectLocation>
+        <SelectLocation
+            :locations="scheduleSettings.locations"
+            v-model="fields.locations.fieldValue"
+            @update:model-value="locationHandler"
+        ></SelectLocation>
         <div v-auto-animate>
           <small
               v-if="!!fields.locations.fieldPropsValue['error-messages']"
