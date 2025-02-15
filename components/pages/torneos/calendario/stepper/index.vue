@@ -2,6 +2,7 @@
 import General from "~/components/pages/torneos/calendario/stepper/01-general.vue";
 import Regular from "~/components/pages/torneos/calendario/stepper/02-regular-phase.vue";
 import Elimination from "~/components/pages/torneos/calendario/stepper/03-elimination-phase.vue";
+import Location from "~/components/pages/torneos/calendario/stepper/04-location-phase.vue";
 import IndicatorStep from "~/components/shared/IndicatorStep.vue";
 import {useTournamentStore} from "~/store";
 
@@ -44,6 +45,11 @@ defineExpose({
           <Elimination
               ref="stepRef"
               v-if="calendarSteps.current === 'elimination'"
+              :key="calendarSteps.current"
+          />
+          <Location
+              ref="stepRef"
+              v-if="calendarSteps.current === 'locations'"
               :key="calendarSteps.current"
           />
         </transition-slide>

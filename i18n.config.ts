@@ -51,6 +51,10 @@ export default defineI18nConfig(() => ({
                     empty: "No hay mas registros",
                     loadMode: 'Cargando...',
                 },
+                stepper: {
+                    prev: 'Anterior',
+                    next: 'Siguiente',
+                }
             },
         },
     },
