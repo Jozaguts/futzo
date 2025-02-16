@@ -35,7 +35,7 @@ export type FormLocationAvailabilityStep = {
 }
 export type TournamentLocationAvailability = {
     id: number;
-    days: LocationAvailability[]
+    days: LocationAvailability
 }
 export type Phase = 'Fase de grupos' | 'Tabla general' | 'Octavos de Final' | 'Cuartos de Final' | 'Semifinales' | 'Final';
 export type EliminationPhase = {
