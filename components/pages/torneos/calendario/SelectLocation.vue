@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import {useLocationStore, useTournamentStore} from '~/store'
+import type {Location} from "~/models/Schedule";
 
 const props = defineProps({
   multiple: {
@@ -14,6 +15,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  locations: {
+    type: Array as PropType<Location[]>,
+    default: () => [],
+  }
 })
 const search = ref('')
 const {locations} = storeToRefs(useLocationStore())
@@ -28,13 +33,13 @@ watchEffect(() => {
   }
 })
 const items = computed(() => locations.value ?? [])
-
+const model = defineModel()
 </script>
 <template>
   <v-select
-      v-model="scheduleStoreRequest.general.locations"
+      v-model="model"
       max-width="400px"
-      :items="items"
+      :items="props.locations"
       :multiple="true"
       :chips="props.chips"
       :closable-chips="props.closableChips"

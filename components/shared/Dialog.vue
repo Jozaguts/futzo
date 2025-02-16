@@ -18,25 +18,26 @@ defineProps({
 </script>
 <template>
   <v-dialog
-    v-model="dialog"
-    max-width="690"
-    @after-leave="emits('leaving')"
-    scrollable
+      v-model="dialog"
+      max-width="700"
+      @after-leave="emits('leaving')"
+      scrollable
   >
+    
     <v-card
-      :loading="loading"
-      class="create-tournament-card futzo-rounded"
-      height="100%"
-      :style="{ overflow: $vuetify.display.mobile ? '' : 'hidden' }"
+        :loading="loading"
+        class="create-tournament-card futzo-rounded"
+        height="100%"
+        :style="{ overflow: $vuetify.display.mobile ? '' : 'hidden' }"
     >
       <template #loader="{ isActive }"></template>
       <v-card-item>
         <template #prepend>
           <v-sheet
-            border="primary thin"
-            class="mx-auto d-flex justify-center align-center mr-2 rounded-lg"
-            height="45"
-            width="45"
+              border="primary thin"
+              class="mx-auto d-flex justify-center align-center mr-2 rounded-lg"
+              height="45"
+              width="45"
           >
             <Icon name="line-md:map-marker-loop"></Icon>
           </v-sheet>
@@ -46,19 +47,19 @@ defineProps({
         </v-card-title>
         <v-card-subtitle><span v-html="subtitle"></span></v-card-subtitle>
         <template #append>
-          <Icon name="futzo-icon:x-dialog" @click="dialog = false" />
+          <Icon name="futzo-icon:x-dialog" @click="dialog = false"/>
         </template>
       </v-card-item>
       <v-progress-linear
-        v-if="loading"
-        :active="loading"
-        color="primary"
-        height="4"
-        indeterminate
+          v-if="loading"
+          :active="loading"
+          color="primary"
+          height="4"
+          indeterminate
       ></v-progress-linear>
       <v-divider v-else></v-divider>
       <v-card-text>
-        <slot name="v-card-text" />
+        <slot name="v-card-text"/>
       </v-card-text>
       <v-card-actions class="d-flex px-6 pb-6 justify-space-between">
         <slot name="actions"></slot>
