@@ -55,34 +55,5 @@ const props = defineProps({
   </v-row>
 </template>
 <style lang="sass">
-.custom-location-input
-  max-height: 44px
-  padding-inline: 0
-
-.custom-location-input > .v-input__control > .v-field > .v-field__field > input
-  text-indent: 4px
-  font-weight: 900
-
-.day-disabled
-  width: 100%
-  height: 52px
-  background: #F3F4F4
-  border-radius: 8px
-  display: flex
-  align-items: center
-  padding-left: 1rem
-  border: 1px solid #DBDCDE
-
-  .icon
-    color: #C9CBCD
-    font-size: 24px
-    margin-right: 4px
-
-  .label
-    font-size: 16px
-    color: #C9CBCD
-    font-weight: 600
-    line-height: 24px
-    margin-left: 8px
-
+@use "assets/scss/components/input-location-disabled.sass"
 </style>
