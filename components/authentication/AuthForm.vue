@@ -163,7 +163,7 @@ const isDisabled = computed(() => {
             <v-expand-transition>
               <PasswordRules
                   v-model:model-value="password"
-                  :show="showRegisterForm"
+                  :show="showRegisterForm && !!password"
               />
             </v-expand-transition>
             <div
