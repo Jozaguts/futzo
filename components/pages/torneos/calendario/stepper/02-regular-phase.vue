@@ -2,11 +2,11 @@
 import {useTournamentStore} from "~/store";
 import Tiebreakers from "~/components/pages/torneos/calendario/Tiebreakers.vue";
 
-const {scheduleSettings} = storeToRefs(useTournamentStore());
+const {scheduleStoreRequest} = storeToRefs(useTournamentStore());
 
 const {fields, meta} = useSchemas("calendar-regular-step", {
-  round_trip: scheduleSettings.value.round_trip,
-  tiebreakers: scheduleSettings.value.tiebreakers
+  round_trip: scheduleStoreRequest.value?.regular_phase.round_trip,
+  tiebreakers: scheduleStoreRequest.value?.regular_phase.tiebreakers
 });
 const isValid = computed(() => {
   return meta.value.valid
@@ -14,6 +14,22 @@ const isValid = computed(() => {
 defineExpose({
   isValid,
 })
+watch(fields.round_trip, (value) => {
+  if (value?.fieldValue) {
+    scheduleStoreRequest.value = {
+      ...scheduleStoreRequest.value,
+      regular_phase: {
+        ...scheduleStoreRequest.value.regular_phase,
+        round_trip: value.fieldValue
+      }
+    }
+  }
+}, {deep: true})
+watch(fields.tiebreakers, (value) => {
+  if (value?.fieldValue) {
+    scheduleStoreRequest.value.regular_phase.tiebreakers = value.fieldValue
+  }
+}, {deep: true})
 </script>
 <template>
   <v-container class="container">
