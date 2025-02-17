@@ -405,7 +405,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         generalSchedule.start_date = data.value.start_date;
         generalSchedule.game_time = data.value.game_time;
         generalSchedule.time_between_games = data.value.time_between_games;
-        generalSchedule.locations = data.value.locations;
+        generalSchedule.locations = [];
         scheduleStoreRequest.value = {
             general: generalSchedule,
         }

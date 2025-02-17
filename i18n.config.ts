@@ -11,6 +11,7 @@ export default defineI18nConfig(() => ({
                 password_confirmation: "Las contraseñas no coinciden",
                 number: "Número inválido",
                 zeroIsValid: "Campo es requerido, cero es un valor válido",
+                location_required: "Debe seleccionar al menos una ubicación",
             },
             tournament_min: "El nombre del torneo debe tener al menos 6 caracteres",
             league_min: "El nombre de la liga debe tener al menos 6 caracteres",

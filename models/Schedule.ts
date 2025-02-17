@@ -8,6 +8,7 @@ export type ScheduleStoreRequest = {
 }
 export type FormGeneralScheduleRequest = {
     tournament_id: number;
+    total_teams: number;
     tournament_format_id: number;
     football_type_id: number;
     start_date: string | Date;
@@ -21,7 +22,6 @@ export type FormGeneralLocation = {
 }
 export type FormRegularPhaseStep = {
     round_trip: boolean,
-    total_teams: number;
     tiebreakers: Tiebreaker[];
 }
 export type FormEliminationPhaseStep = {

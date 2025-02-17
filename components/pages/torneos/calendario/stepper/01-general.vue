@@ -5,7 +5,7 @@ import type {Location} from '~/models/Schedule'
 import useSchemas from "~/composables/useSchemas";
 
 const [parent] = useAutoAnimate()
-const {setValues, fields, setFieldValue, meta} = useSchemas("calendar-general-step");
+const {setValues, fields, meta} = useSchemas("calendar-general-step");
 const {tournament, scheduleSettings, scheduleStoreRequest} =
     storeToRefs(useTournamentStore())
 const formatDate = (date: string): Date | string => {
@@ -15,35 +15,27 @@ const formatDate = (date: string): Date | string => {
   return new Date(Number(year), Number(month) - 1, Number(day))
 }
 const locationHandler = (value: Location[]) => {
-  // const locations = value.map<{
-  //   id: number
-  //   name: string
-  // }>((item: Location) => ({
-  //   id: item.id,
-  //   name: item.name,
-  // }))
-  setFieldValue('locations', value)
-  // scheduleStoreRequest.value.general.locations = value
+  setValues({locations: value})
+  scheduleStoreRequest.value.general.locations = value
 }
-const totalTeams = computed(() => {
-  return scheduleSettings.value?.teams
-})
+
 onMounted(async () => {
   setValues({
+    total_teams: scheduleSettings.value.teams,
     tournament_id: scheduleStoreRequest.value.general.tournament_id,
     tournament_format_id: scheduleStoreRequest.value.general.tournament_format_id,
     football_type_id: scheduleStoreRequest.value.general.football_type_id,
     start_date: formatDate(scheduleStoreRequest.value.general.start_date as string),
     game_time: scheduleStoreRequest.value.general.game_time,
     time_between_games: scheduleStoreRequest.value.general.time_between_games,
-    // locations: scheduleStoreRequest.value.general.locations,
+    locations: scheduleStoreRequest.value.general.locations,
   })
 })
 const isValid = computed(() => {
   return meta.value.valid
 })
 defineExpose({
-  isValid,
+  isValid
 })
 </script>
 
@@ -111,7 +103,7 @@ defineExpose({
       </v-col>
       <v-col cols="12" lg="8" md="8">
         <p class="text-body-1">
-          <v-chip color="primary" readonly variant="outlined">{{ totalTeams }}</v-chip>
+          <v-chip color="primary" readonly variant="outlined">{{ scheduleSettings.teams }}</v-chip>
         </p>
       </v-col>
     </v-row>
@@ -161,7 +153,13 @@ defineExpose({
     </v-row>
     <v-row>
       <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Ubicaciones* </span>
+        <span class="text-body-1"> Ubicaciones*
+           <v-tooltip text="Ubilcaion es un campo de juego" location="bottom">
+            <template v-slot:activator="{props}">
+              <Icon v-bind="props" name="futzo-icon:help-circle"/>
+            </template>
+           </v-tooltip>
+          </span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
         <SelectLocation

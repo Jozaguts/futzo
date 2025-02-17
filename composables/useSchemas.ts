@@ -160,6 +160,7 @@ function getSchemaByName(name: string) {
                 .required();
             break;
         case 'calendar-general-step':
+            schemaFields.total_teams = yup.number().required(t('forms.required'));
             schemaFields.tournament_id = yup.number().required(t('forms.required'));
             schemaFields.tournament_format_id = yup
                 .number()
@@ -190,7 +191,7 @@ function getSchemaByName(name: string) {
                         })
                         .required(t('forms.required'))
                 )
-                .min(1, t('forms.required'));
+                .min(1, t('forms.location_required'));
             break;
         case 'signup':
             schemaFields.isSignup = boolean().default(false);
