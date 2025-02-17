@@ -2,10 +2,10 @@
 import {useLocationStore} from "~/store";
 
 const {locationDialog, isEdition} = storeToRefs(useLocationStore());
-const title = isEdition.value ? "Editar ubicación" : "Crear una Ubicación";
+const title = isEdition.value ? " Edita una Ubicación y sus Campos de Juego" : " Registrar una Ubicación y sus Campos de Juego";
 const subtitle = isEdition.value
-    ? "Registra una nueva ubicación para el torneo. Una vez creada, podrás configurar su <br/> disponibilidad.."
-    : "Registra una nueva ubicación para el torneo. Una vez creada, podrás configurar su  <br/> disponibilidad.";
+    ? "Una ubicación representa un lugar físico donde se pueden jugar partidos. <br />   Dentro de cada ubicación, puedes registrar uno o más campos de juego, <br />cada uno con su propia disponibilidad."
+    : "Una ubicación representa un lugar físico donde se pueden jugar partidos. <br /> Dentro de cada ubicación, puedes registrar uno o más campos de juego,  <br /> cada uno con su propia disponibilidad.";
 
 </script>
 <template>
@@ -21,7 +21,8 @@ const subtitle = isEdition.value
       </v-sheet>
     </template>
     <template #title><span class="title-dialog">{{ title }}</span></template>
-    <template #subtitle><span v-html="subtitle" class="subtitle-dialog"/>
+    <template #subtitle>
+      <span v-html="subtitle" class="subtitle-dialog"/>
     </template>
     <template #append class="test">
       <Icon size="24" class="cursor-pointer custom-close-icon" name="futzo-icon:x-dialog" @click="locationDialog = false"/>
