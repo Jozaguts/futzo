@@ -37,13 +37,6 @@ const textButton = computed(() => {
               :offset="{ enter: ['-100%', 0],leave: ['100%', 0]}"
           >
             <LocationStep v-if="formSteps.current === 'location'"/>
-            <v-container v-else-if="formSteps.current === 'availability'">
-              <v-row>
-                <v-col>
-                  available-locations
-                </v-col>
-              </v-row>
-            </v-container>
           </transition-slide>
         </v-col>
       </v-row>

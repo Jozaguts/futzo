@@ -1,133 +1,66 @@
 <script lang="ts" setup>
-import type {LocationAvailability} from "~/models/Location";
-import * as yup from "yup";
-import {object} from "yup";
-import InputDay from "~/components/pages/ubicaciones/stepper/InputDay.vue";
 
+import {useLocationStore} from "~/store";
+import AvailabilityFormStep from "~/components/pages/ubicaciones/stepper/AvailabilityFormStep.vue";
+import type {CreateTeamForm} from "~/models/Team";
 
-const {defineField, errors, handleSubmit, resetForm, validate} = useForm<LocationAvailability>({
-  validationSchema: toTypedSchema(
-      object({
-        monday: object()
-            .shape({
-              enabled: yup.boolean().default(false),
-              start: object().shape({
-                hours: yup.string().default('09'),
-                minutes: yup.string().default('00'),
-              }),
-              end: object().shape({
-                hours: yup.string().default('23'),
-                minutes: yup.string().default('00'),
-              }),
-            }),
-        tuesday: object()
-            .shape({
-              enabled: yup.boolean().default(false),
-              start: object().shape({
-                hours: yup.string().default('09'),
-                minutes: yup.string().default('00'),
-              }),
-              end: object().shape({
-                hours: yup.string().default('23'),
-                minutes: yup.string().default('00'),
-              }),
-            }),
-        wednesday: object()
-            .shape({
-              enabled: yup.boolean().default(false),
-              start: object().shape({
-                hours: yup.string().default('09'),
-                minutes: yup.string().default('00'),
-              }),
-              end: object().shape({
-                hours: yup.string().default('23'),
-                minutes: yup.string().default('00'),
-              }),
-            }),
-        thursday: object()
-            .shape({
-              enabled: yup.boolean().default(false),
-              start: object().shape({
-                hours: yup.string().default('09'),
-                minutes: yup.string().default('00'),
-              }),
-              end: object().shape({
-                hours: yup.string().default('23'),
-                minutes: yup.string().default('00'),
-              }),
-            }),
-        friday: object()
-            .shape({
-              enabled: yup.boolean().default(true),
-              start: object().shape({
-                hours: yup.string().default('09'),
-                minutes: yup.string().default('00'),
-              }),
-              end: object().shape({
-                hours: yup.string().default('23'),
-                minutes: yup.string().default('00'),
-              }),
-            }),
-        saturday: object()
-            .shape({
-              enabled: yup.boolean().default(true),
-              start: object().shape({
-                hours: yup.string().default('09'),
-                minutes: yup.string().default('00'),
-              }),
-              end: object().shape({
-                hours: yup.string().default('23'),
-                minutes: yup.string().default('00'),
-              }),
-            }),
-        sunday: object()
-            .shape({
-              enabled: yup.boolean().default(true),
-              start: object().shape({
-                hours: yup.string().default('09'),
-                minutes: yup.string().default('00'),
-              }),
-              end: object().shape({
-                hours: yup.string().default('23'),
-                minutes: yup.string().default('00'),
-              }),
-            }),
-      })
-  ),
-})
-const [monday] = reactive(defineField('monday'))
-const [tuesday] = reactive(defineField('tuesday'))
-const [wednesday] = reactive(defineField('wednesday'))
-const [thursday] = reactive(defineField('thursday'))
-const [friday] = reactive(defineField('friday'))
-const [saturday] = reactive(defineField('saturday'))
-const [sunday] = reactive(defineField('sunday'))
-defineExpose({
-  validate,
-  handleSubmit,
-});
+const {locationStoreRequest} = storeToRefs(useLocationStore())
+const fieldCount = computed(() => Array.from({length: locationStoreRequest.value.fields_count ?? 0}, (_, i) => `Campo ${i + 1}`))
+const currentStep = ref(fieldCount[0])
+const availabilities = ref([])
+const refStep = ref()
+const availabilityHandler = (value) => {
+  console.log(value)
+}
+const stepHandler = async (type, item) => {
+  console.log(await refStep.value.validate())
+  console.log(refStep.value.form)
+  // currentStep.value = type === 'next' ? item.step + 1 : item.step - 1
+
+}
 </script>
 <template>
-  <v-container>
-    <v-row>
+  <v-container fluid>
+    <v-row no-gutters>
       <v-col cols="12" class="pt-0">
         <v-divider/>
       </v-col>
     </v-row>
-    <InputDay v-model:day="monday" label="Lunes"/>
-    <InputDay v-model:day="tuesday" label="Martes"/>
-    <InputDay v-model:day="wednesday" label="Miércoles"/>
-    <InputDay v-model:day="thursday" label="Jueves"/>
-    <InputDay v-model:day="friday" label="Viernes"/>
-    <InputDay v-model:day="saturday" label="Sábado"/>
-    <InputDay v-model:day="sunday" label="Domingo"/>
+    <v-stepper-vertical
+        v-model="currentStep"
+        class="pa-0 ma-0"
+        flat
+        :items="fieldCount"
+    >
+      <template #[`item.${currentStep}`]="item">
+        <AvailabilityFormStep :step="item.step" ref="refStep">
+          <template #actions>
+            <v-row>
+              <v-col>
+                <v-btn
+                    variant="tonal"
+                    rounded="lg"
+                    @click="() => stepHandler('back', item)"
+                    color="primary">Anterior
+                </v-btn>
+                <v-btn
+                    variant="tonal"
+                    rounded="lg"
+                    @click="() => stepHandler('next', item)"
+                    color="primary">Siguiente
+                </v-btn>
+              </v-col>
+            </v-row>
+          </template>
+        </AvailabilityFormStep>
+      </template>
+      <template #actions="pros"/>
+    </v-stepper-vertical>
   </v-container>
 </template>
-<style lang="sass">
-.custom-dp-location
-  max-width: 190px
-
-.dp__icon.dp__input_icons
-  margin-top: 12px
+<style>
+.v-expansion-panel-text {
+  padding: 0;
+}
 </style>
 
