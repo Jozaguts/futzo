@@ -6,7 +6,7 @@ export default defineVuetifyConfiguration({
     aliases: {
         VDefaultCard: "VCard",
     },
-    labComponents: 'VStepperVertical',
+    labComponents: ['VStepperVertical', 'VNumberInput'],
     theme,
     defaults,
     icons: {
