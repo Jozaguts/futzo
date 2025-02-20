@@ -14,16 +14,21 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  minHeight: {
+    type: String,
+    default: "auto",
+  },
 });
 </script>
 <template>
   <v-dialog
       v-model="dialog"
       max-width="700"
+      :min-height="minHeight"
       @after-leave="emits('leaving')"
       scrollable
   >
-    
+
     <v-card
         :loading="loading"
         class="create-tournament-card futzo-rounded"
