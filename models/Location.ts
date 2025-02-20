@@ -9,6 +9,7 @@ export type Location = {
 export type LocationStoreRequest = {
     tags: string[];
     availability: LocationAvailability[]
+    fields_count: number;
 } & Location;
 export type LocationCard = {
     image: string
@@ -28,6 +29,7 @@ export type CurrentStep = "location" | "availability";
 export type FormLabelStep = "Ubicación" | "Disponibilidad";
 
 export type LocationAvailability = {
+    name: string;
     monday?: TimeRange;
     tuesday?: TimeRange;
     wednesday?: TimeRange;
