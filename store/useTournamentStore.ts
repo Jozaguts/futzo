@@ -405,10 +405,15 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         generalSchedule.start_date = data.value.start_date;
         generalSchedule.game_time = data.value.game_time;
         generalSchedule.time_between_games = data.value.time_between_games;
+        generalSchedule.total_teams = data.value.teams;
         generalSchedule.locations = [];
         scheduleStoreRequest.value = {
             general: generalSchedule,
-        }
+            regular_phase: {
+                round_trip: false,
+                tiebreakers: data.value.tiebreakers,
+            }
+        } as ScheduleStoreRequest;
         scheduleSettings.value = data.value;
     };
     const fetchSchedule = async () => {

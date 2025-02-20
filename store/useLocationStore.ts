@@ -6,7 +6,7 @@ import {ref} from "vue";
 
 export const useLocationStore = defineStore('locationStore', () => {
     const locations = ref<LocationCard[]>();
-    const locationStoreRequest = ref<LocationStoreRequest>();
+    const locationStoreRequest = ref<LocationStoreRequest>({} as LocationStoreRequest);
     const locationDialog = ref(false);
     const isEdition = ref(false);
     const toUpdate = ref<LocationCard>();
