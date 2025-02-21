@@ -10,9 +10,11 @@ export type LocationStoreRequest = {
     tags: string[];
     availability: LocationAvailability[]
     fields_count: number;
+    position: { lat: number, lng: number }
 } & Location;
 export type LocationCard = {
     image: string
+
 } & LocationStoreRequest;
 
 export interface FormSteps {
