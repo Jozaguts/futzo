@@ -9,7 +9,7 @@ export const useLocationStore = defineStore('locationStore', () => {
     const locationStoreRequest = ref<LocationStoreRequest>({} as LocationStoreRequest);
     const locationDialog = ref(false);
     const isEdition = ref(false);
-    const toUpdate = ref<LocationCard>({} as LocationCard);
+    const locationCard = ref<LocationCard>({} as LocationCard);
     const locationToDelete = ref<{ id: number | null, show: boolean }>({
         id: null,
         show: false
@@ -86,7 +86,7 @@ export const useLocationStore = defineStore('locationStore', () => {
 
     async function updateLocation(): Promise<void> {
         const client = useSanctumClient();
-        await client(`/api/v1/admin/locations/${toUpdate.value?.id}`, {
+        await client(`/api/v1/admin/locations/${locationCard.value?.id}`, {
             method: 'PUT',
             body: locationStoreRequest.value,
         }).then(async () => {
@@ -133,7 +133,7 @@ export const useLocationStore = defineStore('locationStore', () => {
         locationDialog,
         noLocations,
         isEdition,
-        toUpdate,
+        locationCard,
         locationToDelete,
         pagination,
         formSteps,
