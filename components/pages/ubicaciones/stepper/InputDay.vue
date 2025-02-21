@@ -13,10 +13,12 @@ const props = defineProps({
 </script>
 <template>
   <v-row v-auto-animate="{ duration: 300 }">
-    <v-col cols="12" lg="4" md="4">
-      <v-switch v-model="day.enabled" :label="props.label" class=" mt-1"></v-switch>
+    <v-col cols="12" lg="3" md="3">
+      <v-switch v-model="day.enabled" :label="props.label" class="mt-1 text-caption" density="compact">
+        <template #label="item"><span class="text-body-2"> {{ item.label }}</span></template>
+      </v-switch>
     </v-col>
-    <v-col v-if="day.enabled" cols="12" lg="8" md="8">
+    <v-col v-if="day.enabled" cols="12" lg="9" md="9">
       <div class="d-flex justify-space-between">
         <VueDatePicker v-model="day.start" time-picker class="custom-dp-location" :is24="false">
           <template #dp-input="{ value }">
@@ -46,7 +48,7 @@ const props = defineProps({
       </div>
 
     </v-col>
-    <v-col v-else cols="12" lg="8" md="8">
+    <v-col v-else cols="12" lg="9" md="9">
       <div class="day-disabled">
         <Icon name="material-symbols:dark-mode-outline" size="24" class="icon"></Icon>
         <span class="label">No disponible</span>
