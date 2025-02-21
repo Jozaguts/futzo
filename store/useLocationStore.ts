@@ -9,7 +9,7 @@ export const useLocationStore = defineStore('locationStore', () => {
     const locationStoreRequest = ref<LocationStoreRequest>({} as LocationStoreRequest);
     const locationDialog = ref(false);
     const isEdition = ref(false);
-    const toUpdate = ref<LocationCard>();
+    const toUpdate = ref<LocationCard>({} as LocationCard);
     const locationToDelete = ref<{ id: number | null, show: boolean }>({
         id: null,
         show: false

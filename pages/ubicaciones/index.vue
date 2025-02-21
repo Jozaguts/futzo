@@ -8,7 +8,6 @@ import {useLocationStore} from "~/store";
 
 const {isEdition, locationDialog, locationToDelete} = storeToRefs(useLocationStore())
 
-// Define los tipos para las propiedades
 type Schedule = {
   start: string;
   end: string;
@@ -41,40 +40,6 @@ type Location = {
   availability: Availability;
   tags: Tag[];
 };
-
-const capitalize = (str: string): string =>
-    str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-// const locations: Location[] = [
-//   {
-//     id: 1,
-//     name: "Estadio Central",
-//     address: {
-//       street: "Av. Principal #123",
-//       city: "Ciudad Central",
-//     },
-//     availability: {
-//       monday: {start: "08:00", end: "20:00"},
-//       tuesday: {start: "10:00", end: "18:00"},
-//       wednesday: null,
-//       thursday: null,
-//       friday: {start: "08:00", end: "20:00"},
-//       saturday: {start: "09:00", end: "14:00"},
-//       sunday: null,
-//     },
-//     tags: [
-//       {id: 1, name: "Lun."},
-//       {id: 2, name: "Mar."},
-//       {id: 2, name: "Mie."},
-//       {id: 3, name: "Jue."},
-//       {id: 3, name: "Vie."},
-//       {id: 3, name: "Sab."},
-//       {id: 3, name: "Dom."},
-//       // { id: 1, name: "Césped Natural" },
-//       // { id: 2, name: "Estadio Cubierto" },
-//       // { id: 3, name: "Capacidad: 10,000" },
-//     ],
-//   },
-// ];
 const showStoreLocationDialog = () => {
   isEdition.value = false
   locationDialog.value = true
