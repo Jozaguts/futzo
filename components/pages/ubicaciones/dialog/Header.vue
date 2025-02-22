@@ -4,8 +4,8 @@ import {useLocationStore} from "~/store";
 const {locationDialog, isEdition} = storeToRefs(useLocationStore());
 const title = isEdition.value ? " Edita una Ubicación y sus Campos de Juego" : " Registrar una Ubicación y sus Campos de Juego";
 const subtitle = isEdition.value
-    ? "Una ubicación representa un lugar físico donde se pueden jugar partidos. <br />   Dentro de cada ubicación, puedes registrar uno o más campos de juego, <br />cada uno con su propia disponibilidad."
-    : "Una ubicación representa un lugar físico donde se pueden jugar partidos. <br /> Dentro de cada ubicación, puedes registrar uno o más campos de juego,  <br /> cada uno con su propia disponibilidad.";
+    ? "Dentro de cada ubicación, puedes registrar uno o más campos de juego, <br />cada uno con su propia disponibilidad."
+    : "Dentro de cada ubicación, puedes registrar uno o más campos de juego,  <br /> cada uno con su propia disponibilidad.";
 
 </script>
 <template>

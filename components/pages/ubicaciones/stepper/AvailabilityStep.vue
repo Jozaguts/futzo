@@ -1,23 +1,35 @@
 <script lang="ts" setup>
-
 import {useLocationStore} from "~/store";
 import AvailabilityFormStep from "~/components/pages/ubicaciones/stepper/AvailabilityFormStep.vue";
-import type {CreateTeamForm} from "~/models/Team";
+import {storeToRefs} from "pinia";
 
+type StepperType = {
+  CanEdit: boolean
+  hasCompleted: boolean
+  hasError: boolean
+  step: number
+  subtitle?: string
+  title: string
+  value: number
+}
 const {locationStoreRequest} = storeToRefs(useLocationStore())
 const fieldCount = computed(() => Array.from({length: locationStoreRequest.value.fields_count ?? 0}, (_, i) => `Campo ${i + 1}`))
 const currentStep = ref(fieldCount[0])
-const availabilities = ref([])
 const refStep = ref()
-const availabilityHandler = (value) => {
-  console.log(value)
+const stepHandler = async (type: 'next' | 'back' | 'validate', item?: StepperType) => {
+  const {valid} = await refStep.value.validate()
+  if (!valid) {
+    return
+  }
+  if (type === 'validate') {
+    console.log('validate')
+  }
+  locationStoreRequest.value.availability.push(refStep.value.form)
+  currentStep.value = type === 'next' ? item.step + 1 : item.step - 1
 }
-const stepHandler = async (type, item) => {
-  console.log(await refStep.value.validate())
-  console.log(refStep.value.form)
-  // currentStep.value = type === 'next' ? item.step + 1 : item.step - 1
-
-}
+defineExpose({
+  validate: () => stepHandler('validate'),
+})
 </script>
 <template>
   <v-container fluid>
