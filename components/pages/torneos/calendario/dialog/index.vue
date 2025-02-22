@@ -7,6 +7,7 @@ import type {CurrentCalendarStep} from "~/models/tournament";
 const {
   calendarSteps,
   scheduleDialog,
+  scheduleStoreRequest,
 } = storeToRefs(useTournamentStore());
 
 const {
@@ -20,13 +21,14 @@ const leaveHandler = () => {
 };
 const handleChange = async () => {
   let hasErrors = !stepContainerRef.value.hasValidForm();
-  console.log({hasErrors})
   if (calendarSteps.value.current === 'general') {
-    console.log('general');
+    console.log('general', scheduleStoreRequest.value.general);
   } else if (calendarSteps.value.current === 'regular') {
-    console.log('regular');
+    console.log('regular', scheduleStoreRequest.value.regular_phase);
   } else if (calendarSteps.value.current === 'elimination') {
-    console.log('elimination');
+    console.log('elimination', scheduleStoreRequest.value.elimination_phase);
+  } else if (calendarSteps.value.current === 'locations') {
+    console.log('locations', scheduleStoreRequest.value.locations_availability);
   }
   if (!hasErrors) {
     nextStep();
@@ -43,6 +45,7 @@ const nextStep = () => {
 </script>
 <template>
   <Dialog
+      min-height="100vh"
       title="Crear un calendario"
       subtitle="Completa los detalles del calendario."
       :actions="{

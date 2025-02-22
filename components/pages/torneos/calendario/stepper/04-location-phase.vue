@@ -22,18 +22,27 @@ const currentStep = ref(steps[0]?.id)
 
 </script>
 <template>
-  <v-container fluid>
-    <v-stepper-vertical
-        class="pa-0 ma-0"
-        flat
-        v-model="currentStep"
-        item-title="name"
-        item-value="id"
-        :items="steps"
-    >
-      <template #[`item.${currentStep}`]="{step}">
-        <LocationFormStep :locations="fields.availability.fieldValue" :location-id="step"></LocationFormStep>
-      </template>
-    </v-stepper-vertical>
+  <v-container>
+    <v-row>
+      <v-col>
+        Selecciona las horas de disponibilidad de cada ubicación
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-stepper-vertical
+            class="pa-0 ma-0"
+            flat
+            v-model="currentStep"
+            item-title="name"
+            item-value="id"
+            :items="steps"
+        >
+          <template #[`item.${currentStep}`]="{step}">
+            <LocationFormStep :locations="fields.availability.fieldValue" :location-id="step"></LocationFormStep>
+          </template>
+        </v-stepper-vertical>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
