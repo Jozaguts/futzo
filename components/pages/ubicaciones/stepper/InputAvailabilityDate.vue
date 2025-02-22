@@ -10,9 +10,7 @@ const props = defineProps({
     required: true
   }
 })
-const startHourSelected = ref('')
-const endHourSelected = ref('')
-const endOptions = ref<{ value: string; text: string }[]>([]);
+
 const startOptions = computed(() => {
   const start = props.day.start
   const end = props.day.end
@@ -27,6 +25,9 @@ const startOptions = computed(() => {
   }
   return options
 })
+const endOptions = ref<{ value: string; text: string }[]>(startOptions.value);
+const startHourSelected = ref(startOptions.value[0])
+const endHourSelected = ref(startOptions.value[startOptions.value.length - 1])
 const DURATION_GAME = 2; // HOURS
 watch(startHourSelected, (value) => {
   if (!value) {
@@ -45,27 +46,27 @@ watch(startHourSelected, (value) => {
   }
   endOptions.value = options
 })
-console.log({endOptions: endOptions.value})
 </script>
 <template>
-  <v-container>
+  <v-container class="pa-0 pb-1">
     <v-row no-gutters>
-      <v-col cols="12">
+      <v-col v-if="day.enabled" cols="12">
         <p class="text-body-1 text-primary">{{ props.label }}</p>
-        <small v-if="day.enabled">Desde: {{ props.day.start.hours }}:00 Hasta {{ props.day.end.hours }}:00</small>
+        <small v-if="day.enabled">Horario disponible: {{ props.day.start.hours }}:00 a {{ props.day.end.hours }}:00</small>
       </v-col>
       <v-col v-if="day.enabled" cols="6" class="pr-2 pt-2">
+
         <v-select v-model="startHourSelected" :items="startOptions" item-value="value" item-title="text" clearable></v-select>
       </v-col>
       <v-col v-if="day.enabled" cols="6" class="pr-2 pt-2">
         <v-select v-model="endHourSelected as string" :disabled="!endOptions.length" :items="endOptions" item-value="value" item-title="text"></v-select>
       </v-col>
-      <v-col v-else cols="12" class="pr-2 pt-2">
-        <div class="day-disabled">
-          <Icon name="material-symbols:dark-mode-outline" size="24" class="icon"></Icon>
-          <span class="label">No disponible</span>
-        </div>
-      </v-col>
+      <!--      <v-col v-else cols="12" class="pr-2 pt-2">-->
+      <!--        <div class="day-disabled">-->
+      <!--          <Icon name="material-symbols:dark-mode-outline" size="24" class="icon"></Icon>-->
+      <!--          <span class="label">No disponible</span>-->
+      <!--        </div>-->
+      <!--      </v-col>-->
     </v-row>
   </v-container>
 </template>

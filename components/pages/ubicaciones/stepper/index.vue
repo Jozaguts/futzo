@@ -64,7 +64,6 @@ function fillLocationStoreRequest(values: LocationStoreRequest) {
 
 const backStepHandler = () => {
   if (formSteps.value.current === 'location') {
-    emits('close')
     locationStoreRequest.value = null as LocationStoreRequest
   }
   formSteps.value.current = 'location'
