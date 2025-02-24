@@ -6,7 +6,25 @@ import {ref} from "vue";
 
 export const useLocationStore = defineStore('locationStore', () => {
     const locations = ref<LocationCard[]>();
-    const locationStoreRequest = ref<LocationStoreRequest>({} as LocationStoreRequest);
+    const locationStoreRequest = ref<LocationStoreRequest>({
+        name: '',
+        city: '',
+        address: '',
+        autocomplete_prediction: {},
+        tags: [],
+        availability: [{
+            name: 'Campo 1',
+            monday: {enabled: false, start: {hours: '00', minutes: '00'}, end: {hours: '00', minutes: '00'}},
+            tuesday: {enabled: false, start: {hours: '00', minutes: '00'}, end: {hours: '00', minutes: '00'}},
+            wednesday: {enabled: false, start: {hours: '00', minutes: '00'}, end: {hours: '00', minutes: '00'}},
+            thursday: {enabled: false, start: {hours: '00', minutes: '00'}, end: {hours: '00', minutes: '00'}},
+            friday: {enabled: false, start: {hours: '00', minutes: '00'}, end: {hours: '00', minutes: '00'}},
+            saturday: {enabled: false, start: {hours: '00', minutes: '00'}, end: {hours: '00', minutes: '00'}},
+            sunday: {enabled: false, start: {hours: '00', minutes: '00'}, end: {hours: '00', minutes: '00'}},
+        }],
+        fields_count: 0,
+        position: {lat: 0, lng: 0}
+    } as LocationStoreRequest);
     const locationDialog = ref(false);
     const isEdition = ref(false);
     const locationCard = ref<LocationCard>({} as LocationCard);

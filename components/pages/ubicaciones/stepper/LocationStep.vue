@@ -12,7 +12,7 @@ import {storeToRefs} from "pinia";
 import {useForm} from "vee-validate";
 import {toTypedSchema} from "@vee-validate/yup";
 
-const {locationStoreRequest, isEdition} = storeToRefs(useLocationStore())
+const {locationStoreRequest} = storeToRefs(useLocationStore())
 const {defineField, errors, handleSubmit, validate} = useForm<LocationStoreRequest>({
   validationSchema: toTypedSchema(
       object({
@@ -41,6 +41,7 @@ let foundedLocations = ref([] as Location[])
 const mapElement = ref<HTMLElement>()
 let mapInstance = ref<google.maps.Map>()
 const marker = ref<google.maps.Marker>()
+const eventListenerId = ref()
 const itemProps = (item: Prediction) => {
   return {
     title: item?.structured_formatting?.main_text,
@@ -53,20 +54,10 @@ const searchHandler = async (place: string) => {
     foundedLocations.value = response
   }
 }
-onMounted(async () => {
-  if (window.google && window.google.maps) {
-    mapInstance.value = new window.google.maps.Map(mapElement.value, GOOGLE_MAPS_OPTIONS)
-    marker.value = new window.google.maps.Marker({
-      position: position.value,
-      map: mapInstance.value,
-      draggable: true,
-    })
-    updateMarker()
-  }
-})
+
 const updateMarker = () => {
   if (marker.value) {
-    marker.value.addListener("dragend", (event) => {
+    eventListenerId.value = marker.value.addListener("dragend", (event) => {
       const newLat = event.latLng.lat();
       const newLng = event.latLng.lng();
       position.value = {lat: newLat, lng: newLng}
@@ -82,9 +73,6 @@ const updateMarker = () => {
               }
             })
             city.value = foundCity
-
-            console.log('Nueva dirección:', address.value)
-            console.log('Nueva ciudad:', city.value)
           } else {
             console.error('No se encontraron resultados de geocodificación.')
           }
@@ -100,16 +88,15 @@ const valueHandler = (type: string, value: string) => {
     locationStoreRequest.value.name = value
   }
 }
-defineExpose({
-  validate,
-  handleSubmit,
-  tags
-});
 const updateValue = (value: AutocompletePrediction) => {
   if (value.place_id) {
     const placesService = new window.google.maps.places.PlacesService(mapInstance.value);
     placesService.getDetails({placeId: value.place_id}, (place, status) => {
+
       if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+        locationStoreRequest.value.position.lat = place.geometry.location.lat()
+        locationStoreRequest.value.position.lng = place.geometry.location.lng()
+        position.value = locationStoreRequest.value.position
         mapInstance.value.setCenter(place.geometry.location);
         marker.value.setPosition(place.geometry.location);
       } else {
@@ -123,7 +110,27 @@ const updateValue = (value: AutocompletePrediction) => {
   locationStoreRequest.value.city = value.structured_formatting?.secondary_text
   locationStoreRequest.value.address = value?.description
 }
-
+onMounted(async () => {
+  if (window.google && window.google.maps) {
+    mapInstance.value = new window.google.maps.Map(mapElement.value, {...GOOGLE_MAPS_OPTIONS, center: position.value})
+    marker.value = new window.google.maps.Marker({
+      position: position.value,
+      map: mapInstance.value,
+      draggable: true,
+    })
+    updateMarker()
+  }
+})
+onUnmounted(() => {
+  if (mapInstance.value) {
+    window.google.maps.event.clearInstanceListeners(eventListenerId.value);
+  }
+})
+defineExpose({
+  validate,
+  handleSubmit,
+  tags
+});
 </script>
 <template>
   <v-container class="pa-0">
