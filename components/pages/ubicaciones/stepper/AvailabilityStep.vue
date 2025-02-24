@@ -50,16 +50,23 @@ defineExpose({
             <v-row>
               <v-col>
                 <v-btn
-                    variant="tonal"
+                    variant="plain"
                     rounded="lg"
+                    border="sm"
+                    :disabled="currentStep === 1"
+                    icon="mdi-arrow-left"
                     @click="() => stepHandler('back', item)"
-                    color="primary">Anterior
+                    color="primary">
+
                 </v-btn>
                 <v-btn
-                    variant="tonal"
+                    variant="plain"
                     rounded="lg"
+                    border="sm"
+                    icon="mdi-arrow-right"
+                    :disabled="item.step === fieldCount.length"
                     @click="() => stepHandler('next', item)"
-                    color="primary">Siguiente
+                    color="primary">
                 </v-btn>
               </v-col>
             </v-row>
