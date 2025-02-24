@@ -54,7 +54,12 @@ async function saveHandler() {
 
 function fillLocationStoreRequest(values: LocationStoreRequest) {
   if (formSteps.value.current === "location") {
-    locationStoreRequest.value = values
+    locationStoreRequest.value.address = values.address
+    locationStoreRequest.value.autocomplete_prediction = values.autocomplete_prediction
+    locationStoreRequest.value.city = values.city
+    locationStoreRequest.value.fields_count = values.fields_count
+    locationStoreRequest.value.name = values.name
+    locationStoreRequest.value.position = values.position
   } else {
     locationStoreRequest.value.availability = values as unknown as LocationAvailability[]
 
