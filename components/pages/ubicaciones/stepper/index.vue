@@ -3,7 +3,7 @@ import {useLocationStore} from '~/store'
 import IndicatorStep from "~/components/shared/IndicatorStep.vue";
 import LocationStep from "~/components/pages/ubicaciones/stepper/LocationStep.vue";
 import AvailabilityStep from "~/components/pages/ubicaciones/stepper/AvailabilityStep.vue";
-import type {CurrentStep, LocationAvailability, LocationStoreRequest} from "~/models/Location";
+import type {CurrentStep, LocationStoreRequest} from "~/models/Location";
 
 const {locationStoreRequest, isEdition, formSteps} = storeToRefs(useLocationStore())
 const emits = defineEmits(['next', 'back', 'close'])
@@ -11,7 +11,7 @@ const stepRef = ref<{ validate: Function; handleSubmit: Function }>({
   validate: Function,
   handleSubmit: Function,
 });
-
+const disabled = ref(false)
 const cancelBtnHandler = () => {
   if (formSteps.value.current === 'location') {
     emits('close')
@@ -29,6 +29,7 @@ const textButton = computed(() => {
 const backTextButton = computed(() => formSteps.value.current === 'location' ? 'Cancelar' : 'Anterior')
 const nextStepHandler = async () => {
   const statusForm = await stepRef.value.validate();
+
   if (statusForm.valid) {
     const values = await getFormValues();
 
@@ -42,14 +43,17 @@ const nextStepHandler = async () => {
     const isLastStep = currentStepIndex === stepsOrder.length - 1;
     isLastStep
         ? await saveHandler()
-        : (formSteps.value.current = stepsOrder[currentStepIndex + 1]);
+        : (() => {
+          formSteps.value.current = stepsOrder[currentStepIndex + 1];
+          disabled.value = true
+        })();
   }
 }
 
 async function saveHandler() {
-  isEdition.value
-      ? await useLocationStore().updateLocation()
-      : await useLocationStore().storeLocation();
+  // isEdition.value
+  //     ? await useLocationStore().updateLocation()
+  //     : await useLocationStore().storeLocation();
 }
 
 function fillLocationStoreRequest(values: LocationStoreRequest) {
@@ -60,10 +64,12 @@ function fillLocationStoreRequest(values: LocationStoreRequest) {
     locationStoreRequest.value.fields_count = values.fields_count
     locationStoreRequest.value.name = values.name
     locationStoreRequest.value.position = values.position
-  } else {
-    locationStoreRequest.value.availability = values as unknown as LocationAvailability[]
-
   }
+  const hasIncompleteLocations = locationStoreRequest.value.availability.some(location => !location.isCompleted)
+  if (!hasIncompleteLocations) {
+    console.log({values: locationStoreRequest.value})
+  }
+
 
 }
 
@@ -72,6 +78,7 @@ const backStepHandler = () => {
     locationStoreRequest.value = null as LocationStoreRequest
   }
   formSteps.value.current = 'location'
+  disabled.value = false
 }
 
 async function getFormValues() {
@@ -82,6 +89,9 @@ async function getFormValues() {
   return await formValues();
 }
 
+const enableSubmitButton = () => {
+  disabled.value = false
+}
 // const saveLocationHandler = handleSubmit(async (values) => {
 //   if (formSteps.value.current === 'location') {
 //     formSteps.value.steps[0].completed = true
@@ -121,14 +131,14 @@ async function getFormValues() {
               :offset="{ enter: ['-100%', 0],leave: ['100%', 0]}"
           >
             <LocationStep ref="stepRef" v-if="formSteps.current === 'location'"/>
-            <AvailabilityStep ref="stepRef" v-else-if="formSteps.current === 'availability'"/>
+            <AvailabilityStep ref="stepRef" v-else-if="formSteps.current === 'availability'" @all-steps-completed="enableSubmitButton"/>
           </transition-slide>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12 d-flex justify-space-between">
           <SecondaryBtn class="bg-white w-btn " :text="backTextButton" @click="backStepHandler"/>
-          <PrimaryBtn :show-icon="false" class="w-btn" :text="textButton" variant="elevated" @click="nextStepHandler"/>
+          <PrimaryBtn :show-icon="false" class="w-btn" :text="textButton" :disabled="disabled" variant="elevated" @click="nextStepHandler"/>
         </v-col>
       </v-row>
     </v-container>
