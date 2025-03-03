@@ -3,8 +3,12 @@ import type {FormSteps, LocationCard, LocationStoreRequest} from '~/models/Locat
 import {useApiError} from "~/composables/useApiError";
 import type {IPagination} from "~/interfaces";
 import {ref} from "vue";
+import {DEFAULT_AVAILABILITY_HOURS, DEFAULT_POSITION} from "~/utils/constants";
 
 export const useLocationStore = defineStore('locationStore', () => {
+    const stepsCompleted = computed(() => {
+        return locationStoreRequest.value.availability.filter((item) => item.isCompleted).length
+    })
     const locations = ref<LocationCard[]>();
     const locationStoreRequest = ref<LocationStoreRequest>({
         name: '',
@@ -12,18 +16,9 @@ export const useLocationStore = defineStore('locationStore', () => {
         address: '',
         autocomplete_prediction: {},
         tags: [],
-        availability: [{
-            name: 'Campo 1',
-            monday: {enabled: false, start: {hours: '00', minutes: '00'}, end: {hours: '00', minutes: '00'}},
-            tuesday: {enabled: false, start: {hours: '00', minutes: '00'}, end: {hours: '00', minutes: '00'}},
-            wednesday: {enabled: false, start: {hours: '00', minutes: '00'}, end: {hours: '00', minutes: '00'}},
-            thursday: {enabled: false, start: {hours: '00', minutes: '00'}, end: {hours: '00', minutes: '00'}},
-            friday: {enabled: false, start: {hours: '00', minutes: '00'}, end: {hours: '00', minutes: '00'}},
-            saturday: {enabled: false, start: {hours: '00', minutes: '00'}, end: {hours: '00', minutes: '00'}},
-            sunday: {enabled: false, start: {hours: '00', minutes: '00'}, end: {hours: '00', minutes: '00'}},
-        }],
+        availability: DEFAULT_AVAILABILITY_HOURS,
         fields_count: 0,
-        position: {lat: 0, lng: 0}
+        position: DEFAULT_POSITION
     } as LocationStoreRequest);
     const locationDialog = ref(false);
     const isEdition = ref(false);
@@ -155,6 +150,7 @@ export const useLocationStore = defineStore('locationStore', () => {
         locationToDelete,
         pagination,
         formSteps,
+        stepsCompleted,
         deleteLocation,
         storeLocation,
         updateLocation,
