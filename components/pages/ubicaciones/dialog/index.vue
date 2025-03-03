@@ -6,18 +6,9 @@ import {useLocationStore} from "~/store";
 import type {LocationStoreRequest} from "~/models/Location";
 import {DEFAULT_AVAILABILITY_HOURS, DEFAULT_POSITION} from "~/utils/constants";
 
-const {locationDialog, locationStoreRequest, formSteps} = storeToRefs(useLocationStore());
+const {locationDialog, formSteps} = storeToRefs(useLocationStore());
 const leaveHandler = () => {
-  locationStoreRequest.value = {
-    name: '',
-    city: '',
-    address: '',
-    autocomplete_prediction: {},
-    tags: [],
-    availability: DEFAULT_AVAILABILITY_HOURS,
-    fields_count: 0,
-    position: DEFAULT_POSITION
-  } as LocationStoreRequest
+  useLocationStore().resetLocationStoreRequest();
   formSteps.value.current = 'location';
 };
 

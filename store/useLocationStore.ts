@@ -50,6 +50,19 @@ export const useLocationStore = defineStore('locationStore', () => {
         ],
     })
 
+    function resetLocationStoreRequest() {
+        locationStoreRequest.value = {
+            name: '',
+            city: '',
+            address: '',
+            autocomplete_prediction: {},
+            tags: [],
+            availability: DEFAULT_AVAILABILITY_HOURS,
+            fields_count: 0,
+            position: DEFAULT_POSITION
+        } as LocationStoreRequest
+    }
+
     async function getLocations(search?: string): Promise<void> {
         const client = useSanctumClient();
         const url = `/api/v1/admin/locations?per_page=${pagination.value.perPage}&page=${pagination.value.currentPage}&sort=${pagination.value.sort}`
@@ -155,5 +168,6 @@ export const useLocationStore = defineStore('locationStore', () => {
         storeLocation,
         updateLocation,
         getLocations,
+        resetLocationStoreRequest
     };
 });

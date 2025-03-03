@@ -62,6 +62,7 @@ const deleteLocationHandler = () => {
           <div class="d-flex">
             <SearchInput placeholder="Busca una ubicación…" :min-width="320" class="mr-2" @searching="(e)=> console.log(e)"/>
             <PrimaryBtn
+                :disabled="false"
                 text="Crear ubicación"
                 icon="futzo-icon:plus"
                 variant="tonal"

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import HeaderCard from "~/components/pages/jugadores/dialog/header.vue";
-import { storeToRefs } from "pinia";
-import { usePlayerStore, useTournamentStore } from "~/store";
+import {storeToRefs} from "pinia";
+import {usePlayerStore, useTournamentStore} from "~/store";
 import StepperContainer from "~/components/pages/jugadores/stepper/index.vue";
 
-const { steps, dialog, playerStoreRequest } = storeToRefs(usePlayerStore());
+const {steps, dialog, playerStoreRequest} = storeToRefs(usePlayerStore());
 const leaveHandler = () => {
   steps.value.current = "basic-info";
   steps.value.completed = [];
@@ -16,18 +16,18 @@ onMounted(() => {
 </script>
 <template>
   <v-dialog
-    v-model="dialog"
-    max-width="690"
-    @after-leave="leaveHandler"
-    scrollable
+      v-model="dialog"
+      max-width="690"
+      @after-leave="leaveHandler"
+      scrollable
   >
     <v-card
-      class="create-tournament-card futzo-rounded"
-      height="100%"
-      :style="{ overflow: $vuetify.display.mobile ? '' : 'hidden' }"
+        class="create-tournament-card futzo-rounded"
+        height="100%"
+        :style="{ overflow: $vuetify.display.mobile ? '' : 'hidden' }"
     >
-      <HeaderCard />
-      <StepperContainer :step="steps.current" />
+      <HeaderCard/>
+      <StepperContainer :step="steps.current"/>
     </v-card>
   </v-dialog>
 </template>
