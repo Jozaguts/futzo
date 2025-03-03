@@ -51,9 +51,9 @@ const nextStepHandler = async () => {
 }
 
 async function saveHandler() {
-  // isEdition.value
-  //     ? await useLocationStore().updateLocation()
-  //     : await useLocationStore().storeLocation();
+  isEdition.value
+      ? await useLocationStore().updateLocation()
+      : await useLocationStore().storeLocation();
 }
 
 function fillLocationStoreRequest(values: LocationStoreRequest) {
@@ -92,28 +92,6 @@ async function getFormValues() {
 const enableSubmitButton = () => {
   disabled.value = false
 }
-// const saveLocationHandler = handleSubmit(async (values) => {
-//   if (formSteps.value.current === 'location') {
-//     formSteps.value.steps[0].completed = true
-//     formSteps.value.current = 'availability'
-//     return
-//   } else {
-//     locationStoreRequest.value = {...values, tags: tags.value as string[]};
-//     if (isEdition.value) {
-//       useLocationStore().updateLocation()
-//           .then(() => {
-//             resetForm()
-//             emits('location-added')
-//           })
-//     } else {
-//       useLocationStore().storeLocation()
-//           .then(() => {
-//             resetForm()
-//             emits('location-added')
-//           })
-//     }
-//   }
-// });
 </script>
 
 <template>

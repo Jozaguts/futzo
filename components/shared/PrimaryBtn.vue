@@ -11,7 +11,7 @@ interface Props {
       | "plain"
       | undefined;
   showIcon?: boolean;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
