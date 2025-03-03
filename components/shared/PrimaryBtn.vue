@@ -11,6 +11,7 @@ interface Props {
       | "plain"
       | undefined;
   showIcon?: boolean;
+  disabled: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -18,6 +19,7 @@ const props = withDefaults(defineProps<Props>(), {
   icon: "futzo-icon:plus",
   variant: "elevated",
   showIcon: true,
+  disabled: false,
 });
 const emits = defineEmits(["click"]);
 </script>
@@ -26,6 +28,7 @@ const emits = defineEmits(["click"]);
       :variant="props.variant"
       class="app-bar-cat-btn"
       size="large"
+      :disabled="props.disabled"
       @click="emits('click')"
   >
     <template #prepend>
