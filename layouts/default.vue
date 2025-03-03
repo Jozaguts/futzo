@@ -1,21 +1,21 @@
 <template>
-  <NuxtLoadingIndicator color="#9155FD" :height="6" />
+  <NuxtLoadingIndicator color="#9155FD" :height="6"/>
   <div>
     <v-layout>
       <v-app app>
         <ClientOnly>
-          <Toaster position="top-right" offset="80px" :duration="3000" />
+          <Toaster position="top-right" offset="80px" :duration="3000"/>
         </ClientOnly>
         <ClientOnly>
-          <Navigation />
+          <Navigation/>
           <v-main v-show="show" class="v-main" app>
             <slot></slot>
           </v-main>
           <v-footer
-            color="white"
-            app
-            class="d-flex justify-start align-center"
-            height="64px"
+              color="white"
+              app
+              class="d-flex justify-start align-center"
+              height="64px"
           >
             <span class="caption ml-4">© 2021 Futzo</span>
           </v-footer>
@@ -27,12 +27,12 @@
 
 <script setup lang="ts">
 import Navigation from "~/components/layout/navigation-drawer.vue";
-import { useGlobalStore } from "~/store";
-import { storeToRefs } from "pinia";
-import { Toaster } from "vue-sonner";
+import {useGlobalStore} from "~/store";
+import {storeToRefs} from "pinia";
+import {Toaster} from "vue-sonner";
 
 const show = ref(false);
-const { rail } = storeToRefs(useGlobalStore());
+const {rail} = storeToRefs(useGlobalStore());
 onMounted(() => {
   show.value = true;
 });
