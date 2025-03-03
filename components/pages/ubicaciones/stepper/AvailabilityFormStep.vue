@@ -1,13 +1,26 @@
 <script lang="ts" setup>
 import InputDay from "~/components/pages/ubicaciones/stepper/InputDay.vue";
 import type {LocationAvailability} from "~/models/Location";
-import {object, string} from "yup";
+import {object, string, number, boolean} from "yup";
 import * as yup from "yup";
+import type {PropType} from 'vue'
+import {useLocationStore} from "~/store";
 
-const {defineField, errors, handleSubmit, resetForm, validate} = useForm<LocationAvailability>({
+const props = defineProps({
+  step: {
+    type: Number,
+    required: true
+  },
+  initForm: {
+    type: Object as PropType<LocationAvailability>,
+  }
+})
+const {defineField, errors, handleSubmit, validate} = useForm<LocationAvailability>({
   validationSchema: toTypedSchema(
       object({
+        id: number().default(props.step),
         name: string().required('Nombre del campo es requerido'),
+        isCompleted: boolean().required('Necesitas marcarlo como completado para continuar'),
         monday: object()
             .shape({
               enabled: yup.boolean().default(false),
@@ -95,6 +108,8 @@ const {defineField, errors, handleSubmit, resetForm, validate} = useForm<Locatio
       })
   ),
 })
+const {locationStoreRequest} = storeToRefs(useLocationStore())
+const [id] = reactive(defineField('id'))
 const [name] = reactive(defineField('name'))
 const [monday] = reactive(defineField('monday'))
 const [tuesday] = reactive(defineField('tuesday'))
@@ -103,10 +118,12 @@ const [thursday] = reactive(defineField('thursday'))
 const [friday] = reactive(defineField('friday'))
 const [saturday] = reactive(defineField('saturday'))
 const [sunday] = reactive(defineField('sunday'))
-
+const [isCompleted] = reactive(defineField('isCompleted'))
 const form = computed(() => {
   return {
+    id: id.value,
     name: name.value,
+    isCompleted: isCompleted.value,
     monday: monday.value,
     tuesday: tuesday.value,
     wednesday: wednesday.value,
@@ -116,17 +133,39 @@ const form = computed(() => {
     sunday: sunday.value,
   }
 })
-const props = defineProps({
-  step: {
-    type: Number,
-    required: true
-  },
-})
+const emits = defineEmits(['step-completed'])
+
 defineExpose({
   validate,
   handleSubmit,
   form,
 });
+const isCompletedHandler = () => {
+  isCompleted.value = !isCompleted.value
+  emits('step-completed', 'next', props.step)
+}
+watch(form, (value) => {
+  locationStoreRequest.value.availability = locationStoreRequest.value.availability.map((item) => {
+    if (item.id === value.id) {
+      return value
+    }
+    return item
+  })
+})
+onMounted(() => {
+  id.value = props.step
+  if (props.initForm) {
+    name.value = props.initForm.name
+    isCompleted.value = props.initForm.isCompleted
+    monday.value = props.initForm.monday
+    tuesday.value = props.initForm.tuesday
+    wednesday.value = props.initForm.wednesday
+    thursday.value = props.initForm.thursday
+    friday.value = props.initForm.friday
+    saturday.value = props.initForm.saturday
+    sunday.value = props.initForm.sunday
+  }
+})
 </script>
 <template>
   <v-row>
@@ -141,5 +180,16 @@ defineExpose({
   <InputDay v-model:day="friday" label="Viernes"/>
   <InputDay v-model:day="saturday" label="Sábado"/>
   <InputDay v-model:day="sunday" label="Domingo"/>
-  <slot name="actions"></slot>
+  <v-row>
+    <v-col>
+      <v-checkbox :value="isCompleted" @click="isCompletedHandler" :error-messages="errors.isCompleted">
+        <template v-slot:label>
+          <div>
+            Marcar como completado
+          </div>
+        </template>
+      </v-checkbox>
+    </v-col>
+  </v-row>
+  <!--  <slot name="actions"></slot>-->
 </template>
