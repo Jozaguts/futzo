@@ -2,33 +2,49 @@
 import {useLocationStore} from "~/store";
 import AvailabilityFormStep from "~/components/pages/ubicaciones/stepper/AvailabilityFormStep.vue";
 import {storeToRefs} from "pinia";
+import {DEFAULT_AVAILABILITY_HOURS} from "~/utils/constants";
+import type {StepperType, StepperItem} from "~/models/Location";
 
-type StepperType = {
-  CanEdit: boolean
-  hasCompleted: boolean
-  hasError: boolean
-  step: number
-  subtitle?: string
-  title: string
-  value: number
-}
-const {locationStoreRequest} = storeToRefs(useLocationStore())
-const fieldCount = computed(() => Array.from({length: locationStoreRequest.value.fields_count ?? 0}, (_, i) => `Campo ${i + 1}`))
-const currentStep = ref(fieldCount[0])
+const {locationStoreRequest, stepsCompleted} = storeToRefs(useLocationStore())
+const fieldsCount = computed<StepperItem[]>(() => Array.from({length: locationStoreRequest.value.fields_count ?? 0}, (_, i) => ({title: `Campo ${i + 1}`, value: i + 1})))
+const currentStep = ref<number>(fieldsCount.value[0].value)
 const refStep = ref()
-const stepHandler = async (type: 'next' | 'back' | 'validate', item?: StepperType) => {
+
+const emits = defineEmits(['all-steps-completed'])
+const availabilityStepHandler = async (type: 'next' | 'back', item: StepperType) => {
   const {valid} = await refStep.value.validate()
   if (!valid) {
     return
   }
-  if (type === 'validate') {
-    console.log('validate')
+  const alreadyExists = locationStoreRequest.value.availability.some((item) => item.id === refStep.value.form.id)
+  if (!alreadyExists) {
+    locationStoreRequest.value.availability.push(refStep.value.form)
   }
-  locationStoreRequest.value.availability.push(refStep.value.form)
-  currentStep.value = type === 'next' ? item.step + 1 : item.step - 1
+  if (stepsCompleted.value === fieldsCount.value.length) {
+    emits('all-steps-completed', true)
+  }
+
+  setNextStep(type)
 }
+const setNextStep = (direction: 'next' | 'back') => {
+  setTimeout(() => {
+    if (currentStep.value < fieldsCount.value.length) {
+      currentStep.value = direction === 'next' ? currentStep.value + 1 : currentStep.value - 1
+    }
+  }, 300)
+
+}
+
 defineExpose({
-  validate: () => stepHandler('validate'),
+  validate: async () => await refStep.value.validate(),
+  handleSubmit: () => availabilityStepHandler
+})
+const initForm = computed(() => {
+  return locationStoreRequest.value.availability.find((item) => item.id == currentStep.value) ?? {
+    ...DEFAULT_AVAILABILITY_HOURS[0],
+    name: `Campo ${currentStep.value}`,
+    id: currentStep.value
+  }
 })
 </script>
 <template>
@@ -39,41 +55,23 @@ defineExpose({
       </v-col>
     </v-row>
     <v-stepper-vertical
+        variant="inset"
         v-model="currentStep"
-        class="pa-0 ma-0"
+        class="pa-0 ma-0 futzo-vertical-stepper"
         flat
-        :items="fieldCount"
+        eager
+        :items="fieldsCount"
+        editable
     >
       <template #[`item.${currentStep}`]="item">
-        <AvailabilityFormStep :step="item.step" ref="refStep">
-          <template #actions>
-            <v-row>
-              <v-col>
-                <v-btn
-                    variant="plain"
-                    rounded="lg"
-                    border="sm"
-                    :disabled="currentStep === 1"
-                    icon="mdi-arrow-left"
-                    @click="() => stepHandler('back', item)"
-                    color="primary">
-
-                </v-btn>
-                <v-btn
-                    variant="plain"
-                    rounded="lg"
-                    border="sm"
-                    icon="mdi-arrow-right"
-                    :disabled="item.step === fieldCount.length"
-                    @click="() => stepHandler('next', item)"
-                    color="primary">
-                </v-btn>
-              </v-col>
-            </v-row>
-          </template>
-        </AvailabilityFormStep>
+        <AvailabilityFormStep
+            :step="item.step as number"
+            ref="refStep"
+            :init-form="initForm"
+            @step-completed="availabilityStepHandler"
+        />
       </template>
-      <template #actions="pros"/>
+      <template #actions="props"/>
     </v-stepper-vertical>
   </v-container>
 </template>
