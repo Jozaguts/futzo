@@ -12,13 +12,6 @@ const stepRef = ref<{ validate: Function; handleSubmit: Function }>({
   handleSubmit: Function,
 });
 const disabled = ref(false)
-const cancelBtnHandler = () => {
-  if (formSteps.value.current === 'location') {
-    emits('close')
-  } else {
-    formSteps.value.current = 'location'
-  }
-}
 const textButton = computed(() => {
   if (formSteps.value.current === 'location') {
     return 'Siguiente'
@@ -32,7 +25,6 @@ const nextStepHandler = async () => {
 
   if (statusForm.valid) {
     const values = await getFormValues();
-
     fillLocationStoreRequest(values)
     const stepsOrder: CurrentStep[] = ["location", "availability"];
     const currentStepIndex = stepsOrder.indexOf(formSteps.value.current);

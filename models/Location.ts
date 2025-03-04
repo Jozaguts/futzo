@@ -45,6 +45,7 @@ export type LocationAvailability = {
     id: number,
     isCompleted: boolean,
     name: string;
+    step?: number
     monday?: TimeRange;
     tuesday?: TimeRange;
     wednesday?: TimeRange;

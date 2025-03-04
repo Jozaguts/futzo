@@ -5,7 +5,7 @@ import {storeToRefs} from "pinia";
 import {DEFAULT_AVAILABILITY_HOURS} from "~/utils/constants";
 import type {StepperType, StepperItem} from "~/models/Location";
 
-const {locationStoreRequest, stepsCompleted} = storeToRefs(useLocationStore())
+const {locationStoreRequest, stepsCompleted, isEdition} = storeToRefs(useLocationStore())
 const fieldsCount = computed<StepperItem[]>(() => Array.from({length: locationStoreRequest.value.fields_count ?? 0}, (_, i) => ({title: `Campo ${i + 1}`, value: i + 1})))
 const currentStep = ref<number>(fieldsCount.value[0].value)
 const refStep = ref()
@@ -16,9 +16,20 @@ const availabilityStepHandler = async (type: 'next' | 'back', item: StepperType)
   if (!valid) {
     return
   }
-  const alreadyExists = locationStoreRequest.value.availability.some((item) => item.id === refStep.value.form.id)
-  if (!alreadyExists) {
-    locationStoreRequest.value.availability.push(refStep.value.form)
+
+  if (!isEdition.value) {
+    const alreadyExists = locationStoreRequest.value.availability.some((item) => item.id === refStep.value.form.id)
+    if (!alreadyExists) {
+      locationStoreRequest.value.availability.push(refStep.value.form)
+    }
+  } else {
+    locationStoreRequest.value.availability = locationStoreRequest.value.availability.map(item => {
+      if (item.step === refStep.value.form.id) {
+        return {...refStep.value.form, id: item.id, step: item?.step}
+      } else {
+        return item
+      }
+    })
   }
   if (stepsCompleted.value === fieldsCount.value.length) {
     emits('all-steps-completed', true)
@@ -40,16 +51,23 @@ defineExpose({
   handleSubmit: () => availabilityStepHandler
 })
 const initForm = computed(() => {
-  return locationStoreRequest.value.availability.find((item) => item.id == currentStep.value) ?? {
-    ...DEFAULT_AVAILABILITY_HOURS[0],
-    name: `Campo ${currentStep.value}`,
-    id: currentStep.value
+  const form = locationStoreRequest.value.availability.find((item) => item.step == currentStep.value)
+  if (isEdition.value) {
+    return form
+  } else {
+    return locationStoreRequest.value.availability.find((item) => item.id == currentStep.value) ?? {
+      ...DEFAULT_AVAILABILITY_HOURS[0],
+      name: `Campo ${currentStep.value}`,
+      id: currentStep.value
+    }
   }
+
 })
 </script>
 <template>
   <v-container fluid>
     <v-row no-gutters>
+      {{ locationStoreRequest.availability.length }}
       <v-col cols="12" class="pt-0">
         <v-divider/>
       </v-col>
