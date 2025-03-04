@@ -50,6 +50,17 @@ export const useLocationStore = defineStore('locationStore', () => {
         ],
     })
 
+    async function reloadLocations() {
+        pagination.value = {
+            currentPage: 1,
+            perPage: 8,
+            lastPage: 1,
+            total: 0,
+            sort: "asc",
+        }
+        await getLocations()
+    }
+
     function resetLocationStoreRequest() {
         locationStoreRequest.value = {
             name: '',
@@ -91,6 +102,7 @@ export const useLocationStore = defineStore('locationStore', () => {
             body: locationStoreRequest.value,
         }).then(async (location: LocationCard) => {
             locations.value?.splice(0, 0, location);
+            await reloadLocations()
             const {toast} = useToast();
             toast(
                 'success',
@@ -116,13 +128,14 @@ export const useLocationStore = defineStore('locationStore', () => {
             method: 'PUT',
             body: locationStoreRequest.value,
         }).then(async () => {
-            await getLocations();
+            await reloadLocations();
             const {toast} = useToast();
             toast(
                 'success',
                 'Ubicación actualizada',
                 'La ubicación se ha actualizado exitosamente.'
             );
+            locationDialog.value = false;
         });
     }
 
@@ -168,6 +181,7 @@ export const useLocationStore = defineStore('locationStore', () => {
         storeLocation,
         updateLocation,
         getLocations,
-        resetLocationStoreRequest
+        resetLocationStoreRequest,
+        reloadLocations
     };
 });
