@@ -380,18 +380,14 @@ function getSchemaByName(name: string) {
             schemaFields.end_date = yup.date().nullable();
             break;
         case 'edit-tournament-details-info':
-            schemaFields.location = yup.object().nullable();
-            schemaFields.city = yupString().nullable();
-            schemaFields.address = yupString().nullable();
+            schemaFields.locationIds = yup.array().of(yup.number()).required(t('forms.required'));
             schemaFields.prize = yupString().nullable();
             schemaFields.winner = yupString().nullable();
             schemaFields.description = yupString().nullable();
             schemaFields.status = yupString().nullable();
             break;
         case 'create-tournament-details-info':
-            schemaFields.location = yup.object().nullable();
-            schemaFields.city = yupString().nullable();
-            schemaFields.address = yupString().nullable();
+            schemaFields.locationIds = yup.array().of(yup.number()).required(t('forms.required'));
             schemaFields.prize = yupString().nullable();
             schemaFields.winner = yupString().nullable();
             schemaFields.description = yupString().nullable();

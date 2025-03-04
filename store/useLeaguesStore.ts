@@ -6,13 +6,17 @@ export const useLeaguesStore = defineStore('leaguesStore', () => {
     const footballTypes = ref<LeagueType[]>([]);
     const fetchLeagues = async () => {
         const client = useSanctumClient();
-        leagues.value= await client('/api/v1/admin/leagues');
+        leagues.value = await client('/api/v1/admin/leagues');
     };
     const getFootballTypes = async () => {
         const client = useSanctumClient();
-        footballTypes.value= await client('/api/v1/admin/leagues/football/types');
+        footballTypes.value = await client('/api/v1/admin/leagues/football/types');
     }
-    onBeforeMount(async() => {
+    const getLeagueLocations = async () => {
+        const client = useSanctumClient();
+        return await client('/api/v1/admin/leagues/locations');
+    }
+    onBeforeMount(async () => {
         await useLeaguesStore().fetchLeagues()
         await useLeaguesStore().getFootballTypes()
     })
@@ -24,5 +28,6 @@ export const useLeaguesStore = defineStore('leaguesStore', () => {
         getFootballTypes,
         fetchLeagues,
         footballTypes,
+        getLeagueLocations,
     };
 });
