@@ -5,8 +5,8 @@ import Tiebreakers from "~/components/pages/torneos/calendario/Tiebreakers.vue";
 const {scheduleStoreRequest} = storeToRefs(useTournamentStore());
 
 const {fields, meta} = useSchemas("calendar-regular-step", {
-  round_trip: scheduleStoreRequest.value?.regular_phase.round_trip,
-  tiebreakers: scheduleStoreRequest.value?.regular_phase.tiebreakers
+  round_trip: scheduleStoreRequest.value?.regular_phase?.round_trip,
+  tiebreakers: scheduleStoreRequest.value?.regular_phase?.tiebreakers
 });
 const isValid = computed(() => {
   return meta.value.valid
@@ -14,17 +14,6 @@ const isValid = computed(() => {
 defineExpose({
   isValid,
 })
-watch(fields.round_trip, (value) => {
-  if (value?.fieldValue) {
-    scheduleStoreRequest.value = {
-      ...scheduleStoreRequest.value,
-      regular_phase: {
-        ...scheduleStoreRequest.value.regular_phase,
-        round_trip: value.fieldValue
-      }
-    }
-  }
-}, {deep: true})
 watch(fields.tiebreakers, (value) => {
   if (value?.fieldValue) {
     scheduleStoreRequest.value.regular_phase.tiebreakers = value.fieldValue
@@ -38,7 +27,11 @@ watch(fields.tiebreakers, (value) => {
         <span class="text-body-1"> Ida y Vuelta? </span>
       </v-col>
       <v-col cols="12" lg="8" md="8">
-        <v-switch v-model="fields.round_trip.fieldValue" v-bind="fields.round_trip.fieldPropsValue"></v-switch>
+        <v-switch
+            v-model="fields.round_trip.fieldValue"
+            v-bind="fields.round_trip.fieldPropsValue"
+            @update:modelValue="(value) => scheduleStoreRequest.regular_phase.round_trip = value as boolean"
+        />
       </v-col>
     </v-row>
     <v-row>

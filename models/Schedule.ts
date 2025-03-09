@@ -2,9 +2,9 @@ import type {LocationAvailability} from "~/models/Location";
 
 export type ScheduleStoreRequest = {
     general: FormGeneralScheduleRequest,
-    regular_phase?: FormRegularPhaseStep
-    elimination_phase?: FormEliminationPhaseStep
-    locations_availability?: FormLocationAvailabilityStep[]
+    regular_phase: FormRegularPhaseStep
+    elimination_phase: FormEliminationPhaseStep
+    locations_availability: FormLocationAvailabilityStep[]
 }
 export type FormGeneralScheduleRequest = {
     tournament_id: number;
