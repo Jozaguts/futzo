@@ -2,18 +2,21 @@
 import General from "~/components/pages/torneos/calendario/stepper/01-general.vue";
 import Regular from "~/components/pages/torneos/calendario/stepper/02-regular-phase.vue";
 import Elimination from "~/components/pages/torneos/calendario/stepper/03-elimination-phase.vue";
-import Location from "~/components/pages/torneos/calendario/stepper/04-location-phase.vue";
+import Fields from "~/components/pages/torneos/calendario/stepper/04-fields-phase.vue";
 import IndicatorStep from "~/components/shared/IndicatorStep.vue";
 import {useTournamentStore} from "~/store";
 
 type StepRef = { handleSubmit: Function, isValid: boolean };
 const {
   calendarSteps,
+  scheduleStoreRequest
 } = storeToRefs(useTournamentStore());
 const stepRef = defineModel<StepRef>("stepRef");
 const hasValidForm = () => stepRef.value?.isValid;
+const validate = async () => await stepRef.value.validate()
 defineExpose({
   hasValidForm,
+  validate
 });
 </script>
 <template>
@@ -47,9 +50,9 @@ defineExpose({
               v-if="calendarSteps.current === 'elimination'"
               :key="calendarSteps.current"
           />
-          <Location
+          <Fields
               ref="stepRef"
-              v-if="calendarSteps.current === 'locations'"
+              v-if="calendarSteps.current === 'fields'"
               :key="calendarSteps.current"
           />
         </transition-slide>

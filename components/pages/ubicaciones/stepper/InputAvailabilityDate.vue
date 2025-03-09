@@ -8,8 +8,13 @@ const props = defineProps({
   label: {
     type: String,
     required: true
+  },
+  id: {
+    type: String,
+    required: true,
   }
 })
+const emits = defineEmits(['input-date-changed'])
 
 const startOptions = computed(() => {
   const start = props.day.start
@@ -56,10 +61,24 @@ watch(startHourSelected, (value) => {
       </v-col>
       <v-col v-if="day.enabled" cols="6" class="pr-2 pt-2">
 
-        <v-select v-model="startHourSelected" :items="startOptions" item-value="value" item-title="text" clearable></v-select>
+        <v-select
+            v-model="startHourSelected"
+            :items="startOptions"
+            item-value="value"
+            item-title="text"
+            clearable
+            @update:modelValue="emits('input-date-changed', { day:{id, value: $event,isStart: true}})"
+        />
       </v-col>
       <v-col v-if="day.enabled" cols="6" class="pr-2 pt-2">
-        <v-select v-model="endHourSelected as string" :disabled="!endOptions.length" :items="endOptions" item-value="value" item-title="text"></v-select>
+        <v-select
+            v-model="endHourSelected"
+            :disabled="!endOptions.length"
+            :items="endOptions"
+            item-value="value"
+            item-title="text"
+            @update:modelValue="emits('input-date-changed', { day:{id, value: $event, isStart: false}})"
+        ></v-select>
       </v-col>
       <!--      <v-col v-else cols="12" class="pr-2 pt-2">-->
       <!--        <div class="day-disabled">-->
