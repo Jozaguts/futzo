@@ -139,7 +139,7 @@ watch(fields.start_date.fieldValue, (value) => {
             variant="outlined"
             density="compact"
             :min="0"
-            @update:modelValue="(value) => scheduleStoreRequest.general.game_time = value"
+            @update:modelValue="(value) => scheduleStoreRequest.general.game_time = value as unknown as number"
             v-model="fields.game_time.fieldValue"
             v-bind="fields.game_time.fieldPropsValue"
         />
@@ -154,7 +154,7 @@ watch(fields.start_date.fieldValue, (value) => {
             type="number"
             variant="outlined"
             density="compact"
-            @update:modelValue="(value) => scheduleStoreRequest.general.time_between_games = value"
+            @update:modelValue="(value) => scheduleStoreRequest.general.time_between_games = value as unknown as number"
             v-model="fields.time_between_games.fieldValue"
             v-bind="fields.time_between_games.fieldPropsValue"
             min="0"

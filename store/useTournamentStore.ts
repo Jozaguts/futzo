@@ -407,13 +407,16 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         generalSchedule.time_between_games = data.value.time_between_games;
         generalSchedule.total_teams = data.value.teams;
         generalSchedule.locations = [];
-        scheduleStoreRequest.value = {
-            general: generalSchedule,
-            regular_phase: {
-                round_trip: false,
-                tiebreakers: data.value.tiebreakers,
-            }
-        } as ScheduleStoreRequest;
+        scheduleStoreRequest.value.general = generalSchedule
+        scheduleStoreRequest.value.regular_phase = {
+            round_trip: false,
+            tiebreakers: data.value.tiebreakers,
+        }
+        scheduleStoreRequest.value.elimination_phase = {
+            teams_to_next_round: 8,
+            round_trip: false,
+            phases: data.value.phases
+        }
         scheduleSettings.value = data.value;
     };
     const fetchSchedule = async () => {

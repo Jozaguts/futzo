@@ -6,7 +6,7 @@ import Fields from "~/components/pages/torneos/calendario/stepper/04-fields-phas
 import IndicatorStep from "~/components/shared/IndicatorStep.vue";
 import {useTournamentStore} from "~/store";
 
-type StepRef = { handleSubmit: Function, isValid: boolean };
+type StepRef = { handleSubmit: Function, isValid: boolean, validate: Function };
 const {
   calendarSteps,
   scheduleStoreRequest
@@ -24,6 +24,9 @@ defineExpose({
     <v-row>
       <v-col>
         <IndicatorStep :form-steps="calendarSteps"/>
+        <pre>
+          {{ scheduleStoreRequest }}
+        </pre>
       </v-col>
     </v-row>
     <v-row>
