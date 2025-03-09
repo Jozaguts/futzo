@@ -7,7 +7,7 @@ const {tournamentId, scheduleStoreRequest} = storeToRefs(useTournamentStore())
 
 const {fields: form, meta} = useSchemas('calendar-location-step', {
   tournament_id: tournamentId.value,
-  availability: scheduleStoreRequest.value?.general?.locations.map((location) => ({id: location.id, days: location.pivot.availability})),
+  availability: scheduleStoreRequest.value?.general?.locations.map((location) => ({id: location.id, name: location.name})),
 })
 
 
@@ -25,7 +25,7 @@ onMounted(async () => {
   const locationIds = scheduleStoreRequest.value.general.locations.map(location => location.id)
   const client = useSanctumClient()
   fields.value = await client(`/api/v1/admin/locations/fields?location_ids=${locationIds.join(',')}`)
-  console.log(fields.value[0]?.step)
+  console.log('step 4 mounted', fields.value)
   currentStep.value = fields.value[0]?.step
 })
 const getStepAttribute = (attribute: string, step: number) => fields.value.filter(field => field.step === step)[0][attribute]

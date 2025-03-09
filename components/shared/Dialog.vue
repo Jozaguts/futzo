@@ -25,7 +25,7 @@ defineProps({
       v-model="dialog"
       max-width="700"
       :min-height="minHeight"
-      @after-leave="emits('leaving')"
+      @after-leave="() =>emits('leaving')"
       scrollable
   >
 

@@ -17,7 +17,8 @@ const {
 } = useDialog(calendarSteps, scheduleDialog);
 const stepContainerRef = ref();
 const leaveHandler = () => {
-  useTournamentStore().$reset();
+  calendarSteps.value.steps.forEach(step => step.completed = false);
+  calendarSteps.value.current = 'general';
 };
 const handleChange = async () => {
   let hasErrors = !stepContainerRef.value.hasValidForm();
@@ -42,6 +43,7 @@ const nextStep = () => {
   }
   calendarSteps.value.current = stepsOrder[currentStepIndex + 1]
 };
+
 </script>
 <template>
   <Dialog
@@ -53,6 +55,8 @@ const nextStep = () => {
     }"
       :loading="false"
       v-model="scheduleDialog"
+      @leaving="leaveHandler"
+
   >
     <template #v-card-text>
       <StepperContainer ref="stepContainerRef"/>

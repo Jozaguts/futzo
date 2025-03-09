@@ -17,7 +17,6 @@ const load = (options: CallbackOptions) => {
         }
       })
 }
-console.log({length: locations.value?.length})
 </script>
 
 <template>

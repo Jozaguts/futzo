@@ -16,7 +16,6 @@ const {handleSubmit, resetForm, fields, validate, setValues} = useSchemas(
 );
 const minMax = ref<number[]>()
 onMounted(() => {
-  console.log(fields.minMax)
   minMax.value = [MIN_TEAMS, MAX_TEAMS];
   if (tournamentStoreRequest.value?.basic) {
     setValues({...tournamentStoreRequest.value.basic});
