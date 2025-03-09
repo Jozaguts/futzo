@@ -32,7 +32,6 @@ defineProps({
     <v-card
         :loading="loading"
         class="create-tournament-card futzo-rounded"
-        height="100%"
         :style="{ overflow: $vuetify.display.mobile ? '' : 'hidden' }"
     >
       <template #loader="{ isActive }"></template>

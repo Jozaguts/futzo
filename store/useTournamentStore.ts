@@ -69,9 +69,9 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
                 label: "Fase de Eliminación",
             },
             {
-                step: "locations",
+                step: "fields",
                 completed: false,
-                label: "Ubicaciones",
+                label: "Campos de juego",
             }
         ],
     });

@@ -5,7 +5,7 @@ import type {Location} from '~/models/Schedule'
 import useSchemas from "~/composables/useSchemas";
 
 const [parent] = useAutoAnimate()
-const {setValues, fields, meta} = useSchemas("calendar-general-step");
+const {setValues, fields, meta, validate} = useSchemas("calendar-general-step");
 const {tournament, scheduleSettings, scheduleStoreRequest} =
     storeToRefs(useTournamentStore())
 const formatDate = (date: string): Date | string => {
@@ -15,8 +15,11 @@ const formatDate = (date: string): Date | string => {
   return new Date(Number(year), Number(month) - 1, Number(day))
 }
 const locationHandler = (value: Location[]) => {
-  setValues({locations: value})
-  scheduleStoreRequest.value.general.locations = value
+  if (value) {
+    const locations = value.map((location) => ({id: location.id, name: location.name}))
+    setValues({locations})
+    scheduleStoreRequest.value.general.locations = locations
+  }
 }
 
 onMounted(async () => {
@@ -35,8 +38,12 @@ const isValid = computed(() => {
   return meta.value.valid
 })
 defineExpose({
-  isValid
+  isValid,
+  validate
 })
+watch(fields.start_date.fieldValue, (value) => {
+  console.log(value.start_date.fieldValue)
+}, {deep: true})
 </script>
 
 <template>
@@ -114,6 +121,7 @@ defineExpose({
       <v-col cols="12" lg="8" md="8" ref="parent">
         <client-only>
           <BaseCalendarInput
+              @start_date_updated="(value: string | Date) => scheduleStoreRequest.general.start_date = value"
               v-model:start_date="fields.start_date.fieldValue"
               :multiCalendar="false"
           />
@@ -131,6 +139,7 @@ defineExpose({
             variant="outlined"
             density="compact"
             :min="0"
+            @update:modelValue="(value) => scheduleStoreRequest.general.game_time = value"
             v-model="fields.game_time.fieldValue"
             v-bind="fields.game_time.fieldPropsValue"
         />
@@ -145,6 +154,7 @@ defineExpose({
             type="number"
             variant="outlined"
             density="compact"
+            @update:modelValue="(value) => scheduleStoreRequest.general.time_between_games = value"
             v-model="fields.time_between_games.fieldValue"
             v-bind="fields.time_between_games.fieldPropsValue"
             min="0"
@@ -154,7 +164,7 @@ defineExpose({
     <v-row>
       <v-col cols="12" lg="4" md="4">
         <span class="text-body-1"> Ubicaciones*
-           <v-tooltip text="Ubilcaion es un campo de juego" location="bottom">
+           <v-tooltip text="Ubicacion es un campo de juego" location="bottom">
             <template v-slot:activator="{props}">
               <Icon v-bind="props" name="futzo-icon:help-circle"/>
             </template>

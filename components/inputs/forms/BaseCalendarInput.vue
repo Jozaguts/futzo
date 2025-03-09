@@ -31,7 +31,7 @@ const props = defineProps({
   },
 });
 const {getDate, formatDate, customPosition, selectDate, dp} = useCalendar();
-
+const emits = defineEmits(['start_date_updated', 'end_date_updated']);
 const attr: DatePickerAttributes = {
   position: "left",
   locale: "es",
@@ -59,13 +59,16 @@ watch(
       if (value) {
         if (isDate(value)) {
           startDate.value = value;
+          emits('start_date_updated', value);
         } else if (Array.isArray(value)) {
           startDate.value = value[0];
+          emits('start_date_updated', value[0])
           endDate.value = value[1];
+          emits('end_date_updated', value[1])
         }
       } else {
-        startDate.value = null;
-        endDate.value = null;
+        startDate.value = undefined;
+        endDate.value = undefined;
       }
     },
     {deep: true},
@@ -87,6 +90,7 @@ onMounted(() => {
       :alt-position="customPosition"
       v-bind="{ ...attr }"
       v-model="dates"
+      @update:model-value="$emit('update:modelValue', $event)"
   >
     <template v-if="multiCalendar" #dp-input="{ value }">
       <v-text-field

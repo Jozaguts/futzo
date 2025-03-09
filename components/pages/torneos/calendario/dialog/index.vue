@@ -22,20 +22,20 @@ const leaveHandler = () => {
 const handleChange = async () => {
   let hasErrors = !stepContainerRef.value.hasValidForm();
   if (calendarSteps.value.current === 'general') {
-    console.log('general', scheduleStoreRequest.value.general);
+    console.log(await stepContainerRef.value.validate())
   } else if (calendarSteps.value.current === 'regular') {
     console.log('regular', scheduleStoreRequest.value.regular_phase);
   } else if (calendarSteps.value.current === 'elimination') {
     console.log('elimination', scheduleStoreRequest.value.elimination_phase);
-  } else if (calendarSteps.value.current === 'locations') {
-    console.log('locations', scheduleStoreRequest.value.locations_availability);
+  } else if (calendarSteps.value.current === 'fields') {
+    console.log('locations', scheduleStoreRequest.value);
   }
   if (!hasErrors) {
     nextStep();
   }
 };
 const nextStep = () => {
-  const stepsOrder: CurrentCalendarStep[] = ['general', 'regular', 'elimination', 'locations'];
+  const stepsOrder: CurrentCalendarStep[] = ['general', 'regular', 'elimination', 'fields'];
   const currentStepIndex = stepsOrder.indexOf(calendarSteps.value.current);
   if (!calendarSteps.value.steps[currentStepIndex].completed) {
     calendarSteps.value.steps[currentStepIndex].completed = true;
@@ -45,7 +45,6 @@ const nextStep = () => {
 </script>
 <template>
   <Dialog
-      min-height="100vh"
       title="Crear un calendario"
       subtitle="Completa los detalles del calendario."
       :actions="{
