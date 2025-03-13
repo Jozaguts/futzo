@@ -33,6 +33,11 @@ export const useDialog = (steps: Ref<Steps>, dialog: Ref<boolean>) => {
         //   "elimination",
         // ];
         const currentStepIndex = stepsOrder.indexOf(steps.value.current);
+        steps.value.steps.forEach((step, index) => {
+            if (currentStepIndex < index + 1) {
+                step.completed = false;
+            }
+        })
         steps.value.current = stepsOrder[currentStepIndex - 1];
     };
     const nextHandler = async () => {
