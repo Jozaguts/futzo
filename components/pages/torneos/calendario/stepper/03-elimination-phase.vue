@@ -9,7 +9,7 @@ const chipEventHandler = (value: number[]) => {
   )
   fields.eliminationPhases.fieldValue = scheduleSettings.value?.phases.filter((phase) => phase.is_active);
 }
-const {fields, meta} = useSchemas('calendar-elimination-step', {
+const {fields, meta, validate} = useSchemas('calendar-elimination-step', {
   elimination_round_trip: scheduleSettings.value.elimination_round_trip,
   eliminationPhases: scheduleSettings.value.phases,
 })
@@ -47,6 +47,7 @@ const isValid = computed(() => {
 })
 defineExpose({
   isValid,
+  validate
 })
 </script>
 <template>
