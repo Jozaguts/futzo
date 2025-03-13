@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import StepperContainer from "~/components/pages/torneos/calendario/stepper/index.vue";
 import {storeToRefs} from "pinia";
-import {useTournamentStore} from "~/store";
+import {useScheduleStore, useTournamentStore} from "~/store";
 import type {CurrentCalendarStep} from "~/models/tournament";
 
 const {
@@ -22,26 +22,29 @@ const leaveHandler = () => {
 };
 const handleChange = async () => {
   let hasErrors = !stepContainerRef.value.hasValidForm();
-  if (calendarSteps.value.current === 'general') {
-    console.log(await stepContainerRef.value.validate())
-  } else if (calendarSteps.value.current === 'regular') {
-    console.log('regular', scheduleStoreRequest.value.regular_phase);
-  } else if (calendarSteps.value.current === 'elimination') {
-    console.log('elimination', scheduleStoreRequest.value.elimination_phase);
-  } else if (calendarSteps.value.current === 'fields') {
-    console.log('locations', scheduleStoreRequest.value);
-  }
+  stepContainerRef.value.validate()
   if (!hasErrors) {
     nextStep();
   }
 };
+const disabledButton = computed(() => {
+  if (calendarSteps.value.current !== 'fields') {
+    return false
+  } else {
+    return !scheduleStoreRequest.value.fields_phase.every((field) => field.availability.isCompleted)
+  }
+})
 const nextStep = () => {
   const stepsOrder: CurrentCalendarStep[] = ['general', 'regular', 'elimination', 'fields'];
   const currentStepIndex = stepsOrder.indexOf(calendarSteps.value.current);
   if (!calendarSteps.value.steps[currentStepIndex].completed) {
     calendarSteps.value.steps[currentStepIndex].completed = true;
   }
-  calendarSteps.value.current = stepsOrder[currentStepIndex + 1]
+  if (calendarSteps.value.current !== 'fields') {
+    calendarSteps.value.current = stepsOrder[currentStepIndex + 1]
+  } else {
+    useTournamentStore().generateSchedule(scheduleStoreRequest.value)
+  }
 };
 
 </script>
@@ -79,6 +82,7 @@ const nextStep = () => {
           color="primary"
           density="comfortable"
           size="large"
+          :disabled="disabledButton"
           @click="handleChange"
       >{{ primaryTextBtn }}
       </v-btn>
