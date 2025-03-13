@@ -19,7 +19,6 @@ const locationHandler = (value: Location[]) => {
     const locations = value.map((location) => ({id: location.id, name: location.name}))
     setValues({locations})
     scheduleStoreRequest.value.general.locations = locations
-    scheduleStoreRequest.value.locations_availability = locations.map((location) => ({...location, availability: []}))
   }
 }
 
