@@ -67,7 +67,12 @@ watch(startHourSelected, (value) => {
             item-value="value"
             item-title="text"
             clearable
-            @update:modelValue="emits('input-date-changed', { day:{id, value: $event,isStart: true}})"
+            @update:modelValue="(value) => emits('input-date-changed',{
+              id: props.id,
+              day: props.day,
+              value,
+              isStart: true
+            })"
         />
       </v-col>
       <v-col v-if="day.enabled" cols="6" class="pr-2 pt-2">
@@ -77,7 +82,12 @@ watch(startHourSelected, (value) => {
             :items="endOptions"
             item-value="value"
             item-title="text"
-            @update:modelValue="emits('input-date-changed', { day:{id, value: $event, isStart: false}})"
+            @update:modelValue="(value) => emits('input-date-changed',{
+              id: props.id,
+              day: props.day,
+              value,
+              isStart: false
+            })"
         ></v-select>
       </v-col>
       <!--      <v-col v-else cols="12" class="pr-2 pt-2">-->
