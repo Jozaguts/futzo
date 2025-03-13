@@ -368,7 +368,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         general: {} as FormGeneralScheduleRequest,
         regular_phase: {} as FormRegularPhaseStep,
         elimination_phase: {} as FormEliminationPhaseStep,
-        locations_availability: {} as FormLocationAvailabilityStep[],
+        fields_phase: [] as FormLocationAvailabilityStep,
     });
     const scheduleSettings = ref<ScheduleSettings>({
         start_date: new Date(),
@@ -387,9 +387,14 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         phases: [] as EliminationPhase[]
     });
 
-    const isValidForm = (form: TournamentStoreRequest) => {
+    const generateSchedule = async (data) => {
 
-    }
+        const client = useSanctumClient();
+        await client('/api/v1/admin/tournaments/${tournamentId}/schedule', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        });
+    };
 
     const settingsSchedule = async () => {
         const client = useSanctumClient();
@@ -603,5 +608,6 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         $reset,
         updateTournament,
         storeTournamentLocation,
+        generateSchedule
     };
 });

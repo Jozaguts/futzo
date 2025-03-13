@@ -30,22 +30,11 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     const daysToPlayCustomSelected = ref();
 
 
-    const generateSchedule = async (params: {
-        leagueId: number;
-        tournamentId: number;
-    }) => {
-        const client = useSanctumClient();
-        await client('/api/v1/admin/schedules', {
-            method: 'POST',
-            body: JSON.stringify(params),
-        });
-    };
     return {
         scheduleDialog,
         daysToPlay,
         scheduleParams,
         daysToPlayCustomSelected,
         daysToPlaySelected,
-        generateSchedule,
     };
 });
