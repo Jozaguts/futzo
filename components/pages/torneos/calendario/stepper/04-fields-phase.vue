@@ -40,6 +40,13 @@ const backHandler = () => {
     currentStep.value -= 1
   }
 }
+onMounted(async () => {
+  const locationIds = scheduleStoreRequest.value.general.locations.map(location => location.id)
+  const client = useSanctumClient()
+  fields.value = await client(`/api/v1/admin/locations/fields?location_ids=${locationIds.join(',')}`)
+  scheduleStoreRequest.value.fields_phase = fields.value
+  currentStep.value = fields.value[0]?.step
+})
 </script>
 <template>
   <v-container>
