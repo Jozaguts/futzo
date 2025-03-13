@@ -24,10 +24,6 @@ defineExpose({
     <v-row>
       <v-col>
         <IndicatorStep :form-steps="calendarSteps"/>
-        <pre>
-          {{ scheduleStoreRequest['general']['locations'] }}
-          {{ scheduleStoreRequest['locations_availability'] }}
-        </pre>
       </v-col>
     </v-row>
     <v-row>
