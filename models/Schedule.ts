@@ -4,7 +4,7 @@ export type ScheduleStoreRequest = {
     general: FormGeneralScheduleRequest,
     regular_phase: FormRegularPhaseStep
     elimination_phase: FormEliminationPhaseStep
-    locations_availability: FormLocationAvailabilityStep[]
+    fields_phase: FormLocationAvailabilityStep[]
 }
 export type FormGeneralScheduleRequest = {
     tournament_id: number;
@@ -30,13 +30,14 @@ export type FormEliminationPhaseStep = {
     phases: EliminationPhase[],
 }
 export type FormLocationAvailabilityStep = {
-    tournament_id: number;
-    availability: TournamentLocationAvailability[]
+    field_id: number,
+    step: number,
+    field_name: string,
+    location_name: string,
+    location_id: number,
+    availability: LocationAvailability
 }
-export type TournamentLocationAvailability = {
-    id: number;
-    days: LocationAvailability
-}
+
 export type Phase = 'Fase de grupos' | 'Tabla general' | 'Octavos de Final' | 'Cuartos de Final' | 'Semifinales' | 'Final';
 export type EliminationPhase = {
     id: number;
