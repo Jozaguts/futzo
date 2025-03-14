@@ -22,7 +22,20 @@ const leaveHandler = () => {
 };
 const handleChange = async () => {
   let hasErrors = !stepContainerRef.value.hasValidForm();
-  stepContainerRef.value.validate()
+  let validation = {value: '', step: ''};
+  if (calendarSteps.value.current === 'general') {
+    validation.value = await stepContainerRef.value.validate()
+    validation.step = 'general'
+  } else if (calendarSteps.value.current === 'regular') {
+    validation.value = await stepContainerRef.value.validate()
+    validation.step = 'regular'
+  } else if (calendarSteps.value.current === 'elimination') {
+    validation.value = await stepContainerRef.value.validate()
+    validation.step = 'elimination'
+  } else if (calendarSteps.value.current === 'fields') {
+    validation.value = await stepContainerRef.value.validate()
+    validation.step = 'fields'
+  }
   if (!hasErrors) {
     nextStep();
   }
@@ -43,7 +56,7 @@ const nextStep = () => {
   if (calendarSteps.value.current !== 'fields') {
     calendarSteps.value.current = stepsOrder[currentStepIndex + 1]
   } else {
-    useTournamentStore().generateSchedule(scheduleStoreRequest.value)
+    useTournamentStore().generateSchedule()
   }
 };
 
