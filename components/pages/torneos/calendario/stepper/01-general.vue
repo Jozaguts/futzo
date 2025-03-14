@@ -10,7 +10,9 @@ const {tournament, scheduleSettings, scheduleStoreRequest} =
     storeToRefs(useTournamentStore())
 const formatDate = (date: string): Date | string => {
   if (!date) return ''
-
+  if (typeof date === 'object') {
+    date = dateToString(date)
+  }
   const [year, month, day] = date?.split('-')
   return new Date(Number(year), Number(month) - 1, Number(day))
 }
