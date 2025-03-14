@@ -387,12 +387,11 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         phases: [] as EliminationPhase[]
     });
 
-    const generateSchedule = async (data) => {
-
+    const generateSchedule = async () => {
         const client = useSanctumClient();
-        await client('/api/v1/admin/tournaments/${tournamentId}/schedule', {
+        await client(`/api/v1/admin/tournaments/${tournamentId.value}/schedule`, {
             method: 'POST',
-            body: JSON.stringify(data),
+            body: JSON.stringify(scheduleStoreRequest.value),
         });
     };
 
