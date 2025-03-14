@@ -413,7 +413,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         generalSchedule.locations = [];
         scheduleStoreRequest.value.general = generalSchedule
         scheduleStoreRequest.value.regular_phase = {
-            round_trip: false,
+            round_trip: data.value.round_trip,
             tiebreakers: data.value.tiebreakers,
         }
         scheduleStoreRequest.value.elimination_phase = {

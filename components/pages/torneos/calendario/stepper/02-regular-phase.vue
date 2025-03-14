@@ -3,7 +3,7 @@ import {useTournamentStore} from "~/store";
 import Tiebreakers from "~/components/pages/torneos/calendario/Tiebreakers.vue";
 
 const {scheduleStoreRequest} = storeToRefs(useTournamentStore());
-
+console.log(scheduleStoreRequest.value.regular_phase)
 const {fields, meta, validate} = useSchemas("calendar-regular-step", {
   round_trip: scheduleStoreRequest.value?.regular_phase?.round_trip,
   tiebreakers: scheduleStoreRequest.value?.regular_phase?.tiebreakers
