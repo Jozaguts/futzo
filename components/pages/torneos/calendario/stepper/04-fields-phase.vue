@@ -6,7 +6,7 @@ const {tournamentId, scheduleStoreRequest} = storeToRefs(useTournamentStore())
 
 const {meta, validate} = useSchemas('calendar-location-step', {
   tournament_id: tournamentId.value,
-  availability: scheduleStoreRequest.value.fields_phase
+  fields: scheduleStoreRequest.value.fields_phase
 })
 
 

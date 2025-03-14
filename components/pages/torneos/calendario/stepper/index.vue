@@ -9,7 +9,6 @@ import {useTournamentStore} from "~/store";
 type StepRef = { handleSubmit: Function, isValid: boolean, validate: Function };
 const {
   calendarSteps,
-  scheduleStoreRequest
 } = storeToRefs(useTournamentStore());
 const stepRef = defineModel<StepRef>("stepRef");
 const hasValidForm = () => stepRef.value?.isValid;

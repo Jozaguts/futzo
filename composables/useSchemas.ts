@@ -68,57 +68,111 @@ function getSchemaByName(name: string) {
     switch (name) {
         case 'calendar-location-step':
             schemaFields.tournament_id = yup.number().required(t('forms.required'));
-            schemaFields.availability = yup.array().of(
+            schemaFields.fields = yup.array().of(
                 yup.object().shape({
-                    id: yup.number().required(t("forms.required")),
-                    days: yup.object().shape({
+                    field_id: yup.number().required('Necesitas marcar un campo'),
+                    field_name: yup.string().required('El nombre del campo es obligatorio'),
+                    location_id: yup.string().required('La ubicación es obligatoria'),
+                    location_name: yup.string().required('El nombre de la ubicación es obligatorio'),
+                    step: yup.number().required('El paso es obligatorio'),
+                    availability: yup.object().shape({
+                        isCompleted: yup.boolean().required('Necesitas marcar si esta completado'),
                         monday: yup
                             .object()
                             .shape({
-                                start: yup.string(),
-                                end: yup.string(),
+                                enabled: yup.boolean(),
+                                start: yup.object().shape({
+                                    hours: yup.string(),
+                                    minutes: yup.string(),
+                                }),
+                                end: yup.object().shape({
+                                    hours: yup.string(),
+                                    minutes: yup.string(),
+                                }),
                             })
                             .nullable(),
                         tuesday: yup
                             .object()
                             .shape({
-                                start: yup.string(),
-                                end: yup.string(),
+                                enabled: yup.boolean(),
+                                start: yup.object().shape({
+                                    hours: yup.string(),
+                                    minutes: yup.string(),
+                                }),
+                                end: yup.object().shape({
+                                    hours: yup.string(),
+                                    minutes: yup.string(),
+                                }),
                             })
                             .nullable(),
                         wednesday: yup
                             .object()
                             .shape({
-                                start: yup.string(),
-                                end: yup.string(),
+                                enabled: yup.boolean(),
+                                start: yup.object().shape({
+                                    hours: yup.string(),
+                                    minutes: yup.string(),
+                                }),
+                                end: yup.object().shape({
+                                    hours: yup.string(),
+                                    minutes: yup.string(),
+                                }),
                             })
                             .nullable(),
                         thursday: yup
                             .object()
                             .shape({
-                                start: yup.string(),
-                                end: yup.string(),
+                                enabled: yup.boolean(),
+                                start: yup.object().shape({
+                                    hours: yup.string(),
+                                    minutes: yup.string(),
+                                }),
+                                end: yup.object().shape({
+                                    hours: yup.string(),
+                                    minutes: yup.string(),
+                                }),
                             })
                             .nullable(),
                         friday: yup
                             .object()
                             .shape({
-                                start: yup.string(),
-                                end: yup.string(),
+                                enabled: yup.boolean(),
+                                start: yup.object().shape({
+                                    hours: yup.string(),
+                                    minutes: yup.string(),
+                                }),
+                                end: yup.object().shape({
+                                    hours: yup.string(),
+                                    minutes: yup.string(),
+                                }),
                             })
                             .nullable(),
                         saturday: yup
                             .object()
                             .shape({
-                                start: yup.string(),
-                                end: yup.string(),
+                                enabled: yup.boolean(),
+                                start: yup.object().shape({
+                                    hours: yup.string(),
+                                    minutes: yup.string(),
+                                }),
+                                end: yup.object().shape({
+                                    hours: yup.string(),
+                                    minutes: yup.string(),
+                                }),
                             })
                             .nullable(),
                         sunday: yup
                             .object()
                             .shape({
-                                start: yup.string(),
-                                end: yup.string(),
+                                enabled: yup.boolean(),
+                                start: yup.object().shape({
+                                    hours: yup.string(),
+                                    minutes: yup.string(),
+                                }),
+                                end: yup.object().shape({
+                                    hours: yup.string(),
+                                    minutes: yup.string(),
+                                }),
                             })
                             .nullable(),
                     }),
