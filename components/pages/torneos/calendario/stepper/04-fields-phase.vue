@@ -47,6 +47,26 @@ onMounted(async () => {
   scheduleStoreRequest.value.fields_phase = fields.value
   currentStep.value = fields.value[0]?.step
 })
+const fieldDisableHandler = (data) => {
+  let values = {
+    availability: null
+  }
+  fields.value.map((field) => {
+    if (field.field_id === data.field_id) {
+      field.disabled = !field.disabled
+      for (let key in field.availability) {
+        field.availability[key].enabled = field.availability[key].enabled === true ? false : field.availability[key].enabled
+      }
+    }
+  })
+  const _field = fields.value.filter(field => field.field_id === data.field_id)[0]
+  nextHandler({
+    availavility: _field.availavility,
+    field_id: _field.field_id,
+    isCompleted: false,
+    name: _field.field_name,
+  })
+}
 </script>
 <template>
   <v-container>
@@ -65,20 +85,23 @@ onMounted(async () => {
             <Icon name="mdi:soccer-field"></Icon>
           </template>
           <template #title="item">
-            <p class="tex-body-1 text-capitalize">
+            <p class="tex-body-1 text-capitalize mb-2" :class="item.title.disabled ? 'text-disabled' : ''">
               {{ getStepAttribute('location_name', item.step) }}
             </p>
           </template>
           <template #subtitle="item">
-            <p class="tex-body-2 text-capitalize"> {{ getStepAttribute('field_name', item.step) }}</p>
+            <p class="tex-body-2 text-capitalize" :class="item.title.disabled ? 'text-disabled' : ''"> {{ getStepAttribute('field_name', item.step) }}</p>
           </template>
           <template v-for="field in fields" :key="field.step" #[`item.${field.step}`]="item">
             <LocationFormStep
+                :disabled="field.disabled"
                 :field="field"
                 @field-changed="updateChangedHandler"
                 :isLastStep="fields.length === currentStep -1"
                 @next="nextHandler"
-                @back="backHandler">
+                @back="backHandler"
+                @field-disabled="fieldDisableHandler"
+            >
             </LocationFormStep>
           </template>
           <template #actions></template>
