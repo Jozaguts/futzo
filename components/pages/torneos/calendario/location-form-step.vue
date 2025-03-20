@@ -21,31 +21,40 @@ const form = ref({
 })
 const inputDateChangedHandler = (value) => {
   if (value.value) {
-    const day = value.id
-    const position = value.isStart ? 'start' : 'end'
-    const hours = value.value.split(':')[0]
-    form.value.availability[day][position].hours = hours
     scheduleStoreRequest.value.fields_phase.map(location => {
       if (location.location_id === props.field.location_id && location.field_id === props.field.field_id) {
         location.availability = form.value.availability
       }
     })
   }
-
 }
-const emits = defineEmits(['back', 'next'])
+const availabilities = computed(() => {
+  delete props.field.availability['isCompleted']
+  return props.field.availability
+})
+const emits = defineEmits(['back', 'next', 'field-disabled'])
+const dayDisabledHandler = (id) => {
+  form.value.availability[id].enabled = !form.value.availability[id].enabled
+}
 </script>
 <template>
-  <InputAvailabilityDate :day="props.field.availability.monday" id="monday" label="Lunes" @input-date-changed="inputDateChangedHandler"/>
-  <InputAvailabilityDate :day="props.field.availability.tuesday" id="tuesday" label="Martes" @input-date-changed="inputDateChangedHandler"/>
-  <InputAvailabilityDate :day="props.field.availability.wednesday" id="wednesday" label="Miércoles" @input-date-changed="inputDateChangedHandler"/>
-  <InputAvailabilityDate :day="props.field.availability.tuesday" id="tuesday" label="Jueves" @input-date-changed="inputDateChangedHandler"/>
-  <InputAvailabilityDate :day="props.field.availability.friday" id="friday" label="Viernes" @input-date-changed="inputDateChangedHandler"/>
-  <InputAvailabilityDate :day="props.field.availability.saturday" id="saturday" label="Sábado" @input-date-changed="inputDateChangedHandler"/>
-  <InputAvailabilityDate :day="props.field.availability.sunday" id="sunday" label="Domingo" @input-date-changed="inputDateChangedHandler"/>
+  <InputAvailabilityDate
+      :disabled="field.disabled"
+      v-for="(item, key) in availabilities"
+      :day="props.field.availability[key]"
+      :id="key as string"
+      :label="item.label"
+      @input-date-changed="inputDateChangedHandler"
+      @day-disabled="dayDisabledHandler"
+  />
   <v-row>
     <v-col>
-      <v-btn color="secondary" variant="tonal" class="vertical-stepper-button next" @click="emits('next', form)">Asignar</v-btn>
+      <v-btn color="secondary" variant="tonal" class="vertical-stepper-button next" @click="emits('field-disabled', form)">Desactivar campo</v-btn>
+      <v-btn color="secondary" variant="tonal" class="vertical-stepper-button next" @click="emits('next', form)">Asignar
+        <template #append>
+          <Icon name="mdi-arrow-right"></Icon>
+        </template>
+      </v-btn>
       <v-btn color="primary" variant="text" class="vertical-stepper-button back" @click="emits('back')" :disabled="isLastStep">Anterior</v-btn>
     </v-col>
   </v-row>
