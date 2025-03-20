@@ -14,88 +14,64 @@ const props = defineProps({
     required: true,
   }
 })
-const emits = defineEmits(['input-date-changed'])
-
-const startOptions = computed(() => {
-  const start = props.day.start
-  const end = props.day.end
-  const options = []
-  for (let i = Number(start.hours); i <= Number(end.hours); i++) {
-    for (let j = 0; j < 60; j += 60) {
-      options.push({
-        value: `${i}:${j < 10 ? '0' + j : j}`,
-        text: `${i}:${j < 10 ? '0' + j : j}`
-      })
-    }
-  }
-  return options
-})
-const endOptions = ref<{ value: string; text: string }[]>(startOptions.value);
-const startHourSelected = ref(startOptions.value[0])
-const endHourSelected = ref(startOptions.value[startOptions.value.length - 1])
-const DURATION_GAME = 2; // HOURS
-watch(startHourSelected, (value) => {
-  if (!value) {
-    endOptions.value = [];
-    return
-  }
-  const start = value.split(':')
-  const options = []
-  for (let i = Number(start[0]) + DURATION_GAME; i <= Number(props.day.end.hours); i++) {
-    for (let j = 0; j < 60; j += 60) {
-      options.push({
-        value: `${i}:${j < 10 ? '0' + j : j}`,
-        text: `${i}:${j < 10 ? '0' + j : j}`
-      })
-    }
-  }
-  endOptions.value = options
-})
+const startHourSelected = ref([])
+const emits = defineEmits(['input-date-changed', 'day-disabled'])
+const selectHandler = (id, day, value) => {
+  emits('input-date-changed', {
+    id,
+    day,
+    value,
+  })
+}
+const dayDisabledHandler = () => {
+  emits('day-disabled', props.id)
+}
 </script>
 <template>
   <v-container class="pa-0 pb-1">
     <v-row no-gutters>
-      <v-col v-if="day.enabled" cols="12">
-        <p class="text-body-1 text-primary">{{ props.label }}</p>
-        <small v-if="day.enabled">Horario disponible: {{ props.day.start.hours }}:00 a {{ props.day.end.hours }}:00</small>
-      </v-col>
-      <v-col v-if="day.enabled" cols="6" class="pr-2 pt-2">
+      <v-col cols="12">
+        <div class="d-flex w-100">
+          <div class="d-75">
+            <p class="text-body-1 " :class="day.enabled ? 'text-primary' : 'text-disabled'">{{ props.label }}</p>
+            <small :class="day.enabled ? '' : 'text-disabled'">Horario disponible: {{ props.day.available_range }}</small>
+          </div>
+          <div class="w-25 ml-3">
 
-        <v-select
-            v-model="startHourSelected"
-            :items="startOptions"
-            item-value="value"
-            item-title="text"
-            clearable
-            @update:modelValue="(value) => emits('input-date-changed',{
-              id: props.id,
-              day: props.day,
-              value,
-              isStart: true
-            })"
-        />
+          </div>
+        </div>
       </v-col>
-      <v-col v-if="day.enabled" cols="6" class="pr-2 pt-2">
-        <v-select
-            v-model="endHourSelected"
-            :disabled="!endOptions.length"
-            :items="endOptions"
-            item-value="value"
-            item-title="text"
-            @update:modelValue="(value) => emits('input-date-changed',{
-              id: props.id,
-              day: props.day,
-              value,
-              isStart: false
-            })"
-        ></v-select>
+      <v-col cols="12" class="pr-2 pt-2">
+        <div>
+          <v-select
+              v-model="startHourSelected"
+              :items="props.day.intervals"
+              item-value="value"
+              item-title="text"
+              clearable
+              :disabled="!props.day.enabled"
+              multiple
+              @update:modelValue="((value) => selectHandler(props.id, props.day, value))"
+          >
+            <template #item="{props}">
+              <v-list-item v-bind="props" v-if="!startHourSelected.includes('*')"></v-list-item>
+            </template>
+          </v-select>
+          <v-tooltip location="left" max-width="120">
+            <template #default>
+              <small class="text-caption">{{ day.enabled ? 'Desactivar dia' : 'Activar dia' }}</small>
+            </template>
+
+            <template v-slot:activator="{props}">
+              <v-btn @click="dayDisabledHandler" v-bind="props" class="float-right" icon size="small" variant="text">
+                <Icon :name="day.enabled ? 'mdi:lock-open': 'mdi:lock' " size="24" :class="day.enabled ? 'text-disabled' : 'bg-primary' "></Icon>
+              </v-btn>
+            </template>
+          </v-tooltip>
+          <!--          <v-switch v-model="day.enabled" inline flat center-affix density="compact"></v-switch>-->
+        </div>
+
       </v-col>
-      <!--      <v-col v-else cols="12" class="pr-2 pt-2">-->
-      <!--        <div class="day-disabled">-->
-      <!--          <Icon name="material-symbols:dark-mode-outline" size="24" class="icon"></Icon>-->
-      <!--          <span class="label">No disponible</span>-->
-      <!--        </div>-->
-      <!--      </v-col>-->
     </v-row>
   </v-container>
 </template>
