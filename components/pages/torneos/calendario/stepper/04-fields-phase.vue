@@ -81,8 +81,8 @@ const fieldDisableHandler = (data) => {
             item-title="name"
             complete-icon="mdi-check"
         >
-          <template #icon>
-            <Icon name="mdi:soccer-field"></Icon>
+          <template #icon="props">
+            <Icon :name="props.title.disabled  ? 'mdi:block' : 'mdi:soccer-field'"></Icon>
           </template>
           <template #title="item">
             <p class="tex-body-1 text-capitalize mb-2" :class="item.title.disabled ? 'text-disabled' : ''">
