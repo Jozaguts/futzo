@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 
+import type {Day} from "~/models/Location";
+
 const props = defineProps({
   day: {
-    type: Object,
+    type: Object as PropType<Day>,
     required: true
   },
   label: {
@@ -14,9 +16,13 @@ const props = defineProps({
     required: true,
   }
 })
-const startHourSelected = ref([])
+const startHourSelected = ref<string[]>(['*'])
 const emits = defineEmits(['input-date-changed', 'day-disabled'])
-const selectHandler = (id, day, value) => {
+const selectHandler = (id: string, day: Day, value: string[]) => {
+  if (value.length > 1 && value.some(value => value === '*')) {
+    startHourSelected.value = ['*'];
+  }
+  startHourSelected.value.sort()
   emits('input-date-changed', {
     id,
     day,
@@ -36,14 +42,12 @@ const dayDisabledHandler = () => {
             <p class="text-body-1 " :class="day.enabled ? 'text-primary' : 'text-disabled'">{{ props.label }}</p>
             <small :class="day.enabled ? '' : 'text-disabled'">Horario disponible: {{ props.day.available_range }}</small>
           </div>
-          <div class="w-25 ml-3">
-
-          </div>
         </div>
       </v-col>
       <v-col cols="12" class="pr-2 pt-2">
         <div>
           <v-select
+              label="Horas seleccionadas"
               v-model="startHourSelected"
               :items="props.day.intervals"
               item-value="value"
@@ -51,7 +55,7 @@ const dayDisabledHandler = () => {
               clearable
               :disabled="!props.day.enabled"
               multiple
-              @update:modelValue="((value) => selectHandler(props.id, props.day, value))"
+              @update:modelValue="((value: string[]) => selectHandler(props.id, props.day, value))"
           >
             <template #item="{props}">
               <v-list-item v-bind="props" v-if="!startHourSelected.includes('*')"></v-list-item>
@@ -68,7 +72,6 @@ const dayDisabledHandler = () => {
               </v-btn>
             </template>
           </v-tooltip>
-          <!--          <v-switch v-model="day.enabled" inline flat center-affix density="compact"></v-switch>-->
         </div>
 
       </v-col>

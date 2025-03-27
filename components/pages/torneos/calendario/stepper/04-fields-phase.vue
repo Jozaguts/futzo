@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import {useTournamentStore} from "~/store";
 import LocationFormStep from '~/components/pages/torneos/calendario/location-form-step.vue'
+import type {LocationFieldsRequest, NextHandlerType} from "~/models/Location";
 
 const {tournamentId, scheduleStoreRequest} = storeToRefs(useTournamentStore())
 
@@ -19,13 +20,14 @@ defineExpose({
 })
 
 const currentStep = ref()
-const fields = ref()
+const fields = ref<LocationFieldsRequest[]>([] as LocationFieldsRequest[])
 
-const getStepAttribute = (attribute: string, step: number) => fields.value.filter(field => field.step === step)[0][attribute]
+const getStepAttribute = (attribute: 'location_name' | 'location_id', step: number) => fields.value.filter((field: LocationFieldsRequest) => field.step === step)[0][attribute]
 const updateChangedHandler = (data) => {
   console.log({data})
 }
-const nextHandler = (value) => {
+const nextHandler = (value: NextHandlerType) => {
+  console.log({value})
   scheduleStoreRequest.value.fields_phase.map((field) => {
     if (field.field_id === value.field_id) {
       field.availability.isCompleted = true;
@@ -43,14 +45,13 @@ const backHandler = () => {
 onMounted(async () => {
   const locationIds = scheduleStoreRequest.value.general.locations.map(location => location.id)
   const client = useSanctumClient()
-  fields.value = await client(`/api/v1/admin/locations/fields?location_ids=${locationIds.join(',')}`)
+  fields.value = await client<Promise<LocationFieldsRequest[]>>(`/api/v1/admin/locations/fields?location_ids=${locationIds.join(',')}`)
   scheduleStoreRequest.value.fields_phase = fields.value
   currentStep.value = fields.value[0]?.step
 })
+
 const fieldDisableHandler = (data) => {
-  let values = {
-    availability: null
-  }
+  console.log({data})
   fields.value.map((field) => {
     if (field.field_id === data.field_id) {
       field.disabled = !field.disabled
@@ -61,7 +62,7 @@ const fieldDisableHandler = (data) => {
   })
   const _field = fields.value.filter(field => field.field_id === data.field_id)[0]
   nextHandler({
-    availavility: _field.availavility,
+    availability: _field.availability,
     field_id: _field.field_id,
     isCompleted: false,
     name: _field.field_name,
@@ -92,7 +93,7 @@ const fieldDisableHandler = (data) => {
           <template #subtitle="item">
             <p class="tex-body-2 text-capitalize" :class="item.title.disabled ? 'text-disabled' : ''"> {{ getStepAttribute('field_name', item.step) }}</p>
           </template>
-          <template v-for="field in fields" :key="field.step" #[`item.${field.step}`]="item">
+          <template v-for="field in fields" :key="field.step" #[`item.${field.step}`]>
             <LocationFormStep
                 :disabled="field.disabled"
                 :field="field"
