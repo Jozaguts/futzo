@@ -42,6 +42,7 @@ export type CurrentStep = "location" | "availability";
 export type FormLabelStep = "Ubicación" | "Disponibilidad";
 
 export type LocationAvailability = {
+    isCompleted: boolean,
     monday: Day;
     tuesday: Day;
     wednesday: Day;

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 
-import type {Day} from "~/models/Location";
+import type {Day, Label, WeekDay} from "~/models/Location";
 
 const props = defineProps({
   day: {
@@ -8,15 +8,16 @@ const props = defineProps({
     required: true
   },
   label: {
-    type: String,
+    type: String as PropType<Label>,
     required: true
   },
   id: {
-    type: String,
+    type: String as PropType<WeekDay>,
     required: true,
   }
 })
 const startHourSelected = ref<string[]>(['*'])
+
 const emits = defineEmits(['input-date-changed', 'day-disabled'])
 const selectHandler = (id: string, day: Day, value: string[]) => {
   if (value.length > 1 && value.some(value => value === '*')) {

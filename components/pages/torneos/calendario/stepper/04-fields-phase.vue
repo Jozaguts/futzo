@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {useTournamentStore} from "~/store";
 import LocationFormStep from '~/components/pages/torneos/calendario/location-form-step.vue'
-import type {LocationFieldsRequest, NextHandlerType} from "~/models/Location";
+import type {LocationFieldsRequest, NextHandlerType, WeekDay} from "~/models/Location";
 
 const {tournamentId, scheduleStoreRequest} = storeToRefs(useTournamentStore())
 
@@ -23,11 +23,7 @@ const currentStep = ref()
 const fields = ref<LocationFieldsRequest[]>([] as LocationFieldsRequest[])
 
 const getStepAttribute = (attribute: 'location_name' | 'location_id', step: number) => fields.value.filter((field: LocationFieldsRequest) => field.step === step)[0][attribute]
-const updateChangedHandler = (data) => {
-  console.log({data})
-}
 const nextHandler = (value: NextHandlerType) => {
-  console.log({value})
   scheduleStoreRequest.value.fields_phase.map((field) => {
     if (field.field_id === value.field_id) {
       field.availability.isCompleted = true;
@@ -50,13 +46,12 @@ onMounted(async () => {
   currentStep.value = fields.value[0]?.step
 })
 
-const fieldDisableHandler = (data) => {
-  console.log({data})
+const fieldDisableHandler = (data: NextHandlerType) => {
   fields.value.map((field) => {
     if (field.field_id === data.field_id) {
       field.disabled = !field.disabled
       for (let key in field.availability) {
-        field.availability[key].enabled = field.availability[key].enabled === true ? false : field.availability[key].enabled
+        field.availability[key as WeekDay].enabled = field.availability[key as WeekDay].enabled === true ? false : field.availability[key as WeekDay].enabled
       }
     }
   })
@@ -86,6 +81,7 @@ const fieldDisableHandler = (data) => {
             <Icon :name="props.title.disabled  ? 'mdi:block' : 'mdi:soccer-field'"></Icon>
           </template>
           <template #title="item">
+
             <p class="tex-body-1 text-capitalize mb-2" :class="item.title.disabled ? 'text-disabled' : ''">
               {{ getStepAttribute('location_name', item.step) }}
             </p>
@@ -97,7 +93,6 @@ const fieldDisableHandler = (data) => {
             <LocationFormStep
                 :disabled="field.disabled"
                 :field="field"
-                @field-changed="updateChangedHandler"
                 :isLastStep="fields.length === currentStep -1"
                 @next="nextHandler"
                 @back="backHandler"

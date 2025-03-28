@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import InputAvailabilityDate from "~/components/pages/ubicaciones/stepper/InputAvailabilityDate.vue";
 import {useTournamentStore} from "~/store";
-import type {DayHandlerType, Interval, LocationFieldsRequest, WeekDay} from "~/models/Location";
+import type {Day, DayHandlerType, Interval, LocationFieldsRequest, NextHandlerType, WeekDay} from "~/models/Location";
 
 const props = defineProps({
   field: {
@@ -14,28 +14,41 @@ const props = defineProps({
   }
 })
 const {scheduleStoreRequest} = storeToRefs(useTournamentStore())
-const form = ref({
+const form = ref<NextHandlerType>({
   field_id: props.field.field_id,
   name: props.field.field_name,
   isCompleted: false,
   availability: props.field.availability
 })
 const inputDateChangedHandler = (value: DayHandlerType) => {
-  if (value.value) {
-    scheduleStoreRequest.value.fields_phase.map(location => {
-      if (location.location_id === props.field.location_id && location.field_id === props.field.field_id) {
-        location.availability[value.id].intervals.map((interval: Interval) => {
-          if (value.value.includes('*') || value.value.includes(interval.value)) {
-            interval.selected = true
-          }
-        })
-      }
+
+  if (value.value.length) {
+    const day = value.id
+    value.value.forEach((hour: string) => {
+      scheduleStoreRequest.value.fields_phase.map(location => {
+        if (location.location_id === props.field.location_id && location.field_id === props.field.field_id) {
+          location.availability[day].intervals.map((interval: Interval) => {
+            if (hour === '*') {
+              interval.selected = interval.value !== '*'
+            }
+            if (hour !== '*' && interval.value === hour) {
+              interval.selected = true;
+            }
+          })
+        }
+      })
     })
+
   }
 }
 const availabilities = computed(() => {
-  delete props.field.availability['isCompleted']
-  return props.field.availability
+  let data = {} as Record<WeekDay, Day>
+  for (const key in props.field.availability) {
+    if (typeof props.field.availability[key as WeekDay] === 'object') {
+      data[key as WeekDay] = props.field.availability[key as WeekDay]
+    }
+  }
+  return data
 })
 const emits = defineEmits(['back', 'next', 'field-disabled'])
 const dayDisabledHandler = (day: WeekDay) => {
@@ -46,8 +59,10 @@ const dayDisabledHandler = (day: WeekDay) => {
   <InputAvailabilityDate
       :disabled="field.disabled"
       v-for="(item, key) in availabilities"
-      :day="props.field.availability[key]"
-      :id="key as number"
+      :day="props.field.availability[key] as Day"
+      :key="key"
+      :data-value="key"
+      :id="key as WeekDay"
       :label="item.label"
       @input-date-changed="inputDateChangedHandler"
       @day-disabled="dayDisabledHandler"
