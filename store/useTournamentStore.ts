@@ -368,7 +368,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         general: {} as FormGeneralScheduleRequest,
         regular_phase: {} as FormRegularPhaseStep,
         elimination_phase: {} as FormEliminationPhaseStep,
-        fields_phase: [] as FormLocationAvailabilityStep,
+        fields_phase: [] as FormLocationAvailabilityStep[],
     });
     const scheduleSettings = ref<ScheduleSettings>({
         start_date: new Date(),
