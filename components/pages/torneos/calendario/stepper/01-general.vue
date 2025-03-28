@@ -43,9 +43,6 @@ defineExpose({
   isValid,
   validate
 })
-watch(fields.start_date.fieldValue, (value) => {
-  console.log(value.start_date.fieldValue)
-}, {deep: true})
 </script>
 
 <template>

@@ -74,24 +74,19 @@ const fieldDisableHandler = (data: NextHandlerType) => {
             v-model="currentStep"
             :items="fields"
             item-value="step"
-            item-title="name"
-            complete-icon="mdi-check"
+            item-title="location_name"
+            item-subtitle="field_name"
         >
-          <template #icon="props">
-            <Icon :name="props.title.disabled  ? 'mdi:block' : 'mdi:soccer-field'"></Icon>
-          </template>
           <template #title="item">
-
-            <p class="tex-body-1 text-capitalize mb-2" :class="item.title.disabled ? 'text-disabled' : ''">
+            <p class="tex-body-1 text-capitalize mb-2" :class="fields[item.value - 1].disabled ? 'text-disabled' : ''">
               {{ getStepAttribute('location_name', item.step) }}
             </p>
           </template>
           <template #subtitle="item">
-            <p class="tex-body-2 text-capitalize" :class="item.title.disabled ? 'text-disabled' : ''"> {{ getStepAttribute('field_name', item.step) }}</p>
+            <p class="tex-body-2 text-capitalize" :class="fields[item.value - 1].disabled ? 'text-disabled' : ''"> {{ getStepAttribute('field_name', item.step) }}</p>
           </template>
           <template v-for="field in fields" :key="field.step" #[`item.${field.step}`]>
             <LocationFormStep
-                :disabled="field.disabled"
                 :field="field"
                 :isLastStep="fields.length === currentStep -1"
                 @next="nextHandler"
@@ -99,8 +94,9 @@ const fieldDisableHandler = (data: NextHandlerType) => {
                 @field-disabled="fieldDisableHandler"
             >
             </LocationFormStep>
+
           </template>
-          <template #actions></template>
+          <template #actions><small class="text-caption">* Presione Asignar para avanzar</small></template>
         </v-stepper-vertical>
       </v-col>
     </v-row>
