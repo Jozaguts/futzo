@@ -21,9 +21,9 @@ import type {
     FormGeneralScheduleRequest,
     FormLocationAvailabilityStep,
     FormRegularPhaseStep,
-    Schedule,
     ScheduleSettings,
-    ScheduleStoreRequest
+    ScheduleStoreRequest,
+    TournamentSchedule
 } from "~/models/Schedule";
 import type {Ref} from "vue";
 
@@ -361,8 +361,8 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     const selectedLocations = ref<TournamentLocation[]>([]);
     const selectedLocationsHasError = ref(false);
     const isLoadingSchedules = ref(false);
-    const schedules = ref<Schedule[]>([]);
-    const noSchedules = computed(() => schedules.value.length === 0);
+    const schedules = ref<TournamentSchedule>({} as TournamentSchedule);
+    const noSchedules = computed(() => schedules.value.data.length === 0);
     const scheduleDialog = ref(false)
     const scheduleStoreRequest = ref<ScheduleStoreRequest>({
         general: {} as FormGeneralScheduleRequest,

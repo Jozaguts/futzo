@@ -74,8 +74,25 @@ export type DatePickerAttributes = {
     range?: boolean;
 };
 
-export interface Schedule {
+export type TournamentSchedule = {
+    message: string;
+    data: Schedule[];
 }
+
+export type Schedule = {
+    tournament_id: number;
+    home_team_id: number;
+    away_team_id: number;
+    field_id: number;
+    location_id: number;
+    match_date: Date;
+    match_time: string;
+    round: number;
+    status: Status;
+}
+
+export type Status = "scheduled" | "completed" | "canceled"; //| "postponed" | "in_progress" | "not_started" | "finished"
+
 
 export type DatePosition = 1 | 2;
 

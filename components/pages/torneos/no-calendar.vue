@@ -2,7 +2,7 @@
 import {useTournamentStore} from "~/store";
 import NoCalendarSvg from "~/components/pages/torneos/NoCalendarSvg.vue";
 
-const {scheduleDialog, isLoadingSchedules, noSchedules, scheduleStoreRequest} = storeToRefs(useTournamentStore());
+const {scheduleDialog, isLoadingSchedules, noSchedules} = storeToRefs(useTournamentStore());
 const textButton = computed(() => {
   if (isLoadingSchedules.value) return "Cargando...";
   return "Crear calendario";
