@@ -21,26 +21,32 @@ const form = ref<NextHandlerType>({
   availability: props.field.availability
 })
 const inputDateChangedHandler = (value: DayHandlerType) => {
+  const selectedHours = value.value;
+  const day = value.id;
+  const hasAllDay = selectedHours.includes('*');
+  const onlyAllDay = hasAllDay && selectedHours.length === 1;
 
-  if (value.value.length) {
-    const day = value.id
-    value.value.forEach((hour: string) => {
-      scheduleStoreRequest.value.fields_phase.map(location => {
-        if (location.location_id === props.field.location_id && location.field_id === props.field.field_id) {
-          location.availability[day].intervals.map((interval: Interval) => {
-            if (hour === '*') {
-              interval.selected = interval.value !== '*'
-            }
-            if (hour !== '*' && interval.value === hour) {
-              interval.selected = true;
-            }
-          })
+  scheduleStoreRequest.value.fields_phase.forEach(location => {
+    if (
+        location.location_id === props.field.location_id &&
+        location.field_id === props.field.field_id
+    ) {
+      location.availability[day].intervals.forEach((interval: Interval) => {
+        if (onlyAllDay) {
+          // Solo "*" seleccionado: marcar todos excepto "*" como true
+          interval.selected = interval.value !== '*';
+        } else if (hasAllDay) {
+          // "*" y otros horarios: marcar "*" como true, el resto según si están en selectedHours
+          interval.selected =
+              interval.value === '*' || selectedHours.includes(interval.value);
+        } else {
+          // Sin "*": marcar solo los seleccionados
+          interval.selected = selectedHours.includes(interval.value);
         }
-      })
-    })
-
-  }
-}
+      });
+    }
+  });
+};
 const availabilities = computed(() => {
   let data = {} as Record<WeekDay, Day>
   for (const key in props.field.availability) {

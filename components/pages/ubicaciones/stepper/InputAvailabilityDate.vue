@@ -22,6 +22,7 @@ const emits = defineEmits(['input-date-changed', 'day-disabled'])
 const selectHandler = (id: string, day: Day, value: string[]) => {
   if (value.length > 1 && value.some(value => value === '*')) {
     startHourSelected.value = ['*'];
+    value = ['*']
   }
   startHourSelected.value.sort()
   emits('input-date-changed', {

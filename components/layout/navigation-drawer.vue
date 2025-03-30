@@ -11,6 +11,13 @@ const {user, isSuperAdmin} = storeToRefs(authStore);
 const links = reactive([
   {icon: "futzo-icon:home", title: "Dashboard", to: "/", disabled: false, class: 'mr-2 drawer-icon filled',},
   {
+    icon: "futzo-icon:location",
+    title: "Ubicaciones",
+    to: "/ubicaciones",
+    disabled: false,
+    class: 'mr-2 drawer-icon',
+  },
+  {
     icon: "futzo-icon:trophy",
     title: "Torneos",
     to: "/torneos",
@@ -30,13 +37,6 @@ const links = reactive([
     to: "/jugadores",
     disabled: false,
     class: 'mr-2 drawer-icon filled',
-  },
-  {
-    icon: "futzo-icon:location",
-    title: "Ubicaciones",
-    to: "/ubicaciones",
-    disabled: false,
-    class: 'mr-2 drawer-icon',
   },
 ]);
 const {logout} = useSanctumAuth();
