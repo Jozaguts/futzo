@@ -127,7 +127,7 @@ export type Status = "scheduled" | "completed" | "canceled"; //| "postponed" | "
 export type Tournament = {
     id: number;
     league_id: number;
-    category_id: number;
+    category: Category;
     tournament_format_id: number;
     football_type_id: number;
     name: string;
@@ -143,6 +143,10 @@ export type Tournament = {
     created_at: Date;
     updated_at: Date;
     teams: Team[];
+}
+export type Category = {
+    id: number;
+    name: string;
 }
 export type Team = {
     id: number;
