@@ -75,9 +75,41 @@ export type DatePickerAttributes = {
 };
 
 export type TournamentSchedule = {
-    message: string;
-    data: Schedule[];
+    tournament: Tournament;
+    rounds: Round[];
 }
+export type Round = {
+    round: number;
+    date: Date;
+    matches: Match[];
+}
+
+export type Match = {
+    id: number;
+    home: MatchAway;
+    away: MatchAway;
+    status: Status;
+    details: MatchDetails;
+    result: string;
+}
+export type MatchDetails = {
+    date: string;
+    time: string;
+    field: Field;
+    location: Field;
+    referee: string;
+}
+export type Field = {
+    id: number;
+    name: string;
+}
+export type MatchAway = {
+    id: number;
+    name: string;
+    image: string
+    goals: number;
+}
+
 
 export type Schedule = {
     tournament_id: number;
@@ -92,7 +124,36 @@ export type Schedule = {
 }
 
 export type Status = "scheduled" | "completed" | "canceled"; //| "postponed" | "in_progress" | "not_started" | "finished"
+export type Tournament = {
+    id: number;
+    league_id: number;
+    category_id: number;
+    tournament_format_id: number;
+    football_type_id: number;
+    name: string;
+    image: null;
+    thumbnail: null;
+    start_date: Date;
+    end_date: null;
+    prize: string;
+    winner: null;
+    description: string;
+    status: string;
+    deleted_at: null;
+    created_at: Date;
+    updated_at: Date;
+    teams: Team[];
+}
+export type Team = {
+    id: number;
+    name: string;
+    pivot: Pivot;
+}
 
+export type Pivot = {
+    tournament_id: number;
+    team_id: number;
+}
 
 export type DatePosition = 1 | 2;
 
@@ -170,11 +231,5 @@ export interface StructuredFormatting {
 export interface Term {
     value: string;
     offset: number;
-}
-
-export interface Pivot {
-    tournament_id: number;
-    location_id: number;
-    availability: null;
 }
 

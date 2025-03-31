@@ -17,9 +17,42 @@ definePageMeta({
     },
   ],
 });
+const {schedulePagination, isLoadingSchedules, schedules} = storeToRefs(useTournamentStore());
 onMounted(async () => {
+  schedulePagination.value.currentPage = 1;
   await useTournamentStore().fetchSchedule();
 })
+const data = ref<any[]>([])
+
+const load = async ({done}: { done: (status: 'ok' | 'empty' | 'error') => void }) => {
+  if (schedulePagination.value.currentPage > schedulePagination.value.lastPage) {
+    done('empty');
+    return;
+  }
+
+  isLoadingSchedules.value = true;
+  try {
+    const client = useSanctumClient();
+    const {tournamentId} = useTournamentStore();
+    const response = await client(`/api/v1/admin/tournaments/${tournamentId}/schedule?page=${schedulePagination.value.currentPage}`);
+    const newRounds = response.rounds ?? [];
+    if (!schedules.value.rounds) {
+      schedules.value.rounds = [];
+    }
+    schedules.value.rounds.push(...newRounds);
+    data.value.push(...response.rounds);
+
+    schedulePagination.value.currentPage += 1;
+    schedulePagination.value.lastPage = response.pagination.total_rounds;
+
+    done('ok');
+  } catch (error) {
+    console.error("Error cargando más jornadas:", error);
+    done('error');
+  } finally {
+    isLoadingSchedules.value = false;
+  }
+};
 </script>
 <template>
   <PageLayout>
@@ -33,61 +66,50 @@ onMounted(async () => {
     <template #default>
       <NoCalendar/>
       <LazyPagesTorneosCalendarioDialog/>
-      <!--        side="both"-->
-      <!--      <v-sheet class="futzo-rounded fill-height pa-4">-->
-      <!--        <v-infinite-scroll :items="data" @load="load" height="700">-->
-      <!--          <template v-for="item in data" :key="item.id">-->
-      <!--            <v-container>-->
-      <!--              <v-row>-->
-      <!--                <v-col cols="12" class="pa-0">-->
-      <!--                  <div class="title-container">-->
-      <!--                    <p class="title">{{ item.jornada }}</p>-->
-      <!--                  </div>-->
-      <!--                </v-col>-->
-      <!--                <v-col-->
-      <!--                  v-for="match in item.matches"-->
-      <!--                  :key="match.local.name"-->
-      <!--                  cols="12"-->
-      <!--                  md="2"-->
-      <!--                  lg="4"-->
-      <!--                  class="match-container"-->
-      <!--                >-->
-      <!--                  <div class="match">-->
-      <!--                    <div class="team home">-->
-      <!--                      <v-avatar-->
-      <!--                        :image="-->
-      <!--                          'https://ui-avatars.com/api/?name=' + match.local.name-->
-      <!--                        "-->
-      <!--                        size="24"-->
-      <!--                        class="image"-->
-      <!--                      ></v-avatar>-->
-      <!--                      <span class="name"> {{ match.local.name }}</span>-->
-      <!--                      <div class="result">{{ match.local.goals }}</div>-->
-      <!--                    </div>-->
-      <!--                    <div class="team away">-->
-      <!--                      <v-avatar-->
-      <!--                        class="image"-->
-      <!--                        size="24"-->
-      <!--                        :image="-->
-      <!--                          'https://ui-avatars.com/api/?name=' +-->
-      <!--                          match.visitante.name-->
-      <!--                        "-->
-      <!--                      ></v-avatar>-->
-      <!--                      <span class="name"> {{ match.visitante.name }}</span>-->
-      <!--                      <div class="result">{{ match.visitante.goals }}</div>-->
-      <!--                      <Icon class="flag" name="futzo-icon:match-polygon" />-->
-      <!--                    </div>-->
-      <!--                    <div class="details">-->
-      <!--                      <p>{{ match.details.label1 }}</p>-->
-      <!--                      <p>{{ match.details.label2 }}</p>-->
-      <!--                    </div>-->
-      <!--                  </div>-->
-      <!--                </v-col>-->
-      <!--              </v-row>-->
-      <!--            </v-container>-->
-      <!--          </template>-->
-      <!--        </v-infinite-scroll>-->
-      <!--      </v-sheet>-->
+      <v-sheet class="futzo-rounded fill-height pa-4">
+        <v-infinite-scroll :items="data"
+                           @load="load"
+                           height="700">
+          <template v-for="item in data" :key="item.id">
+            <v-container>
+              <v-row>
+                <v-col cols="12" class="pa-0">
+                  <div class="title-container">
+                    <p class="title">Jornada: {{ item.round }} <span> {{ item.date }}</span></p>
+                  </div>
+                </v-col>
+                <v-col
+                    v-for="match in item.matches"
+                    :key="match.id"
+                    cols="12"
+                    md="2"
+                    lg="4"
+                    class="match-container"
+                >
+
+                  <div class="match">
+                    <div class="team home">
+                      <v-avatar :image="match.home.image" size="24" class="image"/>
+                      <span class="name"> {{ match.home.name }}</span>
+                      <div class="result">{{ match.home.goals }}</div>
+                    </div>
+                    <div class="team away">
+                      <v-avatar class="image" size="24" :image="match.away.image"/>
+                      <span class="name"> {{ match.away.name }}</span>
+                      <div class="result">{{ match.away.goals }}</div>
+                      <Icon class="flag" name="futzo-icon:match-polygon"/>
+                    </div>
+                    <div class="details">
+                      <p>{{ match.details.date }} <span>{{ match.details.time }}</span></p>
+                      <p>{{ match.details?.location.name }}</p>
+                    </div>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-container>
+          </template>
+        </v-infinite-scroll>
+      </v-sheet>
     </template>
   </PageLayout>
 </template>

@@ -354,6 +354,13 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         total: 0,
         sort: "asc",
     });
+    const schedulePagination = ref<IPagination>({
+        currentPage: 1,
+        perPage: 10,
+        lastPage: 1,
+        total: 0,
+        sort: "asc",
+    })
     const tournamentLocations = ref<TournamentLocation[]>(
         [] as TournamentLocation[],
     );
@@ -362,7 +369,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
     const selectedLocationsHasError = ref(false);
     const isLoadingSchedules = ref(false);
     const schedules = ref<TournamentSchedule>({} as TournamentSchedule);
-    const noSchedules = computed(() => schedules.value.data.length === 0);
+    const noSchedules = computed(() => schedules.value?.rounds?.length === 0);
     const scheduleDialog = ref(false)
     const scheduleStoreRequest = ref<ScheduleStoreRequest>({
         general: {} as FormGeneralScheduleRequest,
@@ -427,7 +434,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         isLoadingSchedules.value = true;
         const client = useSanctumClient();
         const {tournamentId} = useTournamentStore();
-        schedules.value = await client(`/api/v1/admin/tournaments/${tournamentId}/schedule`)
+        schedules.value = await client(`/api/v1/admin/tournaments/${tournamentId}/schedule?page=${schedulePagination.value.currentPage}`)
             .finally(() => {
                     isLoadingSchedules.value = false;
                 }
@@ -598,6 +605,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         noSchedules,
         scheduleDialog,
         scheduleSettings,
+        schedulePagination,
         fetchSchedule,
         getTournamentLocations,
         settingsSchedule,
