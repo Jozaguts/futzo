@@ -8,13 +8,7 @@ import {useTournamentStore} from "~/store";
 
 definePageMeta({
   middleware: [
-    function () {
-      if (import.meta.server) return;
-      const {tournamentId} = storeToRefs(useTournamentStore());
-      if (!tournamentId.value) {
-        useRouter().push({name: "torneos"});
-      }
-    },
+    'check-tournament'
   ],
 });
 const {schedulePagination, isLoadingSchedules, schedules} = storeToRefs(useTournamentStore());
