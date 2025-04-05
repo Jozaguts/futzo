@@ -67,7 +67,6 @@ const initForm = computed(() => {
 <template>
   <v-container fluid>
     <v-row no-gutters>
-      {{ locationStoreRequest.availability.length }}
       <v-col cols="12" class="pt-0">
         <v-divider/>
       </v-col>

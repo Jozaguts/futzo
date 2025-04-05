@@ -29,13 +29,17 @@ const props = defineProps({
     }>,
     default: () => ({top: 300, left: 200, transform: "translate(50%)"}),
   },
+  minDate: {
+    type: Boolean,
+    default: () => false,
+    required: false,
+  },
 });
 const {getDate, formatDate, customPosition, selectDate, dp} = useCalendar();
 const emits = defineEmits(['start_date_updated', 'end_date_updated']);
 const attr: DatePickerAttributes = {
   position: "left",
   locale: "es",
-  "min-date": new Date(),
   teleport: true,
   "hide-input-icon": true,
   "enable-time-picker": false,
@@ -52,6 +56,9 @@ if (props.multiCalendar) {
   attr["multi-calendars"] = {solo: true};
   attr.ui.menu += " calendar-custom-width";
   attr.range = true;
+}
+if (props.minDate) {
+  attr["min-date"] = new Date();
 }
 watch(
     dates,

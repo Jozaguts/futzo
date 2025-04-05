@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import type {FormSteps, Team, TeamResponse, TeamStoreRequest,} from "~/models/Team";
+import type {CreateTeamForm, FormSteps, Team, TeamResponse, TeamStoreRequest,} from "~/models/Team";
 import type {IPagination} from "~/interfaces";
 
 export const useTeamStore = defineStore("teamStore", () => {
@@ -166,8 +166,7 @@ export const useTeamStore = defineStore("teamStore", () => {
     };
     const list = async () => {
         try {
-            const response = await client("/api/v1/admin/teams/list");
-            teams.value = response.teams;
+            teams.value = await client("/api/v1/admin/teams/list");
         } catch (error) {
             console.log(error);
         }
