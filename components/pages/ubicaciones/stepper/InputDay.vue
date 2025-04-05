@@ -30,7 +30,7 @@ const props = defineProps({
                             :single-line="true"
                             class="custom-location-input">
                 <template #prepend-inner
-                ><span class="text-medium-emphasis mr-1">Desde</span></template
+                ><span class="text-medium-emphasis">Desde</span></template
                 >
               </v-text-field>
             </template>
