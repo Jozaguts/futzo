@@ -33,6 +33,11 @@ export default defineNuxtConfig({
     ],
     // these 3 are necessary
     ssr: true,
+    i18n: {
+        bundle: {
+            optimizeTranslationDirective: false,
+        },
+    },
     vuetify: {
         moduleOptions: {
             styles: {configFile: "assets/scss/components.scss"},
