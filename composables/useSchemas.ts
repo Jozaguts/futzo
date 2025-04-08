@@ -373,7 +373,7 @@ function getSchemaByName(name: string) {
                     'File is required',
                     'Solo imágenes .jgp, png, svg ',
                     (value: any) => {
-                        if (value === undefined) return true;
+                        if (!value) return true;
                         return value?.type?.includes('image/') || typeof value === 'string';
                     }
                 );
@@ -408,7 +408,7 @@ function getSchemaByName(name: string) {
                     'File is required',
                     'Solo imágenes .jgp, png, svg ',
                     (value: any) => {
-                        if (value === undefined) return true;
+                        if (!value) return true;
                         return value?.type?.includes('image/') || typeof value === 'string';
                     }
                 );
@@ -461,7 +461,7 @@ function getSchemaByName(name: string) {
                     'File is required',
                     'Solo imágenes .jgp, png, svg',
                     (value: any) => {
-                        if (value === undefined) return true;
+                        if (!value) return true;
                         return value?.type?.includes('image/') || typeof value === 'string';
                     }
                 );
@@ -471,7 +471,7 @@ function getSchemaByName(name: string) {
                     'File is required',
                     'Solo imágenes .jgp, png, svg',
                     (value: any) => {
-                        if (value === undefined) return true;
+                        if (!value) return true;
                         return value?.type?.includes('image/') || typeof value === 'string';
                     }
                 );
@@ -505,7 +505,7 @@ function getSchemaByName(name: string) {
                     'File is required',
                     'Solo imágenes .jgp, png, svg ',
                     (value: any) => {
-                        if (value === undefined) return true;
+                        if (!value) return true;
                         return value?.type?.includes('image/') || typeof value === 'string';
                     }
                 );
@@ -537,7 +537,7 @@ function getSchemaByName(name: string) {
                     'File is required',
                     'Solo imágenes .jgp, png, svg ',
                     (value: any) => {
-                        if (value === undefined) return true;
+                        if (!value) return true;
                         return value?.type?.includes('image/') || typeof value === 'string';
                     }
                 );
@@ -559,7 +559,7 @@ function getSchemaByName(name: string) {
                     'File is required',
                     'Solo imágenes .jgp, png, svg ',
                     (value: any) => {
-                        if (value === undefined) return true;
+                        if (!value) return true;
                         return value?.type?.includes('image/') || typeof value === 'string';
                     }
                 );
@@ -573,7 +573,7 @@ function getSchemaByName(name: string) {
                     'File is required',
                     'Solo imágenes .jgp, png, svg ',
                     (value: any) => {
-                        if (value === undefined) return true;
+                        if (!value) return true;
                         return value?.type?.includes('image/') || typeof value === 'string';
                     }
                 );
@@ -602,7 +602,7 @@ function getSchemaByName(name: string) {
                     'File is required',
                     'Solo imágenes .jgp, png, svg ',
                     (value: any) => {
-                        if (value === undefined) return true;
+                        if (!value) return true;
                         return value?.type?.includes('image/') || typeof value === 'string';
                     }
                 );
@@ -621,7 +621,7 @@ function getSchemaByName(name: string) {
                     'File is required',
                     'Solo imágenes .jgp, png, svg ',
                     (value: any) => {
-                        if (value === undefined) return true;
+                        if (!value) return true;
                         return value?.type?.includes('image/') || typeof value === 'string';
                     }
                 );
@@ -657,7 +657,7 @@ function getSchemaByName(name: string) {
                     'File is required',
                     'Solo imágenes .jgp, png, svg ',
                     (value: any) => {
-                        if (value === undefined) return true;
+                        if (!value) return true;
                         return value?.type?.includes('image/') || typeof value === 'string';
                     }
                 );
@@ -676,7 +676,7 @@ function getSchemaByName(name: string) {
                     'File is required',
                     'Solo imágenes .jgp, png, svg ',
                     (value: any) => {
-                        if (value === undefined) return true;
+                        if (!value) return true;
                         return value?.type?.includes('image/') || typeof value === 'string';
                     }
                 );
