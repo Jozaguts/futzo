@@ -20,7 +20,7 @@ const load = (options: CallbackOptions) => {
 </script>
 
 <template>
-  <v-infinite-scroll height="1000" mode="intersect" @load="load" empty-text="No hay mas ubicaciones">
+  <v-infinite-scroll height="1000" mode="intersect" @load="load">
     <v-container>
       <v-row>
         <v-col cols="12" md="3" lg="3" v-for="location in locations">

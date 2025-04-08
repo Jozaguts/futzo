@@ -7,10 +7,8 @@ import type {CurrentStep, LocationStoreRequest} from "~/models/Location";
 
 const {locationStoreRequest, isEdition, formSteps} = storeToRefs(useLocationStore())
 const emits = defineEmits(['next', 'back', 'close'])
-const stepRef = ref<{ validate: Function; handleSubmit: Function }>({
-  validate: Function,
-  handleSubmit: Function,
-});
+const locationStepRef = useTemplateRef<{ validate: Function; handleSubmit: Function }>('locationStepRef',);
+const availabilityStepRef = useTemplateRef<{ validate: Function; handleSubmit: Function }>('availabilityStepRef');
 const disabled = ref(false)
 const textButton = computed(() => {
   if (formSteps.value.current === 'location') {
@@ -21,8 +19,15 @@ const textButton = computed(() => {
 })
 const backTextButton = computed(() => formSteps.value.current === 'location' ? 'Cancelar' : 'Anterior')
 const nextStepHandler = async () => {
-  const statusForm = await stepRef.value.validate();
-
+  let statusForm = {
+    valid: false,
+    errors: []
+  }
+  if (formSteps.value.current === 'location') {
+    statusForm = await locationStepRef.value?.$?.exposed?.validate()
+  } else if (formSteps.value.current === 'availability') {
+    statusForm = await availabilityStepRef.value?.$?.exposed?.validate()
+  }
   if (statusForm.valid) {
     const values = await getFormValues();
     fillLocationStoreRequest(values)
@@ -59,10 +64,7 @@ function fillLocationStoreRequest(values: LocationStoreRequest) {
   }
   const hasIncompleteLocations = locationStoreRequest.value.availability.some(location => !location.isCompleted)
   if (!hasIncompleteLocations) {
-    console.log({values: locationStoreRequest.value})
   }
-
-
 }
 
 const backStepHandler = () => {
@@ -74,10 +76,16 @@ const backStepHandler = () => {
 }
 
 async function getFormValues() {
-  const formValues = stepRef.value.handleSubmit(
-      (values: LocationStoreRequest) => values,
-  );
-
+  let formValues
+  if (formSteps.value.current === 'location') {
+    formValues = await locationStepRef.value?.$?.exposed?.handleSubmit(
+        (values: LocationStoreRequest) => values,
+    );
+  } else if (formSteps.value.current === 'availability') {
+    formValues = await availabilityStepRef.value?.$?.exposed?.handleSubmit(
+        (values: LocationStoreRequest) => values,
+    );
+  }
   return await formValues();
 }
 
@@ -100,8 +108,8 @@ const enableSubmitButton = () => {
               group
               :offset="{ enter: ['-100%', 0],leave: ['100%', 0]}"
           >
-            <LocationStep ref="stepRef" v-if="formSteps.current === 'location'"/>
-            <AvailabilityStep ref="stepRef" v-else-if="formSteps.current === 'availability'" @all-steps-completed="enableSubmitButton"/>
+            <LocationStep ref="locationStepRef" v-if="formSteps.current === 'location'"/>
+            <AvailabilityStep ref="availabilityStepRef" v-else-if="formSteps.current === 'availability'" @all-steps-completed="enableSubmitButton"/>
           </transition-slide>
         </v-col>
       </v-row>

@@ -4,7 +4,7 @@ import type {Location} from "~/models/tournament";
 import type {LocationStoreRequest} from "~/models/Location";
 import {array, object, string, number} from "yup";
 import type {Prediction} from "~/interfaces";
-import search from "~/utils/googleSearch";
+import {usePlaceSearch, getPlaceDetails} from '~/utils/googleSearch'
 import {useLocationStore} from "~/store";
 import type {AutocompletePrediction} from "~/models/Schedule";
 import {GOOGLE_MAPS_OPTIONS} from "~/utils/constants";
@@ -30,6 +30,7 @@ const {defineField, errors, handleSubmit, validate} = useForm<LocationStoreReque
   ),
 })
 const searchString = ref('');
+const {search} = usePlaceSearch()
 const [name] = reactive(defineField('name'))
 const [city] = reactive(defineField('city'))
 const [address] = reactive(defineField('address'))
@@ -41,6 +42,7 @@ let foundedLocations = ref([] as Location[])
 const mapElement = ref<HTMLElement>()
 let mapInstance = ref<google.maps.Map>()
 const marker = ref<google.maps.Marker>()
+const {AdvancedMarkerElement} = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
 const eventListenerId = ref()
 const itemProps = (item: Prediction) => {
   return {
@@ -50,6 +52,7 @@ const itemProps = (item: Prediction) => {
 }
 const searchHandler = async (place: string) => {
   const response = await search(place)
+
   if (response) {
     foundedLocations.value = response
   }
@@ -57,75 +60,79 @@ const searchHandler = async (place: string) => {
 
 const updateMarker = () => {
   if (marker.value) {
-    eventListenerId.value = marker.value.addListener("dragend", (event) => {
-      const newLat = event.latLng.lat();
-      const newLng = event.latLng.lng();
-      position.value = {lat: newLat, lng: newLng}
-      const geocoder = new window.google.maps.Geocoder()
+    eventListenerId.value = marker.value.addListener("dragend", async (event: google.maps.MapMouseEvent) => {
+      const newLat = event.latLng?.lat();
+      const newLng = event.latLng?.lng();
+
+      if (!newLat || !newLng) return;
+
+      position.value = {lat: newLat, lng: newLng};
+
+      const geocoder = new google.maps.Geocoder();
       geocoder.geocode({location: position.value}, (results, status) => {
-        if (status === 'OK') {
-          if (results[0]) {
-            address.value = results[0].formatted_address
-            let foundCity = ''
-            results[0].address_components.forEach((component) => {
-              if (component.types.includes('locality')) {
-                foundCity = component.long_name
-              }
-            })
-            city.value = foundCity
-          } else {
-            console.error('No se encontraron resultados de geocodificación.')
-          }
+        if (status === 'OK' && results?.[0]) {
+          address.value = results[0].formatted_address;
+
+          const cityComponent = results[0].address_components.find(component =>
+              component.types.includes('locality')
+          );
+          city.value = cityComponent?.long_name || '';
         } else {
-          console.error('Error en la geocodificación inversa:', status)
+          console.error('Error en la geocodificación inversa:', status);
         }
-      })
+      });
     });
   }
-}
+};
+
 const valueHandler = (type: string, value: string) => {
   if (type === 'name') {
     locationStoreRequest.value.name = value
   }
 }
-const updateValue = (value: AutocompletePrediction) => {
-  if (value.place_id) {
-    const placesService = new window.google.maps.places.PlacesService(mapInstance.value);
-    placesService.getDetails({placeId: value.place_id}, (place, status) => {
+const updateValue = async (value: AutocompletePrediction) => {
 
-      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        locationStoreRequest.value.position.lat = place.geometry.location.lat()
-        locationStoreRequest.value.position.lng = place.geometry.location.lng()
-        position.value = locationStoreRequest.value.position
-        mapInstance.value.setCenter(place.geometry.location);
-        marker.value.setPosition(place.geometry.location);
-      } else {
-        console.error("Error al obtener detalles del lugar:", status);
+  if (value.place_id) {
+    const details = await getPlaceDetails(value.place_id);
+
+    if (details?.lat && details?.lng) {
+      locationStoreRequest.value.position = {
+        lat: details.lat,
+        lng: details.lng
+      };
+      position.value = locationStoreRequest.value.position;
+      if (mapInstance.value) {
+        const latLng = new google.maps.LatLng(details.lat, details.lng);
+        mapInstance.value.setCenter(latLng);
+        marker.value.position = latLng
       }
-    });
+    } else {
+      console.error('No se pudieron obtener coordenadas del lugar.');
+    }
   }
-  autocomplete_prediction.value = value
-  city.value = value.structured_formatting?.secondary_text
-  address.value = value?.description
-  locationStoreRequest.value.city = value.structured_formatting?.secondary_text
-  locationStoreRequest.value.address = value?.description
-}
+
+  autocomplete_prediction.value = value;
+  city.value = value.structured_formatting?.secondary_text;
+  address.value = value?.description;
+  locationStoreRequest.value.city = value.structured_formatting?.secondary_text;
+  locationStoreRequest.value.address = value?.description;
+};
 onMounted(async () => {
   if (window.google && window.google.maps) {
     mapInstance.value = new window.google.maps.Map(mapElement.value, {...GOOGLE_MAPS_OPTIONS, center: position.value})
-    marker.value = new window.google.maps.Marker({
+    marker.value = new AdvancedMarkerElement({
       position: position.value,
       map: mapInstance.value,
-      draggable: true,
+      gmpDraggable: true,
     })
     updateMarker()
   }
 })
 onUnmounted(() => {
-  if (mapInstance.value) {
-    window.google.maps.event.clearInstanceListeners(eventListenerId.value);
+  if (mapInstance.value && eventListenerId.value) {
+    google.maps.event.removeListener(eventListenerId.value);
   }
-})
+});
 defineExpose({
   validate,
   handleSubmit,

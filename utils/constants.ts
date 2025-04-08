@@ -20,7 +20,8 @@ export const GOOGLE_MAPS_OPTIONS = {
     rotateControl: false,
     fullscreenControl: false,
     gestureHandling: "cooperative",
-    renderingType: 'VECTOR'
+    renderingType: 'VECTOR',
+    mapId: '55d361dbe66ff806'
 }
 export const DEFAULT_AVAILABILITY_HOURS: LocationAvailability[] = [
     {
