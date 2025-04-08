@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { definePageMeta } from "#imports";
 import PositionsTable from "~/components/pages/equipos/positions-table.vue";
 import LiveGames from "~/components/pages/equipos/live-games.vue";
 import NextGamesToday from "~/components/pages/equipos/next-games-today.vue";
@@ -22,27 +21,27 @@ definePageMeta({
     <template #app-bar>
       <AppBar>
         <template #buttons>
-          <AppBarBtn />
+          <AppBarBtn/>
         </template>
       </AppBar>
     </template>
     <template #default>
       <div class="tournament-details-container">
         <div class="table-container">
-          <PositionsTable />
+          <PositionsTable/>
         </div>
         <div class="games-container">
           <div class="live-games">
-            <LiveGames />
+            <LiveGames/>
           </div>
           <div class="next-games-today">
-            <NextGamesToday />
+            <NextGamesToday/>
           </div>
         </div>
         <div class="next-games">
-          <NextGames />
+          <NextGames/>
         </div>
-        <CreateTournamentDialog />
+        <CreateTournamentDialog/>
       </div>
     </template>
   </PageLayout>

@@ -4,7 +4,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import { definePageMeta } from "#imports";
 
 definePageMeta({
   layout: "blank",
@@ -19,22 +18,22 @@ onMounted(() => {
     const client = useSanctumClient();
     client(`/auth/${provider}/callback`, {
       credentials: "include",
-      params: { code: useRoute().query.code },
+      params: {code: useRoute().query.code},
     })
-      .then(() => {
-        const { refreshIdentity, isAuthenticated } = useSanctumAuth();
-        refreshIdentity()
-          .catch((error) => console.error(error))
-          .then(() => {
-            if (isAuthenticated.value) {
-              console.log("user authenticated");
-              useRouter().push("/");
-            } else {
-              console.log("user not authenticated");
-            }
-          });
-      })
-      .catch((error) => console.error(error));
+        .then(() => {
+          const {refreshIdentity, isAuthenticated} = useSanctumAuth();
+          refreshIdentity()
+              .catch((error) => console.error(error))
+              .then(() => {
+                if (isAuthenticated.value) {
+                  console.log("user authenticated");
+                  useRouter().push("/");
+                } else {
+                  console.log("user not authenticated");
+                }
+              });
+        })
+        .catch((error) => console.error(error));
   } else {
     console.error("provider not found");
   }
