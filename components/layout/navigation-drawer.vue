@@ -6,7 +6,7 @@ import {storeToRefs} from "pinia";
 const {drawer, drawerWidth, isMobile, rail} = storeToRefs(useGlobalStore());
 const drawerRef = ref();
 const authStore = useAuthStore();
-const {user, isSuperAdmin} = storeToRefs(authStore);
+const {user} = storeToRefs(authStore);
 
 const links = reactive([
   {icon: "futzo-icon:home", title: "Dashboard", to: "/", disabled: false, class: 'mr-2 drawer-icon filled',},
