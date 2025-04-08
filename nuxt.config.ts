@@ -13,7 +13,7 @@ export default defineNuxtConfig({
                     src:
                         "https://maps.googleapis.com/maps/api/js?key=" +
                         process.env.NUXT_GOOGLE_MAPS_API_KEY +
-                        "&libraries=places",
+                        "&libraries=places&loading=async",
                     async: true,
                     defer: true,
                 },
