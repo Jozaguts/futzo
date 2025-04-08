@@ -13,7 +13,6 @@ export const refreshSessionToken = async () => {
     return sessionToken;
 };
 
-// utils/googleSearch.ts
 import {useDebounceFn} from '@vueuse/core';
 
 export const usePlaceSearch = () => {

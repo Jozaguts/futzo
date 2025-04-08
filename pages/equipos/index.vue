@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useTeamStore } from "~/store/useTeamStore";
+import {useTeamStore} from "~/store/useTeamStore";
 import AppBar from "~/components/layout/AppBar.vue";
 import AppBarButtons from "~/components/pages/equipos/team-navbar-buttons.vue";
 import NoTeams from "~/components/pages/equipos/NoTeams.vue";
@@ -16,14 +16,14 @@ onMounted(() => {
     <template #app-bar>
       <AppBar>
         <template #buttons>
-          <AppBarButtons />
+          <AppBarButtons/>
         </template>
       </AppBar>
     </template>
     <template #default>
-      <NoTeams />
-      <TeamsTable />
-      <CreateTeamDialog />
+      <NoTeams/>
+      <TeamsTable/>
+      <CreateTeamDialog/>
     </template>
   </PageLayout>
 </template>
