@@ -8,7 +8,7 @@ const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 const phoneRegex = /^\d{10}$/;
 export default function useAuth() {
     const isPhone = ref(false)
-    const {handleSubmit, defineField, errors, meta} = useForm({
+    const {handleSubmit, defineField, errors, meta, resetForm} = useForm({
         validationSchema: toTypedSchema(
             object({
                 isSignUp: boolean().nullable().default(true),
@@ -135,5 +135,6 @@ export default function useAuth() {
         isSignUp,
         showRegisterFormHandler,
         submitHandler,
+        resetForm
     };
 }
