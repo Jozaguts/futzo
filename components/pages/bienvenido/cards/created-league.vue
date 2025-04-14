@@ -4,8 +4,9 @@
     <v-card-item class="d-flex align-center justify-center pt-0">
       <v-card-title class="d-flex justify-center">
         <Icon
-          class="check-verified-green"
-          name="futzo-icon:check-verified-green"
+            class="check-verified-green"
+            name="futzo-icon:check-verified-green"
+            size="32"
         ></Icon>
       </v-card-title>
       <v-card-title class="welcome-card__subtitle">
@@ -17,18 +18,18 @@
     </v-card-item>
     <v-card-text class="w-100 d-flex flex-column align-center">
       <v-form
-        class="w-100"
-        @submit.prevent="$emit('event', { action: 'league-created' })"
-        fast-fail
+          class="w-100"
+          @submit.prevent="$emit('event', { action: 'league-created' })"
+          fast-fail
       >
         <v-btn
-          class="ml-auto create-league-btn"
-          color="primary"
-          variant="elevated"
-          size="x-large"
-          density="compact"
-          block
-          type="submit"
+            class="ml-auto create-league-btn"
+            color="primary"
+            variant="elevated"
+            size="x-large"
+            density="compact"
+            block
+            type="submit"
         >
           Empezar
         </v-btn>
