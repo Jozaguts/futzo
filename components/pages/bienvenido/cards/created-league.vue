@@ -31,7 +31,7 @@
             block
             type="submit"
         >
-          Empezar
+          Iniciar sesión
         </v-btn>
       </v-form>
     </v-card-text>
