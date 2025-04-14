@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import CreateLeague from "~/components/pages/bienvenido/cards/create-league.vue";
 import CreatedLeague from "~/components/pages/bienvenido/cards/created-league.vue";
+import {Toaster} from "vue-sonner";
 
 definePageMeta({
   layout: false,
@@ -25,7 +26,6 @@ const initLeague = (name: string) => {
         );
         currentComponent.value = "CreatedLeague";
       })
-      .catch((error) => console.error(error))
       .catch((error) => {
         useToast().toast(
             "error",
@@ -73,6 +73,9 @@ const eventHandler = (event: {
       ></component>
     </div>
   </div>
+  <ClientOnly>
+    <Toaster position="top-right" offset="80px" :duration="3000"/>
+  </ClientOnly>
 </template>
 <style lang="scss">
 @use "~/assets/scss/pages/welcome.scss";
