@@ -9,7 +9,7 @@ definePageMeta({
   },
 });
 const currentComponent = ref("CreateLeague");
-const initLeague = (name) => {
+const initLeague = (name: string) => {
   useSanctumClient()(`/api/v1/admin/leagues`, {
     credentials: "include",
     method: "POST",

@@ -3,9 +3,8 @@ import {useForm} from "vee-validate";
 import {boolean, object, string} from "yup";
 import {ref} from "vue";
 import type {AuthForm} from "~/models/user";
+import {specialCharacters, phoneRegex} from "~/utils/constants";
 
-const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
-const phoneRegex = /^\d{10}$/;
 export default function useAuth() {
     const isPhone = ref(false)
     const {handleSubmit, defineField, errors, meta, resetForm} = useForm({
@@ -35,7 +34,7 @@ export default function useAuth() {
                         (value, context) => {
                             const isEmail = string().email().isValidSync(value);
                             isPhone.value = phoneRegex.test(value);
-                            context.parent.inputType = isPhone
+                            context.parent.inputType = isPhone.value
                                 ? "phone"
                                 : isEmail
                                     ? "email"
@@ -84,7 +83,10 @@ export default function useAuth() {
                     "Verificación de Cuenta",
                     "Por favor, revisa tu correo y sigue las instrucciones para completar la verificación de tu cuenta.",
                 );
-                await useRouter().push("/verificar?email=" + username.value);
+                const url = isPhone.value
+                    ? `/verificar?phone=${encodeURIComponent(`${areaCode.value}${username.value}`)}`
+                    : `/verificar?email=${username.value}`;
+                await useRouter().push(url);
                 showRegisterForm.value = false;
             })
             .catch((error: FetchError) => {
