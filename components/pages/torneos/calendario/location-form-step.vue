@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import InputAvailabilityDate from "~/components/pages/ubicaciones/stepper/InputAvailabilityDate.vue";
 import {useTournamentStore} from "~/store";
-import type {Day, DayHandlerType, Interval, LocationFieldsRequest, NextHandlerType, WeekDay} from "~/models/Location";
+import type {Day, DayHandlerType, Interval, LocationFieldsRequest, NextHandlerType, WeekDay} from "~/models/Schedule";
 
 const props = defineProps({
   field: {
