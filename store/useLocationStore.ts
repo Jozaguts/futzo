@@ -1,9 +1,9 @@
 import {defineStore} from 'pinia';
-import type {FormSteps, LocationCard, LocationStoreRequest} from '~/models/Location';
+import type {FormSteps, LocationAvailability, LocationCard, LocationStoreRequest} from '~/models/Location';
 import {useApiError} from "~/composables/useApiError";
 import type {IPagination} from "~/interfaces";
 import {ref} from "vue";
-import {DEFAULT_AVAILABILITY_HOURS, DEFAULT_POSITION} from "~/utils/constants";
+import {DEFAULT_AVAILABILITY_HOURS, DEFAULT_LOCATION_AVAILABILITY, DEFAULT_POSITION} from "~/utils/constants";
 
 export const useLocationStore = defineStore('locationStore', () => {
     const stepsCompleted = computed(() => {
@@ -15,8 +15,8 @@ export const useLocationStore = defineStore('locationStore', () => {
         city: '',
         address: '',
         autocomplete_prediction: {},
-        tags: [],
-        availability: DEFAULT_AVAILABILITY_HOURS,
+        tags: [] as string[],
+        availability: [] as LocationAvailability[],
         fields_count: 0,
         position: DEFAULT_POSITION
     } as LocationStoreRequest);
@@ -68,9 +68,10 @@ export const useLocationStore = defineStore('locationStore', () => {
             address: '',
             autocomplete_prediction: {},
             tags: [],
-            availability: DEFAULT_AVAILABILITY_HOURS,
+            availability: [] as LocationAvailability[],
             fields_count: 0,
-            position: DEFAULT_POSITION
+            position: DEFAULT_POSITION,
+            completed: false,
         } as LocationStoreRequest
     }
 
