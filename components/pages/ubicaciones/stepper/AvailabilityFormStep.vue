@@ -18,6 +18,7 @@ const props = defineProps({
   },
 })
 const emits = defineEmits(["step-completed"])
+const {locationStoreRequest} = storeToRefs(useLocationStore())
 const createDaySchema = () =>
     object({
       enabled: boolean().default(false),
@@ -33,7 +34,7 @@ const createDaySchema = () =>
 const schema = object({
   id: number().default(props.step),
   name: string().required("Nombre del campo es requerido"),
-  isCompleted: boolean().required("Debes marcar como completado"),
+  isCompleted: boolean().required("Debes marcar como completado").default(false),
   monday: createDaySchema(),
   tuesday: createDaySchema(),
   wednesday: createDaySchema(),
@@ -51,30 +52,21 @@ const isCompletedHandler = async () => {
   setFieldValue('isCompleted', !values.isCompleted)
   const validated = await validate()
   updateAvailability(values?.id, values)
-  if (validated.valid) {
+  if (validated.valid && validated?.values?.isCompleted) {
     emits("step-completed", "next", validated)
   }
 }
 const updateAvailability = (id: number, values: LocationAvailability) => {
-  const locationStore = useLocationStore()
-  const availability = locationStore.locationStoreRequest.availability
-  const index = availability.findIndex((item) => item.id === id)
+
+  const index = locationStoreRequest.value.availability.findIndex((item) => item.id === id)
   if (index !== -1) {
-    availability[index] = values
+    locationStoreRequest.value.availability[index] = values
   }
 }
-const isCompleted = computed(() => meta.value.valid)
-watch(isCompleted, (val) => {
-  setFieldValue('isCompleted', val)
-})
-defineExpose({
-  validate,
-  handleSubmit,
-  form: values,
-})
 const updateDayHandler = (day: WeekDay, value: Day) => {
   setFieldValue(day, value)
 }
+onMounted(() => setFieldValue('isCompleted', false))
 </script>
 <template>
   <v-row>

@@ -10,7 +10,10 @@ export const useLocationStore = defineStore('locationStore', () => {
         return locationStoreRequest.value.availability.filter((item) => item.isCompleted).length
     })
     const isAllStepsCompleted = computed(() => {
-        return (locationStoreRequest.value.availability.every((item) => item.isCompleted) && locationStoreRequest.value.completed) || isEdition.value
+        return (locationStoreRequest.value.availability.every((item) => item.isCompleted) && locationStoreRequest.value.completed) ||
+            formSteps.value.current === 'location' && locationStoreRequest.value.completed ||
+            isEdition.value
+
     })
     const locations = ref<LocationCard[]>();
     const locationStoreRequest = ref<LocationStoreRequest>({

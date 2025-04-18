@@ -3,12 +3,11 @@ import {useLocationStore} from "~/store";
 import AvailabilityFormStep from "~/components/pages/ubicaciones/stepper/AvailabilityFormStep.vue";
 import {storeToRefs} from "pinia";
 import {DEFAULT_LOCATION_AVAILABILITY} from "~/utils/constants";
-import type {StepperItem} from "~/models/Location";
 
 const {locationStoreRequest, isEdition} = storeToRefs(useLocationStore())
-console.log(locationStoreRequest.value)
 const fillAvailability = () => {
   if (!isEdition.value) {
+    locationStoreRequest.value.availability = []
     for (let i = 0; i < locationStoreRequest.value.fields_count; i++) {
       const form = {
         ...DEFAULT_LOCATION_AVAILABILITY,
@@ -22,14 +21,13 @@ const fillAvailability = () => {
     }
   }
 }
-const fieldsCount = computed<StepperItem[]>(() => Array.from({length: locationStoreRequest.value.fields_count ?? 0}, (_, i) => ({title: `Campo ${i + 1}`, value: i + 1})))
-const currentStep = ref<number>(fieldsCount.value[0]?.value ?? 1)
+const currentStep = ref<number>(1)
 const markStepAsCompletedHandler = async (type: 'next' | 'back') => {
   setNextStep(type)
 }
 const setNextStep = (direction: 'next' | 'back') => {
   setTimeout(() => {
-    if (currentStep.value < fieldsCount.value.length) {
+    if (currentStep.value < locationStoreRequest.value.availability.length) {
       currentStep.value = direction === 'next' ? currentStep.value + 1 : currentStep.value - 1
     }
   }, 300)
@@ -38,9 +36,6 @@ defineExpose({
   handleSubmit: () => markStepAsCompletedHandler
 })
 onMounted(() => {
-  if (!isEdition.value) {
-    // locationStoreRequest.value.availability = [] // todo
-  }
   fillAvailability()
 })
 </script>
@@ -58,9 +53,19 @@ onMounted(() => {
         flat
         eager
     >
-      <v-stepper-vertical-item v-for="form in locationStoreRequest.availability" :value="form.id" :key="form.id" :title="form.name">
+
+      <v-stepper-vertical-item
+          v-for="(form, index) in locationStoreRequest.availability"
+          :value="index + 1"
+          :key="index + 1"
+          :title="form.name"
+          :complete="form.isCompleted"
+          complete-icon="mdi-check-circle"
+          edit-icon="mdi-check-circle"
+          expand-icon="mdi-chevron-down"
+      >
         <AvailabilityFormStep
-            :step="form.id as number"
+            :step="index + 1"
             :init-form="form"
             @step-completed="markStepAsCompletedHandler"
         />

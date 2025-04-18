@@ -40,6 +40,7 @@ async function saveHandler() {
 }
 
 const backStepHandler = () => {
+  console.log(formSteps.value.current)
   if (formSteps.value.current === 'location') {
     useLocationStore().resetLocationStoreRequest()
     locationDialog.value = false

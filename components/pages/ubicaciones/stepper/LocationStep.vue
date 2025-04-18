@@ -19,7 +19,7 @@ const {defineField, errors, meta, controlledValues} = useForm<LocationStoreReque
         name: string().required('El campo es requerido').default(locationStoreRequest.value.name),
         city: string().required('El campo es requerido').default(locationStoreRequest.value.city),
         address: string().required('El campo es requerido').default(locationStoreRequest.value.address),
-        autocomplete_prediction: object().required('El campo es requerido').default(locationStoreRequest.value),
+        autocomplete_prediction: object().required('El campo es requerido').default(locationStoreRequest.value.autocomplete_prediction),
         fields_count: number().required('La cantidad de campos de juego es requerida').default(locationStoreRequest.value.fields_count),
         tags: array().of(string()),
         position: object({
