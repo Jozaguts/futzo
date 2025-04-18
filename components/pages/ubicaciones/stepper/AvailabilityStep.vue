@@ -5,22 +5,25 @@ import {storeToRefs} from "pinia";
 import {DEFAULT_LOCATION_AVAILABILITY} from "~/utils/constants";
 import type {StepperItem} from "~/models/Location";
 
-const {locationStoreRequest, stepsCompleted, isEdition} = storeToRefs(useLocationStore())
+const {locationStoreRequest, isEdition} = storeToRefs(useLocationStore())
+console.log(locationStoreRequest.value)
 const fillAvailability = () => {
-  for (let i = 0; i < locationStoreRequest.value.fields_count; i++) {
-    const form = {
-      ...DEFAULT_LOCATION_AVAILABILITY,
-      id: locationStoreRequest.value.availability.length + 1,
-      name: `Campo ${locationStoreRequest.value.availability.length + 1}`,
-    }
-    const alreadyExists = locationStoreRequest.value.availability.some((item) => item.id === form.id)
-    if (!alreadyExists) {
-      locationStoreRequest.value.availability.push(form)
+  if (!isEdition.value) {
+    for (let i = 0; i < locationStoreRequest.value.fields_count; i++) {
+      const form = {
+        ...DEFAULT_LOCATION_AVAILABILITY,
+        id: locationStoreRequest.value.availability.length + 1,
+        name: `Campo ${locationStoreRequest.value.availability.length + 1}`,
+      }
+      const alreadyExists = locationStoreRequest.value.availability.some((item) => item.id === form.id)
+      if (!alreadyExists) {
+        locationStoreRequest.value.availability.push(form)
+      }
     }
   }
 }
 const fieldsCount = computed<StepperItem[]>(() => Array.from({length: locationStoreRequest.value.fields_count ?? 0}, (_, i) => ({title: `Campo ${i + 1}`, value: i + 1})))
-const currentStep = ref<number>(1)
+const currentStep = ref<number>(fieldsCount.value[0]?.value ?? 1)
 const markStepAsCompletedHandler = async (type: 'next' | 'back') => {
   setNextStep(type)
 }
@@ -35,7 +38,9 @@ defineExpose({
   handleSubmit: () => markStepAsCompletedHandler
 })
 onMounted(() => {
-  locationStoreRequest.value.availability = []
+  if (!isEdition.value) {
+    // locationStoreRequest.value.availability = [] // todo
+  }
   fillAvailability()
 })
 </script>

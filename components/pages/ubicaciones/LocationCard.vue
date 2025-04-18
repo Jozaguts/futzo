@@ -14,9 +14,11 @@ const clickHandler = (action: 'Eliminar' | 'Editar') => {
       address: location.address,
       autocomplete_prediction: {...location.autocomplete_prediction},
       tags: location.tags,
-      availability: availabilityToArray(location.availability),
       fields_count: location.fields_count,
       position: location.position,
+      availability: location.availability,
+      completed: true,
+      id: location.id,
     }
     locationCard.value.id = location.id as number
     isEdition.value = true
@@ -26,19 +28,6 @@ const clickHandler = (action: 'Eliminar' | 'Editar') => {
     locationToDelete.value.id = location.id as number
     locationToDelete.value.show = true
   }
-}
-const availabilityToArray = (availability) => {
-  return availability.map((item, index) => {
-    const leagueData = Array.isArray(item.availability.leagues) && item.availability.leagues.length > 0
-        ? item.availability.leagues[0]
-        : {};
-    return {
-      id: item.id,
-      name: item.name,
-      step: index + 1,
-      ...leagueData
-    }
-  })
 }
 </script>
 <template>

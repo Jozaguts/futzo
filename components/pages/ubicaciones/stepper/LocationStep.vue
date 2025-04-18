@@ -12,8 +12,8 @@ import {storeToRefs} from "pinia";
 import {useForm} from "vee-validate";
 import {toTypedSchema} from "@vee-validate/yup";
 
-const {locationStoreRequest} = storeToRefs(useLocationStore())
-const {defineField, errors, handleSubmit, validate, meta, controlledValues} = useForm<LocationStoreRequest>({
+const {locationStoreRequest, isEdition} = storeToRefs(useLocationStore())
+const {defineField, errors, meta, controlledValues} = useForm<LocationStoreRequest>({
   validationSchema: toTypedSchema(
       object({
         name: string().required('El campo es requerido').default(locationStoreRequest.value.name),
@@ -25,7 +25,7 @@ const {defineField, errors, handleSubmit, validate, meta, controlledValues} = us
         position: object({
           lat: number().required(),
           lng: number().required(),
-        }).default(locationStoreRequest.value.position)
+        }).default(locationStoreRequest.value.position),
       })
   ),
 })
@@ -118,7 +118,6 @@ const updateValue = async (value: AutocompletePrediction) => {
   locationStoreRequest.value.address = value?.description;
 };
 onMounted(async () => {
-  locationStoreRequest.value.availability = [];
   if (window.google && window.google.maps) {
     mapInstance.value = new window.google.maps.Map(mapElement.value, {...GOOGLE_MAPS_OPTIONS, center: position.value})
     marker.value = new AdvancedMarkerElement({
@@ -142,11 +141,11 @@ watch(isValidFrom, (value) => {
 watch(controlledValues2, (value) => {
   locationStoreRequest.value = {...locationStoreRequest.value, ...value}
 })
-defineExpose({
-  validate,
-  handleSubmit,
-  tags,
-});
+onMounted(() => {
+  if (isEdition.value) {
+    locationStoreRequest.value.completed = true
+  }
+})
 </script>
 <template>
   <v-container class="pa-0">
