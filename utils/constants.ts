@@ -1,4 +1,5 @@
 import type {LocationAvailability} from "~/models/Location";
+import type {ScheduleLocationAvailability} from "~/models/Schedule";
 
 export const MAIN_PADDING_TOP = 48;
 export const MAIN_PADDING_BOTTOM = 64;
@@ -23,8 +24,10 @@ export const GOOGLE_MAPS_OPTIONS = {
     renderingType: 'VECTOR',
     mapId: '55d361dbe66ff806'
 }
-export const DEFAULT_AVAILABILITY_HOURS: LocationAvailability[] = [
+export const DEFAULT_AVAILABILITY_HOURS: ScheduleLocationAvailability[] = [
     {
+        id: 1,
+        name: 'Campo 1',
         isCompleted: false,
         monday: {enabled: false, available_range: '00:00-23:59', intervals: [{value: '*', text: 'Todo el dia', selected: false,}], label: 'Lunes'},
         tuesday: {enabled: false, available_range: '00:00-23:59', intervals: [{value: '*', text: 'Todo el dia', selected: false,}], label: 'Martes'},
@@ -35,5 +38,17 @@ export const DEFAULT_AVAILABILITY_HOURS: LocationAvailability[] = [
         sunday: {enabled: false, available_range: '00:00-23:59', intervals: [{value: '*', text: 'Todo el dia', selected: false,}], label: 'Domingo'},
     }
 ]
+export const DEFAULT_LOCATION_AVAILABILITY: LocationAvailability = {
+    id: 1,
+    name: 'Campo 1',
+    isCompleted: false,
+    monday: {enabled: false, start: {hours: '09', minutes: '00'}, end: {hours: '17', minutes: '00'}},
+    tuesday: {enabled: false, start: {hours: '09', minutes: '00'}, end: {hours: '17', minutes: '00'}},
+    wednesday: {enabled: false, start: {hours: '09', minutes: '00'}, end: {hours: '17', minutes: '00'}},
+    thursday: {enabled: false, start: {hours: '09', minutes: '00'}, end: {hours: '17', minutes: '00'}},
+    friday: {enabled: true, start: {hours: '09', minutes: '00'}, end: {hours: '17', minutes: '00'}},
+    saturday: {enabled: true, start: {hours: '09', minutes: '00'}, end: {hours: '17', minutes: '00'}},
+    sunday: {enabled: true, start: {hours: '09', minutes: '00'}, end: {hours: '17', minutes: '00'}},
+}
 export const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 export const phoneRegex = /^\d{10}$/;
