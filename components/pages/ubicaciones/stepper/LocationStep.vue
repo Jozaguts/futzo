@@ -145,7 +145,7 @@ watch(controlledValues2, (value) => {
 defineExpose({
   validate,
   handleSubmit,
-  tags
+  tags,
 });
 </script>
 <template>

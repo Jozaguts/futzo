@@ -128,5 +128,4 @@ const updateDayHandler = (day: WeekDay, value: Day) => {
       </v-checkbox>
     </v-col>
   </v-row>
-  <!--  <slot name="actions"></slot>-->
 </template>
