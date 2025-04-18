@@ -11,9 +11,10 @@ import {GOOGLE_MAPS_OPTIONS} from "~/utils/constants";
 import {storeToRefs} from "pinia";
 import {useForm} from "vee-validate";
 import {toTypedSchema} from "@vee-validate/yup";
+import {GoogleMap, AdvancedMarker} from 'vue3-google-map'
 
 const {locationStoreRequest, isEdition} = storeToRefs(useLocationStore())
-const {defineField, errors, meta, controlledValues} = useForm<LocationStoreRequest>({
+const {defineField, errors, meta, controlledValues, setFieldError} = useForm<LocationStoreRequest>({
   validationSchema: toTypedSchema(
       object({
         name: string().required('El campo es requerido').default(locationStoreRequest.value.name),
@@ -38,12 +39,23 @@ const [tags] = reactive(defineField('tags'))
 const [fields_count] = reactive(defineField('fields_count'))
 const [autocomplete_prediction] = reactive(defineField('autocomplete_prediction'))
 const [position] = reactive(defineField('position'))
-let foundedLocations = ref([] as Location[])
-const mapElement = ref<HTMLElement>()
-let mapInstance = ref<google.maps.Map>()
-const marker = ref<google.maps.Marker>()
-const {AdvancedMarkerElement} = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
-const eventListenerId = ref()
+let foundedLocations = ref([] as AutocompletePrediction[])
+const tag = ref<string>('')
+const tagHandler = () => {
+
+  setFieldError('tags', 'La etiqueta ya existe o está vacía');
+  const trimmedTag = tag.value?.trim();
+  if (!trimmedTag || tags.value?.includes(trimmedTag)) {
+    setFieldError('tags', 'La etiqueta ya existe o está vacía');
+    return;
+  }
+
+  tags.value = [...(tags.value || []), trimmedTag];
+  tag.value = '';
+}
+const removeTag = (tagToRemove: string) => {
+  tags.value = tags.value?.filter(tag => tag !== tagToRemove)
+}
 const itemProps = (item: Prediction) => {
   return {
     title: item?.structured_formatting?.main_text,
@@ -57,97 +69,51 @@ const searchHandler = async (place: string) => {
     foundedLocations.value = response
   }
 }
-
-const updateMarker = () => {
-  if (marker.value) {
-    eventListenerId.value = marker.value.addListener("dragend", async (event: google.maps.MapMouseEvent) => {
-      const newLat = event.latLng?.lat();
-      const newLng = event.latLng?.lng();
-
-      if (!newLat || !newLng) return;
-
-      position.value = {lat: newLat, lng: newLng};
-
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({location: position.value}, (results, status) => {
-        if (status === 'OK' && results?.[0]) {
-          address.value = results[0].formatted_address;
-
-          const cityComponent = results[0].address_components.find(component =>
-              component.types.includes('locality')
-          );
-          city.value = cityComponent?.long_name || '';
-        } else {
-          console.error('Error en la geocodificación inversa:', status);
-        }
-      });
-    });
-  }
-};
-
-const valueHandler = (type: string, value: string) => {
-  if (type === 'name') {
-    locationStoreRequest.value.name = value
-  }
-}
 const updateValue = async (value: AutocompletePrediction) => {
 
-  if (value.place_id) {
+  if (value?.place_id) {
     const details = await getPlaceDetails(value.place_id);
-
+    defineField('name', details?.name as string)
+    locationStoreRequest.value.name = details?.name as string
+    name.value = details?.name as string
     if (details?.lat && details?.lng) {
       locationStoreRequest.value.position = {
         lat: details.lat,
         lng: details.lng
       };
       position.value = locationStoreRequest.value.position;
-      if (mapInstance.value) {
-        const latLng = new google.maps.LatLng(details.lat, details.lng);
-        mapInstance.value.setCenter(latLng);
-        marker.value.position = latLng
-      }
-    } else {
-      console.error('No se pudieron obtener coordenadas del lugar.');
     }
+  } else {
+    console.error('No se pudieron obtener coordenadas del lugar.');
   }
-
   autocomplete_prediction.value = value;
   city.value = value.structured_formatting?.secondary_text;
   address.value = value?.description;
   locationStoreRequest.value.city = value.structured_formatting?.secondary_text;
   locationStoreRequest.value.address = value?.description;
 };
-onMounted(async () => {
-  if (window.google && window.google.maps) {
-    mapInstance.value = new window.google.maps.Map(mapElement.value, {...GOOGLE_MAPS_OPTIONS, center: position.value})
-    marker.value = new AdvancedMarkerElement({
-      position: position.value,
-      map: mapInstance.value,
-      gmpDraggable: true,
-    })
-    updateMarker()
-  }
-})
 const isValidFrom = computed(() => meta.value.valid)
 const controlledValues2 = computed(() => controlledValues.value)
-onUnmounted(() => {
-  if (mapInstance.value && eventListenerId.value) {
-    google.maps.event.removeListener(eventListenerId.value);
-  }
-});
+const markerOptions = computed(() => {
+  return {position: position.value, title: name.value}
+})
 watch(isValidFrom, (value) => {
   locationStoreRequest.value.completed = value
 })
 watch(controlledValues2, (value) => {
   locationStoreRequest.value = {...locationStoreRequest.value, ...value}
 })
-onMounted(() => {
+onMounted(async () => {
   if (isEdition.value) {
     locationStoreRequest.value.completed = true
+    if (locationStoreRequest.value.tags.length) {
+      tags.value = [...locationStoreRequest.value.tags]
+    }
   }
 })
 </script>
 <template>
+
   <v-container class="pa-0">
     <v-row>
       <v-col cols="12">
@@ -169,7 +135,29 @@ onMounted(() => {
         </v-autocomplete>
       </v-col>
       <v-col cols="12">
-        <div id="map" ref="mapElement" class="futzo-rounded"/>
+        <GoogleMap
+            api-key="AIzaSyCEQ_vXTkXUIxE-exwES14KvkoGaAHOGFQ"
+            mapId="DEMO_MAP_ID"
+            class="futzo-rounded"
+            :center="position"
+            :zoom="15"
+            id="map"
+        >
+          <AdvancedMarker :options="markerOptions"/>
+        </GoogleMap>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" lg="4" md="4">
+        <span class="text-body-1">Nombre</span>
+      </v-col>
+      <v-col cols="12" lg="8" md="8">
+        <v-text-field
+            :value="name"
+            readonly
+            :error-messages="errors.name"
+        >
+        </v-text-field>
       </v-col>
     </v-row>
     <v-row>
@@ -200,19 +188,7 @@ onMounted(() => {
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1">Nombre del centro deportivo / canchas de juego*</span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <v-text-field
-            v-model="name"
-            :error-messages="errors.name"
-            @update:modelValue="valueHandler('name', $event)"
-        >
-        </v-text-field>
-      </v-col>
-    </v-row>
+
     <v-row>
       <v-col cols="12" lg="4" md="4">
         Campos de juego
@@ -229,6 +205,36 @@ onMounted(() => {
             inset
             :min="1"
             variant="solo"></v-number-input>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" lg="4" md="4">
+        <span class="text-body-1">Etiquetas</span>
+      </v-col>
+      <v-col cols="12" lg="8" md="8">
+        <v-text-field
+            v-model="tag"
+            placeholder="Ej. Cancha A, Estacionamiento, Entrada principal"
+            density="compact"
+            variant="outlined"
+            @keyup.enter="tagHandler"
+            clearable
+            hint="Presiona ENTER o + para agregar"
+            persistent-hint
+            :error-messages="errors.tags"
+        >
+        </v-text-field>
+
+        <v-chip-group column variant="outlined" center-active>
+          <v-chip
+              v-for="(t, index) in tags"
+              :key="index"
+              closable
+              @click:close="removeTag(t)"
+          >
+            {{ t }}
+          </v-chip>
+        </v-chip-group>
       </v-col>
     </v-row>
   </v-container>

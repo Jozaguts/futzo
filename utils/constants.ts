@@ -10,19 +10,20 @@ export const MAX_TEAMS = 32;
 export const DEFAULT_POSITION = {lat: 16.8639515, lng: -99.8822807};
 export const GOOGLE_MAPS_OPTIONS = {
     colorScheme: 'LIGHT',
-    center: DEFAULT_POSITION,
+    // center: DEFAULT_POSITION,
     zoom: 15,
-    mapTypeId: 'roadmap',
+    // mapTypeId: 'roadmap',
     zoomControl: true,
     cameraControl: false,
-    mapTypeControl: false,
-    scaleControl: false,
-    streetViewControl: false,
-    rotateControl: false,
-    fullscreenControl: false,
-    gestureHandling: "cooperative",
-    renderingType: 'VECTOR',
+    // mapTypeControl: false,
+    // scaleControl: false,
+    // streetViewControl: false,
+    // rotateControl: false,
+    // fullscreenControl: false,
+    // gestureHandling: "cooperative",
+    // renderingType: 'VECTOR',
     mapId: '55d361dbe66ff806'
+
 }
 export const DEFAULT_AVAILABILITY_HOURS: ScheduleLocationAvailability[] = [
     {

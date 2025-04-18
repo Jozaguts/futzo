@@ -74,7 +74,7 @@ export const getPlaceDetails = async (placeId: string) => {
 
     try {
         const {Place} = await google.maps.importLibrary("places") as google.maps.PlacesLibrary;
-        const place = new Place({id: placeId});
+        const place = new Place({id: placeId, requestedLanguage: 'es'});
         await place.fetchFields({
             fields: ['displayName', 'formattedAddress', 'location']
         });
