@@ -13,7 +13,7 @@ import {useForm} from "vee-validate";
 import {toTypedSchema} from "@vee-validate/yup";
 
 const {locationStoreRequest} = storeToRefs(useLocationStore())
-const {defineField, errors, handleSubmit, validate} = useForm<LocationStoreRequest>({
+const {defineField, errors, handleSubmit, validate, meta, controlledValues} = useForm<LocationStoreRequest>({
   validationSchema: toTypedSchema(
       object({
         name: string().required('El campo es requerido').default(locationStoreRequest.value.name),
@@ -128,11 +128,19 @@ onMounted(async () => {
     updateMarker()
   }
 })
+const isValidFrom = computed(() => meta.value.valid)
+const controlledValues2 = computed(() => controlledValues.value)
 onUnmounted(() => {
   if (mapInstance.value && eventListenerId.value) {
     google.maps.event.removeListener(eventListenerId.value);
   }
 });
+watch(isValidFrom, (value) => {
+  locationStoreRequest.value.completed = value
+})
+watch(controlledValues2, (value) => {
+  locationStoreRequest.value = {...locationStoreRequest.value, ...value}
+})
 defineExpose({
   validate,
   handleSubmit,
@@ -227,7 +235,7 @@ defineExpose({
 </template>
 <style>
 #map {
-  height: 250px;
+  height: 200px;
   width: 100%;
 
   margin: 0 auto;

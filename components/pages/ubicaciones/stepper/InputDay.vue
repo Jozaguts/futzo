@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type {TimeRange} from "~/models/Location";
+import type {TimeRange, AvailabilityTime} from "~/models/Location";
 import "@vuepic/vue-datepicker/dist/main.css";
 import VueDatePicker from "@vuepic/vue-datepicker";
 
@@ -26,20 +26,23 @@ const props = defineProps({
     <v-col cols="12" lg="3" md="3">
       <v-switch
           :model-value="props.day.enabled"
-          @update:model-value="(val) => props.onUpdateDay({ ...props.day, enabled: val })"
+          @update:model-value="(val: boolean | null) => props.onUpdateDay({ ...props.day, enabled: val as boolean })"
           class="mt-1 text-caption"
           density="compact"
+
       >
-        <template #label="item"><span class="text-caption"> {{ item.label }}</span></template>
+        <template #label><span class="text-caption"> {{ label }}</span></template>
       </v-switch>
     </v-col>
+
     <v-col v-if="day.enabled" cols="12" lg="9" md="9">
       <div class="d-flex">
         <div class="w-100 mx-2">
+
           <VueDatePicker
               time-picker class="custom-dp-location" :is24="false"
               :model-value="props.day.start"
-              @update:model-value="(val: string) => props.onUpdateDay({ ...props.day, start: val })"
+              @update:model-value="(val: AvailabilityTime) => props.onUpdateDay({ ...props.day, start: val})"
           >
             <template #dp-input="{ value }">
               <v-text-field :value="value"
@@ -62,7 +65,7 @@ const props = defineProps({
           <VueDatePicker
               class="custom-dp-location"
               :model-value="props.day.end"
-              @update:model-value="(val: string) => props.onUpdateDay({ ...props.day, end: val })"
+              @update:model-value="(val: AvailabilityTime) => props.onUpdateDay({ ...props.day, end: val })"
               time-picker
               :is24="false"
           >

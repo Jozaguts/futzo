@@ -2,7 +2,7 @@
 import {useLocationStore} from "~/store";
 import NoLocation from "~/assets/images/no-locations.svg";
 
-const {locationDialog, locations, noLocations} = storeToRefs(useLocationStore());
+const {locationDialog, noLocations} = storeToRefs(useLocationStore());
 </script>
 <template>
   <v-sheet
