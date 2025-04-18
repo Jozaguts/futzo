@@ -3,9 +3,10 @@ import InputDay from "~/components/pages/ubicaciones/stepper/InputDay.vue"
 import {object, string, number, boolean} from "yup"
 import type {PropType} from 'vue'
 import {useLocationStore} from "~/store"
-import type {LocationAvailability} from "~/models/Location"
+import type {Day, LocationAvailability} from "~/models/Location"
 import {useForm} from "vee-validate"
 import {toTypedSchema} from "@vee-validate/yup"
+import type {WeekDay} from "~/models/Schedule";
 
 const props = defineProps({
   step: {
@@ -42,71 +43,75 @@ const schema = object({
   saturday: createDaySchema(),
   sunday: createDaySchema(),
 })
-const {values, errors, handleSubmit, validate, setFieldValue} = useForm<LocationAvailability>({
+const {values, errors, handleSubmit, validate, setFieldValue, defineField, meta} = useForm<LocationAvailability>({
   validationSchema: toTypedSchema(schema),
   initialValues: props.initForm ?? {id: props.step},
 })
-const isCompletedHandler = () => {
+const [name, nameAttr] = defineField('name')
+const isCompletedHandler = async () => {
   setFieldValue('isCompleted', !values.isCompleted)
-  emits("step-completed", "next", props.step)
+  const isValid = await validate()
+  emits("step-completed", "next", isValid)
 }
-watch(values, (val) => {
-  locationStoreRequest.value.availability = locationStoreRequest.value.availability.map((item) =>
-      item.id === val.id ? val : item
-  )
-}, {deep: true})
+const isCompleted = computed(() => meta.value.valid)
+watch(isCompleted, (val) => {
+  setFieldValue('isCompleted', val)
+})
 defineExpose({
   validate,
   handleSubmit,
   form: values,
 })
+const updateDayHandler = (day: WeekDay, value: Day) => {
+  setFieldValue(day, value)
+}
 </script>
 <template>
   <v-row>
-
     <v-col cols="12">
-      <v-text-field v-model="values.name" variant="outlined" label="Nombre o Identificador del campo de juego*" :error-messages="errors?.name"></v-text-field>
+      <v-text-field v-model="name" variant="outlined" label="Nombre o Identificador del campo de juego*"
+                    :error-messages="errors?.name"></v-text-field>
     </v-col>
   </v-row>
   <InputDay
       :day="values.monday"
       id="monday"
       label="Lunes"
-      :onUpdateDay="(val) => setFieldValue('monday', val)"
+      :onUpdateDay="(val) => updateDayHandler('monday', val)"
   />
   <InputDay :day="values.tuesday"
             label="Martes"
             id="tuesday"
-            :onUpdateDay="(val) => setFieldValue('tuesday', val)"
+            :onUpdateDay="(val) => updateDayHandler('tuesday', val)"
   />
   <InputDay :day="values.wednesday"
             label="Miércoles"
             id="wednesday"
-            :onUpdateDay="(val) => setFieldValue('wednesday', val)"
+            :onUpdateDay="(val) => updateDayHandler('wednesday', val)"
   />
   <InputDay :day="values.thursday"
             label="Jueves"
             id="wednesday"
-            :onUpdateDay="(val) => setFieldValue('thursday', val)"
+            :onUpdateDay="(val) => updateDayHandler('thursday', val)"
   />
   <InputDay :day="values.friday"
             label="Viernes"
             id="wednesday"
-            :onUpdateDay="(val) => setFieldValue('friday', val)"
+            :onUpdateDay="(val) => updateDayHandler('friday', val)"
   />
   <InputDay :day="values.saturday"
             label="Sábado"
             id=""
-            :onUpdateDay="(val) => setFieldValue('saturday', val)"
+            :onUpdateDay="(val) => updateDayHandler('saturday', val)"
   />
   <InputDay :day="values.sunday"
             label="Domingo"
             id="wednesday"
-            :onUpdateDay="(val) => setFieldValue('sunday', val)"
+            :onUpdateDay="(val) => updateDayHandler('sunday', val)"
   />
   <v-row>
     <v-col>
-      <v-checkbox :model-value="values.isCompleted" @change="isCompletedHandler">
+      <v-checkbox :model-value="values.isCompleted" :disabled="!meta.valid" @change="isCompletedHandler">
         <template #label>
           <div>Marcar como completado</div>
         </template>
