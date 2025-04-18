@@ -29,6 +29,18 @@ export type FormEliminationPhaseStep = {
     round_trip: boolean,
     phases: EliminationPhase[],
 }
+export type ScheduleLocationAvailability = {
+    id: number;
+    name: string
+    isCompleted: boolean,
+    monday: Day;
+    tuesday: Day;
+    wednesday: Day;
+    thursday: Day;
+    friday: Day;
+    saturday: Day;
+    sunday: Day;
+}
 export type FormLocationAvailabilityStep = {
     field_id: number,
     step: number,
@@ -57,7 +69,7 @@ export type Tiebreaker = {
 export type DatePickerAttributes = {
     position: "left" | "right";
     locale: "es" | "en";
-    "min-date": Date;
+    "min-date"?: Date;
     teleport: boolean;
     "hide-input-icon": boolean;
     "enable-time-picker": boolean;
@@ -237,3 +249,75 @@ export interface Term {
     offset: number;
 }
 
+export type LocationFieldsRequest = {
+    field_id: number;
+    step: number;
+    field_name: string;
+    location_name: string;
+    location_id: number;
+    disabled: boolean;
+    availability: Availability;
+}
+export type Day = {
+    enabled: boolean;
+    available_range: AvailableRange;
+    intervals: Interval[];
+    label: Label;
+}
+export type DayHandlerType = {
+    id: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday',
+    day: Day,
+    value: string[]
+}
+
+export type Interval = {
+    value: Text;
+    text: Text;
+    selected: boolean;
+}
+export type NextHandlerType = {
+    availability: Availability
+    field_id: number
+    isCompleted: boolean,
+    name: string
+}
+export type WeekDay = "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
+export type Availability = {
+    monday: Day,
+    tuesday: Day,
+    wednesday: Day,
+    thursday: Day,
+    friday: Day;
+    saturday: Day;
+    sunday: Day;
+    isCompleted: boolean;
+}
+export type AvailableRange = string;
+export type Label = "Lunes" | "Martes" | "Miércoles" | "Jueves" | "Viernes" | "Sábado" | "Domingo";
+export type Text =
+    "*"
+    | "Todo el dia"
+    | "00:00"
+    | "01:00"
+    | "02:00"
+    | "03:00"
+    | "04:00"
+    | "05:00"
+    | "06:00"
+    | "07:00"
+    | "08:00"
+    | "09:00"
+    | "10:00"
+    | "11:00"
+    | "12:00"
+    | "13:00"
+    | "14:00"
+    | "15:00"
+    | "16:00"
+    | "17:00"
+    | "18:00"
+    | "19:00"
+    | "20:00"
+    | "21:00"
+    | "22:00"
+    | "23:00";

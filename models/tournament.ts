@@ -137,19 +137,7 @@ export type TournamentVenue = {
     address: string;
     tournament_availability: LocationAvailability;
 };
-export type LocationAvailability = {
-    monday?: TimeRange;
-    tuesday?: TimeRange;
-    wednesday?: TimeRange;
-    thursday?: TimeRange;
-    friday?: TimeRange;
-    saturday?: TimeRange;
-    sunday?: TimeRange;
-};
-export type TimeRange = {
-    start: string;
-    end: string;
-};
+
 
 export interface TournamentResponse {
     id: number;
