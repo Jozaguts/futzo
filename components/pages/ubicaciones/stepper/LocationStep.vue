@@ -1,13 +1,11 @@
 <script lang="ts" setup>
 import {ref} from "vue";
-import type {Location} from "~/models/tournament";
 import type {LocationStoreRequest} from "~/models/Location";
 import {array, object, string, number} from "yup";
 import type {Prediction} from "~/interfaces";
 import {usePlaceSearch, getPlaceDetails} from '~/utils/googleSearch'
 import {useLocationStore} from "~/store";
 import type {AutocompletePrediction} from "~/models/Schedule";
-import {GOOGLE_MAPS_OPTIONS} from "~/utils/constants";
 import {storeToRefs} from "pinia";
 import {useForm} from "vee-validate";
 import {toTypedSchema} from "@vee-validate/yup";
@@ -136,8 +134,8 @@ onMounted(async () => {
       </v-col>
       <v-col cols="12">
         <GoogleMap
-            api-key="AIzaSyCEQ_vXTkXUIxE-exwES14KvkoGaAHOGFQ"
-            mapId="DEMO_MAP_ID"
+            :api-key="useRuntimeConfig().public.googleMapsAPIKey"
+            :mapId="useRuntimeConfig().public.googleMapId"
             class="futzo-rounded"
             :center="position"
             :zoom="15"

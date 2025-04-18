@@ -126,11 +126,12 @@ export default defineNuxtConfig({
         },
     },
     runtimeConfig: {
-        googleMapsSecret: process.env.NUXT_GOOGLE_MAPS_API_KEY,
         public: {
             baseURLBackend: process.env.NUXT_PUBLIC_URL_BACKEND,
             backendPrefix: process.env.NUXT_PUBLIC_BACKEND_PREFIX,
             appName: process.env.NUXT_PUBLIC_APP_NAME,
+            googleMapsAPIKey: process.env.NUXT_GOOGLE_MAPS_API_KEY,
+            googleMapId: process.env.NUXT_GOOGLE_MAP_ID,
         },
     },
     googleFonts: {
