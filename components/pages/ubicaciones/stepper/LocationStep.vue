@@ -118,6 +118,7 @@ const updateValue = async (value: AutocompletePrediction) => {
   locationStoreRequest.value.address = value?.description;
 };
 onMounted(async () => {
+  locationStoreRequest.value.availability = [];
   if (window.google && window.google.maps) {
     mapInstance.value = new window.google.maps.Map(mapElement.value, {...GOOGLE_MAPS_OPTIONS, center: position.value})
     marker.value = new AdvancedMarkerElement({

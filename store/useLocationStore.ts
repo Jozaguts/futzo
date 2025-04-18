@@ -9,6 +9,9 @@ export const useLocationStore = defineStore('locationStore', () => {
     const stepsCompleted = computed(() => {
         return locationStoreRequest.value.availability.filter((item) => item.isCompleted).length
     })
+    const isAllStepsCompleted = computed(() => {
+        return locationStoreRequest.value.availability.every((item) => item.isCompleted) && locationStoreRequest.value.completed
+    })
     const locations = ref<LocationCard[]>();
     const locationStoreRequest = ref<LocationStoreRequest>({
         name: '',
@@ -183,6 +186,7 @@ export const useLocationStore = defineStore('locationStore', () => {
         updateLocation,
         getLocations,
         resetLocationStoreRequest,
-        reloadLocations
+        reloadLocations,
+        isAllStepsCompleted
     };
 });

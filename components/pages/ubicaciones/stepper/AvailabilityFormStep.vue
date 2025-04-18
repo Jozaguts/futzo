@@ -18,7 +18,6 @@ const props = defineProps({
   },
 })
 const emits = defineEmits(["step-completed"])
-const {locationStoreRequest} = storeToRefs(useLocationStore())
 const createDaySchema = () =>
     object({
       enabled: boolean().default(false),
@@ -50,8 +49,19 @@ const {values, errors, handleSubmit, validate, setFieldValue, defineField, meta}
 const [name, nameAttr] = defineField('name')
 const isCompletedHandler = async () => {
   setFieldValue('isCompleted', !values.isCompleted)
-  const isValid = await validate()
-  emits("step-completed", "next", isValid)
+  const validated = await validate()
+  updateAvailability(values?.id, values)
+  if (validated.valid) {
+    emits("step-completed", "next", validated)
+  }
+}
+const updateAvailability = (id: number, values: LocationAvailability) => {
+  const locationStore = useLocationStore()
+  const availability = locationStore.locationStoreRequest.availability
+  const index = availability.findIndex((item) => item.id === id)
+  if (index !== -1) {
+    availability[index] = values
+  }
 }
 const isCompleted = computed(() => meta.value.valid)
 watch(isCompleted, (val) => {

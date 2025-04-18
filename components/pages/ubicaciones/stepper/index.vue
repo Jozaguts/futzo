@@ -5,11 +5,10 @@ import LocationStep from "~/components/pages/ubicaciones/stepper/LocationStep.vu
 import AvailabilityStep from "~/components/pages/ubicaciones/stepper/AvailabilityStep.vue";
 import type {CurrentStep, LocationStoreRequest} from "~/models/Location";
 
-const {locationStoreRequest, isEdition, formSteps} = storeToRefs(useLocationStore())
+const {locationStoreRequest, isEdition, formSteps, isAllStepsCompleted} = storeToRefs(useLocationStore())
 const emits = defineEmits(['next', 'back', 'close'])
 const locationStepRef = useTemplateRef<{ validate: Function; handleSubmit: Function }>('locationStepRef',);
 const availabilityStepRef = useTemplateRef<{ validate: Function; handleSubmit: Function }>('availabilityStepRef');
-const disabled = ref(false)
 const textButton = computed(() => {
   if (formSteps.value.current === 'location') {
     return 'Siguiente'
@@ -34,6 +33,7 @@ const nextStepHandler = async () => {
     formSteps.value.steps[currentStepIndex].completed = true;
   }
   const isLastStep = currentStepIndex === stepsOrder.length - 1;
+  console.log(isLastStep)
   isLastStep
       ? await saveHandler()
       : (() => {
@@ -65,6 +65,7 @@ function fillLocationStoreRequest(values: LocationStoreRequest) {
 
 const backStepHandler = () => {
   if (formSteps.value.current === 'location') {
+    console.log('asdasd')
     useLocationStore().resetLocationStoreRequest()
   }
   formSteps.value.current = 'location'
@@ -86,10 +87,6 @@ async function getFormValues() {
   }
   return await formValues();
 }
-
-const enableSubmitButton = () => {
-  disabled.value = false
-}
 </script>
 
 <template>
@@ -107,14 +104,14 @@ const enableSubmitButton = () => {
               :offset="{ enter: ['-100%', 0],leave: ['100%', 0]}"
           >
             <LocationStep ref="locationStepRef" v-if="formSteps.current === 'location'"/>
-            <AvailabilityStep ref="availabilityStepRef" v-else-if="formSteps.current === 'availability'" @all-steps-completed="enableSubmitButton"/>
+            <AvailabilityStep ref="availabilityStepRef" v-else-if="formSteps.current === 'availability'"/>
           </transition-slide>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12 d-flex justify-space-between">
           <SecondaryBtn class="bg-white w-btn " :text="backTextButton" @click="backStepHandler"/>
-          <PrimaryBtn :show-icon="false" class="w-btn" :text="textButton" :disabled="disabled" variant="elevated" @click="nextStepHandler"/>
+          <PrimaryBtn :show-icon="false" class="w-btn" :text="textButton" :disabled="!isAllStepsCompleted" variant="elevated" @click="nextStepHandler"/>
         </v-col>
       </v-row>
     </v-container>
