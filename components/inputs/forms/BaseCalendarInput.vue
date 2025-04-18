@@ -91,10 +91,11 @@ onMounted(() => {
 });
 </script>
 <template>
+  <!--  // to fix  :alt-position="customPosition" -->
   <vue-date-picker
       @cleared="() => (dates = null)"
       :format="formatDate"
-      :alt-position="customPosition"
+
       v-bind="{ ...attr }"
       v-model="dates"
       @update:model-value="$emit('update:modelValue', $event)"

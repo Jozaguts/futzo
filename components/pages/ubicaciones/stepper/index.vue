@@ -19,38 +19,34 @@ const textButton = computed(() => {
 })
 const backTextButton = computed(() => formSteps.value.current === 'location' ? 'Cancelar' : 'Anterior')
 const nextStepHandler = async () => {
-  let statusForm = {
-    valid: false,
-    errors: []
+  console.log(locationStoreRequest.value.completed)
+  if (!locationStoreRequest.value.completed) {
+    return
   }
-  if (formSteps.value.current === 'location') {
-    statusForm = await locationStepRef.value?.$?.exposed?.validate()
-  } else if (formSteps.value.current === 'availability') {
-    statusForm = await availabilityStepRef.value?.$?.exposed?.validate()
-  }
-  if (statusForm.valid) {
-    const values = await getFormValues();
-    fillLocationStoreRequest(values)
-    const stepsOrder: CurrentStep[] = ["location", "availability"];
-    const currentStepIndex = stepsOrder.indexOf(formSteps.value.current);
 
-    if (!formSteps.value.steps[currentStepIndex].completed) {
-      formSteps.value.steps[currentStepIndex].completed = true;
-    }
-    const isLastStep = currentStepIndex === stepsOrder.length - 1;
-    isLastStep
-        ? await saveHandler()
-        : (() => {
-          formSteps.value.current = stepsOrder[currentStepIndex + 1];
-          disabled.value = true
-        })();
+  const values = formSteps.value.current === 'location' ? locationStoreRequest.value : {};
+  console.log(values)
+  fillLocationStoreRequest(values)
+  const stepsOrder: CurrentStep[] = ["location", "availability"];
+  const currentStepIndex = stepsOrder.indexOf(formSteps.value.current);
+
+  if (!formSteps.value.steps[currentStepIndex].completed) {
+    formSteps.value.steps[currentStepIndex].completed = true;
   }
+  const isLastStep = currentStepIndex === stepsOrder.length - 1;
+  isLastStep
+      ? await saveHandler()
+      : (() => {
+        formSteps.value.current = stepsOrder[currentStepIndex + 1];
+        disabled.value = true
+      })();
+  // }
 }
 
 async function saveHandler() {
-  isEdition.value
-      ? await useLocationStore().updateLocation()
-      : await useLocationStore().storeLocation();
+  // isEdition.value
+  //     ? await useLocationStore().updateLocation()
+  //     : await useLocationStore().storeLocation();
 }
 
 function fillLocationStoreRequest(values: LocationStoreRequest) {
@@ -62,9 +58,9 @@ function fillLocationStoreRequest(values: LocationStoreRequest) {
     locationStoreRequest.value.name = values.name
     locationStoreRequest.value.position = values.position
   }
-  const hasIncompleteLocations = locationStoreRequest.value.availability.some(location => !location.isCompleted)
-  if (!hasIncompleteLocations) {
-  }
+  // const hasIncompleteLocations = locationStoreRequest.value.availability.some(location => !location.isCompleted)
+  // if (!hasIncompleteLocations) {
+  // }
 }
 
 const backStepHandler = () => {
@@ -78,11 +74,13 @@ const backStepHandler = () => {
 async function getFormValues() {
   let formValues
   if (formSteps.value.current === 'location') {
-    formValues = await locationStepRef.value?.$?.exposed?.handleSubmit(
+    console.log(locationStepRef.value)
+    formValues = await locationStepRef.value.handleSubmit(
         (values: LocationStoreRequest) => values,
     );
   } else if (formSteps.value.current === 'availability') {
-    formValues = await availabilityStepRef.value?.$?.exposed?.handleSubmit(
+
+    formValues = await availabilityStepRef.value.handleSubmit(
         (values: LocationStoreRequest) => values,
     );
   }
