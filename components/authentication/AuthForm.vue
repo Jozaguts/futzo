@@ -221,59 +221,8 @@ const returnBackClickHandler = () => {
     <ForgotPassword
         :errors="errors"
         :showForgotPassword="showForgotPassword"
-        :isPhoneNumber="isPhoneNumber"
-        :stepActive="stepActive"
-        v-model:username="username"
+        v-model:stepActive="stepActive"
         @update:show-forgot-password="returnBackClickHandler"
     ></ForgotPassword>
-    <!--    <v-card-->
-    <!--        v-if="showForgotPassword"-->
-    <!--        class="pa-2"-->
-    <!--        max-width="448"-->
-    <!--        elevation="0"-->
-    <!--        color="background"-->
-    <!--    >-->
-    <!--      <v-card-item class="justify-center text-center mb-2">-->
-    <!--        <Logo width="165" class="mx-auto"/>-->
-    <!--        <v-card-title class="text-black text-h5">Olvidaste tu contraseña?</v-card-title>-->
-    <!--        <v-card-subtitle>No te preocupes, te enviaremos instrucciones para restablecerla</v-card-subtitle>-->
-    <!--      </v-card-item>-->
-    <!--      <v-card-text class="d-flex flex-column">-->
-    <!--        <div class="mb-4">-->
-    <!--          <label for="correo" class="input-label"-->
-    <!--          >Teléfono o Correo electrónico *</label-->
-    <!--          >-->
-    <!--          <VTextField-->
-    <!--              tabindex="2"-->
-    <!--              class="fz-auth-form__input username"-->
-    <!--              v-model="username"-->
-    <!--              placeholder="tucorreo@futzo.io/+52 999 999 9999"-->
-    <!--              density="compact"-->
-    <!--          >-->
-    <!--            <template #prepend v-if="isPhoneNumber">-->
-    <!--              <transition-slide :duration="400" :offset="[-24, 0]">-->
-    <!--                <SearchCountry-->
-    <!--                    v-if="(username?.length ?? 0) > 1"-->
-    <!--                    @update-area-code="areaCodeHandler"-->
-    <!--                />-->
-    <!--              </transition-slide>-->
-    <!--            </template>-->
-    <!--          </VTextField>-->
-    <!--        </div>-->
-    <!--        <div class="pl-2 mt-1" v-auto-animate="{ duration: 100 }">-->
-    <!--          <small v-if="errors?.username" class="d-block text-error">{{-->
-    <!--              errors?.username-->
-    <!--            }}</small>-->
-    <!--        </div>-->
-    <!--        <v-btn block>Restablecer contraseña</v-btn>-->
-    <!--        <v-btn class="my-2" variant="text" color="secondary" prepend-icon="mdi-arrow-left" @click="showForgotPassword = !showForgotPassword">Regresar al login.</v-btn>-->
-    <!--      </v-card-text>-->
-    <!--      <div class="forgot-password-steps-container" :class="['step-' + stepActive]">-->
-    <!--        <span class="step"></span>-->
-    <!--        <span class="step"></span>-->
-    <!--        <span class="step"></span>-->
-    <!--        <span class="step"></span>-->
-    <!--      </div>-->
-    <!--    </v-card>-->
   </transition-slide>
 </template>
