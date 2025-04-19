@@ -47,7 +47,7 @@ onBeforeUnmount(async () => {
 })
 </script>
 <template>
-  <v-row>
+  <v-row v-if="schedules.length">
     <v-col cols="12">
       <div class="tournament-details">
         <div class="detail">

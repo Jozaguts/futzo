@@ -44,8 +44,25 @@ const [username] = reactive(defineField("username"))
 const areaCode = ref("+52")
 const counter = ref(60)
 const counterId = ref(null)
+const fetching = ref(false)
 const resetHandler = handleSubmit((values) => {
-  stepActive.value = 2
+  fetching.value = true;
+  const client = useSanctumClient()
+  client("/forgot-password", {
+    method: "POST",
+    body: {
+      [isPhone.value ? 'phone' : 'email']: isPhone.value ? `${areaCode.value}${username.value}` : username.value,
+    },
+  })
+      .then((response) => {
+        if (response.status === 200) {
+          stepActive.value = 2
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      }).finally(() => fetching.value = false)
+
 })
 const isValid = computed(() => meta.value.valid)
 const isPhoneNumber = computed(() => {
@@ -148,6 +165,7 @@ onBeforeUnmount(() => {
                 placeholder="0"
                 length="4"
                 width="356px"
+
                 min-height="80px"
             ></v-otp-input>
             <v-btn
@@ -156,6 +174,7 @@ onBeforeUnmount(() => {
                 :disabled="code.length < 4"
                 size="large"
                 block
+                :loading="fetching"
             >Verificar
             </v-btn>
             <div class="verify-card-options-container d-flex justify-space-between align-center">
