@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import SearchCountry from "~/components/authentication/components/SearchCountry.vue";
 import {useForm} from "vee-validate";
-import {boolean, object, string} from "yup";
-import {specialCharacters, phoneRegex} from "~/utils/constants";
+import {object, string} from "yup";
+import {phoneRegex} from "~/utils/constants";
 import {ref} from "vue";
+import ForgotPasswordCard from "~/components/authentication/components/ForgotPasswordCard.vue";
 
 defineProps({
   showForgotPassword: {
@@ -15,10 +15,10 @@ defineProps({
     default: () => ({}),
   }
 })
-const stepActive = defineModel<number>('stepActive')
 const emits = defineEmits(['update:showForgotPassword', 'areaCodeHandler'])
+const stepActive = defineModel<number>('stepActive')
 const isPhone = ref(false)
-const {handleSubmit, defineField, errors, meta, resetForm} = useForm({
+const {defineField, errors} = useForm({
   validationSchema: toTypedSchema(
       object({
         username: string()
@@ -45,43 +45,16 @@ const areaCode = ref("+52")
 const counter = ref(60)
 const counterId = ref(null)
 const fetching = ref(false)
-const resetHandler = handleSubmit((values) => {
-  fetching.value = true;
-  const client = useSanctumClient()
-  client("/forgot-password", {
-    method: "POST",
-    body: {
-      [isPhone.value ? 'phone' : 'email']: isPhone.value ? `${areaCode.value}${username.value}` : username.value,
-    },
-  })
-      .then((response) => {
-        if (response.status === 200) {
-          stepActive.value = 2
-        }
-      })
-      .catch((error) => {
-        console.error(error)
-      }).finally(() => fetching.value = false)
-
-})
-const isValid = computed(() => meta.value.valid)
-const isPhoneNumber = computed(() => {
-  return (
-      (username.value?.length ?? 0) > 0 && /^\d/.test(username.value as string)
-  )
-})
-const code = ref(1234)
-const resendCode = () => {
-
-}
-const areaCodeHandler = (code: string) => {
-  areaCode.value = code
-}
+const code = ref('')
+const password = ref('')
+const showPassword = ref(false)
 const subtitle = computed(() => {
   return isPhone.value
       ? `Enviamos un código via <br/> <b>Whatsapp</b> al número: ${areaCode.value}${username.value}`
       : `Enviamos un código via Correo electrónico ${username.value}`;
 })
+//# methods
+
 const initCounter = () => {
   const counterId = setInterval(() => {
     if (counter.value > 0) {
@@ -91,6 +64,36 @@ const initCounter = () => {
     }
   }, 1000)
 }
+const verifyCode = () => {
+  stepActive.value = 3
+  return
+  const client = useSanctumClient()
+  client("/verify-reset-token", {
+    method: "POST",
+    body: {
+      token: code.value,
+      phone: `${areaCode.value}${username.value}`
+    },
+  })
+      .then((response) => {
+        console.log(response)
+        if (response.code === 200) {
+          stepActive.value = 3
+        }
+      })
+      .catch((error) => {
+        useToast().toast(
+            "error",
+            "Error",
+            error?.data?.message ?? "El código de verificación no es válido",
+        );
+      })
+}
+const resendCode = () => {
+
+}
+
+//hooks
 onMounted(() => {
   initCounter()
 })
@@ -98,7 +101,6 @@ onBeforeUnmount(() => {
   clearInterval(counterId.value as number)
   counterId.value = null
 })
-
 </script>
 <template>
   <v-card
@@ -109,43 +111,7 @@ onBeforeUnmount(() => {
       color="background"
   >
     <transition-expand :offset="[100, 200]" mode="out-in">
-      <div v-if="stepActive === 1">
-        <v-card-item class="justify-center text-center mb-2">
-          <Logo width="165" class="mx-auto"/>
-          <v-card-title class="text-black text-h5">Olvidaste tu contraseña?</v-card-title>
-          <v-card-subtitle>No te preocupes, te enviaremos instrucciones para restablecerla</v-card-subtitle>
-        </v-card-item>
-        <v-card-text class="d-flex flex-column">
-          <div class="mb-4">
-            <label for="correo" class="input-label"
-            >Teléfono o Correo electrónico *</label
-            >
-            <VTextField
-                tabindex="2"
-                class="fz-auth-form__input username"
-                v-model="username"
-                placeholder="tucorreo@futzo.io/+52 999 999 9999"
-                density="compact"
-            >
-              <template #prepend v-if="isPhoneNumber">
-                <transition-slide :duration="400" :offset="[-24, 0]">
-                  <SearchCountry
-                      v-if="(username?.length ?? 0) > 1"
-                      @update-area-code="areaCodeHandler"
-                  />
-                </transition-slide>
-              </template>
-            </VTextField>
-          </div>
-          <div class="pl-2 mt-1" v-auto-animate="{ duration: 100 }">
-            <small v-if="errors?.username" class="d-block text-error">{{
-                errors?.username
-              }}</small>
-          </div>
-          <v-btn block :disabled="!isValid" @click="resetHandler">Restablecer contraseña</v-btn>
-          <v-btn class="my-2" variant="text" color="secondary" prepend-icon="mdi-arrow-left" @click="emits('update:showForgotPassword')">Regresar al login.</v-btn>
-        </v-card-text>
-      </div>
+      <ForgotPasswordCard/>
       <div v-if="stepActive === 2">
         <v-card-item class="d-flex justify-center align-center">
           <v-card-title class="d-flex justify-center align-center">
@@ -171,19 +137,73 @@ onBeforeUnmount(() => {
             <v-btn
                 class="my-5"
                 rounded="lg"
-                :disabled="code.length < 4"
+                :disabled="code.length < 4 || fetching"
                 size="large"
                 block
+                @click="verifyCode"
                 :loading="fetching"
-            >Verificar
+            >{{ isPhone ? 'Verificar' : 'Ingresa tu código' }}
             </v-btn>
             <div class="verify-card-options-container d-flex justify-space-between align-center">
               <span class="verify-card-didnt-get-email">¿No recibiste el mensaje?</span>
               <div class="d-flex align-center">
-                <v-btn :disabled="counter" variant="text" class="mx-0 px-0 " @click="resendCode">Reenviar</v-btn>
+                <v-btn :disabled="!!counter" variant="text" class="mx-0 px-0 " @click="resendCode">Reenviar</v-btn>
                 <span class="ml-1 counter-container">{{ counter }}</span>
               </div>
             </div>
+            <div
+                class="d-flex justify-center align-center my-5 cursor-pointer"
+                @click="$router.push('/login')"
+            >
+              <Icon name="futzo-icon:arrow-left" class="arrow-left mx-1"></Icon>
+              <p class="text-body-1 font-weight-bold" @click="stepActive = 1">Regresar</p>
+            </div>
+          </div>
+        </v-card-text>
+      </div>
+      <div v-if="stepActive === 3">
+        <v-card-item class="d-flex justify-center align-center">
+          <v-card-title class="d-flex justify-center align-center">
+            <div class="icon-container">
+              <Icon name="mdi-password-outline" class="mx-auto envelop-icon"></Icon>
+            </div>
+          </v-card-title>
+          <v-card-title class="text-center verify-card-title">
+            Configura tu nueva contraseña
+          </v-card-title>
+        </v-card-item>
+        <v-card-text>
+          <div class="w-100 mx-auto">
+            <v-col cols="12" class="pb-0">
+              <label for="password" class="input-label">Contraseña*</label>
+              <VTextField
+                  tabindex="3"
+                  class="fz-auth-form__input"
+                  density="compact"
+                  placeholder="Crea una contraseña"
+                  v-model="password"
+                  :type="showPassword ? 'text' : 'password'"
+                  :append-inner-icon="
+                showPassword ? 'mdi-eye-off-outline' : 'mdi-eye-outline'
+              "
+                  @click:append-inner="showPassword = !showPassword"
+              />
+              <div class="pl-2 mt-1" v-auto-animate="{ duration: 100 }">
+                <small v-if="errors?.password" class="d-block text-error">{{
+                    errors?.password
+                  }}</small>
+              </div>
+            </v-col>
+            <v-btn
+                class="my-5"
+                rounded="lg"
+                :disabled="code.length < 4"
+                size="large"
+                block
+                @click="verifyCode"
+                :loading="fetching || fetching"
+            >Restablecer contraseña
+            </v-btn>
             <div
                 class="d-flex justify-center align-center my-5 cursor-pointer"
                 @click="$router.push('/login')"

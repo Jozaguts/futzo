@@ -7,6 +7,7 @@ export const useAuthStore = defineStore("authStore", () => {
     const role = computed(() => user.value?.roles[0]);
     const isSuperAdmin = computed(() => role.value === "super administrador");
     const image = computed(() => user.value?.image);
+    const forgotPasswordStep = ref(1);
     const updateUser = (updateUserForm: UpdateUserForm) => {
         const client = useSanctumClient();
         client(`api/v1/admin/profile/${updateUserForm.id}`, {
@@ -98,5 +99,10 @@ export const useAuthStore = defineStore("authStore", () => {
         updateImage,
         updatePassword,
         reSendCode,
+        forgotPasswordStep,
     };
-}, {persist: true});
+}, {
+    persist: {
+        pick: ['user', 'role', 'isSuperAdmin', 'image'],
+    }
+});
