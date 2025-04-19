@@ -1,11 +1,6 @@
 <script lang="ts" setup>
 import {useTournamentStore} from "~/store";
 
-definePageMeta({
-  middleware: [
-    'check-tournament'
-  ],
-});
 const {schedulePagination, isLoadingSchedules, schedules, tournamentId} = storeToRefs(useTournamentStore());
 const load = async ({done}: { done: (status: 'ok' | 'empty' | 'error') => void }) => {
   if (schedulePagination.value.currentPage > schedulePagination.value.lastPage) {
