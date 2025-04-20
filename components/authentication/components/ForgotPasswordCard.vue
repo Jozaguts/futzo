@@ -33,7 +33,6 @@ const {handleSubmit, defineField, errors, meta} = useForm({
   )
 });
 const [username] = reactive(defineField("username"))
-const fetching = ref(false)
 const isPhoneNumber = computed(() => {
   return (
       (username.value?.length ?? 0) > 0 && /^\d/.test(username.value as string)
@@ -44,6 +43,7 @@ const areaCodeHandler = (code: string) => {
 }
 const isValid = computed(() => meta.value.valid)
 const resetHandler = handleSubmit(() => {
+  forgotPasswordState.value.isFetching = true
   const client = useSanctumClient()
   client("/forgot-password", {
     method: "POST",
@@ -52,9 +52,9 @@ const resetHandler = handleSubmit(() => {
     },
   }).then((response) => {
     if (response.code === 200) {
-      if (forgotPasswordState.value.isPhone){
-        forgotPasswordState.value.step = 'verify-code'
-      }
+      forgotPasswordState.value.isPhone ?
+          forgotPasswordState.value.step = 'verify-code' :
+          forgotPasswordState.value.step = 'email-sent'
     }
   }).catch((error) => {
     useToast().toast(
@@ -62,7 +62,7 @@ const resetHandler = handleSubmit(() => {
         "Error",
         error?.data?.message ?? "El correo o número de teléfono no es válido",
     );
-  }).finally(() => fetching.value = false)
+  }).finally(() => forgotPasswordState.value.isFetching = false)
 
 })
 </script>
@@ -100,7 +100,7 @@ const resetHandler = handleSubmit(() => {
             errors?.username
           }}</small>
       </div>
-      <v-btn block :disabled="!isValid ||forgotPasswordState.isFetching" @click="resetHandler">Restablecer contraseña</v-btn>
+      <v-btn block :disabled="!isValid || forgotPasswordState.isFetching" :loading="forgotPasswordState.isFetching" @click="resetHandler">Restablecer contraseña</v-btn>
       <v-btn class="my-2" variant="text" color="secondary" prepend-icon="mdi-arrow-left" @click="emits('backToLogin')">Regresar al login.</v-btn>
     </v-card-text>
   </div>

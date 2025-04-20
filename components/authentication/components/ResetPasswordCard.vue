@@ -19,12 +19,13 @@ const {handleSubmit, defineField, errors, meta} = useForm({
 const [password] = reactive(defineField("password"))
 const showPassword = ref(false)
 const resetPasswordHandler = handleSubmit((values) => {
+  forgotPasswordState.value.isFetching = true
   const client = useSanctumClient()
   client("/reset-password", {
     method: "POST",
     body: {
       password: values.password,
-      token: forgotPasswordState.value.code,
+      token: forgotPasswordState.value.isPhone ? forgotPasswordState.value.code : forgotPasswordState.value.token,
       [forgotPasswordState.value.isPhone ? 'phone' : 'email']: forgotPasswordState.value.isPhone ? `${forgotPasswordState.value.areaCode}${forgotPasswordState.value.username}` : forgotPasswordState.value.username
     },
   }).then((response) => {
@@ -48,19 +49,25 @@ const resetPasswordHandler = handleSubmit((values) => {
         error?.data?.message ?? "Error al restablecer la contraseña",
     );
   })
+      .finally(() => forgotPasswordState.value.isFetching = false)
 })
 const emits = defineEmits(['backToLogin'])
 const backToLogin = () => {
   emits('backToLogin')
   forgotPasswordState.value.step = 'reset-password'
 }
+const disabled = computed(() => {
+  console.log(forgotPasswordState.value.isFetching, forgotPasswordState.value.code.length, forgotPasswordState.value.isPhone)
+  return forgotPasswordState.value.isFetching || !meta.value.valid ||
+      (forgotPasswordState.value.isPhone && forgotPasswordState.value.code.length < 4)
+})
 </script>
 <template>
   <div>
     <v-card-item class="d-flex justify-center align-center">
       <v-card-title class="d-flex justify-center align-center">
         <div class="icon-container">
-          <Icon name="mdi-password-outline" class="mx-auto envelop-icon"></Icon>
+          <Icon name="mdi-password-outline" class="mx-auto envelop-icon" size="32"></Icon>
         </div>
       </v-card-title>
       <v-card-title class="text-center verify-card-title">
@@ -91,7 +98,7 @@ const backToLogin = () => {
         </v-col>
         <v-btn
             class="my-5"
-            :disabled="forgotPasswordState.code.length < 4"
+            :disabled="disabled"
             block
             @click="resetPasswordHandler"
             :loading="forgotPasswordState.isFetching"

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ForgotPasswordCard from "~/components/authentication/components/ForgotPasswordCard.vue";
 import OtpCard from "~/components/authentication/components/OtpCad.vue";
+import EmailSend from "~/components/authentication/components/EmailSend.vue";
 import {useAuthStore} from "~/store";
 import ResetPasswordCard from "~/components/authentication/components/ResetPasswordCard.vue";
 
@@ -26,12 +27,13 @@ const emits = defineEmits(['backToLogin'])
     <transition-expand :offset="[100, 200]" mode="out-in">
       <ForgotPasswordCard v-if="forgotPasswordState.step === 'reset-password'" @back-to-login="emits('backToLogin')"/>
       <OtpCard v-if="forgotPasswordState.step === 'verify-code'"/>
+      <EmailSend v-if="forgotPasswordState.step === 'email-sent'"/>
       <ResetPasswordCard v-if="forgotPasswordState.step === 'confirm-password'" @back-to-login="emits('backToLogin')"/>
     </transition-expand>
     <div class="forgot-password-steps-container">
       <span class="step" :class="forgotPasswordState.step === 'reset-password' ? 'bg-primary' :''"></span>
       <span class="step" :class="forgotPasswordState.step === 'verify-code' ? 'bg-primary' :''"></span>
-      <span class="step" :class="forgotPasswordState.step === 'confirm-password' ? 'bg-primary' :''"></span>
+      <span class="step" :class="[forgotPasswordState.step === 'confirm-password' ? 'bg-primary' :'', forgotPasswordState.step === 'email-sent' ? 'bg-primary':'']"></span>
     </div>
   </v-card>
 </template>

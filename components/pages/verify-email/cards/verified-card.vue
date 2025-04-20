@@ -7,7 +7,7 @@
         <div class="icon-container">
           <Icon
               name="futzo-icon:check-circle"
-              class="mx-auto envelop-icon"
+              class="mx-auto envelop-icon" size="32"
           ></Icon>
         </div>
       </v-card-title>

@@ -55,5 +55,6 @@ export type ResetPasswordState = {
     isPhone: boolean;
     isFetching: boolean;
     code: string;
+    token: string;
 }
-export type ResetPasswordSteps = 'reset-password' | 'verify-code' | 'confirm-password';
+export type ResetPasswordSteps = 'reset-password' | 'verify-code' | 'confirm-password' | 'email-sent';

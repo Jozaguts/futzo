@@ -10,6 +10,7 @@ const subtitle = computed(() => {
       : `Enviamos un código via Correo electrónico ${forgotPasswordState.value.username}`;
 })
 const verifyCode = () => {
+  forgotPasswordState.value.isFetching = true
   const client = useSanctumClient()
   client("/verify-reset-token", {
     method: "POST",
@@ -31,6 +32,7 @@ const verifyCode = () => {
             error?.data?.message ?? "El código de verificación no es válido",
         );
       })
+      .finally(() => forgotPasswordState.value.isFetching = false)
 }
 const resendCode = () => {
 
@@ -57,7 +59,7 @@ onBeforeUnmount(() => {
     <v-card-item class="d-flex justify-center align-center">
       <v-card-title class="d-flex justify-center align-center">
         <div class="icon-container">
-          <Icon name="futzo-icon:inbox-02" class="mx-auto envelop-icon"></Icon>
+          <Icon name="futzo-icon:inbox-02" class="mx-auto envelop-icon" size="32"></Icon>
         </div>
       </v-card-title>
       <v-card-title class="text-center verify-card-title">
@@ -92,7 +94,7 @@ onBeforeUnmount(() => {
           @click="$router.push('/login')"
       >
         <Icon name="futzo-icon:arrow-left" class="arrow-left mx-1"></Icon>
-        <p class="text-body-1 font-weight-bold" @click="() => forgotPasswordState.step = 'reset-password'">Regresar</p>
+        <v-btn class="my-2" variant="text" color="secondary" prepend-icon="mdi-arrow-left" @click="$router.go(0)">Regresar al login.</v-btn>
       </div>
     </v-card-text>
   </div>

@@ -5,6 +5,7 @@ import SearchCountry from '~/components/authentication/components/SearchCountry.
 import ErrorMessages from '~/components/authentication/components/ErrorMessages.vue'
 import PasswordRules from "~/components/authentication/components/PasswordRules.vue";
 import ForgotPassword from "~/components/authentication/ForgotPassword.vue";
+import {useAuthStore} from "~/store";
 
 const {
   name,
@@ -22,6 +23,7 @@ const {
   showRegisterFormHandler,
   submitHandler,
 } = useAuth()
+const {forgotPasswordState} = storeToRefs(useAuthStore())
 const showPassword = ref(false)
 const title = computed(() =>
     showRegisterForm.value ? 'Crea tu cuenta' : 'Iniciar sesión'
@@ -46,12 +48,22 @@ const showForgotPassword = ref(false)
 
 const stepActive = ref(1)
 const returnBackClickHandler = () => {
-  console.log('fdasdas')
   showForgotPassword.value = false
   stepActive.value = 1
   username.value = ''
   resetForm()
 }
+onMounted(() => {
+  const query = useRoute()?.query
+
+  if (query?.reset_password) {
+    showForgotPassword.value = true
+    forgotPasswordState.value.step = 'confirm-password'
+    forgotPasswordState.value.username = query.email as string
+    forgotPasswordState.value.token = query.token as string
+  }
+
+})
 </script>
 
 <template>
