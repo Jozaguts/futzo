@@ -513,12 +513,13 @@ function getSchemaByName(name: string) {
             schemaFields.address = yup.object({});
             schemaFields.colors = yup.object({}).nullable();
             schemaFields.description = yupString().nullable();
-            schemaFields.email = yupString().email();
+            schemaFields.email = yupString().email().nullable();
             schemaFields.tournament_id = yup.number().required(t('forms.required'));
-            schemaFields.phone = yupString().matches(
-                /^(\+52)?(\d{10})$/,
-                'Número de teléfono no es válido'
-            );
+            schemaFields.phone = yupString()
+                .transform(value => (value === '' ? null : value))
+                .nullable()
+                .notRequired()
+                .matches(/^(\+52)?(\d{10})$/, 'Número de teléfono no es válido');
             break;
         case 'create-coach':
             schemaFields.name = yupString().nullable();
@@ -581,16 +582,20 @@ function getSchemaByName(name: string) {
             schemaFields.address = yup.object({});
             schemaFields.colors = yup.object({}).required(t('forms.required'));
             schemaFields.description = yupString().nullable();
-            schemaFields.email = yupString().email();
+            schemaFields.email = yupString().email().nullable();
             schemaFields.tournament_id = yup.number().required(t('forms.required'));
-            schemaFields.phone = yupString().matches(
-                /^(\+52)?(\d{10})$/,
-                'Número de teléfono no es válido'
-            );
+            schemaFields.phone = yupString()
+                .transform(value => (value === '' ? null : value))
+                .nullable()
+                .notRequired()
+                .matches(/^(\+52)?(\d{10})$/, 'Número de teléfono no es válido');
             break;
         case 'edit-coach':
-            schemaFields.name = yupString().required(t('forms.required'));
-            schemaFields.email = yup.string();
+            schemaFields.name = yupString();
+            schemaFields.email = yup.string()
+                .transform(value => (value === '' ? null : value))
+                .notRequired()
+                .nullable();
             schemaFields.phone = yupString().matches(
                 /^(\+52)?(\d{10})$/,
                 'Número de teléfono no es válido'
@@ -608,7 +613,7 @@ function getSchemaByName(name: string) {
                 );
             break;
         case 'edit-owner':
-            schemaFields.name = yupString().required(t('forms.required'));
+            schemaFields.name = yupString();
             schemaFields.email = yup.string();
             schemaFields.phone = yupString().matches(
                 /^(\+52)?(\d{10})$/,
