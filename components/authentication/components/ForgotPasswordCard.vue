@@ -6,9 +6,10 @@ import {phoneRegex} from "~/utils/constants";
 import {ref} from "vue";
 import {useAuthStore} from "~/store";
 
-const {forgotPasswordStep} = storeToRefs(useAuthStore())
+const {forgotPasswordState} = storeToRefs(useAuthStore())
+const emits = defineEmits(['backToLogin'])
 
-const {handleSubmit, defineField, errors, meta, resetForm} = useForm({
+const {handleSubmit, defineField, errors, meta} = useForm({
   validationSchema: toTypedSchema(
       object({
         username: string()
@@ -18,20 +19,19 @@ const {handleSubmit, defineField, errors, meta, resetForm} = useForm({
                 "El campo debe ser un número de teléfono o un correo electrónico válido",
                 (value, context) => {
                   const isEmail = string().email().isValidSync(value);
-                  isPhone.value = phoneRegex.test(value);
-                  context.parent.inputType = isPhone.value
+                  forgotPasswordState.value.isPhone = phoneRegex.test(value);
+                  context.parent.inputType = forgotPasswordState.value.isPhone
                       ? "phone"
                       : isEmail
                           ? "email"
                           : null;
-                  return isEmail || isPhone.value;
+                  forgotPasswordState.value.username = value
+                  return isEmail || forgotPasswordState.value.isPhone
                 },
             ),
       }),
   )
 });
-const isPhone = ref(false)
-const areaCode = ref("+52")
 const [username] = reactive(defineField("username"))
 const fetching = ref(false)
 const isPhoneNumber = computed(() => {
@@ -40,31 +40,32 @@ const isPhoneNumber = computed(() => {
   )
 })
 const areaCodeHandler = (code: string) => {
-  areaCode.value = code
+  forgotPasswordState.value.areaCode = code
 }
 const isValid = computed(() => meta.value.valid)
 const resetHandler = handleSubmit(() => {
-  forgotPasswordStep.value = 2
-  return;
   const client = useSanctumClient()
   client("/forgot-password", {
     method: "POST",
     body: {
-      [isPhone.value ? 'phone' : 'email']: isPhone.value ? `${areaCode.value}${username.value}` : username.value,
+      [forgotPasswordState.value.isPhone ? 'phone' : 'email']: forgotPasswordState.value.isPhone ? `${forgotPasswordState.value.areaCode}${username.value}` : username.value,
     },
   }).then((response) => {
-    console.log(response)
     if (response.code === 200) {
-      forgotPasswordStep.value = 2
+      forgotPasswordState.value.step = 2
     }
   }).catch((error) => {
-    console.error(error)
+    useToast().toast(
+        "error",
+        "Error",
+        error?.data?.message ?? "El correo o número de teléfono no es válido",
+    );
   }).finally(() => fetching.value = false)
 
 })
 </script>
 <template>
-  <div v-if="forgotPasswordStep === 1">
+  <div>
     <v-card-item class="justify-center text-center mb-2">
       <Logo width="165" class="mx-auto"/>
       <v-card-title class="text-black text-h5">Olvidaste tu contraseña?</v-card-title>
@@ -97,8 +98,8 @@ const resetHandler = handleSubmit(() => {
             errors?.username
           }}</small>
       </div>
-      <v-btn block :disabled="!isValid" @click="resetHandler">Restablecer contraseña</v-btn>
-      <v-btn class="my-2" variant="text" color="secondary" prepend-icon="mdi-arrow-left" @click="emits('update:showForgotPassword')">Regresar al login.</v-btn>
+      <v-btn block :disabled="!isValid ||forgotPasswordState.isFetching" @click="resetHandler">Restablecer contraseña</v-btn>
+      <v-btn class="my-2" variant="text" color="secondary" prepend-icon="mdi-arrow-left" @click="emits('backToLogin')">Regresar al login.</v-btn>
     </v-card-text>
   </div>
 </template>

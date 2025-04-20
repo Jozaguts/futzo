@@ -46,6 +46,7 @@ const showForgotPassword = ref(false)
 
 const stepActive = ref(1)
 const returnBackClickHandler = () => {
+  console.log('fdasdas')
   showForgotPassword.value = false
   stepActive.value = 1
   username.value = ''
@@ -219,10 +220,8 @@ const returnBackClickHandler = () => {
       </v-card-text>
     </v-card>
     <ForgotPassword
-        :errors="errors"
         :showForgotPassword="showForgotPassword"
-        v-model:stepActive="stepActive"
-        @update:show-forgot-password="returnBackClickHandler"
+        @backToLogin="returnBackClickHandler"
     ></ForgotPassword>
   </transition-slide>
 </template>
