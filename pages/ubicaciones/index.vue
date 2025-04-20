@@ -7,39 +7,6 @@ import ConfirmDialog from "~/components/shared/confirm-dialog.vue";
 import {useLocationStore} from "~/store";
 
 const {isEdition, locationDialog, locationToDelete} = storeToRefs(useLocationStore())
-
-type Schedule = {
-  start: string;
-  end: string;
-};
-
-type Availability = {
-  monday?: Schedule | null;
-  tuesday?: Schedule | null;
-  wednesday?: Schedule | null;
-  thursday?: Schedule | null;
-  friday?: Schedule | null;
-  saturday?: Schedule | null;
-  sunday?: Schedule | null;
-};
-
-type Tag = {
-  id: number;
-  name: string;
-};
-
-type Address = {
-  street: string;
-  city: string;
-};
-
-type Location = {
-  id: number;
-  name: string;
-  address: Address;
-  availability: Availability;
-  tags: Tag[];
-};
 const showStoreLocationDialog = () => {
   isEdition.value = false
   locationDialog.value = true

@@ -11,7 +11,7 @@ const load = async ({done}: { done: (status: 'ok' | 'empty' | 'error') => void }
   isLoadingSchedules.value = true;
   try {
     const client = useSanctumClient();
-    const response = await client(`/api/v1/admin/tournaments/${tournamentId.value}/schedule?page=${schedulePagination.value.currentPage}`);
+    const response = await client(`/api/v1/admin/tournaments/${tournamentId.value}/schedule?page=${schedulePagination.value.currentPage + 1}`);
     const newRounds = response.rounds ?? [];
     if (!schedules.value.rounds) {
       schedules.value.rounds = [];
@@ -47,7 +47,7 @@ onBeforeUnmount(async () => {
 })
 </script>
 <template>
-  <v-row v-if="schedules.length">
+  <v-row v-if="schedules.rounds.length">
     <v-col cols="12">
       <div class="tournament-details">
         <div class="detail">
@@ -158,6 +158,7 @@ onBeforeUnmount(async () => {
     justify-content: center
     align-content: center
     font-size: 12px
+    text-align: center
 
   > .home
     grid-area: home

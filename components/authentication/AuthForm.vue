@@ -38,6 +38,7 @@ const areaCodeHandler = (code: string) => {
 }
 const terms = ref(false)
 const isDisabled = computed(() => {
+  console.log(meta.value)
   if (isSignUp.value) {
     return isLoading.value || !meta.value.valid || !terms.value
   } else {

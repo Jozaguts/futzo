@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {useTournamentStore} from "~/store";
 import LocationFormStep from '~/components/pages/torneos/calendario/location-form-step.vue'
-import type {LocationFieldsRequest, NextHandlerType, WeekDay} from "~/models/Location";
+import type {LocationFieldsRequest, NextHandlerType, WeekDay} from "~/models/Schedule";
 
 const {tournamentId, scheduleStoreRequest} = storeToRefs(useTournamentStore())
 
@@ -21,8 +21,6 @@ defineExpose({
 
 const currentStep = ref()
 const fields = ref<LocationFieldsRequest[]>([] as LocationFieldsRequest[])
-
-const getStepAttribute = (attribute: 'location_name' | 'location_id', step: number) => fields.value.filter((field: LocationFieldsRequest) => field.step === step)[0][attribute]
 const nextHandler = (value: NextHandlerType) => {
   scheduleStoreRequest.value.fields_phase.map((field) => {
     if (field.field_id === value.field_id) {
@@ -72,31 +70,29 @@ const fieldDisableHandler = (data: NextHandlerType) => {
             class="pa-0 ma-0"
             flat
             v-model="currentStep"
-            :items="fields"
             item-value="step"
             item-title="location_name"
             item-subtitle="field_name"
         >
-          <template #title="item">
-            <p class="tex-body-1 text-capitalize mb-2" :class="fields[item.value - 1].disabled ? 'text-disabled' : ''">
-              {{ getStepAttribute('location_name', item.step) }}
-            </p>
-          </template>
-          <template #subtitle="item">
-            <p class="tex-body-2 text-capitalize" :class="fields[item.value - 1].disabled ? 'text-disabled' : ''"> {{ getStepAttribute('field_name', item.step) }}</p>
-          </template>
-          <template v-for="field in fields" :key="field.step" #[`item.${field.step}`]>
+          <v-stepper-vertical-item
+              v-for="(field, index) in fields"
+              :key="index + 1"
+              :value="field.step"
+              :title="field.location_name"
+              :subtitle="field.field_name"
+              complete-icon="mdi-check-circle"
+              edit-icon="mdi-check-circle"
+              expand-icon="mdi-chevron-down"
+          >
             <LocationFormStep
                 :field="field"
-                :isLastStep="fields.length === currentStep -1"
+                :isLastStep="fields.length === currentStep - 1"
                 @next="nextHandler"
                 @back="backHandler"
                 @field-disabled="fieldDisableHandler"
-            >
-            </LocationFormStep>
-
-          </template>
-          <template #actions><small class="text-caption">* Presione Asignar para avanzar</small></template>
+            ></LocationFormStep>
+            <template #actions><small class="text-caption">* Presione Asignar para avanzar</small></template>
+          </v-stepper-vertical-item>
         </v-stepper-vertical>
       </v-col>
     </v-row>
