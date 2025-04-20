@@ -52,7 +52,7 @@ const resetPasswordHandler = handleSubmit((values) => {
 const emits = defineEmits(['backToLogin'])
 const backToLogin = () => {
   emits('backToLogin')
-  forgotPasswordState.value.step = 1
+  forgotPasswordState.value.step = 'reset-password'
 }
 </script>
 <template>

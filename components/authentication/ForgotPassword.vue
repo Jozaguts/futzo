@@ -24,14 +24,14 @@ const emits = defineEmits(['backToLogin'])
       color="background"
   >
     <transition-expand :offset="[100, 200]" mode="out-in">
-      <ForgotPasswordCard v-if="forgotPasswordState.step === 1" @back-to-login="emits('backToLogin')"/>
-      <OtpCard v-if="forgotPasswordState.step === 2"/>
-      <ResetPasswordCard v-if="forgotPasswordState.step === 3" @back-to-login="emits('backToLogin')"/>
+      <ForgotPasswordCard v-if="forgotPasswordState.step === 'reset-password'" @back-to-login="emits('backToLogin')"/>
+      <OtpCard v-if="forgotPasswordState.step === 'verify-code'"/>
+      <ResetPasswordCard v-if="forgotPasswordState.step === 'confirm-password'" @back-to-login="emits('backToLogin')"/>
     </transition-expand>
     <div class="forgot-password-steps-container">
-      <span class="step" :class="forgotPasswordState.step === 1 ? 'bg-primary' :''"></span>
-      <span class="step" :class="forgotPasswordState.step === 2 ? 'bg-primary' :''"></span>
-      <span class="step" :class="forgotPasswordState.step === 3 ? 'bg-primary' :''"></span>
+      <span class="step" :class="forgotPasswordState.step === 'reset-password' ? 'bg-primary' :''"></span>
+      <span class="step" :class="forgotPasswordState.step === 'verify-code' ? 'bg-primary' :''"></span>
+      <span class="step" :class="forgotPasswordState.step === 'confirm-password' ? 'bg-primary' :''"></span>
     </div>
   </v-card>
 </template>

@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import type {UpdateUserForm, UpdateUserPasswordForm, User,} from "~/models/user";
+import type {ResetPasswordState, UpdateUserForm, UpdateUserPasswordForm, User,} from "~/models/user";
 
 export const useAuthStore = defineStore("authStore", () => {
     const {toast} = useToast();
@@ -7,8 +7,8 @@ export const useAuthStore = defineStore("authStore", () => {
     const role = computed(() => user.value?.roles[0]);
     const isSuperAdmin = computed(() => role.value === "super administrador");
     const image = computed(() => user.value?.image);
-    const forgotPasswordState = ref({
-        step: 1,
+    const forgotPasswordState = ref<ResetPasswordState>({
+        step: 'reset-password',
         username: "",
         areaCode: "+52",
         isPhone: false,
@@ -17,7 +17,7 @@ export const useAuthStore = defineStore("authStore", () => {
     })
     const resetForgotPasswordState = () => {
         forgotPasswordState.value = {
-            step: 1,
+            step: 'reset-password',
             username: "",
             areaCode: "+52",
             isPhone: false,

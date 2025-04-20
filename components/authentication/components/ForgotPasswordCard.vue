@@ -52,7 +52,9 @@ const resetHandler = handleSubmit(() => {
     },
   }).then((response) => {
     if (response.code === 200) {
-      forgotPasswordState.value.step = 2
+      if (forgotPasswordState.value.isPhone){
+        forgotPasswordState.value.step = 'verify-code'
+      }
     }
   }).catch((error) => {
     useToast().toast(

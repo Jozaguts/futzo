@@ -47,3 +47,13 @@ export interface League {
     status: string;
     updated_at: string;
 }
+
+export type ResetPasswordState = {
+    step: ResetPasswordSteps;
+    username: string;
+    areaCode: string;
+    isPhone: boolean;
+    isFetching: boolean;
+    code: string;
+}
+export type ResetPasswordSteps = 'reset-password' | 'verify-code' | 'confirm-password';

@@ -21,7 +21,7 @@ const verifyCode = () => {
       .then((response) => {
         console.log(response)
         if (response.code === 200) {
-          forgotPasswordState.value.step = 3
+          forgotPasswordState.value.step = 'confirm-password'
         }
       })
       .catch((error) => {
@@ -92,7 +92,7 @@ onBeforeUnmount(() => {
           @click="$router.push('/login')"
       >
         <Icon name="futzo-icon:arrow-left" class="arrow-left mx-1"></Icon>
-        <p class="text-body-1 font-weight-bold" @click="() => forgotPasswordState.step = forgotPasswordState.step = 1">Regresar</p>
+        <p class="text-body-1 font-weight-bold" @click="() => forgotPasswordState.step = 'reset-password'">Regresar</p>
       </div>
     </v-card-text>
   </div>
