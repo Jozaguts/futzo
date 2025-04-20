@@ -15,6 +15,16 @@ export const useAuthStore = defineStore("authStore", () => {
         isFetching: false,
         code: '',
     })
+    const resetForgotPasswordState = () => {
+        forgotPasswordState.value = {
+            step: 1,
+            username: "",
+            areaCode: "+52",
+            isPhone: false,
+            isFetching: false,
+            code: '',
+        }
+    }
     const updateUser = (updateUserForm: UpdateUserForm) => {
         const client = useSanctumClient();
         client(`api/v1/admin/profile/${updateUserForm.id}`, {
@@ -107,6 +117,7 @@ export const useAuthStore = defineStore("authStore", () => {
         updateImage,
         updatePassword,
         reSendCode,
+        resetForgotPasswordState,
     };
 }, {
     persist: {

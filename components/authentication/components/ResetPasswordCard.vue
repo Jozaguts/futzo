@@ -2,9 +2,10 @@
 import {useAuthStore} from "~/store";
 import {useForm} from "vee-validate";
 import {object, string} from "yup";
-import {phoneRegex, specialCharacters} from "~/utils/constants";
+import {specialCharacters} from "~/utils/constants";
 
-const {forgotPasswordState} = storeToRefs(useAuthStore())
+const authStore = useAuthStore()
+const {forgotPasswordState} = storeToRefs(authStore)
 const {handleSubmit, defineField, errors, meta} = useForm({
   validationSchema: toTypedSchema(
       object({
@@ -33,6 +34,8 @@ const resetPasswordHandler = handleSubmit((values) => {
           "Éxito",
           "Contraseña restablecida correctamente",
       )
+      authStore.resetForgotPasswordState()
+
       useRouter().push({
         name: "login",
       })
