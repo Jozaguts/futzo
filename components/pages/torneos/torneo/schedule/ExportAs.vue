@@ -1,12 +1,12 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+</script>
 <template>
   <v-select
       class="app-bar-secondary-btn mr-4"
-      width="170"
       item-title="text"
       density="compact"
       item-value="value"
-      model-value="Marcar como"
+      model-value="Exportar como"
       variant="outlined"
       :items="[
       { value: 'creado', text: 'Creado' },

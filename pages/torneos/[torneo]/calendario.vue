@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import AppBar from "~/components/layout/AppBar.vue";
 import PageLayout from "~/components/shared/PageLayout.vue";
-import AppBarBtn from "~/components/pages/torneos/torneo/app-bar-btn.vue";
+import AppBarBtn from "~/components/pages/torneos/torneo/schedule/AppBarBtn.vue";
 import NoCalendar from "~/components/pages/torneos/no-calendar.vue";
 import Schedule from "~/components/pages/torneos/torneo/schedule/index.vue";
 

@@ -92,3 +92,22 @@ thead {
 tbody > tr.v-data-table__tr:nth-child(even) {
   background: #f9fafb;
 }
+
+.app-bar-secondary-btn {
+  border-radius: 8px;
+  border: 1px solid #d0d5dd;
+  background: #fff;
+  box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
+  color: #344054 !important;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.app-bar-secondary-btn__input_text {
+  color: #344054;
+  line-height: 24px;
+  font-weight: 600;
+  font-size: 16px;
+}
