@@ -57,7 +57,7 @@ onBeforeUnmount(async () => {
           <p class="text-body-1">Categoría: <span>{{ schedules.tournament.category.name }}</span></p>
         </div>
         <div class="detail">
-          <p class="text-body-1">Fecha de inicio: <span>{{ schedules.tournament.start_date }}</span></p></div>
+          <p class="text-body-1">Fecha de inicio: <span>{{ schedules.tournament.start_date_to_string }}</span></p></div>
       </div>
     </v-col>
     <v-col cols="12">
