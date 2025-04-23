@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import {useTournamentStore} from "~/store";
+import Score from './score.vue'
 
 const {schedulePagination, isLoadingSchedules, schedules, tournamentId} = storeToRefs(useTournamentStore());
+const isEdit = ref(false);
 const load = async ({done}: { done: (status: 'ok' | 'empty' | 'error') => void }) => {
   if (schedulePagination.value.currentPage > schedulePagination.value.lastPage) {
     done('empty');
@@ -32,12 +34,7 @@ const load = async ({done}: { done: (status: 'ok' | 'empty' | 'error') => void }
     isLoadingSchedules.value = false;
   }
 };
-const client = useSanctumClient();
-const {data, pending, error} = await useAsyncData(
-    'schedule',
-    () => client(`/api/v1/admin/tournaments/${tournamentId.value}/schedule?page=${schedulePagination.value.currentPage}`)
-)
-schedules.value = data.value
+
 
 onBeforeMount(async () => {
   schedulePagination.value.currentPage = 1;
@@ -45,6 +42,70 @@ onBeforeMount(async () => {
 onBeforeUnmount(async () => {
   schedulePagination.value.currentPage = 1;
 })
+const updateMatch = (action: 'up' | 'down', matchId: number, type: 'home' | 'away', roundId: number) => {
+  console.log({action, matchId, type, roundId})
+  schedules.value.rounds.forEach((round) => {
+    if (roundId === round.round) {
+      round.matches.forEach((match) => {
+        if (match.id === matchId) {
+          console.log(match)
+          if (action === 'up') {
+
+            match[type].goals += 1
+          } else {
+            if (match[type].goals > 0) {
+              match[type].goals -= 1
+            }
+          }
+        }
+      });
+    }
+  });
+}
+const client = useSanctumClient();
+const {data, pending} = await useAsyncData(
+    'schedule',
+    () => client(`/api/v1/admin/tournaments/${tournamentId.value}/schedule?page=${schedulePagination.value.currentPage}`)
+)
+schedules.value = data.value
+const editRound = (roundId: number, type: 'save' | 'edit') => {
+  const round = schedules.value.rounds.find((round) => round.round === roundId);
+  if (round && type === 'edit') {
+    round.isEditable = !round.isEditable;
+  } else if (round && type === 'save') {
+    const matches = round?.matches.map((match) => {
+      return {
+        id: match.id,
+        home: {
+          id: match.home.id,
+          goals: match.home.goals,
+        },
+        away: {
+          id: match.away.id,
+          goals: match.away.goals,
+        }
+      }
+    })
+    const client = useSanctumClient();
+    client(`/api/v1/admin/tournaments/${tournamentId.value}/rounds/${roundId}`, {
+      method: 'POST',
+      body: {
+        matches,
+      },
+    }).then((response) => {
+      console.log(response)
+      round.isEditable = !round.isEditable;
+    }).catch((error) => {
+      console.error(error)
+    })
+    // client.post(`/api/v1/admin/tournaments/${tournamentId.value}/schedule/${roundId}`, {matches}).then((response) => {
+    //   console.log(response)
+    //   round.isEditable = !round.isEditable;
+    // }).catch((error) => {
+    //   console.error(error)
+    // })
+  }
+}
 </script>
 <template>
   <v-row v-if="schedules.rounds.length">
@@ -70,8 +131,15 @@ onBeforeUnmount(async () => {
               <v-row>
                 <v-col cols="12" class="pa-0">
                   <div class="title-container">
-                    <p class="title">Jornada: {{ item.round }} </p>
-                    <p class="title">Fecha: {{ item.date }}</p>
+                    <p class="title">Jornada: {{ item.round }} <span class="title">Fecha: {{ item.date }}</span></p>
+                    <div class="d-flex align-center">
+                      <v-btn min-width="180" class="mr-1" variant="outlined" color="primary" density="compact" @click="editRound(item.round,item.isEditable ?'save': 'edit')"
+                             v-auto-animate>
+                        <span v-if="item.isEditable">Guardar</span>
+                        <span v-else>Editar</span>
+                      </v-btn>
+
+                    </div>
                   </div>
                 </v-col>
                 <v-col
@@ -82,17 +150,34 @@ onBeforeUnmount(async () => {
                     lg="4"
                     class="match-container"
                 >
-
                   <div class="match">
                     <div class="team home">
                       <v-avatar :image="match.home.image" size="24" class="image"/>
-                      <span class="name"> {{ match.home.name }}</span>
-                      <div class="result">{{ match.home.goals }}</div>
+                      <span
+                          class=" name d-inline-block text-truncate"
+                          style="max-width: 150px;"
+                      > {{ match.home.name }}</span>
+                      <Score
+                          :matchId="match.id"
+                          :roundId="item.round"
+                          :is-editable="item.isEditable"
+                          @update:match="updateMatch"
+                          type="home"
+                          :value="match.home.goals"
+                      />
                     </div>
                     <div class="team away">
                       <v-avatar class="image" size="24" :image="match.away.image"/>
-                      <span class="name"> {{ match.away.name }}</span>
-                      <div class="result">{{ match.away.goals }}</div>
+
+                      <span class=" name d-inline-block text-truncate"
+                            style="max-width: 150px;"> {{ match.away.name }}</span>
+                      <Score :matchId="match.id"
+                             :value="match.away.goals"
+                             :roundId="item.round"
+                             :is-editable="item.isEditable"
+                             @update:match="updateMatch"
+                             type="away"
+                      />
                       <Icon class="flag" name="futzo-icon:match-polygon"/>
                     </div>
                     <div class="details">
@@ -109,91 +194,7 @@ onBeforeUnmount(async () => {
       </v-sheet>
     </v-col>
   </v-row>
-
-
 </template>
 <style lang="sass">
-.tournament-details
-  display: grid
-  grid-template-columns: minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr)
-
-  .detail
-    p
-      font-weight: bold
-
-    span
-      font-weight: 400
-
-.match-container
-  border: 1px solid #eaecf0
-
-.title-container
-  background: #eaecf0
-  border: 1px solid #eaecf0
-  border-radius: 2px
-  display: flex
-  justify-content: space-between
-  align-items: center
-
-.title
-  color: #111927
-  font-size: 12px
-  font-weight: 400
-  padding: 8px
-
-.match
-  padding: 8px 0
-  display: grid
-  grid-template-areas: "home details" "away details"
-  gap: 0
-  grid-template-rows: 1fr 1fr
-  grid-template-columns: 70% 30%
-  place-items: center
-
-  > .details
-    grid-area: details
-    display: flex
-    flex-direction: column
-    align-items: center
-    justify-content: center
-    align-content: center
-    font-size: 12px
-    text-align: center
-
-  > .home
-    grid-area: home
-
-  > .away
-    grid-area: away
-
-
-  > .team
-    font-size: 14px
-    line-height: 32px
-    display: flex
-    width: 100%
-    align-items: center
-    position: relative
-
-    > .image
-      margin-right: 16px
-
-    > .name
-      font-size: 14px
-
-    > .result
-      margin-left: auto
-      padding: 0 16px
-
-    > .flag
-      width: 9px
-      height: 14px
-      position: absolute
-      right: 0
-      margin-left: 8px
-      background: #eaecf0
-      clip-path: polygon(100% 0, 0 52%, 100% 100%)
-
-.match:first-child > .team
-  border-right: 1px solid #eaecf0
+@use '~/assets/scss/pages/schedule.sass'
 </style>

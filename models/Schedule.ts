@@ -91,6 +91,7 @@ export type TournamentSchedule = {
     rounds: Round[];
 }
 export type Round = {
+    isEditable: boolean;
     round: number;
     date: Date;
     matches: Match[];
@@ -155,6 +156,7 @@ export type Tournament = {
     created_at: Date;
     updated_at: Date;
     teams: Team[];
+    start_date_to_string: string;
 }
 export type Category = {
     id: number;
