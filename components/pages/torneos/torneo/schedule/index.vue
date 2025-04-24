@@ -3,7 +3,6 @@ import {useTournamentStore} from "~/store";
 import Score from './score.vue'
 
 const {schedulePagination, isLoadingSchedules, schedules, tournamentId} = storeToRefs(useTournamentStore());
-const isEdit = ref(false);
 const load = async ({done}: { done: (status: 'ok' | 'empty' | 'error') => void }) => {
   if (schedulePagination.value.currentPage > schedulePagination.value.lastPage) {
     done('empty');
@@ -63,7 +62,7 @@ const updateMatch = (action: 'up' | 'down', matchId: number, type: 'home' | 'awa
   });
 }
 const client = useSanctumClient();
-const {data, pending} = await useAsyncData(
+const {data} = await useAsyncData(
     'schedule',
     () => client(`/api/v1/admin/tournaments/${tournamentId.value}/schedule?page=${schedulePagination.value.currentPage}`)
 )

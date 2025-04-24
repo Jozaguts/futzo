@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import StepperContainer from "~/components/pages/torneos/calendario/stepper/index.vue";
 import {storeToRefs} from "pinia";
-import {useScheduleStore, useTournamentStore} from "~/store";
+import {useTournamentStore} from "~/store";
 import type {CurrentCalendarStep} from "~/models/tournament";
+import {useToast} from "~/composables/useToast";
 
 const {
   calendarSteps,
   scheduleDialog,
   scheduleStoreRequest,
+  schedulePagination,
 } = storeToRefs(useTournamentStore());
 
 const {
@@ -16,6 +18,7 @@ const {
   backHandler,
 } = useDialog(calendarSteps, scheduleDialog);
 const stepContainerRef = ref();
+const isFetching = ref(false);
 const leaveHandler = () => {
   calendarSteps.value.steps.forEach(step => step.completed = false);
   calendarSteps.value.current = 'general';
@@ -56,7 +59,21 @@ const nextStep = () => {
   if (calendarSteps.value.current !== 'fields') {
     calendarSteps.value.current = stepsOrder[currentStepIndex + 1]
   } else {
+    isFetching.value = true;
     useTournamentStore().generateSchedule()
+        .then(() => {
+          useTournamentStore()
+              .getTournamentSchedules()
+              .finally(() => {
+                isFetching.value = false;
+                scheduleDialog.value = false;
+                schedulePagination.value.currentPage = 1;
+                useToast().toast('success',
+                    'Calendario creado',
+                    'El calendario se ha creado correctamente'
+                );
+              })
+        });
   }
 };
 
@@ -95,7 +112,8 @@ const nextStep = () => {
           color="primary"
           density="comfortable"
           size="large"
-          :disabled="disabledButton"
+          :loading="isFetching"
+          :disabled="disabledButton || isFetching"
           @click="handleChange"
       >{{ primaryTextBtn }}
       </v-btn>

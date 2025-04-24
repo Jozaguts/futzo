@@ -394,6 +394,14 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         phases: [] as EliminationPhase[]
     });
 
+    const getTournamentSchedules = async () => {
+        const client = useSanctumClient();
+
+        schedules.value = await client(`/api/v1/admin/tournaments/${tournamentId.value}/schedule?page=${schedulePagination.value.currentPage}`)
+            .finally(() => {
+                isLoadingSchedules.value = false;
+            });
+    }
     const generateSchedule = async () => {
         const client = useSanctumClient();
         await client(`/api/v1/admin/tournaments/${tournamentId.value}/schedule`, {
@@ -615,6 +623,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         $reset,
         updateTournament,
         storeTournamentLocation,
-        generateSchedule
+        generateSchedule,
+        getTournamentSchedules
     };
 });
