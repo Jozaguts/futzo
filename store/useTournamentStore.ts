@@ -517,7 +517,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         const client = useSanctumClient();
         const user = useSanctumUser<User>();
         const {data} = await client(
-            `/api/v1/admin/leagues/${user.value?.league?.id}/tournaments`,
+            `api/v1/admin/leagues/${user.value?.league?.id}/tournaments`,
         );
         tournaments.value = data || [];
         // todo revisar la manera en la que contamos el teamCount y machesByRound

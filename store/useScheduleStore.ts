@@ -28,6 +28,15 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     ]);
     const daysToPlaySelected = ref();
     const daysToPlayCustomSelected = ref();
+    const updateStatusGame = async (roundId: number, status: 'programado' | 'en_progreso' | 'completado' | 'aplazado' | 'cancelado', tournamentId) => {
+        const client = useSanctumClient()
+        await client(`api/v1/admin/tournaments/${tournamentId}/schedule/rounds/${roundId}`, {
+            method: 'PUT',
+            body: {
+                status
+            }
+        })
+    }
 
 
     return {
@@ -36,5 +45,6 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
         scheduleParams,
         daysToPlayCustomSelected,
         daysToPlaySelected,
+        updateStatusGame
     };
 });

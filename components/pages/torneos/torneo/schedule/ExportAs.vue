@@ -5,6 +5,8 @@
       class="app-bar-secondary-btn mr-4"
       item-title="text"
       density="compact"
+      min-width="150"
+      max-width="150"
       item-value="value"
       model-value="Exportar como"
       variant="outlined"
