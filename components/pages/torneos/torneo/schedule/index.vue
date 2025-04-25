@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import {useTournamentStore} from "~/store";
+import {useTournamentStore, useScheduleStore} from "~/store";
 import Score from './score.vue'
+import {useToast} from "~/composables/useToast";
 
-const {schedulePagination, isLoadingSchedules, schedules, tournamentId} = storeToRefs(useTournamentStore());
+const {schedulePagination, isLoadingSchedules, schedules, tournamentId, loading} = storeToRefs(useTournamentStore());
 const load = async ({done}: { done: (status: 'ok' | 'empty' | 'error') => void }) => {
   if (schedulePagination.value.currentPage > schedulePagination.value.lastPage) {
     done('empty');
@@ -67,43 +68,49 @@ const {data} = await useAsyncData(
     () => client(`/api/v1/admin/tournaments/${tournamentId.value}/schedule?page=${schedulePagination.value.currentPage}`)
 )
 schedules.value = data.value
-const editRound = (roundId: number, type: 'save' | 'edit') => {
+const editRound = (roundId: number) => {
   const round = schedules.value.rounds.find((round) => round.round === roundId);
-  if (round && type === 'edit') {
+  if (round) {
     round.isEditable = !round.isEditable;
-  } else if (round && type === 'save') {
-    const matches = round?.matches.map((match) => {
-      return {
-        id: match.id,
-        home: {
-          id: match.home.id,
-          goals: match.home.goals,
-        },
-        away: {
-          id: match.away.id,
-          goals: match.away.goals,
-        }
-      }
-    })
-    const client = useSanctumClient();
-    client(`/api/v1/admin/tournaments/${tournamentId.value}/rounds/${roundId}`, {
-      method: 'POST',
-      body: {
-        matches,
-      },
-    }).then((response) => {
-      console.log(response)
-      round.isEditable = !round.isEditable;
-    }).catch((error) => {
-      console.error(error)
-    })
-    // client.post(`/api/v1/admin/tournaments/${tournamentId.value}/schedule/${roundId}`, {matches}).then((response) => {
-    //   console.log(response)
-    //   round.isEditable = !round.isEditable;
-    // }).catch((error) => {
-    //   console.error(error)
-    // })
   }
+}
+const saveHandler = (roundId: number) => {
+  loading.value = true;
+  const round = schedules.value.rounds.find((round) => round.round === roundId);
+  const matches = round?.matches.map((match) => {
+    return {
+      id: match.id,
+      home: {
+        id: match.home.id,
+        goals: match.home.goals,
+      },
+      away: {
+        id: match.away.id,
+        goals: match.away.goals,
+      }
+    }
+  })
+  const client = useSanctumClient();
+  client(`/api/v1/admin/tournaments/${tournamentId.value}/rounds/${roundId}`, {
+    method: 'POST',
+    body: {
+      matches,
+    },
+  }).then(() => {
+    round.isEditable = !round?.isEditable;
+    useToast().toast('success', 'Marcador', 'Actualizado correctamente')
+  }).catch((error) => {
+    console.error(error)
+  })
+      .finally(() => loading.value = false)
+}
+const statusHandler = (status, roundId) => {
+  loading.value = true;
+  useScheduleStore().updateStatusGame(roundId, status, tournamentId.value)
+      .then(() => {
+        useToast().toast('success', 'Jornada', 'Actualizada correctamente')
+      })
+      .finally(() => loading.value = false)
 }
 </script>
 <template>
@@ -117,7 +124,8 @@ const editRound = (roundId: number, type: 'save' | 'edit') => {
           <p class="text-body-1">Categoría: <span>{{ schedules.tournament.category.name }}</span></p>
         </div>
         <div class="detail">
-          <p class="text-body-1">Fecha de inicio: <span>{{ schedules.tournament.start_date_to_string }}</span></p></div>
+          <p class="text-body-1">Fecha de inicio: <span>{{ schedules.tournament.start_date_to_string }}</span></p>
+        </div>
       </div>
     </v-col>
     <v-col cols="12">
@@ -126,18 +134,47 @@ const editRound = (roundId: number, type: 'save' | 'edit') => {
                            @load="load"
                            height="700">
           <template v-for="item in schedules.rounds" :key="item.id">
-            <v-container>
+            <v-container fluid>
               <v-row>
-                <v-col cols="12" class="pa-0">
+                <v-col cols="12" class="pa-0 ">
                   <div class="title-container">
                     <p class="title">Jornada: {{ item.round }} <span class="title">Fecha: {{ item.date }}</span></p>
-                    <div class="d-flex align-center">
-                      <v-btn min-width="180" class="mr-1" variant="outlined" color="primary" density="compact" @click="editRound(item.round,item.isEditable ?'save': 'edit')"
-                             v-auto-animate>
-                        <span v-if="item.isEditable">Guardar</span>
-                        <span v-else>Editar</span>
+                    <div class="d-flex align-center" v-auto-animate>
+                      <v-btn
+                          variant="outlined"
+                          v-if="item.isEditable"
+                          :loading="loading"
+                          @click="() => saveHandler(item.round)">Guardar cambios
                       </v-btn>
+                      <v-menu location="bottom" transition="slide-x-transition">
+                        <template v-slot:activator="{ props }">
+                          <v-btn icon="mdi-dots-vertical" variant="text" v-bind="props"></v-btn>
+                        </template>
+                        <v-list nav>
+                          <v-list-subheader>Marcador</v-list-subheader>
+                          <v-list-item variant="flat" @click="editRound(item.round)">
+                            <v-list-item-title class="px-3">Editar</v-list-item-title>
+                          </v-list-item>
+                        </v-list>
 
+                        <v-list
+                            density="compact"
+                            nav
+                            v-model:selected="item.status"
+                        >
+                          <v-list-subheader>Jornada marcar como:</v-list-subheader>
+                          <v-list-item :active="status.value == item.status" v-for="status in [
+                              {value: 'programado', text: 'Programada'},
+                              {value: 'en_progreso', text: 'En progreso'},
+                              {value: 'completado', text: 'Completada'},
+                              {value: 'cancelado', text: 'Cancelada'}
+                              ]" :key="status" :value="status.value"
+                                       active-class="text-primary"
+                                       @click="() => statusHandler(status.value, item.round)"
+                                       v-text="status.text"
+                          />
+                        </v-list>
+                      </v-menu>
                     </div>
                   </div>
                 </v-col>
