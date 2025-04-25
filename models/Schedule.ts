@@ -92,6 +92,7 @@ export type TournamentSchedule = {
 }
 export type Round = {
     isEditable: boolean;
+    status: 'Programada' | 'En progreso' | 'Completada' | 'Parcialmente jugada' | 'Cancelada'
     round: number;
     date: Date;
     matches: Match[];
