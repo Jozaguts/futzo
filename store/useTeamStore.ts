@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import type {CreateTeamForm, FormSteps, Team, TeamResponse, TeamStoreRequest,} from "~/models/Team";
+import type {FormSteps, Team, TeamResponse, TeamStoreRequest} from "~/models/Team";
 import type {IPagination} from "~/interfaces";
 
 export const useTeamStore = defineStore("teamStore", () => {
@@ -9,6 +9,7 @@ export const useTeamStore = defineStore("teamStore", () => {
     const team = ref<Team>();
     const teamId = ref(0);
     const search = ref("");
+    const importModal = ref(false);
     const pagination = ref<IPagination>({
         currentPage: 1,
         perPage: 10,
@@ -41,6 +42,33 @@ export const useTeamStore = defineStore("teamStore", () => {
         ],
     });
     const isEdition = ref(false);
+
+    async function importTeamsHandler(file: File) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        await client("/api/v1/admin/teams/import", {
+            method: "POST",
+            body: formData,
+        })
+            .then(async () => {
+                toast(
+                    "success",
+                    "Equipos Importados",
+                    "Los equipos se han importado exitosamente."
+                );
+                importModal.value = false;
+                await getTeams();
+            })
+            .catch((error) => {
+                toast(
+                    "error",
+                    "Error al importar equipos",
+                    error.data?.message ??
+                    "No se pudieron importar los equipos. Verifica tu archivo e inténtalo de nuevo."
+                );
+            });
+    }
 
     const createTeam = async () => {
         let form = prepareForm();
@@ -192,10 +220,12 @@ export const useTeamStore = defineStore("teamStore", () => {
         teamId,
         pagination,
         search,
+        importModal,
         createTeam,
         getTeams,
         getTeam,
         updateTeam,
         list,
+        importTeamsHandler
     };
 });
