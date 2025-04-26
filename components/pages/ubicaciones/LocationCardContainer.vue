@@ -21,7 +21,7 @@ const load = (options: CallbackOptions) => {
 
 <template>
   <v-infinite-scroll height="900" mode="intersect" @load="load" v-if="!noLocations">
-    <v-container>
+    <v-container fluid>
       <v-row>
         <v-col cols="12" md="3" lg="3" v-for="location in locations">
           <LocationCard :location="location"/>
