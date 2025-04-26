@@ -92,7 +92,7 @@ export type TournamentSchedule = {
 }
 export type Round = {
     isEditable: boolean;
-    status: 'Programada' | 'En progreso' | 'Completada' | 'Parcialmente jugada' | 'Cancelada'
+    status: RoundStatusText
     round: number;
     date: Date;
     matches: Match[];
@@ -324,3 +324,10 @@ export type Text =
     | "21:00"
     | "22:00"
     | "23:00";
+
+export type RoundStatus = 'programado' | 'en_progreso' | 'completado' | 'aplazado' | 'cancelado'
+export type RoundStatusText = 'Programada' | 'En progreso' | 'Completada' | 'Parcialmente jugada' | 'Cancelada'
+export type ScheduleRoundStatus = {
+    text: RoundStatusText
+    value: RoundStatus
+}
