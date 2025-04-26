@@ -43,7 +43,6 @@ const updateMatch = (action: 'up' | 'down', matchId: number, type: 'home' | 'awa
     }
   });
 }
-
 const editRound = (roundId: number) => {
   const round = schedules.value.rounds.find((round) => round.round === roundId);
   if (round) {

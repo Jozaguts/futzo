@@ -92,7 +92,7 @@ export type TournamentSchedule = {
 }
 export type Round = {
     isEditable: boolean;
-    status: RoundStatusText
+    status: RoundStatus
     round: number;
     date: Date;
     matches: Match[];

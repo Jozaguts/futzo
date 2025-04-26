@@ -108,12 +108,12 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
         ],
     });
 
-    const scheduleRoundStatus: ScheduleRoundStatus[] = [
+    const scheduleRoundStatus = ref<ScheduleRoundStatus[]>([
         {value: 'programado', text: 'Programada'},
         {value: 'en_progreso', text: 'En progreso'},
         {value: 'completado', text: 'Completada'},
         {value: 'cancelado', text: 'Cancelada'}
-    ]
+    ])
     const getTournamentSchedules = async () => {
         isLoadingSchedules.value = true
         const client = useSanctumClient();
