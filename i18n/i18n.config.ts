@@ -55,6 +55,11 @@ export default defineI18nConfig(() => ({
                 stepper: {
                     prev: 'Anterior',
                     next: 'Siguiente',
+                },
+                fileUpload: {
+                    title: 'Subir archivo',
+                    divider: 'o',
+                    browse: 'Buscar',
                 }
             },
         },
