@@ -1,4 +1,10 @@
-<script lang="ts" setup></script>
+<script setup lang="ts">
+import {useTeamStore} from '~/store/useTeamStore';
+import {storeToRefs} from "pinia";
+
+const {importModal} = storeToRefs(useTeamStore())
+</script>
+
 <template>
-  <SecondaryBtn text="Import .csv" class="mr-4"></SecondaryBtn>
+  <SecondaryBtn text="Importar Equipos" class="mr-4" @click="() => importModal = !importModal"></SecondaryBtn>
 </template>
