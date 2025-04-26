@@ -8,6 +8,7 @@ import type {
     RoundStatus, ScheduleRoundStatus,
     ScheduleSettings,
     ScheduleStoreRequest,
+    Tournament,
     TournamentSchedule
 } from "~/models/Schedule";
 import {useTournamentStore} from "~/store/useTournamentStore";
@@ -44,15 +45,20 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     ]);
     const daysToPlaySelected = ref();
     const daysToPlayCustomSelected = ref();
-    const schedules = ref<TournamentSchedule>({} as TournamentSchedule);
+    const schedules = ref<TournamentSchedule>({
+            rounds: [],
+            tournament: {} as Tournament
+        }
+    );
     const noSchedules = computed(() => schedules.value?.rounds?.length === 0);
     const isLoadingSchedules = ref(false);
-    const schedulePagination = ref<IPagination>({
+    const schedulePagination = ref<IPagination & { search?: RoundStatus | RoundStatus[] }>({
         currentPage: 1,
         perPage: 10,
         lastPage: 1,
         total: 0,
         sort: "asc",
+        search: undefined
     })
     const scheduleSettings = ref<ScheduleSettings>({
         start_date: new Date(),
@@ -101,13 +107,35 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
             }
         ],
     });
-    const getTournamentSchedules = async () => {
-        const client = useSanctumClient();
 
-        schedules.value = await client(`/api/v1/admin/tournaments/${tournamentStore.tournamentId}/schedule?page=${schedulePagination.value.currentPage}`)
-            .finally(() => {
-                isLoadingSchedules.value = false;
-            });
+    const scheduleRoundStatus: ScheduleRoundStatus[] = [
+        {value: 'programado', text: 'Programada'},
+        {value: 'en_progreso', text: 'En progreso'},
+        {value: 'completado', text: 'Completada'},
+        {value: 'cancelado', text: 'Cancelada'}
+    ]
+    const getTournamentSchedules = async () => {
+        isLoadingSchedules.value = true
+        const client = useSanctumClient();
+        let url = `/api/v1/admin/tournaments/${tournamentStore.tournamentId}/schedule?page=${schedulePagination.value.currentPage}`;
+        if (schedulePagination.value.search) {
+            if (Array.isArray(schedulePagination.value.search)) {
+                url += `&status[]=${schedulePagination.value.search.join('&status[]=')}`;
+            } else {
+                url += `&status=${schedulePagination.value.search}`;
+            }
+        } else {
+            url = `/api/v1/admin/tournaments/${tournamentStore.tournamentId}/schedule?page=${schedulePagination.value.currentPage}`;
+        }
+        const response = await client(url);
+        const newRounds = response.rounds ?? [];
+        if (!schedules.value.rounds) {
+            schedules.value.rounds = [];
+        }
+        schedules.value.tournament = response.tournament;
+        schedules.value.rounds.push(...newRounds);
+        schedulePagination.value.currentPage += 1;
+        schedulePagination.value.lastPage = response.pagination.total_rounds;
     }
     const fetchSchedule = async () => {
         isLoadingSchedules.value = true;
@@ -162,12 +190,10 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
         }
         scheduleSettings.value = data.value;
     }
-    const scheduleRoundStatus: ScheduleRoundStatus[] = [
-        {value: 'programado', text: 'Programada'},
-        {value: 'en_progreso', text: 'En progreso'},
-        {value: 'completado', text: 'Completada'},
-        {value: 'cancelado', text: 'Cancelada'}
-    ]
+    onMounted(async () => {
+        if (useRoute().name === 'torneos-torneo-calendario')
+            await getTournamentSchedules()
+    })
 
     return {
         scheduleDialog,

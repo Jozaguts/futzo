@@ -14,20 +14,7 @@ const load = async ({done}: { done: (status: 'ok' | 'empty' | 'error') => void }
 
   isLoadingSchedules.value = true;
   try {
-    const client = useSanctumClient();
-    const response = await client(`/api/v1/admin/tournaments/${tournamentId.value}/schedule?page=${schedulePagination.value.currentPage + 1}`);
-    const newRounds = response.rounds ?? [];
-    if (!schedules.value.rounds) {
-      schedules.value.rounds = [];
-    }
-    schedules.value.tournament = response.tournament;
-    schedules.value.rounds.push(...newRounds);
-    // data.value.push(...response.rounds);
-    // console.log(data.value)
-
-    schedulePagination.value.currentPage += 1;
-    schedulePagination.value.lastPage = response.pagination.total_rounds;
-
+    await useScheduleStore().getTournamentSchedules()
     done('ok');
   } catch (error) {
     console.error("Error cargando más jornadas:", error);
@@ -36,14 +23,6 @@ const load = async ({done}: { done: (status: 'ok' | 'empty' | 'error') => void }
     isLoadingSchedules.value = false;
   }
 };
-
-
-onBeforeMount(async () => {
-  schedulePagination.value.currentPage = 1;
-})
-onBeforeUnmount(async () => {
-  schedulePagination.value.currentPage = 1;
-})
 const updateMatch = (action: 'up' | 'down', matchId: number, type: 'home' | 'away', roundId: number) => {
   console.log({action, matchId, type, roundId})
   schedules.value.rounds.forEach((round) => {
@@ -64,12 +43,7 @@ const updateMatch = (action: 'up' | 'down', matchId: number, type: 'home' | 'awa
     }
   });
 }
-const client = useSanctumClient();
-const {data} = await useAsyncData(
-    'schedule',
-    () => client(`/api/v1/admin/tournaments/${tournamentId.value}/schedule?page=${schedulePagination.value.currentPage}`)
-)
-schedules.value = data.value
+
 const editRound = (roundId: number) => {
   const round = schedules.value.rounds.find((round) => round.round === roundId);
   if (round) {
@@ -116,9 +90,15 @@ const statusHandler = (status: RoundStatus, roundId: number) => {
       })
       .finally(() => loading.value = false)
 }
+onBeforeMount(async () => {
+  schedulePagination.value.currentPage = 1;
+})
+onBeforeUnmount(async () => {
+  schedulePagination.value.currentPage = 1;
+})
 </script>
 <template>
-  <v-row v-if="schedules.rounds.length">
+  <v-row v-if="schedules.rounds.length ">
     <v-col cols="12">
       <div class="tournament-details">
         <div class="detail">

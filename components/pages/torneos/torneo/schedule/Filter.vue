@@ -1,9 +1,18 @@
 <script lang="ts" setup>
 import type {RoundStatus} from "~/models/Schedule";
+import {useScheduleStore} from "~/store/useScheduleStore";
 
-const model = ref<RoundStatus[]>([] as RoundStatus[]);
-const changeHandler = (value: RoundStatus[]) => {
+const {schedulePagination} = storeToRefs(useScheduleStore());
+const changeHandler = async (value?: RoundStatus[]) => {
   console.log(value)
+  useScheduleStore().schedulePagination.currentPage = 1
+  useScheduleStore().schedules.rounds = []
+  if (value?.length) {
+    return useScheduleStore().getTournamentSchedules()
+  } else {
+    useScheduleStore().schedulePagination.search = undefined
+    await useScheduleStore().getTournamentSchedules()
+  }
 }
 </script>
 <template>
@@ -15,7 +24,7 @@ const changeHandler = (value: RoundStatus[]) => {
       item-title="text"
       density="compact"
       item-value="value"
-      v-model="model"
+      v-model="schedulePagination.search"
       variant="outlined"
       hide-selected
       clearable
