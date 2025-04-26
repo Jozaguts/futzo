@@ -1,6 +1,5 @@
 import {defineStore} from "pinia";
 import type {
-    CalendarStepsForm,
     CalendarStoreRequest,
     FormSteps,
     Tournament,
@@ -8,27 +7,15 @@ import type {
     TournamentLocation,
     TournamentLocationStoreRequest,
     TournamentStoreRequest,
+    TournamentStatus,
 } from "~/models/tournament";
 import type {Game} from "~/models/Game";
 import type {User} from "~/models/user";
 import prepareForm from "~/utils/prepareFormData";
 import type {IPagination} from "~/interfaces";
-import type {
-    EliminationPhase,
-    FootballType,
-    Format,
-    FormEliminationPhaseStep,
-    FormGeneralScheduleRequest,
-    FormLocationAvailabilityStep,
-    FormRegularPhaseStep,
-    ScheduleSettings,
-    ScheduleStoreRequest,
-    TournamentSchedule
-} from "~/models/Schedule";
-import type {Ref} from "vue";
 
 export const useTournamentStore = defineStore("tournamentStore", () => {
-    const tournament = ref<Tournament | null>(null);
+    const tournament = ref<Tournament>({} as Tournament);
     const tournaments = ref<Tournament[]>([]);
     const noTournaments = computed(() => !tournaments.value.length);
     const search = ref("");
@@ -419,9 +406,9 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         // console.log( matchesByRound.value, 2222222)
     }
 
-    async function updateTournamentStatus(tournamentId: number, status: string) {
+    async function updateTournamentStatus(status: TournamentStatus) {
         const client = useSanctumClient();
-        await client(`api/v1/admin/tournaments/${tournamentId}/status`, {
+        await client(`api/v1/admin/tournaments/${tournamentId.value}/status`, {
             method: "PUT",
             body: {status},
         }).then(async () => {

@@ -50,7 +50,7 @@ export interface TournamentForm {
     prize: string;
     winner: string;
     description: string;
-    status: string;
+    status: TournamentStatus;
 }
 
 export interface TournamentStoreRequest {
@@ -149,7 +149,7 @@ export interface TournamentResponse {
     winner: string;
     description: string;
     category_id: number;
-    status: string;
+    status: TournamentStatus;
     location: Location;
     format: Format;
     teams_count: null;
@@ -262,3 +262,12 @@ export type CurrentStep = "basic-info" | "details-info";
 
 export interface CreateTournamentForm extends TournamentStoreRequest {
 }
+
+export type TournamentStatus = 'creado' | 'en curso' | 'completado' | 'cancelado'
+export type TournamentStatusText = 'Creado' | 'En curso' | 'Completado' | 'Cancelado'
+export type TournamentStatusItem = {
+    disabled: boolean;
+    text: TournamentStatusText,
+    value: TournamentStatus
+}
+
