@@ -4,12 +4,12 @@ import Regular from "~/components/pages/torneos/calendario/stepper/02-regular-ph
 import Elimination from "~/components/pages/torneos/calendario/stepper/03-elimination-phase.vue";
 import Fields from "~/components/pages/torneos/calendario/stepper/04-fields-phase.vue";
 import IndicatorStep from "~/components/shared/IndicatorStep.vue";
-import {useTournamentStore} from "~/store";
+import {useScheduleStore} from "~/store";
 
 type StepRef = { handleSubmit: Function, isValid: boolean, validate: Function };
 const {
   calendarSteps,
-} = storeToRefs(useTournamentStore());
+} = storeToRefs(useScheduleStore());
 const stepRef = defineModel<StepRef>("stepRef");
 const hasValidForm = () => stepRef.value?.isValid;
 const validate = async () => await stepRef.value.validate()
