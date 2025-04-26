@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import {useTournamentStore} from '~/store'
+import {useTournamentStore, useScheduleStore} from '~/store'
 import SelectLocation from '~/components/pages/torneos/calendario/SelectLocation.vue'
 import type {Location} from '~/models/Schedule'
 import useSchemas from "~/composables/useSchemas";
 
 const [parent] = useAutoAnimate()
 const {setValues, fields, meta, validate} = useSchemas("calendar-general-step");
-const {tournament, scheduleSettings, scheduleStoreRequest} =
-    storeToRefs(useTournamentStore())
+const {tournament} = storeToRefs(useTournamentStore())
+const {scheduleSettings, scheduleStoreRequest} = storeToRefs(useScheduleStore())
 const formatDate = (date: string): Date | string => {
   if (!date) return ''
   if (typeof date === 'object') {
