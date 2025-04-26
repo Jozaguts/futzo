@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import {useTournamentStore} from '~/store'
+import {useScheduleStore} from '~/store'
 import type {EliminationPhase, Phase} from "~/models/Schedule";
 
-const {scheduleSettings} = storeToRefs(useTournamentStore())
+const {scheduleSettings} = storeToRefs(useScheduleStore())
 const chipEventHandler = (value: number[]) => {
   scheduleSettings.value?.phases.map(
       (phase) => (phase.is_active = value.includes(phase.id))
