@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import StepperContainer from "~/components/pages/torneos/calendario/stepper/index.vue";
 import {storeToRefs} from "pinia";
-import {useTournamentStore} from "~/store";
+import {useScheduleStore} from "~/store";
 import type {CurrentCalendarStep} from "~/models/tournament";
 import {useToast} from "~/composables/useToast";
 
@@ -10,7 +10,7 @@ const {
   scheduleDialog,
   scheduleStoreRequest,
   schedulePagination,
-} = storeToRefs(useTournamentStore());
+} = storeToRefs(useScheduleStore());
 
 const {
   secondaryTextBtn,
@@ -60,9 +60,9 @@ const nextStep = () => {
     calendarSteps.value.current = stepsOrder[currentStepIndex + 1]
   } else {
     isFetching.value = true;
-    useTournamentStore().generateSchedule()
+    useScheduleStore().generateSchedule()
         .then(() => {
-          useTournamentStore()
+          useScheduleStore()
               .getTournamentSchedules()
               .finally(() => {
                 isFetching.value = false;
