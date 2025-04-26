@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import {useTournamentStore} from "~/store";
+import {useScheduleStore} from "~/store";
 import NoCalendarSvg from "~/components/pages/torneos/NoCalendarSvg.vue";
 
-const {scheduleDialog, isLoadingSchedules, noSchedules} = storeToRefs(useTournamentStore());
+const {scheduleDialog, isLoadingSchedules, noSchedules} = storeToRefs(useScheduleStore());
 const textButton = computed(() => {
   if (isLoadingSchedules.value) return "Cargando...";
   return "Crear calendario";
 });
 const dialogHandler = async () => {
-  await useTournamentStore()
+  await useScheduleStore()
       .settingsSchedule()
   scheduleDialog.value = !scheduleDialog.value;
 };
