@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-const model = ref<string[]>(['todas']);
-const changeHandler = (value) => {
+import type {RoundStatus} from "~/models/Schedule";
+
+const model = ref<RoundStatus[]>([] as RoundStatus[]);
+const changeHandler = (value: RoundStatus[]) => {
   console.log(value)
 }
 </script>
@@ -20,7 +22,6 @@ const changeHandler = (value) => {
       multiple
       @update:model-value="changeHandler"
       :items="[
-          {value: 'todas', text: 'Todas' },
       { value: 'programado', text: 'Programadas' },
       { value: 'en_progreso', text: 'En progreso' },
       { value: 'completado', text: 'Completadas' },
