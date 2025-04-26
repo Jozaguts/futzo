@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import {useTournamentStore} from "~/store";
+import {useTournamentStore, useScheduleStore} from "~/store";
 import LocationFormStep from '~/components/pages/torneos/calendario/location-form-step.vue'
 import type {LocationFieldsRequest, NextHandlerType, WeekDay} from "~/models/Schedule";
 
-const {tournamentId, scheduleStoreRequest} = storeToRefs(useTournamentStore())
+const {tournamentId} = storeToRefs(useTournamentStore())
+const {scheduleStoreRequest} = storeToRefs(useScheduleStore())
 
 const {meta, validate} = useSchemas('calendar-location-step', {
   tournament_id: tournamentId.value,
