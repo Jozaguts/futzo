@@ -2,8 +2,10 @@
 import {useTournamentStore, useScheduleStore} from "~/store";
 import Score from './score.vue'
 import {useToast} from "~/composables/useToast";
+import type {RoundStatus} from "~/models/Schedule";
 
-const {schedulePagination, isLoadingSchedules, schedules, tournamentId, loading} = storeToRefs(useTournamentStore());
+const {tournamentId, loading} = storeToRefs(useTournamentStore());
+const {schedulePagination, isLoadingSchedules, schedules, scheduleRoundStatus} = storeToRefs(useScheduleStore());
 const load = async ({done}: { done: (status: 'ok' | 'empty' | 'error') => void }) => {
   if (schedulePagination.value.currentPage > schedulePagination.value.lastPage) {
     done('empty');
@@ -77,36 +79,38 @@ const editRound = (roundId: number) => {
 const saveHandler = (roundId: number) => {
   loading.value = true;
   const round = schedules.value.rounds.find((round) => round.round === roundId);
-  const matches = round?.matches.map((match) => {
-    return {
-      id: match.id,
-      home: {
-        id: match.home.id,
-        goals: match.home.goals,
-      },
-      away: {
-        id: match.away.id,
-        goals: match.away.goals,
+  if (round) {
+    const matches = round?.matches.map((match) => {
+      return {
+        id: match.id,
+        home: {
+          id: match.home.id,
+          goals: match.home.goals,
+        },
+        away: {
+          id: match.away.id,
+          goals: match.away.goals,
+        }
       }
-    }
-  })
-  const client = useSanctumClient();
-  client(`/api/v1/admin/tournaments/${tournamentId.value}/rounds/${roundId}`, {
-    method: 'POST',
-    body: {
-      matches,
-    },
-  }).then(() => {
-    round.isEditable = !round?.isEditable;
-    useToast().toast('success', 'Marcador', 'Actualizado correctamente')
-  }).catch((error) => {
-    console.error(error)
-  })
-      .finally(() => loading.value = false)
+    })
+    const client = useSanctumClient();
+    client(`/api/v1/admin/tournaments/${tournamentId.value}/rounds/${roundId}`, {
+      method: 'POST',
+      body: {
+        matches,
+      },
+    }).then(() => {
+      round.isEditable = !round?.isEditable;
+      useToast().toast('success', 'Marcador', 'Actualizado correctamente')
+    }).catch((error) => {
+      console.error(error)
+    })
+        .finally(() => loading.value = false)
+  }
 }
-const statusHandler = (status, roundId) => {
+const statusHandler = (status: RoundStatus, roundId: number) => {
   loading.value = true;
-  useScheduleStore().updateStatusGame(roundId, status, tournamentId.value)
+  useScheduleStore().updateStatusGame(roundId, status, tournamentId.value as number)
       .then(() => {
         useToast().toast('success', 'Jornada', 'Actualizada correctamente')
       })
@@ -163,12 +167,7 @@ const statusHandler = (status, roundId) => {
                             v-model:selected="item.status"
                         >
                           <v-list-subheader>Jornada marcar como:</v-list-subheader>
-                          <v-list-item :active="status.value == item.status" v-for="status in [
-                              {value: 'programado', text: 'Programada'},
-                              {value: 'en_progreso', text: 'En progreso'},
-                              {value: 'completado', text: 'Completada'},
-                              {value: 'cancelado', text: 'Cancelada'}
-                              ]" :key="status" :value="status.value"
+                          <v-list-item :active="status.value == item.status" v-for="(status, index) in scheduleRoundStatus" :key="index" :value="status.value"
                                        active-class="text-primary"
                                        @click="() => statusHandler(status.value, item.round)"
                                        v-text="status.text"
