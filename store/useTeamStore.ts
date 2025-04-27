@@ -43,6 +43,29 @@ export const useTeamStore = defineStore("teamStore", () => {
     });
     const isEdition = ref(false);
 
+    const downloadTemplate = async () => {
+        await client("/api/v1/admin/teams/template", {
+            method: "GET",
+            // responseType: "blob",
+        })
+            .then((response) => {
+                const url = window.URL.createObjectURL(new Blob([response]));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", "template.xlsx");
+                document.body.appendChild(link);
+                link.click();
+            })
+            .catch((error) => {
+                toast(
+                    "error",
+                    "Error al descargar la plantilla",
+                    error.data?.message ??
+                    "No se pudo descargar la plantilla. Inténtalo de nuevo.",
+                );
+            });
+    }
+
     async function importTeamsHandler(file: File) {
         const formData = new FormData();
         formData.append('file', file);
@@ -226,6 +249,7 @@ export const useTeamStore = defineStore("teamStore", () => {
         getTeam,
         updateTeam,
         list,
-        importTeamsHandler
+        importTeamsHandler,
+        downloadTemplate
     };
 });

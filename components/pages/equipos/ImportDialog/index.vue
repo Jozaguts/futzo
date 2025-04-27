@@ -6,6 +6,7 @@ import {storeToRefs} from "pinia";
 import {useTeamStore} from "~/store";
 
 const {importModal} = storeToRefs(useTeamStore());
+const {downloadTemplate} = useTeamStore();
 const {importTeamsHandler} = useTeamStore();
 const leaveHandler = () => {
 };
@@ -30,6 +31,21 @@ const eventHandler = () => {
       <HeaderCard @close="importModal = false"/>
       <Form v-model:file="file"/>
       <Drops v-model:file="file" @import-teams="eventHandler"/>
+      <template #actions>
+        <v-container>
+          <v-row>
+            <v-col>
+              <v-btn
+                  color="secondary"
+                  variant="outlined"
+                  @click="downloadTemplate"
+              >
+                Descargar Plantilla
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </template>
     </v-card>
   </v-dialog>
 </template>
