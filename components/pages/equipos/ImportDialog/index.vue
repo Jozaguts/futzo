@@ -5,15 +5,18 @@ import Drops from "@/components/pages/jugadores/import-dialog/drops.vue";
 import {storeToRefs} from "pinia";
 import {useTeamStore} from "~/store";
 
-const {importModal} = storeToRefs(useTeamStore());
-const {downloadTemplate} = useTeamStore();
-const {importTeamsHandler} = useTeamStore();
+const {importModal, loading} = storeToRefs(useTeamStore());
+const {downloadTemplate, importTeamsHandler} = useTeamStore();
 const leaveHandler = () => {
 };
 
 const file = ref<File>();
 const eventHandler = () => {
-  importTeamsHandler(file.value as File);
+  loading.value = true
+  importTeamsHandler(file.value as File)
+      .finally(() => {
+        loading.value = false;
+      });
 };
 </script>
 
@@ -30,22 +33,27 @@ const eventHandler = () => {
     >
       <HeaderCard @close="importModal = false"/>
       <Form v-model:file="file"/>
+      <v-container class="py-0">
+        <v-row no-gutters>
+          <v-col cols="12" class="d-flex justify-end">
+            <v-btn
+                color="secondary"
+                variant="outlined"
+                class="app-bar-secondary-btn mr-2"
+                @click="downloadTemplate"
+                :loading="loading"
+                :disabled="loading"
+                size="small"
+            >
+              <template #prepend>
+                <Icon name="futzo-icon:file-type-excel" size="24"></Icon>
+              </template>
+              Descargar Plantilla
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
       <Drops v-model:file="file" @import-teams="eventHandler"/>
-      <template #actions>
-        <v-container>
-          <v-row>
-            <v-col>
-              <v-btn
-                  color="secondary"
-                  variant="outlined"
-                  @click="downloadTemplate"
-              >
-                Descargar Plantilla
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-container>
-      </template>
     </v-card>
   </v-dialog>
 </template>
