@@ -42,8 +42,10 @@ export const useTeamStore = defineStore("teamStore", () => {
         ],
     });
     const isEdition = ref(false);
+    const loading = ref(false);
 
     const downloadTemplate = async () => {
+        loading.value = true;
         await client("/api/v1/admin/teams/template", {
             method: "GET",
             // responseType: "blob",
@@ -63,6 +65,9 @@ export const useTeamStore = defineStore("teamStore", () => {
                     error.data?.message ??
                     "No se pudo descargar la plantilla. Inténtalo de nuevo.",
                 );
+            })
+            .finally(() => {
+                loading.value = false
             });
     }
 
@@ -244,6 +249,7 @@ export const useTeamStore = defineStore("teamStore", () => {
         pagination,
         search,
         importModal,
+        loading,
         createTeam,
         getTeams,
         getTeam,
