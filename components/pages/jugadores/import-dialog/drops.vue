@@ -82,7 +82,7 @@ onBeforeUnmount(() => {
   clearInterval(intervalId.value);
   clearTimeout(timeOutId.value);
 });
-const emits = defineEmits(["import-teams"]);
+const emits = defineEmits(["import-players"]);
 </script>
 <template>
   <div ref="parent" class="drops-container">
@@ -140,7 +140,7 @@ const emits = defineEmits(["import-teams"]);
           style="width: calc(50% - 4px)"
           :disabled="disabled"
           :loading="loading"
-          @click="() => emits('import-teams')"
+          @click="() => emits('import-players')"
       >
         Confirmar
       </v-btn>

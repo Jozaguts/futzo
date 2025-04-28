@@ -44,6 +44,7 @@ export const useTeamStore = defineStore("teamStore", () => {
     const isEdition = ref(false);
     const loading = ref(false);
 
+
     const downloadTemplate = async () => {
         loading.value = true;
         await client("/api/v1/admin/teams/template", {
