@@ -1,5 +1,15 @@
 <script lang="ts" setup>
 const file = defineModel<File>("file");
+defineProps({
+  disabled: {
+    type: Boolean,
+    default: true
+  },
+  loading: {
+    type: Boolean,
+    default: false
+  }
+})
 const showDrops = ref(false);
 const progress = ref(0);
 const intervalId = ref();
@@ -72,7 +82,7 @@ onBeforeUnmount(() => {
   clearInterval(intervalId.value);
   clearTimeout(timeOutId.value);
 });
-const emits = defineEmits(["import-players"]);
+const emits = defineEmits(["import-teams"]);
 </script>
 <template>
   <div ref="parent" class="drops-container">
@@ -128,7 +138,9 @@ const emits = defineEmits(["import-players"]);
           class="ml-1 rounded-lg"
           color="primary"
           style="width: calc(50% - 4px)"
-          @click="() => emits('import-players')"
+          :disabled="disabled"
+          :loading="loading"
+          @click="() => emits('import-teams')"
       >
         Confirmar
       </v-btn>
