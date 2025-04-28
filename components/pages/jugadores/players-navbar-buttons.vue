@@ -5,8 +5,8 @@ import ImportBtn from "@/components/pages/jugadores/import-btn.vue";
 import ExportBtn from "@/components/pages/jugadores/export-btn.vue";
 </script>
 <template>
-  <SearchInput />
-  <ImportBtn />
-  <ExportBtn />
-  <CATBtn />
+  <SearchInput/>
+  <ImportBtn/>
+  <!--  <ExportBtn />-->
+  <CATBtn/>
 </template>

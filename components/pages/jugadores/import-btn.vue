@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { usePlayerStore } from "~/store";
+import {usePlayerStore} from "~/store";
 
-const { importModal } = storeToRefs(usePlayerStore());
+const {importModal} = storeToRefs(usePlayerStore());
 </script>
 <template>
   <SecondaryBtn
-    text="Import .csv"
-    class="mr-4"
-    @btn-click="importModal = !importModal"
+      text="Importar Jugadores"
+      class="mr-4"
+      @btn-click="importModal = !importModal"
   />
 </template>
