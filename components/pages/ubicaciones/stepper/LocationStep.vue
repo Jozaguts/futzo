@@ -116,7 +116,7 @@ onMounted(async () => {
     <v-row>
       <v-col cols="12">
         <v-autocomplete
-            label="Direccion del centro deportivo o canchas de juego"
+            label="Dirección del centro deportivo o canchas de juego"
             v-model="searchString"
             :items="foundedLocations"
             outlined
