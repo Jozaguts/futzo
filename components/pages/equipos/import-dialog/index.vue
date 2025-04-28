@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import HeaderCard from "~/components/pages/jugadores/import-dialog/header.vue";
-import Form from "@/components/pages/jugadores/import-dialog/form.vue";
-import Drops from "@/components/pages/jugadores/import-dialog/drops.vue";
+import HeaderCard from "~/components/pages/equipos/import-dialog/header.vue";
+import Form from "@/components/pages/equipos/import-dialog/form.vue";
+import Drops from "@/components/pages/equipos/import-dialog/drops.vue";
 import {storeToRefs} from "pinia";
 import {useTeamStore, useTournamentStore} from "~/store";
 import type {Tournament} from "~/models/tournament";
