@@ -71,8 +71,9 @@ export const useTeamStore = defineStore("teamStore", () => {
             });
     }
 
-    async function importTeamsHandler(file: File) {
+    async function importTeamsHandler(file: File, tournamentId: number) {
         const formData = new FormData();
+        formData.append("tournament_id", tournamentId.toString());
         formData.append('file', file);
 
         await client("/api/v1/admin/teams/import", {

@@ -317,6 +317,12 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         sort: "asc",
     });
 
+    const tournamentsInCreatedState = computed(() => {
+        return tournaments.value.filter(
+            (tournament) => tournament.status === "creado",
+        );
+    })
+
     const tournamentLocations = ref<TournamentLocation[]>(
         [] as TournamentLocation[],
     );
@@ -467,7 +473,6 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         isEdition,
         tournamentId,
         tournamentToEdit,
-        updateTournamentStatus,
         pagination,
         markAsCompleted,
         noTournaments,
@@ -481,6 +486,7 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         tournamentLocationStoreRequest,
         selectedLocations,
         selectedLocationsHasError,
+        tournamentsInCreatedState,
         getTournamentLocations,
         loadTournaments,
         storeTournament,
@@ -488,5 +494,6 @@ export const useTournamentStore = defineStore("tournamentStore", () => {
         $reset,
         updateTournament,
         storeTournamentLocation,
+        updateTournamentStatus,
     };
 });
