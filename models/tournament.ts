@@ -1,3 +1,5 @@
+import type {LocationAvailability} from "~/models/Location";
+
 export type TournamentLocationStoreRequest = {
     tournamentId: number;
     location: Location;
@@ -35,6 +37,7 @@ export interface Tournament {
     image: string;
     category_id: number;
     slug: string;
+    available_places: number;
 }
 
 export interface TournamentForm {
