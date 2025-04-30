@@ -222,6 +222,15 @@ export const useTeamStore = defineStore("teamStore", () => {
             console.log(error);
         }
     };
+    const searchTeams = (value: string = '') => {
+        const client = useSanctumClient();
+        client(
+            `/api/v1/admin/teams/search?value=${value}`,
+        ).then(({data, pagination: _pagination}) => {
+            teams.value = data || [];
+            pagination.value = {...pagination.value, ..._pagination};
+        });
+    }
     const list = async () => {
         try {
             teams.value = await client("/api/v1/admin/teams/list");
@@ -258,6 +267,7 @@ export const useTeamStore = defineStore("teamStore", () => {
         updateTeam,
         list,
         importTeamsHandler,
-        downloadTemplate
+        downloadTemplate,
+        searchTeams,
     };
 });
