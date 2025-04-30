@@ -3,32 +3,30 @@ import type {RoundStatus} from "~/models/Schedule";
 import {useScheduleStore} from "~/store/useScheduleStore";
 
 const {schedulePagination} = storeToRefs(useScheduleStore());
-const changeHandler = async (value?: RoundStatus[]) => {
-  console.log(value)
+const changeHandler = async (value?: RoundStatus) => {
   useScheduleStore().schedulePagination.currentPage = 1
   useScheduleStore().schedules.rounds = []
   if (value?.length) {
     return useScheduleStore().getTournamentSchedules()
   } else {
-    useScheduleStore().schedulePagination.search = undefined
+    useScheduleStore().schedulePagination.filterBy = undefined
     await useScheduleStore().getTournamentSchedules()
   }
 }
 </script>
 <template>
   <v-select
-      max-width="200"
-      min-width="200"
+      max-width="220"
+      min-width="220"
       label="Jornadas"
       class="app-bar-secondary-btn mr-4"
       item-title="text"
       density="compact"
       item-value="value"
-      v-model="schedulePagination.search"
+      v-model="schedulePagination.filterBy"
       variant="outlined"
       hide-selected
       clearable
-      multiple
       @update:model-value="changeHandler"
       :items="[
       { value: 'programado', text: 'Programadas' },
@@ -43,12 +41,14 @@ const changeHandler = async (value?: RoundStatus[]) => {
     </template>
     <template #selection="{item,index}">
       <span class="app-bar-secondary-btn__input_text ">
-         <v-chip v-if="index < 1" :text="item.title"></v-chip>
+         <v-chip v-if="index < 1">
+           {{ item.title }} {{ schedulePagination?.search?.length - 1 ? `+${schedulePagination?.search?.length - 1}` : '' }}
+         </v-chip>
         <span
             v-if="index === 1"
             class="text-grey text-caption align-self-center"
         >
-        (+{{ model.length - 1 }} others)
+
       </span>
       </span>
     </template>

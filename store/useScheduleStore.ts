@@ -52,13 +52,14 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     );
     const noSchedules = computed(() => schedules.value?.rounds?.length === 0);
     const isLoadingSchedules = ref(false);
-    const schedulePagination = ref<IPagination & { search?: RoundStatus | RoundStatus[] }>({
+    const schedulePagination = ref<IPagination & { filterBy?: RoundStatus | string, search?: string }>({
         currentPage: 1,
         perPage: 10,
         lastPage: 1,
         total: 0,
         sort: "asc",
-        search: undefined
+        filterBy: undefined,
+        search: undefined,
     })
     const scheduleSettings = ref<ScheduleSettings>({
         start_date: new Date(),
@@ -118,15 +119,15 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
         isLoadingSchedules.value = true
         const client = useSanctumClient();
         let url = `/api/v1/admin/tournaments/${tournamentStore.tournamentId}/schedule?page=${schedulePagination.value.currentPage}`;
-        if (schedulePagination.value.search) {
-            if (Array.isArray(schedulePagination.value.search)) {
-                url += `&status[]=${schedulePagination.value.search.join('&status[]=')}`;
-            } else {
-                url += `&status=${schedulePagination.value.search}`;
-            }
-        } else {
-            url = `/api/v1/admin/tournaments/${tournamentStore.tournamentId}/schedule?page=${schedulePagination.value.currentPage}`;
+
+        if (schedulePagination.value.filterBy) {
+            url += `&filterBy=${schedulePagination.value.filterBy}`;
         }
+        if (schedulePagination.value.search) {
+            url += `&search=${schedulePagination.value.search}`;
+        }
+        
+
         const response = await client(url);
         const newRounds = response.rounds ?? [];
         if (!schedules.value.rounds) {
