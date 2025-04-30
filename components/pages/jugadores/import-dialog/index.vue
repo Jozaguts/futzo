@@ -3,21 +3,29 @@ import HeaderCard from "~/components/pages/jugadores/import-dialog/header.vue";
 import Form from "@/components/pages/jugadores/import-dialog/form.vue";
 import Drops from "@/components/pages/jugadores/import-dialog/drops.vue";
 import {storeToRefs} from "pinia";
-import {usePlayerStore} from "~/store";
+import {usePlayerStore, useTeamStore} from "~/store";
 
-const {importModal} = storeToRefs(usePlayerStore());
+const {importModal, isImporting} = storeToRefs(usePlayerStore());
+const {teams} = storeToRefs(useTeamStore());
 const {importPlayersHandler, downloadTemplate} = usePlayerStore();
+const {searchTeams} = useTeamStore();
+const isDownloadTemplate = ref(false);
+const teamId = ref();
 const leaveHandler = () => {
 };
 
 const file = ref<File>();
 const eventHandler = () => {
-  importPlayersHandler(file.value as File);
+  importPlayersHandler(file.value as File, teamId.value);
 };
-const showTeamsInput = ref(false);
-const teamId = ref();
-const teams = ref([])
+const showTeamsInput = computed(() => !!file.value)
 
+onMounted(() => {
+  searchTeams()
+})
+const searchTeamsHandler = useDebounceFn((value: string) => {
+  searchTeams(value)
+}, 600)
 </script>
 <template>
   <v-dialog
@@ -35,16 +43,18 @@ const teams = ref([])
       <v-container class="py-0">
         <v-row no-gutters>
           <v-col cols="6" class="d-flex justify-start" v-if="showTeamsInput">
-            <v-select
+            <v-autocomplete
+                @update:search="searchTeamsHandler"
                 class="ml-2"
                 density="compact"
                 variant="outlined"
-                label="Torneo"
+                label="Equipo"
                 item-value="id"
+                item-title="name"
                 v-model="teamId"
                 :items="teams"
             >
-            </v-select>
+            </v-autocomplete>
           </v-col>
           <v-col class="d-flex justify-end">
             <v-btn
@@ -52,8 +62,8 @@ const teams = ref([])
                 variant="outlined"
                 class="app-bar-secondary-btn mr-2"
                 @click="downloadTemplate"
-                :loading="loading"
-                :disabled="loading"
+                :loading="isDownloadTemplate"
+                :disabled="isDownloadTemplate"
                 size="small"
             >
               <template #prepend>
@@ -64,7 +74,7 @@ const teams = ref([])
           </v-col>
         </v-row>
       </v-container>
-      <Drops v-model:file="file" @import-players="eventHandler"/>
+      <Drops v-model:file="file" @import-players="eventHandler" :disabled="!teamId" :loading="isImporting"/>
     </v-card>
   </v-dialog>
 </template>
