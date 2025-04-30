@@ -2,6 +2,7 @@ import {defineStore} from "pinia";
 import type {FormSteps, Player, PlayerStoreRequest} from "~/models/Player";
 import prepareForm from "~/utils/prepareFormData";
 import type {IPagination} from "~/interfaces";
+import type {Team} from "~/models/Team";
 
 export const usePlayerStore = defineStore("playerStore", () => {
     const {toast} = useToast();
@@ -12,6 +13,7 @@ export const usePlayerStore = defineStore("playerStore", () => {
     const noPlayers = computed(() => players.value.length === 0);
     const playerStoreRequest = ref({} as PlayerStoreRequest);
     const playerId = ref(null);
+    const availableTeams = ref<Team[]>([]);
     const pagination = ref<IPagination>({
         currentPage: 1,
         perPage: 10,
@@ -21,6 +23,7 @@ export const usePlayerStore = defineStore("playerStore", () => {
     });
     const importModal = ref(false);
     const loading = ref(false);
+    const isImporting = ref(false);
 
     const downloadTemplate = async () => {
         const client = useSanctumClient();
@@ -91,9 +94,11 @@ export const usePlayerStore = defineStore("playerStore", () => {
             console.log(error);
         }
     };
-    const importPlayersHandler = async (file: File) => {
+    const importPlayersHandler = async (file: File, teamId: number) => {
+        isImporting.value = true;
         const client = useSanctumClient();
         const formData = new FormData();
+        formData.append("team_id", teamId.toString());
         formData.append("file", file);
         await client("/api/v1/admin/players/import", {
             method: "POST",
@@ -116,7 +121,8 @@ export const usePlayerStore = defineStore("playerStore", () => {
                     error.data?.message ??
                     "No se pudo importar el documento. Verifica su información e inténtalo de nuevo.",
                 );
-            });
+            })
+            .finally((() => isImporting.value = false));
     };
     const steps = ref<FormSteps>({
         current: "basic-info",
@@ -142,6 +148,8 @@ export const usePlayerStore = defineStore("playerStore", () => {
         playerId,
         pagination,
         importModal,
+        availableTeams,
+        isImporting,
         updatePlayer,
         createPlayer,
         getPlayers,
