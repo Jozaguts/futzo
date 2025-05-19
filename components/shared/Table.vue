@@ -1,54 +1,59 @@
 <script lang="ts" setup>
-import type { IPagination } from "~/interfaces";
+  import type { IPagination } from '~/interfaces'
+  import CopyLink from '~/components/shared/copy-link.vue'
 
-type Header = {
-  title: string;
-  value: string;
-  align?: "start" | "center" | "end";
-  sortable?: boolean;
-  filterable?: boolean;
-  divider?: boolean;
-};
+  type Header = {
+    title: string
+    value: string
+    align?: 'start' | 'center' | 'end'
+    sortable?: boolean
+    filterable?: boolean
+    divider?: boolean
+  }
 
-defineProps({
-  headers: {
-    type: Array as PropType<Header[]>,
-    required: true,
-  },
-  items: {
-    type: Array,
-    required: true,
-  },
-  itemKey: {
+  defineProps({
+    headers: {
+      type: Array as PropType<Header[]>,
+      required: true,
+    },
+    items: {
+      type: Array,
+      required: true,
+    },
+    itemKey: {
+      type: String,
+      default: 'name',
+    },
+    statusHandler: {
+      type: Function as PropType<(item: string) => string>,
+      required: false,
+    },
+    showIndex: {
+      type: Boolean,
+      default: false,
+    },
+    customName: {
+      type: Boolean,
+      default: false,
+    },
+    showFooter: {
+      type: Boolean,
+      default: true,
+    },
+    paginate: {
+      type: Function,
+      required: true,
+    },
+    showLink: {
+      type: Boolean,
+      default: false,
+    },
+  })
+  const search = defineModel('search', {
     type: String,
-    default: "name",
-  },
-  statusHandler: {
-    type: Function as PropType<(item: string) => string>,
     required: false,
-  },
-  showIndex: {
-    type: Boolean,
-    default: false,
-  },
-  customName: {
-    type: Boolean,
-    default: false,
-  },
-  showFooter: {
-    type: Boolean,
-    default: true,
-  },
-  paginate: {
-    type: Function,
-    required: true,
-  },
-});
-const search = defineModel("search", {
-  type: String,
-  required: false,
-});
-const pagination = defineModel<IPagination>("pagination", { required: true });
+  })
+  const pagination = defineModel<IPagination>('pagination', { required: true })
 </script>
 <template>
   <v-data-table
@@ -114,6 +119,11 @@ const pagination = defineModel<IPagination>("pagination", { required: true });
         <slot name="actions" :item="item"></slot>
       </div>
     </template>
+    <!--    link }}-->
+    <template v-if="showLink" #[`item.link`]="{ item }">
+      <CopyLink :item="item" />
+    </template>
+    <!--    link -->
     <template #bottom>
       <v-divider />
       <v-pagination
