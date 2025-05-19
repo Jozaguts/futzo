@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-  defineProps({
+  const props = defineProps({
     item: {
       type: Object,
       required: true,
     },
   })
   const copied = ref(false)
-  const copyText = async (text = 'test') => {
+  const copyText = async (text: string) => {
     if (navigator.clipboard) {
       return navigator.clipboard.writeText(text)
     } else {
@@ -21,7 +21,10 @@
   }
 
   const setCopied = async () => {
-    await copyText()
+    const baseUrl = useRuntimeConfig().public.baseUrl
+    await copyText(
+      `${baseUrl}/torneos/${props.item.slug}/inscripcion?tournament=${props.item.id}`
+    )
     copied.value = true
     setTimeout(() => {
       copied.value = false
