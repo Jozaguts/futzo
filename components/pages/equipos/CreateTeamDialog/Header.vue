@@ -7,7 +7,6 @@
     () => page.name === 'torneos-torneo-inscripcion'
   )
   const title = computed(() => {
-    console.log(page)
     switch (steps.value.current) {
       case 'createTeam':
         return isEdition.value
