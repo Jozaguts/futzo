@@ -11,15 +11,15 @@
       case 'createTeam':
         return isEdition.value
           ? `${isInscriptionPage.value ? 'Editar' : 'Editar'} equipo`
-          : `${isInscriptionPage.value ? 'Inscribir' : 'Crear'} equipo`
+          : `${isInscriptionPage.value ? 'Pre inscribir' : 'Crear'} equipo`
       case 'createDt':
         return isEdition.value
           ? `${isInscriptionPage.value ? 'Editar' : 'Editar'} DT`
-          : `${isInscriptionPage.value ? 'Inscribir' : 'Crear'} DT`
+          : `${isInscriptionPage.value ? 'Pre inscribir' : 'Crear'} DT`
       case 'createOwner':
         return isEdition.value
           ? `${isInscriptionPage.value ? 'Editar' : 'Editar'} dueño`
-          : `${isInscriptionPage.value ? 'Inscribir' : 'Crear'} dueño`
+          : `${isInscriptionPage.value ? 'Pre inscribir' : 'Crear'} dueño`
     }
   })
   const subtitle = computed(() => {
