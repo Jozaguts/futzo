@@ -67,7 +67,7 @@
           await teamStore.createTeam().then(() => {
             const route = useRoute()
             if (route.name === 'torneos-torneo-inscripcion') {
-              emits('registered-team')
+              emits('registered-team', teamStoreRequest.value)
             }
           })
         }

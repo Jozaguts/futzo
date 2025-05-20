@@ -13,7 +13,6 @@
     saveImage,
   } from '~/composables/useImage'
   import { usePlaceSearch } from '~/utils/googleSearch'
-  import type { Tournament } from '~/models/tournament'
 
   let locationsFind = ref([])
   const { tournaments, tournament } = storeToRefs(useTournamentStore())
