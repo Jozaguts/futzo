@@ -53,13 +53,12 @@
   }
   const registeredTeamHandler = async (value: TeamStoreRequest) => {
     await init()
-    useToast().toast(
-      'success',
-      'Equipos',
-      'El equipo fue registrado correctamente'
-    )
     registeredTeam.value = true
     teamRequest.value = value as TeamStoreRequest
+  }
+  const finisHandler = () => {
+    registeredTeam.value = false
+    useRouter().push({ name: 'login' })
   }
 </script>
 <template>
@@ -107,6 +106,38 @@
         </v-col>
       </v-row>
     </client-only>
+    <Dialog
+      :loading="false"
+      :model-value="registeredTeam"
+      title="Equipo registrado con éxito"
+      subtitle="El equipo ha sido creado y la solicitud de registro fue enviada correctamente."
+      icon-name="game-icons:babyfoot-players"
+    >
+      <template #v-card-text>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12" class="text-center">
+              <p class="text-body-2">
+                Actualmente se encuentra en proceso de revisión por parte de la
+                administración del torneo. Una vez aprobada, recibirás una
+                notificación con los siguientes pasos para continuar con la
+                participación.
+              </p>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </template>
+      <template #actions>
+        <v-btn
+          class="futzo-button ml-auto"
+          @click="finisHandler"
+          :loading="false"
+          variant="flat"
+        >
+          Terminar
+        </v-btn>
+      </template>
+    </Dialog>
   </v-container>
 </template>
 <style lang="sass">
