@@ -15,7 +15,7 @@
       required: true,
     },
   })
-  const startHourSelected = ref<string[]>(['*'])
+  const startHourSelected = ref<string[]>([])
 
   const emits = defineEmits(['input-date-changed', 'day-disabled'])
   const selectHandler = (id: string, day: Day, value: string[]) => {
@@ -46,9 +46,15 @@
             >
               {{ props.label }}
             </p>
-            <small :class="day.enabled ? '' : 'text-disabled'"
+            <small
+              v-if="
+                props.day.intervals.filter((interval) => !interval.disabled)
+                  .length
+              "
+              :class="day.enabled ? '' : 'text-disabled'"
               >Horario disponible: {{ props.day.available_range }}</small
             >
+            <small class="text-danger" v-else>No hay horas disponible</small>
           </div>
         </div>
       </v-col>
