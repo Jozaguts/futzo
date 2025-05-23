@@ -338,6 +338,14 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     tournamentId.value = undefined;
   }
 
+  async function tournamentFields($tournamentId: number) {
+    const client = useSanctumClient();
+    const { data } = await client(
+      `api/v1/admin/tournaments/${$tournamentId}/fields`
+    );
+    return data;
+  }
+
   async function loadTournaments() {
     loading.value = true;
     const client = useSanctumClient();
@@ -498,5 +506,6 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     updateTournament,
     storeTournamentLocation,
     updateTournamentStatus,
+    tournamentFields,
   };
 });
