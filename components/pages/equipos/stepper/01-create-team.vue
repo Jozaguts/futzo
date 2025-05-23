@@ -101,7 +101,7 @@
           :items="tournaments"
           placeholder="p.ej. Clausura "
           outlined
-          :disabled="!isEdition || !isInscription"
+          :disabled="isEdition || isInscription"
           v-model="fields.tournament_id.fieldValue"
           v-bind="fields.tournament_id.fieldPropsValue"
           density="compact"
