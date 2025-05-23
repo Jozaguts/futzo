@@ -119,7 +119,6 @@
   })
   onBeforeUnmount(async () => {
     schedulePagination.value.currentPage = 1
-
   })
   const editSchedule = async (value: Match) => {
     if (!fields.value.length) {
@@ -279,7 +278,7 @@
                     <div class="details">
                       <p>
                         {{ match.details.date }}
-                        <span>{{ match.details.time }}</span>
+                        <span>{{ match.details.raw_time }}</span>
                       </p>
                       <p>{{ match.details?.location.name }}</p>
                       <p>{{ match.details?.field.name }}</p>
