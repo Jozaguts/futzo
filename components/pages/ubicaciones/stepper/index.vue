@@ -1,14 +1,26 @@
 <script lang="ts" setup>
 import {useLocationStore} from '~/store'
-import IndicatorStep from "~/components/shared/IndicatorStep.vue";
-import LocationStep from "~/components/pages/ubicaciones/stepper/LocationStep.vue";
-import AvailabilityStep from "~/components/pages/ubicaciones/stepper/AvailabilityStep.vue";
-import type {CurrentStep} from "~/models/Location";
+import IndicatorStep from '~/components/shared/IndicatorStep.vue'
+import LocationStep from '~/components/pages/ubicaciones/stepper/LocationStep.vue'
+import AvailabilityStep from '~/components/pages/ubicaciones/stepper/AvailabilityStep.vue'
+import type {CurrentStep} from '~/models/Location'
 
-const {locationStoreRequest, isEdition, formSteps, isAllStepsCompleted, locationDialog} = storeToRefs(useLocationStore())
+const {
+  locationStoreRequest,
+  isEdition,
+  formSteps,
+  isAllStepsCompleted,
+  locationDialog,
+} = storeToRefs(useLocationStore())
 const emits = defineEmits(['next', 'back', 'close'])
-const locationStepRef = useTemplateRef<{ validate: Function; handleSubmit: Function }>('locationStepRef',);
-const availabilityStepRef = useTemplateRef<{ validate: Function; handleSubmit: Function }>('availabilityStepRef');
+const locationStepRef = useTemplateRef<{
+  validate: Function
+  handleSubmit: Function
+}>('locationStepRef')
+const availabilityStepRef = useTemplateRef<{
+  validate: Function
+  handleSubmit: Function
+}>('availabilityStepRef')
 const textButton = computed(() => {
   if (formSteps.value.current === 'location') {
     return 'Siguiente'
@@ -16,38 +28,38 @@ const textButton = computed(() => {
     return isEdition.value ? 'Guardar Cambios' : 'Crear ubicación'
   }
 })
-const backTextButton = computed(() => formSteps.value.current === 'location' ? 'Cancelar' : 'Anterior')
+const backTextButton = computed(() =>
+    formSteps.value.current === 'location' ? 'Cancelar' : 'Anterior'
+)
 const nextStepHandler = async () => {
   if (!locationStoreRequest.value.completed) {
     return
   }
-  const stepsOrder: CurrentStep[] = ["location", "availability"];
-  const currentStepIndex = stepsOrder.indexOf(formSteps.value.current);
+  const stepsOrder: CurrentStep[] = ['location', 'availability']
+  const currentStepIndex = stepsOrder.indexOf(formSteps.value.current)
   if (!formSteps.value.steps[currentStepIndex].completed) {
-    formSteps.value.steps[currentStepIndex].completed = true;
+    formSteps.value.steps[currentStepIndex].completed = true
   }
-  const isLastStep = currentStepIndex === stepsOrder.length - 1;
+  const isLastStep = currentStepIndex === stepsOrder.length - 1
 
   isLastStep
       ? await saveHandler()
-      : formSteps.value.current = stepsOrder[currentStepIndex + 1];
+      : (formSteps.value.current = stepsOrder[currentStepIndex + 1])
 }
 
 async function saveHandler() {
   isEdition.value
       ? await useLocationStore().updateLocation()
-      : await useLocationStore().storeLocation();
+      : await useLocationStore().storeLocation()
 }
 
 const backStepHandler = () => {
-  console.log(formSteps.value.current)
   if (formSteps.value.current === 'location') {
     useLocationStore().resetLocationStoreRequest()
     locationDialog.value = false
   }
   formSteps.value.current = 'location'
 }
-
 </script>
 <template>
   <v-card-text>
@@ -61,17 +73,34 @@ const backStepHandler = () => {
         <v-col>
           <transition-slide
               group
-              :offset="{ enter: ['-100%', 0],leave: ['100%', 0]}"
+              :offset="{ enter: ['-100%', 0], leave: ['100%', 0] }"
           >
-            <LocationStep ref="locationStepRef" v-if="formSteps.current === 'location'"/>
-            <AvailabilityStep ref="availabilityStepRef" v-else-if="formSteps.current === 'availability'"/>
+            <LocationStep
+                ref="locationStepRef"
+                v-if="formSteps.current === 'location'"
+            />
+            <AvailabilityStep
+                ref="availabilityStepRef"
+                v-else-if="formSteps.current === 'availability'"
+            />
           </transition-slide>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12 d-flex justify-space-between">
-          <SecondaryBtn class="bg-white w-btn " :text="backTextButton" @click="backStepHandler"/>
-          <PrimaryBtn :show-icon="false" class="w-btn" :text="textButton" :disabled="!isAllStepsCompleted" variant="elevated" @click="nextStepHandler"/>
+          <SecondaryBtn
+              class="bg-white w-btn"
+              :text="backTextButton"
+              @click="backStepHandler"
+          />
+          <PrimaryBtn
+              :show-icon="false"
+              class="w-btn"
+              :text="textButton"
+              :disabled="!isAllStepsCompleted"
+              variant="elevated"
+              @click="nextStepHandler"
+          />
         </v-col>
       </v-row>
     </v-container>
