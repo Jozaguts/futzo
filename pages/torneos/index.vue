@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { useTournamentStore } from "~/store";
-import { onMounted } from "#imports";
-import AppBar from "~/components/layout/AppBar.vue";
-import TournamentAppBarButtons from "~/components/pages/torneos/tournament-app-bar-buttons.vue";
-import TournamentTable from "~/components/pages/torneos/tournament-table.vue";
-import NoTournaments from "~/components/pages/torneos/no-tournament.vue";
-import TournamentDialog from "~/components/pages/torneos/dialog/index.vue";
+  import { useTournamentStore } from '~/store'
+  import { onMounted } from '#imports'
+  import AppBar from '~/components/layout/AppBar.vue'
+  import TournamentAppBarButtons from '~/components/pages/torneos/tournament-app-bar-buttons.vue'
+  import TournamentTable from '~/components/pages/torneos/tournament-table.vue'
+  import NoTournaments from '~/components/pages/torneos/no-tournament.vue'
+  import TournamentDialog from '~/components/pages/torneos/dialog/index.vue'
 
-onMounted(() => {
-  useTournamentStore().loadTournaments();
-});
+  onMounted(() => {
+    useTournamentStore().tournamentId = undefined
+    useTournamentStore().loadTournaments()
+  })
 </script>
 <template>
   <PageLayout>
