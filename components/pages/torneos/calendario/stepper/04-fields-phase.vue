@@ -40,7 +40,7 @@ const backHandler = () => {
 onMounted(async () => {
   const locationIds = scheduleStoreRequest.value.general.locations.map(location => location.id)
   const client = useSanctumClient()
-  fields.value = await client<Promise<LocationFieldsRequest[]>>(`/api/v1/admin/locations/fields?location_ids=${locationIds.join(',')}`)
+  fields.value = await client<Promise<LocationFieldsRequest[]>>(`/api/v1/admin/locations/fields?location_ids=${locationIds.join(',')}&tournament_id=${tournamentId.value}`)
   scheduleStoreRequest.value.fields_phase = fields.value
   currentStep.value = fields.value[0]?.step
 })
@@ -92,7 +92,7 @@ const fieldDisableHandler = (data: NextHandlerType) => {
                 @back="backHandler"
                 @field-disabled="fieldDisableHandler"
             ></LocationFormStep>
-            <template #actions><small class="text-caption">* Presione Asignar para avanzar</small></template>
+            <template #actions><small class="text-caption">* Marcar como completado para avanzar/finalizar</small></template>
           </v-stepper-vertical-item>
         </v-stepper-vertical>
       </v-col>

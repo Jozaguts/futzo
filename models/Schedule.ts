@@ -4,7 +4,7 @@ export type ScheduleStoreRequest = {
     general: FormGeneralScheduleRequest,
     regular_phase: FormRegularPhaseStep
     elimination_phase: FormEliminationPhaseStep
-    fields_phase: FormLocationAvailabilityStep[]
+    fields_phase: LocationFieldsRequest[]
 }
 export type FormGeneralScheduleRequest = {
     tournament_id: number;
@@ -261,6 +261,7 @@ export type LocationFieldsRequest = {
     disabled: boolean;
     availability: Availability;
 }
+
 export type Day = {
     enabled: boolean;
     available_range: AvailableRange;
@@ -279,9 +280,10 @@ interface IntervalValue {
 }
 
 export type Interval = {
-    value: Text;
+    value: IntervalValue;
     text: Text;
     selected: boolean;
+    disabled: boolean;
 }
 export type NextHandlerType = {
     availability: Availability
