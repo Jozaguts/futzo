@@ -58,7 +58,20 @@ export type Day = {
     enabled: boolean
     start: AvailabilityTime
     end: AvailabilityTime
+    intervals: Interval[];
+    available_range: string;
 }
+export type Interval = {
+    disabled: boolean
+    selected: boolean
+    text: string
+    value: IntervalValue
+}
+export type IntervalValue = {
+    start: string;
+    end: string;
+};
+
 export type TimeRange = {
     enabled: boolean;
     start: AvailabilityTime;

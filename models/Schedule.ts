@@ -270,7 +270,12 @@ export type Day = {
 export type DayHandlerType = {
     id: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday',
     day: Day,
-    value: string[]
+    value: IntervalValue[]
+}
+
+interface IntervalValue {
+    start: string
+    end: string
 }
 
 export type Interval = {

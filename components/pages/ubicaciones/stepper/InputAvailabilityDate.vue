@@ -1,112 +1,82 @@
 <script lang="ts" setup>
-  import type { Day, Label, WeekDay } from '~/models/Location'
+import type {Day, IntervalValue} from '~/models/Location'
+import type {Label, WeekDay} from '~/models/Schedule'
 
-  const props = defineProps({
-    day: {
-      type: Object as PropType<Day>,
-      required: true,
-    },
-    label: {
-      type: String as PropType<Label>,
-      required: true,
-    },
-    id: {
-      type: String as PropType<WeekDay>,
-      required: true,
-    },
-  })
-  const startHourSelected = ref<string[]>([])
-
-  const emits = defineEmits(['input-date-changed', 'day-disabled'])
-  const selectHandler = (id: string, day: Day, value: string[]) => {
-    if (value.length > 1 && value.some((value) => value === '*')) {
-      startHourSelected.value = ['*']
-      value = ['*']
+const props = defineProps({
+  day: {
+    type: Object as PropType<Day>,
+    required: true,
+  },
+  label: {
+    type: String as PropType<Label>,
+    required: true,
+  },
+  id: {
+    type: String as PropType<WeekDay>,
+    required: true,
+  },
+})
+const selected = ref<IntervalValue[]>([])
+const selectableValues = computed<IntervalValue[]>(() =>
+    props.day.intervals
+        .filter(i => !i.disabled)
+        .map(i => i.value)
+)
+const allSelected = computed<boolean>({
+  get: () =>
+      selected.value.length > 0 &&
+      selected.value.length === selectableValues.value.length,
+  set(value) {
+    if (value) {
+      // marcar todos
+      selected.value = [...selectableValues.value]
+    } else {
+      // desmarcar todos
+      selected.value = []
     }
-    startHourSelected.value.sort()
-    emits('input-date-changed', {
-      id,
-      day,
-      value,
-    })
   }
-  const dayDisabledHandler = () => {
-    emits('day-disabled', props.id)
-  }
+})
+watch(selected, newSlots => {
+  emits('input-date-changed', {id: props.id, value: newSlots})
+})
+const emits = defineEmits<{
+  (e: 'input-date-changed', payload: { id: WeekDay; value: IntervalValue[] }): void
+  (e: 'day-disabled', id: WeekDay): void
+}>()
+
+const dayDisabledHandler = () => {
+  emits('day-disabled', props.id)
+}
 </script>
 <template>
   <v-container class="pa-0 pb-1">
     <v-row no-gutters>
-      <v-col cols="12">
-        <div class="d-flex w-100">
-          <div class="d-75">
-            <p
-              class="text-body-1"
-              :class="day.enabled ? 'text-primary' : 'text-disabled'"
-            >
-              {{ props.label }}
-            </p>
-            <small
-              v-if="
-                props.day.intervals.filter((interval) => !interval.disabled)
-                  .length
-              "
-              :class="day.enabled ? '' : 'text-disabled'"
-              >Horario disponible: {{ props.day.available_range }}</small
-            >
-            <small class="text-danger" v-else>No hay horas disponible</small>
-          </div>
-        </div>
-      </v-col>
       <v-col cols="12" class="pr-2 pt-2">
-        <div>
-          <v-select
-            label="Horas seleccionadas"
-            v-model="startHourSelected"
-            :items="
-              props.day.intervals.filter((interval) => !interval.disabled)
-            "
-            item-value="value"
-            item-title="text"
-            clearable
-            :disabled="!props.day.enabled"
-            multiple
-            @update:modelValue="
-              (value: string[]) => selectHandler(props.id, props.day, value)
-            "
-          >
-            <template #item="{ props }">
-              <v-list-item
-                v-bind="props"
-                v-if="!startHourSelected.includes('*')"
-              ></v-list-item>
-            </template>
-          </v-select>
-          <v-tooltip location="left" max-width="120">
-            <template #default>
-              <small class="text-caption">{{
-                day.enabled ? 'Desactivar dia' : 'Activar dia'
-              }}</small>
-            </template>
-
-            <template v-slot:activator="{ props }">
-              <v-btn
-                @click="dayDisabledHandler"
-                v-bind="props"
-                class="float-right"
-                icon
-                size="small"
-                variant="text"
+        <v-card class="futzo-rounded">
+          <v-card-title> {{ props.label }}</v-card-title>
+          <v-card-subtitle>Horas disponibles {{ props.day.available_range }}</v-card-subtitle>
+          <v-card-text>
+            <v-switch v-model="allSelected"
+                      label="Todo el día"></v-switch>
+            <v-chip-group
+                column
+                multiple
+                selected-class="text-primary"
+                v-model="selected"
+            >
+              <v-chip
+                  v-for="(interval, index) in props.day.intervals"
+                  :key="index"
+                  filter
+                  :value="interval.value"
+                  :disabled="interval.disabled"
+                  class="ma-1"
+                  :text="interval.text"
               >
-                <Icon
-                  :name="day.enabled ? 'mdi:lock-open' : 'mdi:lock'"
-                  size="24"
-                  :class="day.enabled ? 'text-disabled' : 'bg-primary'"
-                ></Icon>
-              </v-btn>
-            </template>
-          </v-tooltip>
-        </div>
+              </v-chip>
+            </v-chip-group>
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
