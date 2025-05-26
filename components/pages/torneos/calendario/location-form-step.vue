@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import InputAvailabilityDate from '~/components/pages/ubicaciones/stepper/InputAvailabilityDate.vue'
-import {useScheduleStore, useTournamentStore} from '~/store'
+import {useScheduleStore} from '~/store'
 import type {
   Day,
   DayHandlerType,
-  Interval,
   LocationFieldsRequest,
-  NextHandlerType,
+  NextHandlerType, Text,
   WeekDay,
 } from '~/models/Schedule'
-import type {IntervalValue} from "~/models/Location";
 
 const props = defineProps({
   field: {
@@ -29,21 +27,18 @@ const form = ref<NextHandlerType>({
   availability: props.field.availability,
 })
 const inputDateChangedHandler = ({id: day, value: selectedSlots}: DayHandlerType) => {
-  // recorremos todos los fields en el store
-  scheduleStoreRequest.value.fields_phase.forEach((location) => {
+  console.log({day, selectedSlots})
+  scheduleStoreRequest.value.fields_phase.forEach(field => {
+
     if (
-        location.location_id === props.field.location_id &&
-        location.field_id === props.field.field_id
+        field.location_id === props.field.location_id &&
+        field.field_id === props.field.field_id
     ) {
-      // para este día concreto, marcamos `selected` según el array
-      location.availability[day].intervals.forEach((interval) => {
-        const slot = interval.value
-        interval.selected = selectedSlots.some(
-            sel => sel.start === slot.start && sel.end === slot.end
-        )
-      })
+      field.availability[day].intervals.forEach(interval => {
+        interval.selected = selectedSlots.includes(interval.value);
+      });
     }
-  })
+  });
 }
 const availabilities = computed(() => {
   let data = {} as Record<WeekDay, Day>

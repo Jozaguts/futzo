@@ -271,7 +271,7 @@ export type Day = {
 export type DayHandlerType = {
     id: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday',
     day: Day,
-    value: IntervalValue[]
+    value: Text[]
 }
 
 interface IntervalValue {
@@ -280,7 +280,7 @@ interface IntervalValue {
 }
 
 export type Interval = {
-    value: IntervalValue;
+    value: Text;
     text: Text;
     selected: boolean;
     disabled: boolean;
@@ -305,8 +305,6 @@ export type Availability = {
 export type AvailableRange = string;
 export type Label = "Lunes" | "Martes" | "Miércoles" | "Jueves" | "Viernes" | "Sábado" | "Domingo";
 export type Text =
-    "*"
-    | "Todo el dia"
     | "00:00"
     | "01:00"
     | "02:00"
