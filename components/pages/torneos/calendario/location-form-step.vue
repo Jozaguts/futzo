@@ -27,7 +27,6 @@ const form = ref<NextHandlerType>({
   availability: props.field.availability,
 })
 const inputDateChangedHandler = ({id: day, value: selectedSlots}: DayHandlerType) => {
-  console.log({day, selectedSlots})
   scheduleStoreRequest.value.fields_phase.forEach(field => {
 
     if (
