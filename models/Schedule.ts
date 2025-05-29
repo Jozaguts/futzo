@@ -84,6 +84,7 @@ export type DatePickerAttributes = {
     "multi-calendars"?: { solo?: boolean };
     "v-model"?: Ref<Date> | Ref<[Date, Date]>;
     range?: boolean;
+    "max-date"?: Date;
 };
 
 export type TournamentSchedule = {
@@ -112,6 +113,7 @@ export type MatchDetails = {
     field: Field;
     location: Field;
     referee: string;
+    raw_date: string
 }
 export type Field = {
     id: number;

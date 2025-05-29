@@ -127,7 +127,8 @@ const editSchedule = async (value: Match) => {
     )
   }
   const client = useSanctumClient()
-  match.value = await client(`/api/v1/admin/games/${value.id}`)
+  const date = new Date(value.start_date).toLocaleDateString()
+  match.value = await client(`/api/v1/admin/games/${value.id}?date=${date}&field_id=${value.details.field.id}`)
   showReScheduleDialog.value = true
 }
 const showReScheduleDialog = ref(false)
@@ -308,7 +309,7 @@ const fields = ref<Field[]>([] as Field[])
   <ReScheduleGame
       v-if="match"
       v-model:show="showReScheduleDialog"
-      v-model:match="match"
+      :match="match"
       :fields="fields"
   />
 </template>
