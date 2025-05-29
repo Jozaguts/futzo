@@ -34,6 +34,11 @@ const props = defineProps({
     default: () => false,
     required: false,
   },
+  maxDate: {
+    type: Date,
+    default: () => false,
+    required: false,
+  }
 });
 const {getDate, formatDate, customPosition, selectDate, dp} = useCalendar();
 const emits = defineEmits(['start_date_updated', 'end_date_updated']);
@@ -59,6 +64,9 @@ if (props.multiCalendar) {
 }
 if (props.minDate) {
   attr["min-date"] = new Date();
+}
+if (props.maxDate) {
+  attr["max-date"] = props.maxDate;
 }
 watch(
     dates,
