@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import '@vuepic/vue-datepicker/dist/main.css'
 import type {Match, Field} from '~/models/Schedule'
+import {useScheduleStore} from "~/store";
 
 const props = defineProps({
   fields: {
@@ -38,8 +39,9 @@ const saveChanges = () => {
       selected_time: form.value.selected_time,
       day: form.value.details.day,
     }
-  }).then(() => {
-    show.value = false
+  }).then(async () => {
+    useScheduleStore().schedulePagination.currentPage = 1
+    await useScheduleStore().getTournamentSchedules()
     useToast().toast('success', 'Partido reprogramado correctamente', 'El partido se ha reprogramado con éxito')
     show.value = false
   }).catch((error) => {
