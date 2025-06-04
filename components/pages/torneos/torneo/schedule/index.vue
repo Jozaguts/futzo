@@ -6,15 +6,20 @@ import {useToast} from '~/composables/useToast'
 import type {Field, Match, RoundStatus} from '~/models/Schedule'
 
 const {tournamentId, loading} = storeToRefs(useTournamentStore())
+const showReScheduleDialog = ref(false)
+type MatchProps = {
+  id: number,
+  field_id: number,
+  date: string
+}
+const matchProps = ref<MatchProps>()
 const {
   schedulePagination,
   isLoadingSchedules,
   schedules,
   scheduleRoundStatus,
 } = storeToRefs(useScheduleStore())
-const load = async ({
-                      done,
-                    }: {
+const load = async ({done}: {
   done: (status: 'ok' | 'empty' | 'error') => void
 }) => {
   if (
@@ -120,20 +125,14 @@ onBeforeMount(async () => {
 onBeforeUnmount(async () => {
   schedulePagination.value.currentPage = 1
 })
-const editSchedule = async (value: Match) => {
-  if (!fields.value.length) {
-    fields.value = await useTournamentStore().tournamentFields(
-        tournamentId.value as number
-    )
+const showMatchDetails = (matchId: number, fieldId: number, date: string) => {
+  matchProps.value = {
+    id: matchId,
+    field_id: fieldId,
+    date
   }
-  const client = useSanctumClient()
-  const date = new Date(value.start_date).toLocaleDateString()
-  match.value = await client(`/api/v1/admin/games/${value.id}?date=${date}&field_id=${value.details.field.id}`)
   showReScheduleDialog.value = true
 }
-const showReScheduleDialog = ref(false)
-const match = ref<Match>()
-const fields = ref<Field[]>([] as Field[])
 </script>
 <template>
   <v-row v-if="schedules.rounds.length">
@@ -292,9 +291,9 @@ const fields = ref<Field[]>([] as Field[])
                           (match.status as RoundStatus) === 'completado' ||
                           (match.status as RoundStatus) === 'cancelado'
                         "
-                          @click="editSchedule(match)"
+                          @click="showMatchDetails(match.id, match.details.field.id, match.details.raw_date)"
                       >
-                        Cambiar horario
+                        Reprogramar
                       </v-btn>
                     </div>
                   </div>
@@ -305,13 +304,14 @@ const fields = ref<Field[]>([] as Field[])
         </v-infinite-scroll>
       </v-sheet>
     </v-col>
+    <ReScheduleGame
+        v-model:show="showReScheduleDialog"
+        :field-id="matchProps?.field_id as number"
+        :match-id="matchProps?.id as number"
+        :date="matchProps?.date as string"
+    />
   </v-row>
-  <ReScheduleGame
-      v-if="match"
-      v-model:show="showReScheduleDialog"
-      :match="match"
-      :fields="fields"
-  />
+
 </template>
 <style lang="sass">
 @use '~/assets/scss/pages/schedule.sass'
