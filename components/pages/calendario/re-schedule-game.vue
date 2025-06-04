@@ -1,43 +1,41 @@
 <script setup lang="ts">
 import '@vuepic/vue-datepicker/dist/main.css'
 import type {Match, Field} from '~/models/Schedule'
-import {useScheduleStore} from "~/store";
+import {useScheduleStore, useTournamentStore} from "~/store";
 
-const props = defineProps({
-  fields: {
-    type: Array as PropType<Field[]>,
-    default: () => [],
-  },
-  match: {
-    type: Object as PropType<Match>,
-    required: true,
-  }
-})
+const {tournamentId} = storeToRefs(useTournamentStore())
+const props = defineProps<{
+  matchId: number | null
+  fieldId: number | null
+  date: string | null
+}>()
+const match = ref<Match>()
+const loading = ref(true)
 const show = defineModel('show', {default: false})
 const form = ref({
-  date: new Date(props.match.details.raw_date).toLocaleDateString(),
-  field_id: props.match.details.field.id,
-  details: {day: null},
-  selected_time: props.match.details.raw_date,
+  field_id: props.fieldId,
+  match_id: props.matchId,
+  date: new Date(props.date || '').toLocaleDateString(), // match.details.raw_date
+  day: null,
+  selected_time: null,
 })
-const options = ref()
-const changeDateHandler = async () => {
-  const date = new Date(form.value.date).toLocaleDateString()
-  const client = useSanctumClient()
-  const data = await client(`/api/v1/admin/games/${props.match.id}?date=${date}&field_id=${form.value.field_id}`)
-  options.value = data.options.length ? data.options[0] : []
-  console.log(options.value)
-  form.value.details.day = options.value?.available_intervals?.day
+const options = ref([])
+const fields = ref<Field[]>([] as Field[])
+const {getMatch} = useScheduleStore()
+const getMatchDetails = async (value: Date) => {
+  if (!value) return
+  form.value.date = value.toLocaleDateString()
+  await fetchMatch()
 }
 const saveChanges = () => {
   const client = useSanctumClient()
-  client(`/api/v1/admin/games/${props.match.id}/reschedule`, {
+  client(`/api/v1/admin/games/${props.matchId}/reschedule`, {
     method: 'PUT',
     body: {
       date: form.value.date,
       field_id: form.value.field_id,
       selected_time: form.value.selected_time,
-      day: form.value.details.day,
+      day: form.value.day,
     }
   }).then(async () => {
     useScheduleStore().schedulePagination.currentPage = 1
@@ -48,6 +46,53 @@ const saveChanges = () => {
     useToast().toast('error', 'Error al reprogramar partido', 'Hubo un error al intentar reprogramar el partido. Por favor, intente nuevamente más tarde.')
   })
 }
+const onLeaving = () => {
+  show.value = false
+  options.value = []
+  form.value.date = new Date(match.details.raw_date).toLocaleDateString()
+  form.value.field_id = match.details.field.id
+  form.value.selected_time = match.details.raw_date
+}
+const fetchMatch = async () => {
+  if (!props.matchId) return;
+  loading.value = true;
+  try {
+    match.value = await getMatch(form.value.match_id as number, form.value.field_id as number, form.value.date as string);
+    if (match.value?.options?.length > 0) {
+      options.value = match.value.options[0]
+      console.log(options.value)
+      form.value.day = options.value.available_intervals.day
+    }
+  } catch (e) {
+    console.error(e);
+  } finally {
+    loading.value = false;
+  }
+}
+const fetchFields = async () => {
+  fields.value = await useTournamentStore().tournamentFields(
+      tournamentId.value as number
+  )
+}
+watch(() => show.value, async (isOpen) => {
+  if (isOpen) {
+    form.value.field_id = props.fieldId
+    form.value.date = new Date(props.date || '').toLocaleDateString()
+    form.value.match_id = props.matchId
+    await fetchFields()
+    await fetchMatch()
+  } else {
+    form.value.field_id = null
+    form.value.date = null
+    form.value.selected_time = null
+    form.value.match_id = null
+  }
+})
+watch(() => [form.value.field_id, form.value.date], ([newFieldId, newDate]) => {
+  if (newFieldId && newDate && show.value) {
+    getMatchDetails(new Date(newDate))
+  }
+})
 </script>
 <template>
   <Dialog
@@ -55,19 +100,20 @@ const saveChanges = () => {
       subtitle="Modificá la fecha, hora o campo de juego para este partido. <br />
     Los cambios se aplicarán manteniendo la jornada original."
       :model-value="show"
-      @leaving="show = false"
+      @leaving="onLeaving"
       icon-name="uil:schedule"
       min-height="910"
       max-height="910"
   >
+
     <template #v-card-text>
       <v-container>
         <v-row>
           <v-col cols="12">
             <label class="text-subtitle-2">Programado:</label>
             <p class="font-weight-bold">
-              {{ props.match.details.date }}
-              {{ props.match.details.raw_time }}
+              {{ match?.details?.date }}
+              {{ match?.details?.raw_time }}
             </p>
           </v-col>
           <v-col cols="12">
@@ -80,17 +126,13 @@ const saveChanges = () => {
                   width="50%"
               >
                 <v-card-text>
-                  <div
-                      class="team flex-grow-1 team_local d-flex flex-column align-center"
-                  >
+                  <div class="team flex-grow-1 team_local d-flex flex-column align-center">
                     <v-avatar
-                        :image="props.match?.home?.image"
+                        :image="match?.home?.image"
                         size="24"
                         class="image"
                     />
-                    <span class="team team_home mx-2">
-                      {{ props.match?.home?.name }}
-                    </span>
+                    <span class="team team_home mx-2">{{ match?.home?.name }}</span>
                   </div>
                 </v-card-text>
               </v-card>
@@ -107,13 +149,13 @@ const saveChanges = () => {
                 <v-card-text>
                   <div class="team team_away d-flex flex-column align-center">
                     <v-avatar
-                        :image="props.match?.away?.image"
+                        :image="match?.away?.image"
                         size="24"
                         class="image"
                     />
                     <span class="team team_home mx-2">
-                      {{ props.match?.away?.name }}
-                    </span>
+                                {{ match?.away?.name }}
+                              </span>
                   </div>
                 </v-card-text>
               </v-card>
@@ -124,11 +166,10 @@ const saveChanges = () => {
             <BaseCalendarInput
                 v-model:start_date="form.date"
                 :multiCalendar="false"
-                :minDate="props.match.start_date"
-                :max-date="props.match.end_date"
-                @start_date_updated="changeDateHandler"
-
+                :minDate="match?.start_date"
+                :max-date="match?.end_date"
             />
+
           </v-col>
           <v-col cols="12" md="6" lg="6">
             <label class="text-subtitle-2">Campo</label>
@@ -139,7 +180,7 @@ const saveChanges = () => {
                 item-value="id"
                 label="Selecciona un campo"
                 clearable
-                @update:model-value="changeDateHandler"
+                @update:model-value="getMatchDetails"
             />
           </v-col>
           <v-col cols="12" md="8" lg="8" v-if="options?.available_intervals?.hours?.length">
@@ -152,6 +193,9 @@ const saveChanges = () => {
           </v-col>
           <v-col cosl="12" v-else>
             <v-empty-state
+                size="12
+                0"
+
                 headline="No hay horas disponibles"
                 title="No hay horas disponibles para la fecha seleccionada"
                 text="Por favor, selecciona otra fecha o campo."
@@ -163,7 +207,7 @@ const saveChanges = () => {
     </template>
     <template #actions>
       <v-btn class="ml-auto mr-4" variant="elevated" @click="saveChanges">
-        Actualizar horario
+        Reprogramar
       </v-btn>
     </template>
   </Dialog>
