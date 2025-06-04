@@ -185,7 +185,7 @@ onMounted(() => {
               </v-btn>
               <v-expand-transition>
                 <PasswordRules
-                    v-model:model-value="password  as string"
+                    v-model:model-value="password"
                     :show="showRegisterForm && !!password"
                 />
               </v-expand-transition>
