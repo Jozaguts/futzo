@@ -11,34 +11,23 @@ definePageMeta({
     excluded: true,
   },
 })
-const tournamentId = useRoute().query.tournament as unknown as number
-console.log({tournamentId})
 const {tournament} = storeToRefs(useTournamentStore())
-console.log({tournament: tournament.value})
 const {steps} = storeToRefs(useTeamStore())
 const registeredTeam = ref(false)
 const teamRequest = ref<TeamStoreRequest>()
-const init = async () => {
-  try {
-    const {data} = await useSanctumFetch<Tournament | null>(
-        `/api/v1/admin/tournaments/${tournamentId}`,
-        {
-          method: 'GET',
-        }
-    )
-    tournament.value = data.value as Tournament
-    console.log({tournament: tournament.value})
-  } catch (error) {
-    console.error('Error fetching tournament:', error)
-  }
-}
-await init()
+const tournamentId = useRoute().query.tournament as unknown as number
+const {data, pending} = await useSanctumFetch<Tournament>(
+    `/api/v1/admin/tournaments/${tournamentId}`,
+    {
+      method: 'GET',
+    }
+)
+tournament.value = data.value as Tournament
 onMounted(async () => {
   if (tournament.value) {
-    const leagueId = tournament.value.league.id
+    const leagueId = tournament.value?.league?.id
     if (leagueId) {
       await useTournamentStore().fetchTournamentsByLeagueId(leagueId)
-      console.log('League tournaments fetched successfully:', useTournamentStore().tournamentsByLeagueId)
     } else {
       console.error('League ID is not available in the tournament data.')
     }
@@ -62,7 +51,6 @@ const loadGoogleMapsScript = () => {
   document.head.appendChild(script)
 }
 const registeredTeamHandler = async (value: TeamStoreRequest) => {
-  await init()
   registeredTeam.value = true
   teamRequest.value = value as TeamStoreRequest
 }
@@ -70,14 +58,15 @@ const finisHandler = () => {
   registeredTeam.value = false
   useRouter().push({name: 'login'})
 }
-const tournamentLoaded = computed(() => {
-  return !!tournament.value
-})
+
 </script>
 <template>
   <v-container>
+    <pre>
+    {{ !!tournament }}
+    </pre>
     <client-only>
-      <v-row v-if="tournamentLoaded">
+      <v-row v-if="!pending">
         <v-col cols="12" md="6" lg="6" offset-md="3" offset-lg="3">
           <div class="d-flex align-center">
             <div>
@@ -88,11 +77,11 @@ const tournamentLoaded = computed(() => {
                 </span>
                 |
                 <span class="text-body-2 font-weight-bold">
-                  {{ tournament.league.name }}
+                  {{ tournament?.league?.name }}
                 </span>
                 |
                 <span class="text-body-2 font-weight-bold">
-                  {{ tournament.name }}
+                  {{ tournament?.name }}
                 </span>
               </div>
             </div>
@@ -108,7 +97,7 @@ const tournamentLoaded = computed(() => {
         >
           <v-card
               class="create-tournament-card futzo-rounded"
-              :style="{ overflow: $vuetify.display.mobile ? '' : 'hidden' }"
+              :style="{ overflow: $vuetify?.display?.mobile ? '' : 'hidden' }"
           >
             <HeaderCard/>
             <StepperContainer
