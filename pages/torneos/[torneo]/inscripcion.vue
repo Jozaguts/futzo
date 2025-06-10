@@ -62,11 +62,8 @@ const finisHandler = () => {
 </script>
 <template>
   <v-container>
-    <pre>
-    {{ !!tournament }}
-    </pre>
     <client-only>
-      <v-row v-if="!pending">
+      <v-row v-if="!pending && tournament">
         <v-col cols="12" md="6" lg="6" offset-md="3" offset-lg="3">
           <div class="d-flex align-center">
             <div>
@@ -95,16 +92,16 @@ const finisHandler = () => {
             lg="6"
             class="text-center"
         >
-          <v-card
-              class="create-tournament-card futzo-rounded"
-              :style="{ overflow: $vuetify?.display?.mobile ? '' : 'hidden' }"
-          >
-            <HeaderCard/>
-            <StepperContainer
-                :step="steps.current"
-                @registered-team="registeredTeamHandler"
-            />
-          </v-card>
+          <!--          <v-card-->
+          <!--              class="create-tournament-card futzo-rounded"-->
+          <!--              :style="{ overflow: $vuetify?.display?.mobile ? '' : 'hidden' }"-->
+          <!--          >-->
+          <!--            <HeaderCard/>-->
+          <!--            <StepperContainer-->
+          <!--                :step="steps.current"-->
+          <!--                @registered-team="registeredTeamHandler"-->
+          <!--            />-->
+          <!--          </v-card>-->
         </v-col>
       </v-row>
     </client-only>
