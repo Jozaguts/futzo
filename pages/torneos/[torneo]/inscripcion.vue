@@ -27,6 +27,7 @@ const init = async () => {
         }
     )
     tournament.value = data.value as Tournament
+    console.log({tournament: tournament.value})
   } catch (error) {
     console.error('Error fetching tournament:', error)
   }
@@ -37,6 +38,9 @@ onMounted(async () => {
     const leagueId = tournament.value.league.id
     if (leagueId) {
       await useTournamentStore().fetchTournamentsByLeagueId(leagueId)
+      console.log('League tournaments fetched successfully:', useTournamentStore().tournamentsByLeagueId)
+    } else {
+      console.error('League ID is not available in the tournament data.')
     }
   }
   loadGoogleMapsScript()
@@ -66,11 +70,14 @@ const finisHandler = () => {
   registeredTeam.value = false
   useRouter().push({name: 'login'})
 }
+const tournamentLoaded = computed(() => {
+  return !!tournament.value
+})
 </script>
 <template>
   <v-container>
     <client-only>
-      <v-row v-if="tournament">
+      <v-row v-if="tournamentLoaded">
         <v-col cols="12" md="6" lg="6" offset-md="3" offset-lg="3">
           <div class="d-flex align-center">
             <div>
