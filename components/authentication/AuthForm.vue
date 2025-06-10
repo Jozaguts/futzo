@@ -68,7 +68,7 @@ onMounted(() => {
 
 <template>
   <transition-slide :offset="[-16, 0]" mode="out-in">
-    <v-card v-if="!showForgotPassword" class="pa-2" max-width="448" elevation="0" color="background">
+    <v-card v-if="!showForgotPassword" class="pa-2 pb-5 futzo-rounded" max-width="448" min-height="80%" elevation="0" color="on-background">
       <v-card-item class="justify-center text-center">
         <Logo width="165" class="mx-auto"/>
         <v-card-title class="text-black text-h4">{{ title }}</v-card-title>

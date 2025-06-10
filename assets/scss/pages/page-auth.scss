@@ -1,107 +1,97 @@
 
 .auth-logo {
-    position: absolute;
-    z-index: 1;
-    inset-block-start: 2rem;
-    inset-inline-start: 2.3rem;
-}
-
-.auth-bg {
-    background-color: rgb(var(--v-theme-surface));
-}
-
-.bg-auth-section {
-    background-image: url(../../register-img.webp);
-    background-size: cover;
-    background-position: center;
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 2rem;
+  inset-inline-start: 2.3rem;
 }
 
 .scale-up-vertical-top-enter-active {
-    animation: scale-up-vertical-bottom 0.2s linear forwards;
+  animation: scale-up-vertical-bottom 0.2s linear forwards;
 }
 
 @keyframes scale-up-vertical-bottom {
-    0% {
-        transform: scaleY(0.4);
-        transform-origin: center bottom;
-    }
-    100% {
-        transform: scaleY(1);
-        transform-origin: center bottom;
-    }
+  0% {
+    transform: scaleY(0.4);
+    transform-origin: center bottom;
+  }
+  100% {
+    transform: scaleY(1);
+    transform-origin: center bottom;
+  }
 }
 
 .scale-down-vertical-center-leave-active {
-    animation: scale-down-vertical-center 0.2s linear forwards;
+  animation: scale-down-vertical-center 0.2s linear forwards;
 }
 
 @keyframes scale-down-vertical-center {
-    0% {
-        transform: scaleY(1);
-        transform-origin: center;
-    }
-    100% {
-        transform: scaleY(0.3);
-        transform-origin: center;
-    }
+  0% {
+    transform: scaleY(1);
+    transform-origin: center;
+  }
+  100% {
+    transform: scaleY(0.3);
+    transform-origin: center;
+  }
 }
 
 .separator-text {
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 20px;
-    color: #475467;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: #475467;
 }
 
 .forgot-password {
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 20px;
-    color: #9155FD;
-    cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  color: #9155FD;
+  cursor: pointer;
 }
 
 .rule-container {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    margin-bottom: 8px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
 .rule-text {
-    margin-left: .5rem;
-    margin-bottom: 2px;
+  margin-left: .5rem;
+  margin-bottom: 2px;
 }
 
 .fz-auth-form__input {
-    border-radius: 8px;
-    border: 1px solid #D0D5DD;
-    box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
+  border-radius: 8px;
+  border: 1px solid #D0D5DD;
+  box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
 }
 
 .input-label {
-    color: rgba(52, 64, 84, 1);
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 20px;
+  color: rgba(52, 64, 84, 1);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
 
 }
 
 .search-country {
-    padding-left: 6px;
+  padding-left: 6px;
 }
 
 .fz-auth-form__input.username > .v-input__prepend {
-    margin-inline-end: 0;
+  margin-inline-end: 0;
 }
 
 .search-country > .v-input__control > .v-field > .v-field__field > .v-field__input {
-    padding-top: 0 !important;
-    padding-inline: 0;
-    font-size: 14px;
-    font-weight: 600;
+  padding-top: 0 !important;
+  padding-inline: 0;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .search-country > .v-input__control > .v-field > .v-field__append-inner {
-    font-size: 12px;
+  font-size: 12px;
 }
