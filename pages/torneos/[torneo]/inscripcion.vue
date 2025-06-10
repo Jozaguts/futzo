@@ -63,7 +63,7 @@ const finisHandler = () => {
 <template>
   <v-container>
     <client-only>
-      <v-row v-if="!pending && tournament">
+      <v-row v-if="!pending">
         <v-col cols="12" md="6" lg="6" offset-md="3" offset-lg="3">
           <div class="d-flex align-center">
             <div>
