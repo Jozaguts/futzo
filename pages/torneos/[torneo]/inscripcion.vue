@@ -16,12 +16,13 @@ const {steps} = storeToRefs(useTeamStore())
 const registeredTeam = ref(false)
 const teamRequest = ref<TeamStoreRequest>()
 const tournamentId = useRoute().query.tournament as unknown as number
-const {data, pending} = await useSanctumFetch<Tournament>(
+const {data, pending, status} = await useSanctumFetch<Tournament>(
     `/api/v1/admin/tournaments/${tournamentId}`,
     {
       method: 'GET',
     }
 )
+console.log(status.value);
 tournament.value = data.value as Tournament
 onMounted(async () => {
   if (tournament.value) {
@@ -58,12 +59,14 @@ const finisHandler = () => {
   registeredTeam.value = false
   useRouter().push({name: 'login'})
 }
-
+const tournamentReady = computed(() => {
+  return tournament.value && tournament.value.league && tournament.value.league.name
+})
 </script>
 <template>
   <v-container>
     <client-only>
-      <v-row v-if="!pending">
+      <v-row v-if="!pending && tournamentReady">
         <v-col cols="12" md="6" lg="6" offset-md="3" offset-lg="3">
           <div class="d-flex align-center">
             <div>
@@ -92,16 +95,16 @@ const finisHandler = () => {
             lg="6"
             class="text-center"
         >
-          <!--          <v-card-->
-          <!--              class="create-tournament-card futzo-rounded"-->
-          <!--              :style="{ overflow: $vuetify?.display?.mobile ? '' : 'hidden' }"-->
-          <!--          >-->
-          <!--            <HeaderCard/>-->
-          <!--            <StepperContainer-->
-          <!--                :step="steps.current"-->
-          <!--                @registered-team="registeredTeamHandler"-->
-          <!--            />-->
-          <!--          </v-card>-->
+          <v-card
+              class="create-tournament-card futzo-rounded"
+              :style="{ overflow: $vuetify?.display?.mobile ? '' : 'hidden' }"
+          >
+            <HeaderCard/>
+            <StepperContainer
+                :step="steps.current"
+                @registered-team="registeredTeamHandler"
+            />
+          </v-card>
         </v-col>
       </v-row>
     </client-only>
