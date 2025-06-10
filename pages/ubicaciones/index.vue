@@ -19,6 +19,13 @@ const deleteLocationHandler = () => {
         isLoading.value = false
       })
 }
+
+
+const searchLocationHandler = useDebounceFn((place: string) => {
+  useLocationStore().pagination.perPage = 10
+  useLocationStore().pagination.currentPage = 1
+  useLocationStore().getLocations(place)
+}, 600)
 </script>
 
 <template>
@@ -27,7 +34,7 @@ const deleteLocationHandler = () => {
       <AppBar>
         <template #buttons>
           <div class="d-flex">
-            <SearchInput placeholder="Busca una ubicación…" :min-width="320" class="mr-2" @searching="(e)=> console.log(e)"/>
+            <SearchInput placeholder="Busca una ubicación…" :min-width="320" class="mr-2" @searching="searchLocationHandler"/>
             <PrimaryBtn
                 :disabled="false"
                 text="Crear ubicación"
