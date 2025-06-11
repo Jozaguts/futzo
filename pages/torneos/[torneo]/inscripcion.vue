@@ -20,10 +20,7 @@ useSanctumClient()('/api/v1/admin/tournaments/' + tournamentId, {
   method: 'GET',
 })
     .then(async (data) => {
-
-      console.log(data)
       const leagueId = data?.league?.id
-      console.log(leagueId)
       if (leagueId) {
         await useTournamentStore().fetchTournamentsByLeagueId(leagueId)
         tournament.value = data as Tournament
