@@ -16,23 +16,23 @@ const {steps} = storeToRefs(useTeamStore())
 const registeredTeam = ref(false)
 const teamRequest = ref<TeamStoreRequest>()
 const tournamentId = useRoute().query.tournament as unknown as number
-const {data, pending, status} = await useSanctumFetch<Tournament>(
-    `/api/v1/admin/tournaments/${tournamentId}`,
-    {
-      method: 'GET',
-    }
-)
-console.log(status.value);
-tournament.value = data.value as Tournament
+useSanctumClient()('/api/v1/admin/tournaments/' + tournamentId, {
+  method: 'GET',
+})
+    .then(async (data) => {
+
+      console.log(data)
+      const leagueId = data?.league?.id
+      console.log(leagueId)
+      if (leagueId) {
+        await useTournamentStore().fetchTournamentsByLeagueId(leagueId)
+        tournament.value = data as Tournament
+      } else {
+        console.error('League ID is not available in the tournament data.')
+      }
+    })
+
 onMounted(async () => {
-  if (tournament.value) {
-    const leagueId = tournament.value?.league?.id
-    if (leagueId) {
-      await useTournamentStore().fetchTournamentsByLeagueId(leagueId)
-    } else {
-      console.error('League ID is not available in the tournament data.')
-    }
-  }
   loadGoogleMapsScript()
 })
 onUnmounted(() => {
@@ -66,7 +66,7 @@ const tournamentReady = computed(() => {
 <template>
   <v-container>
     <client-only>
-      <v-row v-if="!pending && tournamentReady">
+      <v-row v-if="tournamentReady">
         <v-col cols="12" md="6" lg="6" offset-md="3" offset-lg="3">
           <div class="d-flex align-center">
             <div>
