@@ -231,9 +231,11 @@ onMounted(() => {
         </v-form>
       </v-card-text>
     </v-card>
-    <ForgotPassword
-        :showForgotPassword="showForgotPassword"
-        @backToLogin="returnBackClickHandler"
-    ></ForgotPassword>
+    <client-only>
+      <ForgotPassword
+          :showForgotPassword="showForgotPassword"
+          @backToLogin="returnBackClickHandler"
+      ></ForgotPassword>
+    </client-only>
   </transition-slide>
 </template>

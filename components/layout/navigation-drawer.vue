@@ -1,13 +1,16 @@
 <script lang="ts" setup>
 import {useResizeObserver} from "@vueuse/core";
-import {useAuthStore, useGlobalStore} from "~/store";
+import {useAuthStore, useGlobalStore, useLocationStore, useTournamentStore} from "~/store";
 import {storeToRefs} from "pinia";
 
 const {drawer, drawerWidth, isMobile, rail} = storeToRefs(useGlobalStore());
 const drawerRef = ref();
 const authStore = useAuthStore();
 const {user} = storeToRefs(authStore);
-
+const disabled = ref(false);
+useLocationStore().$subscribe((mutation, state) => {
+  disabled.value = state.locations?.length === 0;
+})
 const links = reactive([
   {icon: "futzo-icon:home", title: "Dashboard", to: "/", disabled: false, class: 'mr-2 drawer-icon filled',},
   {
@@ -21,21 +24,21 @@ const links = reactive([
     icon: "futzo-icon:trophy",
     title: "Torneos",
     to: "/torneos",
-    disabled: false,
+    disabled: disabled.value,
     class: 'mr-2 drawer-icon filled',
   },
   {
     icon: "futzo-icon:shirt-sharp",
     title: "Equipos",
     to: "/equipos",
-    disabled: false,
+    disabled: disabled.value,
     class: 'mr-2 drawer-icon filled',
   },
   {
     icon: "futzo-icon:players",
     title: "Jugadores",
     to: "/jugadores",
-    disabled: false,
+    disabled: disabled.value,
     class: 'mr-2 drawer-icon filled',
   },
 ]);
@@ -48,6 +51,15 @@ useResizeObserver(drawerRef, (entries) => {
 watchEffect(() => {
   rail.value = isMobile.value;
 });
+const logOut = async () => {
+  try {
+    await logout();
+    useTournamentStore().$reset()
+    useLocationStore().$reset();
+  } catch (error) {
+    console.error("Error during logout:", error);
+  }
+}
 </script>
 
 <template>
@@ -85,13 +97,21 @@ watchEffect(() => {
           :key="link.title"
           link
           :to="link.to"
-          :disabled="link.disabled"
+          :disabled="disabled && link.title !== 'Dashboard' && link.title !== 'Ubicaciones'"
           :title="link.title"
       >
         <template #prepend="{isActive}">
           <Icon :name="link.icon" :class="link.class" mode="svg"/>
         </template>
       </v-list-item>
+      <div class="ma-2" v-auto-animate="{ duration: 100 }">
+        <p v-if="disabled" class="text-caption  font-weight-light">
+          Crea tu primera ubicación
+        </p>
+        <p v-if="disabled" class="text-caption  font-weight-light">
+          Comienza registrando una sede y su campo/s desde el módulo “Ubicaciones”.
+        </p>
+      </div>
     </v-list>
 
     <template #append>
@@ -121,9 +141,9 @@ watchEffect(() => {
             <template #title>
               <small> {{ user?.name }}</small>
             </template>
-            <template #subtitle> {{ user?.email }}ss</template>
+            <template #subtitle> {{ user?.email }}</template>
             <template v-slot:append>
-              <v-btn @click="logout" variant="text" size="24">
+              <v-btn @click="logOut" variant="text" size="24">
                 <template #prepend>
                   <Icon name="futzo-icon:logout"/>
                 </template>
@@ -148,7 +168,7 @@ watchEffect(() => {
           </v-list-item>
         </v-list>
         <v-divider></v-divider>
-        <v-btn @click="logout" variant="text">
+        <v-btn @click="logOut" variant="text">
           <template #prepend>
             <Icon name="futzo-icon:logout" class="mr-2"/>
           </template>
