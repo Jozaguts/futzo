@@ -4,6 +4,7 @@ import {boolean, object, string} from "yup";
 import {ref} from "vue";
 import type {AuthForm} from "~/models/user";
 import {specialCharacters, phoneRegex} from "~/utils/constants";
+import {useLocationStore} from "~/store";
 
 export default function useAuth() {
     const isPhone = ref(false)
@@ -59,6 +60,9 @@ export default function useAuth() {
         errorMessage.value = ''
         const {login} = useSanctumAuth();
         await login({...form})
+            .then(async () => {
+                await useLocationStore().reloadLocations()
+            })
             .catch((error: FetchError) => {
                 const {message} = useApiError(error);
                 errorMessage.value = message;

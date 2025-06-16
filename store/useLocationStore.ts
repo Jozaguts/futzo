@@ -55,6 +55,21 @@ export const useLocationStore = defineStore('locationStore', () => {
             },
         ],
     })
+    const $reset = () => {
+        resetLocationStoreRequest();
+        locationDialog.value = false;
+        isEdition.value = false;
+        locationCard.value = {} as LocationCard;
+        locationToDelete.value = {id: null, show: false};
+        pagination.value = {
+            currentPage: 1,
+            perPage: 8,
+            lastPage: 1,
+            total: 0,
+            sort: "asc",
+        };
+        locations.value = []
+    }
 
     async function reloadLocations() {
         pagination.value = {
@@ -98,6 +113,7 @@ export const useLocationStore = defineStore('locationStore', () => {
                 locations.value = [...locations.value as LocationCard[], ...data];
             } else {
                 locations.value = data;
+                console.log(locations.value)
             }
         });
     }
@@ -184,12 +200,13 @@ export const useLocationStore = defineStore('locationStore', () => {
         pagination,
         formSteps,
         stepsCompleted,
+        isAllStepsCompleted,
         deleteLocation,
         storeLocation,
         updateLocation,
         getLocations,
         resetLocationStoreRequest,
         reloadLocations,
-        isAllStepsCompleted
+        $reset
     };
 });
