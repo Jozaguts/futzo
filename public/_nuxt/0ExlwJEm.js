@@ -1,0 +1,1 @@
+import{cX as t,bW as e}from"./016mahUR.js";import"./Bd6NytqX.js";import{u as o}from"./CxFJkEQW.js";import"./DK4Md9xt.js";const i=t(()=>{if(!o().tournamentId)return e({name:"torneos"})});export{i as default};

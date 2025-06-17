@@ -1,0 +1,1 @@
+import{r as s}from"./016mahUR.js";const e=s({file:null,name:"",size:0}),l=s(),n=a=>{e.value.file=a,e.value.name=a.name,e.value.size=a.size},o=()=>{e.value.file=null,e.value.name="",e.value.size=0};export{l as d,e as i,o as r,n as s};

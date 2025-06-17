@@ -1,0 +1,1 @@
+import{a as o}from"./CCplKXSH.js";import{a9 as n,aa as e,o as s,q as r,v as i,ab as c,ac as p,ad as _}from"./016mahUR.js";const m={name:"TransitionFade",inheritAttrs:!1,components:{TheTransition:o}};function d(t,f,l,u,h,$){const a=e("the-transition");return r(),s(a,p(_(t.$attrs)),{default:i(()=>[c(t.$slots,"default")]),_:3},16)}const x=n(m,[["render",d]]);export{x as _};

@@ -1,0 +1,1 @@
+import{b as a}from"./CCplKXSH.js";import{a9 as n,aa as e,o as s,q as r,v as i,ab as c,ac as p,ad as _}from"./016mahUR.js";const l={name:"TransitionSlide",inheritAttrs:!1,components:{TheTransition:a}};function m(t,d,f,u,h,$){const o=e("the-transition");return r(),s(o,p(_(t.$attrs)),{default:i(()=>[c(t.$slots,"default")]),_:3},16)}const x=n(l,[["render",m]]);export{x as _};

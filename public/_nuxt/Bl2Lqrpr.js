@@ -1,0 +1,1 @@
+import{N as t}from"./pwq186FP.js";import{x as e,q as n,f as r,bE as a}from"./016mahUR.js";const s={xmlns:"http://www.w3.org/2000/svg",fill:"#EAECF0",viewBox:"0 0 9 14"};function l(c,o){return n(),e("svg",s,o[0]||(o[0]=[r("path",{d:"m9 0 5 18L0 7z"},null,-1)]))}const p={render(){return a(t,{icon:{render:l},name:"match-polygon"})}};export{p as default,l as render};

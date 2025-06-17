@@ -1,0 +1,1 @@
+import{N as r}from"./pwq186FP.js";import{x as o,q as n,f as t,bE as l}from"./016mahUR.js";const s={xmlns:"http://www.w3.org/2000/svg",fill:"none",viewBox:"0 0 12 12"};function c(i,e){return n(),o("svg",s,e[0]||(e[0]=[t("circle",{cx:"6",cy:"6",r:"6",fill:"#E8454A"},null,-1)]))}const f={render(){return l(r,{icon:{render:c},name:"ellipse-red"})}};export{f as default,c as render};
