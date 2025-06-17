@@ -71,9 +71,17 @@ onMounted(() => {
           <v-col cols="12">
             <div class="dashboard subtitle-container">
               <h2 class="dashboard subtitle">Próximos juegos</h2>
-              <v-btn variant="text" to="/torneos">ver todos</v-btn>
+              <v-btn variant="text" to="/torneos">Ver todos</v-btn>
             </div>
-            <dashboard-next-games v-for="game in nextGames" :key="game.id" :game="game"/>
+            <div v-if="nextGames.length === 0" class="text-center">
+              <v-empty-state
+                  image="/no-data.svg"
+                  size="100"
+                  text="No hay juegos programados"
+                  title="Próximos juegos"
+              ></v-empty-state>
+            </div>
+            <dashboard-next-games v-else v-for="game in nextGames" :key="game.id" :game="game"/>
           </v-col>
         </v-row>
       </v-container>
