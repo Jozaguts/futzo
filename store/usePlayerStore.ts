@@ -24,6 +24,7 @@ export const usePlayerStore = defineStore("playerStore", () => {
     const importModal = ref(false);
     const loading = ref(false);
     const isImporting = ref(false);
+    const showAssignTeam = ref(false);
 
     const downloadTemplate = async () => {
         const client = useSanctumClient();
@@ -150,6 +151,7 @@ export const usePlayerStore = defineStore("playerStore", () => {
         importModal,
         availableTeams,
         isImporting,
+        showAssignTeam,
         updatePlayer,
         createPlayer,
         getPlayers,
