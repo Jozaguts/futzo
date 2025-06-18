@@ -15,7 +15,7 @@ const {tournament} = storeToRefs(useTournamentStore())
 const {steps} = storeToRefs(useTeamStore())
 const registeredTeam = ref(false)
 const teamRequest = ref<TeamStoreRequest>()
-const tournamentId = useRoute().query.tournament as unknown as number
+const tournamentId = useRoute().query.id as unknown as number
 useSanctumClient()('/api/v1/admin/tournaments/' + tournamentId, {
   method: 'GET',
 })
