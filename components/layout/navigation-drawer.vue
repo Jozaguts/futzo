@@ -60,11 +60,14 @@ const logOut = async () => {
     console.error("Error during logout:", error);
   }
 }
+const {mobile} = useDisplay()
 </script>
 
 <template>
   <v-navigation-drawer
-      permanent
+      :permanent="!mobile"
+      :temporary="mobile"
+      :mobile="mobile"
       v-model="drawer"
       :rail="rail"
       rail-width="56"

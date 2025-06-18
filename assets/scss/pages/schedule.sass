@@ -1,8 +1,36 @@
+@media screen and (max-width: 768px)
+  main, .main
+    padding-left: 8px !important
+    padding-right: 8px !important
+  .sheet-tournament-schedule.futzo-rounded
+    padding: 0 !important
+    margin: 0 !important
+  .v-breadcrumbs.v-breadcrumbs--density-default
+    padding-left: 0 !important
+  .text-breadcrumbs
+    font-size: 14px !important
+  .tournament-details
+    grid-template-columns: 1fr !important
+    grid-template-rows: repeat(4, auto) !important
+
+    .detail
+      display: flex
+      justify-content: space-between
+
+      .text-body-1
+        span
+          margin-left: 1rem !important
+
 .tournament-details
   display: grid
   grid-template-columns: minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr)
 
   .detail
+    display: flex
+
+    span
+      margin-left: 1rem
+
     p
       font-weight: bold
 

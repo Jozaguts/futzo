@@ -193,9 +193,7 @@ watch(() => [form.value.field_id, form.value.date], ([newFieldId, newDate]) => {
           </v-col>
           <v-col cosl="12" v-else>
             <v-empty-state
-                size="12
-                0"
-
+                size="120"
                 headline="No hay horas disponibles"
                 title="No hay horas disponibles para la fecha seleccionada"
                 text="Por favor, selecciona otra fecha o campo."
