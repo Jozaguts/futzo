@@ -25,7 +25,26 @@ export const usePlayerStore = defineStore("playerStore", () => {
     const loading = ref(false);
     const isImporting = ref(false);
     const showAssignTeam = ref(false);
+    const player = ref<Player>(null as unknown as Player);
 
+    const getPlayer = async (id: string) => {
+        const client = useSanctumClient();
+        return await client(`/api/v1/admin/players/${id}`, {
+            method: "GET",
+        })
+            .then((response) => {
+                player.value = response.data;
+            })
+            .catch((error) => {
+                console.error(error);
+                toast(
+                    "error",
+                    "Error al obtener el jugador",
+                    error.data?.message ??
+                    "No se pudo obtener la información del jugador. Inténtalo de nuevo.",
+                );
+            });
+    }
     const downloadTemplate = async () => {
         const client = useSanctumClient();
         loading.value = true;
@@ -152,10 +171,12 @@ export const usePlayerStore = defineStore("playerStore", () => {
         availableTeams,
         isImporting,
         showAssignTeam,
+        player,
         updatePlayer,
         createPlayer,
         getPlayers,
         importPlayersHandler,
         downloadTemplate,
+        getPlayer
     };
 });
