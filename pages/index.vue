@@ -24,13 +24,17 @@ onMounted(() => {
   useDashboardStore().byRange();
   useDashboardStore().getNextGames();
 });
+const {mobile} = useDisplay();
 </script>
 <template>
   <PageLayout>
     <template #app-bar>
       <AppBar>
         <template #buttons>
-          <AppBarBtn/>
+          <AppBarBtn v-if="!mobile"/>
+        </template>
+        <template #extension>
+          <AppBarBtn v-if="mobile"/>
         </template>
       </AppBar>
     </template>

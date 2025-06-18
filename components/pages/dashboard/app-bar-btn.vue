@@ -1,33 +1,36 @@
 <script lang="ts" setup>
-import type { IStatStage } from "~/interfaces";
-import { useDashboardStore } from "~/store";
+import type {IStatStage} from "~/interfaces";
+import {useDashboardStore} from "~/store";
 
-const { range } = storeToRefs(useDashboardStore());
+const {range} = storeToRefs(useDashboardStore());
+const {mobile} = useDisplay();
 const ranges: { value: IStatStage; name: string }[] = [
-  { value: "lastYear", name: "12 meses" },
-  { value: "lastMonth", name: "30 días" },
-  { value: "lastWeek", name: "7 días" },
-  { value: "last24Hrs", name: "24 horas" },
+  {value: "lastYear", name: `12 ${mobile.value ? 'M' : 'meses'}`},
+  {value: "lastMonth", name: `30 ${mobile.value ? 'D' : 'días'}`},
+  {value: "lastWeek", name: `7 ${mobile.value ? 'D' : 'días'}`},
+  {value: "last24Hrs", name: `7 ${mobile.value ? 'H' : 'hrs'}`},
 ];
 watch(range, (value, oldValue) => {
   if (value !== oldValue) {
     useDashboardStore().byRange();
   }
 });
+
 </script>
 <template>
-  <v-item-group mandatory v-model="range" class="mr-8">
+  <v-item-group mandatory v-model="range" class="mr-md-8 mr-lg-8 ml-4">
     <v-item
-      v-for="item in ranges"
-      :key="item.value"
-      :value="item.value"
-      v-slot="{ isSelected, toggle }"
+        v-for="item in ranges"
+        :key="item.value"
+        :value="item.value"
+        v-slot="{ isSelected, toggle }"
     >
       <v-btn
-        @click="toggle"
-        rounded="0"
-        :color="isSelected ? 'primary' : ''"
-        :class="['dashboard-app-bar-btn dashboard-app-bar-btn-' + item.value]"
+          :size="mobile ? 'small' : 'default'"
+          @click="toggle"
+          rounded="0"
+          :color="isSelected ? 'primary' : ''"
+          :class="['dashboard-app-bar-btn dashboard-app-bar-btn-' + item.value]"
       >
         {{ item.name }}
       </v-btn>
