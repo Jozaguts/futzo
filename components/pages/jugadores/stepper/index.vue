@@ -3,16 +3,17 @@ import BasicInfoStep from "~/components/pages/jugadores/stepper/01-basic-info.vu
 import DetailsInfoStep from "~/components/pages/jugadores/stepper/02-details-info.vue";
 import ContactInfoStep from "~/components/pages/jugadores/stepper/03-contact-info.vue";
 import IndicatorStep from "~/components/shared/IndicatorStep.vue";
-import { usePlayerStore } from "~/store";
-import type { CreatePlayerForm, CurrentStep } from "~/models/Player";
+import {usePlayerStore} from "~/store";
+import type {CreatePlayerForm, CurrentStep} from "~/models/Player";
 
 const loading = ref(false);
-const { steps, isEdition, playerStoreRequest, dialog } =
-  storeToRefs(usePlayerStore());
+const {steps, isEdition, playerStoreRequest, dialog} =
+    storeToRefs(usePlayerStore());
 const stepRef = ref<{ validate: Function; handleSubmit: Function }>({
   validate: Function,
   handleSubmit: Function,
 });
+const emits = defineEmits(["registered-player"]);
 const backHandler = () => {
   if (steps.value.current === "basic-info") {
     dialog.value = false;
@@ -29,26 +30,26 @@ const backHandler = () => {
 const nextHandler = async () => {
   const statusForm = await stepRef.value.validate();
   const formValues = stepRef.value.handleSubmit(
-    (values: CreatePlayerForm) => values,
+      (values: CreatePlayerForm) => values,
   );
   const playerStoreRequestValues = await formValues();
   if (statusForm.valid) {
     if (steps.value.current === "basic-info") {
       playerStoreRequest.value = {
         ...playerStoreRequest.value,
-        basic: { ...playerStoreRequestValues },
+        basic: {...playerStoreRequestValues},
       };
     }
     if (steps.value.current === "details-info") {
       playerStoreRequest.value = {
         ...playerStoreRequest.value,
-        details: { ...playerStoreRequestValues },
+        details: {...playerStoreRequestValues},
       };
     }
     if (steps.value.current === "contact-info") {
       playerStoreRequest.value = {
         ...playerStoreRequest.value,
-        contact: { ...playerStoreRequestValues },
+        contact: {...playerStoreRequestValues},
       };
     }
     const stepsOrder: CurrentStep[] = [
@@ -65,10 +66,16 @@ const nextHandler = async () => {
       loading.value = true;
       if (isEdition.value) {
         await usePlayerStore().updatePlayer(
-          playerStoreRequest.value.basic.id as number,
+            playerStoreRequest.value.basic.id as number,
         );
       } else {
-        await usePlayerStore().createPlayer();
+        await usePlayerStore().createPlayer()
+            .then(() => {
+              const route = useRoute()
+              if (route.name === 'equipos-equipo-inscripcion') {
+                emits('registered-player', playerStoreRequest.value)
+              }
+            })
       }
       loading.value = false;
       return;
@@ -98,7 +105,7 @@ const textButton = computed(() => {
 </script>
 <template>
   <PerfectScrollbar
-    :options="{
+      :options="{
       suppressScrollX: true,
     }"
   >
@@ -106,32 +113,32 @@ const textButton = computed(() => {
       <v-container class="pa-0">
         <v-row>
           <v-col>
-            <IndicatorStep :form-steps="steps" />
+            <IndicatorStep :form-steps="steps"/>
           </v-col>
         </v-row>
         <v-row>
           <v-col>
             <transition-slide
-              group
-              :offset="{
+                group
+                :offset="{
                 enter: ['-100%', 0],
                 leave: ['100%', 0],
               }"
             >
               <BasicInfoStep
-                ref="stepRef"
-                v-if="steps.current === 'basic-info'"
-                :key="steps.current"
+                  ref="stepRef"
+                  v-if="steps.current === 'basic-info'"
+                  :key="steps.current"
               />
               <DetailsInfoStep
-                ref="stepRef"
-                v-if="steps.current === 'details-info'"
-                :key="steps.current"
+                  ref="stepRef"
+                  v-if="steps.current === 'details-info'"
+                  :key="steps.current"
               />
               <ContactInfoStep
-                ref="stepRef"
-                v-if="steps.current === 'contact-info'"
-                :key="steps.current"
+                  ref="stepRef"
+                  v-if="steps.current === 'contact-info'"
+                  :key="steps.current"
               />
             </transition-slide>
           </v-col>
@@ -139,25 +146,25 @@ const textButton = computed(() => {
         <v-row>
           <v-col cols="6">
             <v-btn
-              variant="outlined"
-              block
-              color="secondary"
-              density="comfortable"
-              size="large"
-              @click="backHandler"
-              >{{ textButtonCancel }}
+                variant="outlined"
+                block
+                color="secondary"
+                density="comfortable"
+                size="large"
+                @click="backHandler"
+            >{{ textButtonCancel }}
             </v-btn>
           </v-col>
           <v-col cols="6">
             <v-btn
-              variant="elevated"
-              block
-              color="primary"
-              density="comfortable"
-              size="large"
-              :loading="loading"
-              @click="nextHandler"
-              >{{ textButton }}
+                variant="elevated"
+                block
+                color="primary"
+                density="comfortable"
+                size="large"
+                :loading="loading"
+                @click="nextHandler"
+            >{{ textButton }}
             </v-btn>
           </v-col>
         </v-row>
