@@ -29,7 +29,7 @@ const {mobile} = useDisplay();
 <template>
   <PageLayout>
     <template #app-bar>
-      <AppBar>
+      <AppBar :extended="mobile">
         <template #buttons>
           <AppBarBtn v-if="!mobile"/>
         </template>
@@ -39,7 +39,7 @@ const {mobile} = useDisplay();
       </AppBar>
     </template>
     <template #default>
-      <v-container fluid class="pa-0 mx-0">
+      <v-container fluid class="pa-0 mx-0 mt-4 mt-md-0 mt-lg-0">
         <v-row>
           <v-col>
             <StatsCard

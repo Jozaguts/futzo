@@ -133,31 +133,30 @@ const showMatchDetails = (matchId: number, fieldId: number, date: string) => {
   }
   showReScheduleDialog.value = true
 }
+const {mobile} = useDisplay()
 </script>
 <template>
-  <v-row v-if="schedules.rounds.length">
-    <v-col cols="12">
+  <v-row v-if="schedules.rounds.length" :no-gutters="mobile">
+    <v-col cols="12" :class="mobile ? 'mb-6': ''">
       <div class="tournament-details">
         <div class="detail">
-          <p class="text-body-1">
-            Torneo: <span> {{ schedules.tournament.name }}</span>
-          </p>
+          <p class="text-body-1">Torneo:</p>
+          <span> {{ schedules.tournament.name }}</span>
         </div>
         <div class="detail">
           <p class="text-body-1">
-            Categoría: <span>{{ schedules.tournament.category.name }}</span>
+            Categoría:
           </p>
+          <span>{{ schedules.tournament.category.name }}</span>
         </div>
         <div class="detail">
-          <p class="text-body-1">
-            Fecha de inicio:
-            <span>{{ schedules.tournament.start_date_to_string }}</span>
-          </p>
+          <p class="text-body-1">Fecha de inicio:</p>
+          <span>{{ schedules.tournament.start_date_to_string }}</span>
         </div>
       </div>
     </v-col>
     <v-col cols="12">
-      <v-sheet class="futzo-rounded fill-height pa-4">
+      <v-sheet class="sheet-tournament-schedule futzo-rounded fill-height pa-4 ">
         <v-infinite-scroll :items="schedules.rounds" @load="load" height="700">
           <template v-for="item in schedules.rounds" :key="item.id">
             <v-container fluid>
@@ -281,20 +280,34 @@ const showMatchDetails = (matchId: number, fieldId: number, date: string) => {
                       </p>
                       <p>{{ match.details?.location.name }}</p>
                       <p>{{ match.details?.field.name }}</p>
-                      <v-btn
-                          variant="text"
-                          density="compact"
-                          size="small"
-                          :ripple="true"
-                          :disabled="
+                      <div class="d-flex justify-space-between w-75 align-center">
+                        <v-btn
+                            icon
+                            v-tooltip:bottom="'Reprogramar'"
+                            variant="text"
+                            density="compact"
+                            size="small"
+                            :ripple="true"
+                            :disabled="
                           (match.status as RoundStatus) === 'en_progreso' ||
                           (match.status as RoundStatus) === 'completado' ||
                           (match.status as RoundStatus) === 'cancelado'
                         "
-                          @click="showMatchDetails(match.id, match.details.field.id, match.details.raw_date)"
-                      >
-                        Reprogramar
-                      </v-btn>
+                            @click="showMatchDetails(match.id, match.details.field.id, match.details.raw_date)"
+                        >
+                          <Icon name="ant-design:schedule-twotone" size="25"></Icon>
+                        </v-btn>
+                        <v-btn
+                            icon
+                            v-tooltip:bottom-left="'Actualizar marcador'"
+                            variant="text"
+                            density="compact"
+                            :ripple="true"
+                            @click="showMatchDetails(match.id, match.details.field.id, match.details.raw_date)"
+                        >
+                          <Icon name="carbon:result-draft" size="25"></Icon>
+                        </v-btn>
+                      </div>
                     </div>
                   </div>
                 </v-col>

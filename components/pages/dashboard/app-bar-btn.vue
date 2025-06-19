@@ -5,10 +5,10 @@ import {useDashboardStore} from "~/store";
 const {range} = storeToRefs(useDashboardStore());
 const {mobile} = useDisplay();
 const ranges: { value: IStatStage; name: string }[] = [
-  {value: "lastYear", name: `12 ${mobile.value ? 'M' : 'meses'}`},
-  {value: "lastMonth", name: `30 ${mobile.value ? 'D' : 'días'}`},
-  {value: "lastWeek", name: `7 ${mobile.value ? 'D' : 'días'}`},
-  {value: "last24Hrs", name: `7 ${mobile.value ? 'H' : 'hrs'}`},
+  {value: "lastYear", name: `12 Meses`},
+  {value: "lastMonth", name: `30 días`},
+  {value: "lastWeek", name: `7 Días`},
+  {value: "last24Hrs", name: "7 Horas"},
 ];
 watch(range, (value, oldValue) => {
   if (value !== oldValue) {
@@ -18,7 +18,7 @@ watch(range, (value, oldValue) => {
 
 </script>
 <template>
-  <v-item-group mandatory v-model="range" class="mr-md-8 mr-lg-8 ml-4">
+  <v-item-group mandatory v-model="range" class="mr-md-8 mr-lg-8 mx-2 mx-lg-0 mx-md-0">
     <v-item
         v-for="item in ranges"
         :key="item.value"
@@ -26,7 +26,6 @@ watch(range, (value, oldValue) => {
         v-slot="{ isSelected, toggle }"
     >
       <v-btn
-          :size="mobile ? 'small' : 'default'"
           @click="toggle"
           rounded="0"
           :color="isSelected ? 'primary' : ''"

@@ -1,3 +1,40 @@
+@media screen and (max-width: 576px) {
+  .dashboard {
+    &-team-local, &-team-away {
+      flex-direction: column;
+    }
+
+    &-team_name {
+      max-width: 120px !important;
+      font-size: 13px !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+
+    &-teams {
+      gap: 1.5rem !important;
+    }
+
+    &-game-container {
+      flex-wrap: wrap;
+    }
+
+    &-teams {
+      flex: 0 1 50%;
+    }
+
+    &-data {
+      flex: 0 1 50%;
+    }
+
+    &-btn-container {
+      flex: 1 1 100%;
+    }
+  }
+}
+
+
 .dashboard-stats-card {
   min-width: 320px;
   border-width: 1px;
