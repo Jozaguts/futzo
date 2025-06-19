@@ -14,14 +14,21 @@ const computedStyles = computed(() => {
 <template>
   <div class="futzo-page-container">
     <div class="header">
-      <slot name="app-bar" />
+      <slot name="app-bar"/>
     </div>
     <div class="main">
-      <slot name="default" />
+      <slot name="default"/>
     </div>
   </div>
 </template>
 <style>
+@media (max-width: 600px) {
+  .main {
+    padding-top: 0 !important;
+    position: relative;
+  }
+}
+
 .futzo-page-container {
   height: 100%;
   display: grid;
