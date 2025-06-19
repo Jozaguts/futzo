@@ -32,11 +32,14 @@ import {storeToRefs} from "pinia";
 import {Toaster} from "vue-sonner";
 
 const show = ref(false);
-const {rail} = storeToRefs(useGlobalStore());
+const {rail, isMobile} = storeToRefs(useGlobalStore());
 onMounted(() => {
   show.value = true;
 });
 const paddingLeft = computed(() => {
+  if (isMobile.value) {
+    return "0px";
+  }
   return rail.value ? "56px" : "256px";
 });
 const isNotConfigurationPage = computed(() => {
@@ -47,6 +50,7 @@ const isNotConfigurationPage = computed(() => {
 .v-main {
   padding-left: v-bind(paddingLeft);
   padding-bottom: 64px;
+  position: relative;
 }
 
 @media (min-width: 920px) {
