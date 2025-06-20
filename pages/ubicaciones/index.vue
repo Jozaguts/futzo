@@ -27,13 +27,11 @@ const searchLocationHandler = useDebounceFn((place: string) => {
   useLocationStore().getLocations(place)
 }, 600)
 const {mobile} = useDisplay();
-const open = ref(false)
 </script>
-
 <template>
   <PageLayout>
     <template #app-bar>
-      <AppBar :extended="true">
+      <AppBar :extended="mobile">
         <template #buttons>
           <div class="d-none d-md-flex d-lg-flex">
             <SearchInput placeholder="Busca una ubicación…" :min-width="320" class="mr-2" @searching="searchLocationHandler"/>
@@ -50,29 +48,13 @@ const open = ref(false)
         </template>
         <template #extension>
           <div class="d-flex d-md-none d-lg-none flex-column">
+
             <SearchInput placeholder="Busca una ubicación…" :min-width="'calc(100vw - 2rem)'" class=" mx-4 text-center" @searching="searchLocationHandler"/>
           </div>
         </template>
       </AppBar>
     </template>
     <template #default>
-      <v-fab
-          class="d-lg-none d-md-none"
-          position="absolute"
-          :active="true"
-          :app="false"
-          :color="open ? '' :'primary'"
-          size="large"
-          location="bottom right"
-          icon
-      >
-        <v-icon>{{ open ? 'mdi-close' : 'mdi-crown' }}</v-icon>
-        <v-speed-dial v-model="open" location="left center" transition="slide-y-reverse-transition" activator="parent">
-          <v-btn key="1" color="success" icon>
-            <v-icon size="24">$success</v-icon>
-          </v-btn>
-        </v-speed-dial>
-      </v-fab>
       <NoLocations/>
       <DialogLocation/>
       <LocationCardContainer/>
@@ -82,7 +64,6 @@ const open = ref(false)
           title="¿Estás seguro que quieres eliminar esta ubicación?"
           @action-confirmed="deleteLocationHandler"
       />
-
     </template>
   </PageLayout>
 </template>
