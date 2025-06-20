@@ -113,7 +113,6 @@ export const useLocationStore = defineStore('locationStore', () => {
                 locations.value = [...locations.value as LocationCard[], ...data];
             } else {
                 locations.value = data;
-                console.log(locations.value)
             }
         });
     }

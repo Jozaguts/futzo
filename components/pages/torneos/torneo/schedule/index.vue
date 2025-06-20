@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import {useScheduleStore, useTournamentStore} from '~/store'
 import ReScheduleGame from '~/components/pages/calendario/re-schedule-game.vue'
+import GameReport from '~/components/pages/calendario/game-report/index.vue'
 import Score from './score.vue'
 import {useToast} from '~/composables/useToast'
-import type {Field, Match, RoundStatus} from '~/models/Schedule'
+import type {RoundStatus} from '~/models/Schedule'
 
 const {tournamentId, loading} = storeToRefs(useTournamentStore())
 const showReScheduleDialog = ref(false)
+const gameReportDialog = ref(false)
 type MatchProps = {
   id: number,
   field_id: number,
@@ -132,6 +134,14 @@ const showMatchDetails = (matchId: number, fieldId: number, date: string) => {
     date
   }
   showReScheduleDialog.value = true
+}
+const showGameReport = (gameId: number) => {
+  matchProps.value = {
+    id: gameId,
+    field_id: 0,
+    date: ''
+  }
+  gameReportDialog.value = true
 }
 const {mobile} = useDisplay()
 </script>
@@ -303,7 +313,7 @@ const {mobile} = useDisplay()
                             variant="text"
                             density="compact"
                             :ripple="true"
-                            @click="showMatchDetails(match.id, match.details.field.id, match.details.raw_date)"
+                            @click="showGameReport(match.id)"
                         >
                           <Icon name="carbon:result-draft" size="25"></Icon>
                         </v-btn>
@@ -323,6 +333,7 @@ const {mobile} = useDisplay()
         :match-id="matchProps?.id as number"
         :date="matchProps?.date as string"
     />
+    <GameReport v-model="gameReportDialog" :game-id="matchProps?.id as number"/>
   </v-row>
 
 </template>

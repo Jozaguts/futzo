@@ -9,3 +9,4 @@ export {useLocationStore} from "@/store/useLocationStore";
 export {useLeaguesStore} from "@/store/useLeaguesStore";
 export {useCategoryStore} from "@/store/useCategoryStore";
 export {useScheduleStore} from "@/store/useScheduleStore";
+export {useGameStore} from "@/store/useGameStore";

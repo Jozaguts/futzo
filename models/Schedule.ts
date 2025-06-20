@@ -106,7 +106,21 @@ export type Match = {
     status: Status;
     details: MatchDetails;
     result: string;
+    options: MatchOptions[]
 }
+export type MatchOptions = {
+    available_intervals: AvailableIntervals
+    field_id: number,
+}
+export type AvailableIntervals = {
+    day: WeekDay,
+    hours: HourAvailableInterval[]
+}
+export type HourAvailableInterval = {
+    start: Text
+    end: Text
+}
+
 export type MatchDetails = {
     date: string;
     time: string;
