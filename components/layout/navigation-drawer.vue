@@ -66,8 +66,7 @@ const {mobile} = useDisplay()
 <template>
   <v-navigation-drawer
       :permanent="!mobile"
-      :temporary="mobile"
-      :mobile="mobile"
+      :mobile="false"
       v-model="drawer"
       :rail="rail"
       rail-width="56"

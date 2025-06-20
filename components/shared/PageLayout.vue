@@ -1,15 +1,19 @@
 <script lang="ts" setup>
+import {useGlobalStore} from "~/store";
+
 const props = defineProps({
   styles: {
     type: String,
     default: "mt-10",
   },
 });
-const computedStyles = computed(() => {
-  if (props.styles === "mt-10") {
-    return "mt-10";
+onMounted(() => {
+  const {rail, isMobile} = storeToRefs(useGlobalStore())
+  if (isMobile.value) {
+    rail.value = true;
   }
-});
+
+})
 </script>
 <template>
   <div class="futzo-page-container">
