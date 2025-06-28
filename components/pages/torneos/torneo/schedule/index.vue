@@ -52,7 +52,6 @@ const updateMatch = (
     if (roundId === round.round) {
       round.matches.forEach((match) => {
         if (match.id === matchId) {
-          console.log(match)
           if (action === 'up') {
             match[type].goals += 1
           } else {
