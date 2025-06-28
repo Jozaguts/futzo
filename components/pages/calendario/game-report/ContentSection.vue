@@ -2,6 +2,7 @@
 import InfoHeaderSection from "~/components/pages/calendario/game-report/info-header-section.vue";
 import type {Game} from "~/models/Game";
 import TeamTable from "~/components/pages/calendario/game-report/team-table.vue";
+import GameTeamActions from "~/components/pages/calendario/game-report/game-team-actions.vue";
 
 type Props = {
   game?: Game
@@ -93,6 +94,7 @@ watch(
             </div>
           </div>
           <team-table @update:goals="updateHandler"/>
+
         </v-tabs-window-item>
         <v-tabs-window-item value="away" transition="fade-transition" reverse-transition="fade-transition">
           <info-header-section :text="form?.away?.name" label="Visitante"/>
@@ -100,7 +102,7 @@ watch(
       </v-tabs-window>
     </v-col>
     <v-divider/>
-
+    <game-team-actions></game-team-actions>
   </v-row>
 </template>
 <style lang="sass">
