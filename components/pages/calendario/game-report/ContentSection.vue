@@ -86,8 +86,13 @@ watch(
       </v-tabs>
       <v-tabs-window v-model="tab" class="mt-4">
         <v-tabs-window-item value="home" transition="fade-transition" reverse-transition="fade-transition">
-          <info-header-section :text="form?.home?.name" label="Equipo"/>
-          <team-table @update="updateHandler"/>
+          <div class="d-flex justify-space-between">
+            <info-header-section :text="form?.home?.name" label="Equipo"/>
+            <div>
+              <v-btn variant="outlined" density="compact">Cambios</v-btn>
+            </div>
+          </div>
+          <team-table @update:goals="updateHandler"/>
         </v-tabs-window-item>
         <v-tabs-window-item value="away" transition="fade-transition" reverse-transition="fade-transition">
           <info-header-section :text="form?.away?.name" label="Visitante"/>

@@ -1,44 +1,59 @@
 <script lang="ts" setup>
-import InfoHeaderSection from "~/components/pages/calendario/game-report/info-header-section.vue";
-
 type Props = {
   nombre?: string
   label?: string
 }
 defineProps<Props>()
-const players = [
-  {Jugador: '10 - Juan Pérez', minutos: 90, goles: 0, tarjetas: [], sustitucion: []},
-  {Jugador: '11 - Carlos Gómez', minutos: 90, goles: 0, tarjetas: [], sustitucion: []},
-  {Jugador: '05 - Luis Fernández', minutos: 90, goles: 0, tarjetas: [], sustitucion: []},
-  {Jugador: '12 - Miguel Torres', minutos: 90, goles: 0, tarjetas: [], sustitucion: []},
-  {Jugador: '08 - Andrés Martínez', minutos: 90, goles: 0, tarjetas: [], sustitucion: []},
-  {Jugador: '01 - José Rodríguez', minutos: 90, goles: 0, tarjetas: [], sustitucion: []},
-  {Jugador: '03 - David Sánchez', minutos: 90, goles: 0, tarjetas: [], sustitucion: []},
-  {Jugador: '23 - Javier López', minutos: 90, goles: 0, tarjetas: [], sustitucion: []},
-]
+type PlayerForm = {
+  '#': number
+  Jugador: string
+  goles: number
+  tarjetas: string[]
+}
+const players = ref<PlayerForm[]>([
+  {'#': 19, Jugador: 'Juan Pérez', goles: 0, tarjetas: []},
+  {'#': 10, Jugador: 'Carlos Gómez', goles: 0, tarjetas: []},
+  {'#': 1, Jugador: 'Luis Fernández', goles: 0, tarjetas: []},
+  {'#': 8, Jugador: 'Miguel Torres', goles: 0, tarjetas: []},
+  {'#': 9, Jugador: 'Andrés Martínez', goles: 0, tarjetas: []},
+  {'#': 3, Jugador: 'José Rodríguez', goles: 0, tarjetas: []},
+  {'#': 12, Jugador: 'David Sánchez', goles: 0, tarjetas: []},
+  {'#': 33, Jugador: 'Javier López', goles: 0, tarjetas: []}])
+const teamPlayersDetails = {
+  tarjetas: [],
+  sustituciones: [],
+}
 
 const minWidth = computed(() => {
-  return useDisplay().value ? '230' : '130'
+  return useDisplay().mobile ? '230' : '130'
 })
 const alert = (message: string) => {
   console.log(message)
+}
+const emits = defineEmits(['update:goals'])
+const updatePlayerGoals = (player: PlayerForm, value: number) => {
+  player.goles = value
+  emits('update:goals', player)
 }
 </script>
 <template>
   <v-data-table
       :mobile="$vuetify.display.mobile"
       hide-default-footer
-      height="420px"
+      height="320px"
       fixed-header
       density="compact"
       :items="players"
   >
-
-    <template #item.minutos="{item}">
-      <v-number-input max-width="100" min-width="100" :min="0" :model-value="item.minutos" control-variant="stacked" density="compact"></v-number-input>
-    </template>
     <template #item.goles="{item}">
-      <v-number-input max-width="100" min-width="100" :min="0" :model-value="item.goles" control-variant="stacked" density="compact"></v-number-input>
+      <v-number-input
+          min-width="100"
+          :min="0"
+          :model-value="item.goles"
+          control-variant="stacked"
+          density="compact"
+          @update:model-value="(value) => updatePlayerGoals(item, value)"
+      />
     </template>
     <template #item.tarjetas>
       <v-select :items="[{text: 'Amarilla', value: 'yellow'}, {text: 'Roja por doble Amarilla', value: 'doble-card'}, {text: 'Roja directa', value: 'red'}]"
@@ -98,7 +113,6 @@ const alert = (message: string) => {
           item-title="Jugador"
           @update:modelValue="() => alert('test')"
       >
-
       </v-select>
     </template>
   </v-data-table>
