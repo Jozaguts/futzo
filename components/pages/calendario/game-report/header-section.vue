@@ -9,16 +9,16 @@ defineProps<Props>()
 </script>
 <template>
   <v-row>
-    <v-col cols="3">
+    <v-col cols="6" md="3" lg="3">
       <info-header-section :text="game?.details?.tournament" label="Torneo"/>
     </v-col>
-    <v-col cols="3">
+    <v-col cols="6" md="3" lg="3">
       <info-header-section :text="game?.round.toString()" label="Jornada"/>
     </v-col>
-    <v-col cols="3">
+    <v-col cols="6" md="3" lg="3">
       <info-header-section :text="game?.details?.field.name" label="Campo"/>
     </v-col>
-    <v-col cols="3">
+    <v-col cols="6" md="3" lg="3">
       <info-header-section :text="`${game?.details?.date} ${game?.details?.raw_time}`" label="Horario"/>
     </v-col>
   </v-row>
