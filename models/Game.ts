@@ -1,3 +1,9 @@
+export type GameDetailsRequest = {
+    id: number,
+    field_id: number,
+    date: string
+}
+
 export type Game = {
     id: number;
     home: Away;

@@ -119,11 +119,6 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
         {value: 'completado', text: 'Completada'},
         {value: 'cancelado', text: 'Cancelada'},
     ]);
-
-    const getMatch = async (matchId: number, fieldId: number, date: string,) => {
-        const client = useSanctumClient();
-        return await client(`/api/v1/admin/games/${matchId}?date=${date}&field_id=${fieldId}`)
-    }
     const $resetScheduleStore = () => {
         scheduleDialog.value = false;
         scheduleParams.value = undefined;
@@ -304,6 +299,5 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
         generateSchedule,
         settingsSchedule,
         $resetScheduleStore,
-        getMatch,
     };
 });
