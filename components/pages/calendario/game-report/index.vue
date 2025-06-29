@@ -2,34 +2,26 @@
 import {useGameStore} from "~/store";
 import HeaderSection from "~/components/pages/calendario/game-report/header-section.vue";
 import ContentSection from "~/components/pages/calendario/game-report/ContentSection.vue";
+import type {GameDetailsRequest} from "~/models/Game";
 
-type Props = {
-  gameId: number
-}
-const props = defineProps<Props>()
-const show = defineModel('show', {default: false})
-const {game} = storeToRefs(useGameStore())
+const {game, gameReportDialog, gameId, gameDetailsRequest} = storeToRefs(useGameStore())
 const onLeaving = () => {
-  show.value = false
-  // Reset any necessary state or perform cleanup here
+  gameReportDialog.value = false
+  gameDetailsRequest.value = null as unknown as GameDetailsRequest
+  gameId.value = null as unknown as number
 }
 
-watch(() => props.gameId, async (newGameId) => {
+watch(() => gameId.value, async (newGameId) => {
   if (newGameId) {
-    await useGameStore().fetchGame(newGameId)
-    if (game.value) {
-
-    }
+    game.value = await useGameStore().getGame()
   }
 }, {immediate: true})
-
-
 </script>
 <template>
   <Dialog
       title="Acta partido"
       subtitle="Registra los detalles del partido, incluyendo goles, tarjetas y otros eventos importantes."
-      :model-value="show"
+      :model-value="gameReportDialog"
       @leaving="onLeaving"
       icon-name="uil:schedule"
       min-height="910"
