@@ -1,35 +1,38 @@
 <script setup lang="ts">
 import '@vuepic/vue-datepicker/dist/main.css'
-import type {Match, Field} from '~/models/Schedule'
-import {useScheduleStore, useTournamentStore} from "~/store";
+import type {Field} from '~/models/Schedule'
+import type {Game} from '~/models/Game'
+import {useGameStore, useScheduleStore, useTournamentStore} from "~/store";
 
 const {tournamentId} = storeToRefs(useTournamentStore())
+const gameStore = useGameStore()
+const {showReScheduleDialog} = storeToRefs(gameStore)
+const {getGame} = gameStore
 const props = defineProps<{
-  matchId: number | null
+  gameId: number | null
   fieldId: number | null
   date: string | null
 }>()
-const match = ref<Match>()
+const game = ref<Game>()
 const loading = ref(true)
-const show = defineModel('show', {default: false})
 const form = ref({
   field_id: props.fieldId,
-  match_id: props.matchId,
+  game_id: props.gameId,
   date: new Date(props.date || '').toLocaleDateString(), // game.details.raw_date
   day: null,
   selected_time: null,
 })
 const options = ref([])
 const fields = ref<Field[]>([] as Field[])
-const {getMatch} = useScheduleStore()
-const getMatchDetails = async (value: Date) => {
+
+const getGameDetails = async (value: Date) => {
   if (!value) return
   form.value.date = value.toLocaleDateString()
   await fetchMatch()
 }
 const saveChanges = () => {
   const client = useSanctumClient()
-  client(`/api/v1/admin/games/${props.matchId}/reschedule`, {
+  client(`/api/v1/admin/games/${props.gameId}/reschedule`, {
     method: 'PUT',
     body: {
       date: form.value.date,
@@ -41,25 +44,25 @@ const saveChanges = () => {
     useScheduleStore().schedulePagination.currentPage = 1
     await useScheduleStore().getTournamentSchedules()
     useToast().toast('success', 'Partido reprogramado correctamente', 'El partido se ha reprogramado con éxito')
-    show.value = false
+    showReScheduleDialog.value = false
   }).catch((error) => {
     useToast().toast('error', 'Error al reprogramar partido', 'Hubo un error al intentar reprogramar el partido. Por favor, intente nuevamente más tarde.')
   })
 }
 const onLeaving = () => {
-  show.value = false
+  showReScheduleDialog.value = false
   options.value = []
-  form.value.date = new Date(match.details.raw_date).toLocaleDateString()
-  form.value.field_id = match.details.field.id
-  form.value.selected_time = match.details.raw_date
+  form.value.date = new Date(game.details.raw_date).toLocaleDateString()
+  form.value.field_id = game.details.field.id
+  form.value.selected_time = game.details.raw_date
 }
 const fetchMatch = async () => {
-  if (!props.matchId) return;
+  if (!props.gameId) return;
   loading.value = true;
   try {
-    match.value = await getMatch(form.value.match_id as number, form.value.field_id as number, form.value.date as string);
-    if (match.value?.options?.length > 0) {
-      options.value = match.value.options[0]
+    game.value = await getGame(form.value.game_id as number, form.value.field_id as number, form.value.date as string);
+    if (game.value?.options?.length > 0) {
+      options.value = game.value.options[0]
       console.log(options.value)
       form.value.day = options.value.available_intervals.day
     }
@@ -74,23 +77,23 @@ const fetchFields = async () => {
       tournamentId.value as number
   )
 }
-watch(() => show.value, async (isOpen) => {
+watch(() => showReScheduleDialog.value, async (isOpen) => {
   if (isOpen) {
     form.value.field_id = props.fieldId
     form.value.date = new Date(props.date || '').toLocaleDateString()
-    form.value.match_id = props.matchId
+    form.value.game_id = props.gameId
     await fetchFields()
     await fetchMatch()
   } else {
     form.value.field_id = null
     form.value.date = null
     form.value.selected_time = null
-    form.value.match_id = null
+    form.value.game_id = null
   }
 })
 watch(() => [form.value.field_id, form.value.date], ([newFieldId, newDate]) => {
-  if (newFieldId && newDate && show.value) {
-    getMatchDetails(new Date(newDate))
+  if (newFieldId && newDate && showReScheduleDialog.value) {
+    getGameDetails(new Date(newDate))
   }
 })
 </script>
@@ -99,7 +102,7 @@ watch(() => [form.value.field_id, form.value.date], ([newFieldId, newDate]) => {
       title="Reprogramar partido"
       subtitle="Modificá la fecha, hora o campo de juego para este partido. <br />
     Los cambios se aplicarán manteniendo la jornada original."
-      :model-value="show"
+      :model-value="showReScheduleDialog"
       @leaving="onLeaving"
       icon-name="uil:schedule"
       min-height="910"
@@ -112,8 +115,8 @@ watch(() => [form.value.field_id, form.value.date], ([newFieldId, newDate]) => {
           <v-col cols="12">
             <label class="text-subtitle-2">Programado:</label>
             <p class="font-weight-bold">
-              {{ match?.details?.date }}
-              {{ match?.details?.raw_time }}
+              {{ game?.details?.date }}
+              {{ game?.details?.raw_time }}
             </p>
           </v-col>
           <v-col cols="12">
@@ -128,11 +131,11 @@ watch(() => [form.value.field_id, form.value.date], ([newFieldId, newDate]) => {
                 <v-card-text>
                   <div class="team flex-grow-1 team_local d-flex flex-column align-center">
                     <v-avatar
-                        :image="match?.home?.image"
+                        :image="game?.home?.image"
                         size="24"
                         class="image"
                     />
-                    <span class="team team_home mx-2">{{ match?.home?.name }}</span>
+                    <span class="team team_home mx-2">{{ game?.home?.name }}</span>
                   </div>
                 </v-card-text>
               </v-card>
@@ -149,12 +152,12 @@ watch(() => [form.value.field_id, form.value.date], ([newFieldId, newDate]) => {
                 <v-card-text>
                   <div class="team team_away d-flex flex-column align-center">
                     <v-avatar
-                        :image="match?.away?.image"
+                        :image="game?.away?.image"
                         size="24"
                         class="image"
                     />
                     <span class="team team_home mx-2">
-                                {{ match?.away?.name }}
+                                {{ game?.away?.name }}
                               </span>
                   </div>
                 </v-card-text>
@@ -166,8 +169,8 @@ watch(() => [form.value.field_id, form.value.date], ([newFieldId, newDate]) => {
             <BaseCalendarInput
                 v-model:start_date="form.date"
                 :multiCalendar="false"
-                :minDate="match?.start_date"
-                :max-date="match?.end_date"
+                :minDate="game?.start_date"
+                :max-date="game?.end_date"
             />
 
           </v-col>
@@ -180,7 +183,7 @@ watch(() => [form.value.field_id, form.value.date], ([newFieldId, newDate]) => {
                 item-value="id"
                 label="Selecciona un campo"
                 clearable
-                @update:model-value="getMatchDetails"
+                @update:model-value="getGameDetails"
             />
           </v-col>
           <v-col cols="12" md="8" lg="8" v-if="options?.available_intervals?.hours?.length">
