@@ -6,7 +6,7 @@ defineProps({
     type: Number,
     required: true,
   },
-  matchId: {
+  gameId: {
     type: Number,
     required: true,
   },
@@ -41,10 +41,10 @@ const emits = defineEmits(['update:game'])
       >
         <template #append>
           <div class="d-flex flex-column">
-            <v-btn @click="emits('update:game','up', matchId, type,roundId)" class="mb-1" color="secondary" size="small" height="20" width="20" icon :rounded="false"
+            <v-btn @click="emits('update:game','up', gameId, type,roundId)" class="mb-1" color="secondary" size="small" height="20" width="20" icon :rounded="false"
                    density="compact">+
             </v-btn>
-            <v-btn @click="emits('update:game','down', matchId, type, roundId)" class="mb-1" color="secondary" size="small" height="20" width="20" icon :rounded="false"
+            <v-btn @click="emits('update:game','down', gameId, type, roundId)" class="mb-1" color="secondary" size="small" height="20" width="20" icon :rounded="false"
                    density="compact"> -
             </v-btn>
           </div>
