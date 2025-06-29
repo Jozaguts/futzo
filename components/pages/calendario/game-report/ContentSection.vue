@@ -7,61 +7,62 @@ import GameTeamActions from "~/components/pages/calendario/game-report/game-team
 type Props = {
   game?: Game
 }
-const props = defineProps<Props>()
-const goalDetail = {
-  player_id: '',
-  minute: 0,
-  assist_id: '',
+type GoalDetails = {
+  player_id: string,
+  minute: number,
+  assist_id: string,
 }
-const form = ref({
+type GameTeamForm = {
+  home: {
+    name: string,
+    goals: number,
+    goalsDetails: GoalDetails[]
+  },
+  away: {
+    name: string,
+    goals: number,
+    goalsDetails: GoalDetails[]
+  }
+}
+const props = defineProps<Props>()
+
+const form = ref<GameTeamForm>({
   home: {
     name: '',
     goals: 0,
-    goalsDetails: [
-      {
-        player_id: '',
-        minute: 0,
-        assist_id: '',
-      },
-    ],
+    goalsDetails: [],
   },
   away: {
     name: '',
     goals: 0,
-    goalsDetails: [
-      {
-        player_id: '',
-        minute: 0,
-        assist_id: '',
-      },
-    ],
+    goalsDetails: [],
   },
 })
 const tab = ref('home')
-const updateHandler = (data: any) => {
-  console.log(data)
+const updateHandler = (type: | 'home' | 'away', data: any) => {
+  const {goalsDetails} = form.value[type]
+
 }
 watch(
-    props,
-    (newValue) => {
+    () => props.game,
+    (newValue, oldValue) => {
       form.value = {
         home: {
-          name: newValue.game?.home?.name || '',
-          goals: newValue.game?.home?.goals || 0,
+          name: newValue?.home?.name || '',
+          goals: newValue?.home?.goals || 0,
           goalsDetails: []
         },
         away: {
-          name: newValue.game?.away?.name || '',
-          goals: newValue.game?.away?.goals || 0,
+          name: newValue?.away?.name || '',
+          goals: newValue?.away?.goals || 0,
           goalsDetails: []
         },
       }
-    },
-    {once: true}
+    }, {deep: true}
 )
 </script>
 <template>
-  <v-row class="futzo-rounded ">
+  <v-row class="futzo-rounded">
     <v-col cols="12">
       <div class=" d-flex justify-center justify-space-evenly ">
         <div class="d-flex flex-column align-center">
@@ -93,7 +94,7 @@ watch(
               <v-btn variant="outlined" density="compact">Cambios</v-btn>
             </div>
           </div>
-          <team-table @update:goals="updateHandler"/>
+          <team-table @update:goals="(value) => updateHandler('home',value)"/>
 
         </v-tabs-window-item>
         <v-tabs-window-item value="away" transition="fade-transition" reverse-transition="fade-transition">
