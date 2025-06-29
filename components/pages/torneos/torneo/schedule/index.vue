@@ -7,14 +7,8 @@ import {useToast} from '~/composables/useToast'
 import type {RoundStatus} from '~/models/Schedule'
 
 const {tournamentId, loading} = storeToRefs(useTournamentStore())
-const {gameReportDialog} = storeToRefs(useGameStore())
-const showReScheduleDialog = ref(false)
-type GameProps = {
-  id: number,
-  field_id: number,
-  date: string
-}
-const matchProps = ref<GameProps>()
+const {gameReportDialog, gameId, showReScheduleDialog, gameDetailsRequest} = storeToRefs(useGameStore())
+
 const {
   schedulePagination,
   isLoadingSchedules,
@@ -44,14 +38,14 @@ const load = async ({done}: {
 }
 const updateGame = (
     action: 'up' | 'down',
-    matchId: number,
+    gameId: number,
     type: 'home' | 'away',
     roundId: number
 ) => {
   schedules.value.rounds.forEach((round) => {
     if (roundId === round.round) {
       round.matches.forEach((game) => {
-        if (game.id === matchId) {
+        if (game.id === gameId) {
           if (action === 'up') {
             game[type].goals += 1
           } else {
@@ -78,7 +72,7 @@ const saveHandler = (roundId: number) => {
       (round) => round.round === roundId
   )
   if (round) {
-    const matches = round?.matches.map((game) => {
+    const games = round?.matches.map((game) => {
       return {
         id: game.id,
         home: {
@@ -97,7 +91,7 @@ const saveHandler = (roundId: number) => {
         {
           method: 'POST',
           body: {
-            matches,
+            matches: games,
           },
         }
     )
@@ -126,20 +120,21 @@ onBeforeMount(async () => {
 onBeforeUnmount(async () => {
   schedulePagination.value.currentPage = 1
 })
-const showGameDetails = (matchId: number, fieldId: number, date: string) => {
-  matchProps.value = {
-    id: matchId,
+const showGameDetails = (gameId: number, fieldId: number, date: string) => {
+  gameDetailsRequest.value = {
+    id: gameId,
     field_id: fieldId,
     date
   }
   showReScheduleDialog.value = true
 }
-const showGameReport = (gameId: number) => {
-  matchProps.value = {
-    id: gameId,
-    field_id: 0,
-    date: ''
+const showGameReport = (_gameId: number, fieldId: number, _date: string) => {
+  gameDetailsRequest.value = {
+    id: _gameId,
+    field_id: fieldId,
+    date: _date
   }
+  gameId.value = _gameId
   gameReportDialog.value = true
 }
 const {mobile} = useDisplay()
@@ -251,10 +246,10 @@ const {mobile} = useDisplay()
                         {{ game.home.name }}</span
                       >
                       <Score
-                          :matchId="game.id"
+                          :gameId="game.id"
                           :roundId="item.round"
                           :is-editable="item.isEditable"
-                          @update:match="updateGame"
+                          @update:game="updateGame"
                           type="home"
                           :value="game.home.goals"
                       />
@@ -273,11 +268,11 @@ const {mobile} = useDisplay()
                         {{ game.away.name }}</span
                       >
                       <Score
-                          :matchId="game.id"
+                          :gameId="game.id"
                           :value="game.away.goals"
                           :roundId="item.round"
                           :is-editable="item.isEditable"
-                          @update:match="updateGame"
+                          @update:game="updateGame"
                           type="away"
                       />
                       <Icon class="flag" name="futzo-icon:match-polygon"/>
@@ -312,7 +307,7 @@ const {mobile} = useDisplay()
                             variant="text"
                             density="compact"
                             :ripple="true"
-                            @click="showGameReport(game.id)"
+                            @click="showGameReport(game.id, game.details.field.id, game.details.raw_date)"
                         >
                           <Icon name="carbon:result-draft" size="25"></Icon>
                         </v-btn>
@@ -328,11 +323,11 @@ const {mobile} = useDisplay()
     </v-col>
     <ReScheduleGame
         v-model:show="showReScheduleDialog"
-        :field-id="matchProps?.field_id as number"
-        :match-id="matchProps?.id as number"
-        :date="matchProps?.date as string"
+        :field-id="gameDetailsRequest?.field_id as number"
+        :game-id="gameDetailsRequest?.id as number"
+        :date="gameDetailsRequest?.date as string"
     />
-    <GameReport :game-id="matchProps?.id as number"/>
+    <GameReport/>
   </v-row>
 
 </template>
