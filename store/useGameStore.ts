@@ -5,6 +5,7 @@ export const useGameStore = defineStore('gameStore', () => {
     const game = ref<Game>();
     const games = ref<Game[]>([]);
     const gameId = ref<number | null>(null);
+    const gameReportDialog = ref(false);
 
     const fetchGame = async (id: number) => {
         const client = useSanctumClient();
@@ -14,6 +15,7 @@ export const useGameStore = defineStore('gameStore', () => {
         game,
         games,
         gameId,
+        gameReportDialog,
         fetchGame
     }
 });

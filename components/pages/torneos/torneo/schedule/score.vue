@@ -23,7 +23,7 @@ defineProps({
     default: 0,
   },
 })
-const emits = defineEmits(['update:match'])
+const emits = defineEmits(['update:game'])
 
 </script>
 
@@ -41,10 +41,10 @@ const emits = defineEmits(['update:match'])
       >
         <template #append>
           <div class="d-flex flex-column">
-            <v-btn @click="emits('update:match','up', matchId, type,roundId)" class="mb-1" color="secondary" size="small" height="20" width="20" icon :rounded="false"
+            <v-btn @click="emits('update:game','up', matchId, type,roundId)" class="mb-1" color="secondary" size="small" height="20" width="20" icon :rounded="false"
                    density="compact">+
             </v-btn>
-            <v-btn @click="emits('update:match','down', matchId, type, roundId)" class="mb-1" color="secondary" size="small" height="20" width="20" icon :rounded="false"
+            <v-btn @click="emits('update:game','down', matchId, type, roundId)" class="mb-1" color="secondary" size="small" height="20" width="20" icon :rounded="false"
                    density="compact"> -
             </v-btn>
           </div>

@@ -15,7 +15,7 @@ const show = defineModel('show', {default: false})
 const form = ref({
   field_id: props.fieldId,
   match_id: props.matchId,
-  date: new Date(props.date || '').toLocaleDateString(), // match.details.raw_date
+  date: new Date(props.date || '').toLocaleDateString(), // game.details.raw_date
   day: null,
   selected_time: null,
 })

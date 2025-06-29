@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {useScheduleStore, useTournamentStore} from '~/store'
+import {useGameStore, useScheduleStore, useTournamentStore} from '~/store'
 import ReScheduleGame from '~/components/pages/calendario/re-schedule-game.vue'
 import GameReport from '~/components/pages/calendario/game-report/index.vue'
 import Score from './score.vue'
@@ -7,14 +7,14 @@ import {useToast} from '~/composables/useToast'
 import type {RoundStatus} from '~/models/Schedule'
 
 const {tournamentId, loading} = storeToRefs(useTournamentStore())
+const {gameReportDialog} = storeToRefs(useGameStore())
 const showReScheduleDialog = ref(false)
-const gameReportDialog = ref(false)
-type MatchProps = {
+type GameProps = {
   id: number,
   field_id: number,
   date: string
 }
-const matchProps = ref<MatchProps>()
+const matchProps = ref<GameProps>()
 const {
   schedulePagination,
   isLoadingSchedules,
@@ -42,7 +42,7 @@ const load = async ({done}: {
     isLoadingSchedules.value = false
   }
 }
-const updateMatch = (
+const updateGame = (
     action: 'up' | 'down',
     matchId: number,
     type: 'home' | 'away',
@@ -50,13 +50,13 @@ const updateMatch = (
 ) => {
   schedules.value.rounds.forEach((round) => {
     if (roundId === round.round) {
-      round.matches.forEach((match) => {
-        if (match.id === matchId) {
+      round.matches.forEach((game) => {
+        if (game.id === matchId) {
           if (action === 'up') {
-            match[type].goals += 1
+            game[type].goals += 1
           } else {
-            if (match[type].goals > 0) {
-              match[type].goals -= 1
+            if (game[type].goals > 0) {
+              game[type].goals -= 1
             }
           }
         }
@@ -78,16 +78,16 @@ const saveHandler = (roundId: number) => {
       (round) => round.round === roundId
   )
   if (round) {
-    const matches = round?.matches.map((match) => {
+    const matches = round?.matches.map((game) => {
       return {
-        id: match.id,
+        id: game.id,
         home: {
-          id: match.home.id,
-          goals: match.home.goals,
+          id: game.home.id,
+          goals: game.home.goals,
         },
         away: {
-          id: match.away.id,
-          goals: match.away.goals,
+          id: game.away.id,
+          goals: game.away.goals,
         },
       }
     })
@@ -126,7 +126,7 @@ onBeforeMount(async () => {
 onBeforeUnmount(async () => {
   schedulePagination.value.currentPage = 1
 })
-const showMatchDetails = (matchId: number, fieldId: number, date: string) => {
+const showGameDetails = (matchId: number, fieldId: number, date: string) => {
   matchProps.value = {
     id: matchId,
     field_id: fieldId,
@@ -230,17 +230,17 @@ const {mobile} = useDisplay()
                   </div>
                 </v-col>
                 <v-col
-                    v-for="match in item.matches"
-                    :key="match.id"
+                    v-for="game in item.matches"
+                    :key="game.id"
                     cols="12"
                     md="2"
                     lg="4"
-                    class="match-container"
+                    class="game-container"
                 >
-                  <div class="match">
+                  <div class="game">
                     <div class="team home">
                       <v-avatar
-                          :image="match.home.image"
+                          :image="game.home.image"
                           size="24"
                           class="image"
                       />
@@ -248,47 +248,47 @@ const {mobile} = useDisplay()
                           class="name d-inline-block text-truncate"
                           style="max-width: 150px"
                       >
-                        {{ match.home.name }}</span
+                        {{ game.home.name }}</span
                       >
                       <Score
-                          :matchId="match.id"
+                          :matchId="game.id"
                           :roundId="item.round"
                           :is-editable="item.isEditable"
-                          @update:match="updateMatch"
+                          @update:match="updateGame"
                           type="home"
-                          :value="match.home.goals"
+                          :value="game.home.goals"
                       />
                     </div>
                     <div class="team away">
                       <v-avatar
                           class="image"
                           size="24"
-                          :image="match.away.image"
+                          :image="game.away.image"
                       />
 
                       <span
                           class="name d-inline-block text-truncate"
                           style="max-width: 150px"
                       >
-                        {{ match.away.name }}</span
+                        {{ game.away.name }}</span
                       >
                       <Score
-                          :matchId="match.id"
-                          :value="match.away.goals"
+                          :matchId="game.id"
+                          :value="game.away.goals"
                           :roundId="item.round"
                           :is-editable="item.isEditable"
-                          @update:match="updateMatch"
+                          @update:match="updateGame"
                           type="away"
                       />
                       <Icon class="flag" name="futzo-icon:match-polygon"/>
                     </div>
                     <div class="details">
                       <p>
-                        {{ match.details.date }}
-                        <span>{{ match.details.raw_time }}</span>
+                        {{ game.details.date }}
+                        <span>{{ game.details.raw_time }}</span>
                       </p>
-                      <p>{{ match.details?.location.name }}</p>
-                      <p>{{ match.details?.field.name }}</p>
+                      <p>{{ game.details?.location.name }}</p>
+                      <p>{{ game.details?.field.name }}</p>
                       <div class="d-flex justify-space-between w-75 align-center">
                         <v-btn
                             icon
@@ -298,11 +298,11 @@ const {mobile} = useDisplay()
                             size="small"
                             :ripple="true"
                             :disabled="
-                          (match.status as RoundStatus) === 'en_progreso' ||
-                          (match.status as RoundStatus) === 'completado' ||
-                          (match.status as RoundStatus) === 'cancelado'
+                          (game.status as RoundStatus) === 'en_progreso' ||
+                          (game.status as RoundStatus) === 'completado' ||
+                          (game.status as RoundStatus) === 'cancelado'
                         "
-                            @click="showMatchDetails(match.id, match.details.field.id, match.details.raw_date)"
+                            @click="showGameDetails(game.id, game.details.field.id, game.details.raw_date)"
                         >
                           <Icon name="ant-design:schedule-twotone" size="25"></Icon>
                         </v-btn>
@@ -312,7 +312,7 @@ const {mobile} = useDisplay()
                             variant="text"
                             density="compact"
                             :ripple="true"
-                            @click="showGameReport(match.id)"
+                            @click="showGameReport(game.id)"
                         >
                           <Icon name="carbon:result-draft" size="25"></Icon>
                         </v-btn>
@@ -332,7 +332,7 @@ const {mobile} = useDisplay()
         :match-id="matchProps?.id as number"
         :date="matchProps?.date as string"
     />
-    <GameReport v-model="gameReportDialog" :game-id="matchProps?.id as number"/>
+    <GameReport :game-id="matchProps?.id as number"/>
   </v-row>
 
 </template>
