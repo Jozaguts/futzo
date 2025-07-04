@@ -1,9 +1,9 @@
 import {defineStore} from "pinia";
 
-import type {Game, GameDetailsRequest, GameTeamFormRequest, GameTeamsPlayers} from "~/models/Game";
+import type {Game, GameDetailsRequest, GameTeam, GameTeamFormRequest, GameTeamsPlayers, TeamType} from "~/models/Game";
 
 export const useGameStore = defineStore('gameStore', () => {
-    const game = ref<Game>();
+    const game = ref<Game>(null as unknown as Game);
     const games = ref<Game[]>([]);
     const gameId = ref<number | null>(null);
     const gameReportDialog = ref(false);
@@ -21,7 +21,18 @@ export const useGameStore = defineStore('gameStore', () => {
             goalsDetails: [],
         },
     })
-    const gamePlayers = ref<GameTeamsPlayers[]>([]);
+    const gamePlayers = ref<Record<TeamType, GameTeam>>({
+        home: {
+            team_id: 0,
+            name: '',
+            players: [],
+        },
+        away: {
+            team_id: 0,
+            name: '',
+            players: [],
+        },
+    });
     const getGameTeamsPlayers = async () => {
         const client = useSanctumClient();
         if (gameId.value) {
