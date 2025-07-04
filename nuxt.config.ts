@@ -90,7 +90,7 @@ export default defineNuxtConfig({
         },
         client: {
             retry: false, // ofetch retry option (number | false)
-            initialRequest: false,
+            initialRequest: true,
         },
         redirect: {
             keepRequestedRoute: false, // Keep requested route in the URL for later redirect
