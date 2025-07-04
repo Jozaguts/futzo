@@ -5,7 +5,8 @@ import TeamTable from "~/components/pages/calendario/game-report/team-table.vue"
 import GameTeamActions from "~/components/pages/calendario/game-report/game-team-actions.vue";
 import {useGameStore} from "~/store";
 
-const {game} = storeToRefs(useGameStore())
+const {game, gamePlayers} = storeToRefs(useGameStore())
+
 const tab = ref('home')
 </script>
 <template>

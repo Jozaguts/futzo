@@ -1,49 +1,32 @@
 <script lang="ts" setup>
 import {useGameStore} from "~/store";
 import type {Header} from "~/interfaces";
+import type {GameTeamPlayer, TeamType} from "~/models/Game";
 
 type Props = {
-  teamType: 'home' | 'away'
+  teamType: TeamType
 }
 const headers: Header[] = [
   {title: '#', value: '#'},
-  {title: 'Jugador', value: 'Jugador',},
+  {title: 'Jugador', value: 'name',},
   {title: 'Goles', value: 'goles',},
   {title: 'Tarjetas', value: 'tarjetas'}
 ]
-const {teamType} = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   teamType: 'home'
 })
-const {gamePlayers} = storeToRefs(useGameStore())
-type PlayerForm = {
-  '#': number
-  Jugador: string
-  goles: number
-  tarjetas: string[]
-}
-
-const teamPlayersDetails = {
-  tarjetas: [],
-  sustituciones: [],
-}
+const {gamePlayers, game} = storeToRefs(useGameStore())
 const minWidth = computed(() => {
   return useDisplay().mobile ? '230' : '130'
 })
-const updateHandler = (type: 'goals' | 'cards', item: PlayerForm, value: number | string) => {
-  console.log(`Updating ${type} for player ${item.Jugador} with value:`, value);
+const updateHandler = (type: 'goals' | 'cards', item: GameTeamPlayer, value: number | string) => {
+  game.value[props.teamType].goals = gamePlayers.value[props.teamType].players.reduce((acc, player) => acc + player.goals, 0) as number
 }
-const players = computed(() => {
-  if (gamePlayers.value[teamType] === undefined) {
-    return []
-  }
-  
-  return gamePlayers.value[teamType]?.players.map((player, index) => ({
-    '#': index + 1,
-    Jugador: player.name,
-    goles: player.goals || 0,
-    tarjetas: teamPlayersDetails.tarjetas.filter(card => card.playerId === player.id).map(card => card.type)
-  }))
-})
+const cardTypes = [
+  {value: 'yellow-card', text: 'Amarilla'},
+  {value: 'doble-card', text: 'Roja por doble Amarilla'},
+  {value: 'red-card', text: 'Roja directa'}
+]
 </script>
 <template>
   <v-data-table
@@ -53,20 +36,22 @@ const players = computed(() => {
       fixed-header
       :headers="headers"
       density="compact"
-      :items="players"
+      :items="gamePlayers[props.teamType].players"
   >
+
     <template #item.goles="{item}">
       <v-number-input
           min-width="100"
           :min="0"
-          :model-value="item.goles"
+          v-model="item.goals"
           control-variant="stacked"
           density="compact"
-          @update:model-value="(value) => updateHandler('goals', item, value)"
+          @update:model-value="updateHandler('goals', item, $event)"
       />
     </template>
-    <template #item.tarjetas>
-      <v-select :items="[{text: 'Amarilla', value: 'yellow'}, {text: 'Roja por doble Amarilla', value: 'doble-card'}, {text: 'Roja directa', value: 'red'}]"
+
+    <template #item.tarjetas="{item}">
+      <v-select :items="cardTypes"
                 variant="outlined"
                 density="compact"
                 :max-width="minWidth"
@@ -75,6 +60,7 @@ const players = computed(() => {
                 item-title="text"
                 clearable
                 single-line
+                v-model="item.cards"
 
       >
         <template v-slot:item="{ props: itemProps, item }">
@@ -97,14 +83,14 @@ const players = computed(() => {
           </v-list-item>
         </template>
         <template #selection="{item}">
-          <div v-if="item.value ==='yellow'">
+          <div v-if="item.value ==='yellow-card'">
             <Icon name="mdi:cards" class="bg-yellow-lighten-1" size="16"></Icon>
           </div>
           <div v-else-if="item.value === 'doble-card'">
             <Icon name="mdi:cards" class="bg-yellow-lighten-1" size="16"></Icon>
             <Icon name="mdi:cards" class="bg-yellow-lighten-1" size="16"></Icon>
           </div>
-          <div v-else-if="item.value === 'red'">
+          <div v-else-if="item.value === 'red-card'">
             <Icon name="mdi:cards" class="bg-red-lighten-1" size="16"></Icon>
           </div>
         </template>
