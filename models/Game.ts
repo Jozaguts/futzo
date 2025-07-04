@@ -1,3 +1,5 @@
+export type CardType = 'yellow-card' | 'doble-card' | 'red-card';
+export type TeamType = 'home' | 'away'
 export type GameTeamsPlayers = {
     home: GameTeam;
     away: GameTeam;
@@ -5,17 +7,18 @@ export type GameTeamsPlayers = {
 
 export type GameTeam = {
     team_id: number;
-    name:    string;
+    name: string;
     players: GameTeamPlayer[];
 }
 
 export type GameTeamPlayer = {
-    id:       number;
-    name:     string;
+    id: number;
+    name: string;
     position: string;
-    "#":      number;
+    "#": number;
+    goals: number;
+    cards: CardType
 }
-
 
 
 export type GoalDetails = {
