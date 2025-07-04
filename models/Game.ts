@@ -1,3 +1,42 @@
+export type GameTeamsPlayers = {
+    home: GameTeam;
+    away: GameTeam;
+}
+
+export type GameTeam = {
+    team_id: number;
+    name:    string;
+    players: GameTeamPlayer[];
+}
+
+export type GameTeamPlayer = {
+    id:       number;
+    name:     string;
+    position: string;
+    "#":      number;
+}
+
+
+
+export type GoalDetails = {
+    player_id: string,
+    minute: number,
+    assist_id: string,
+}
+
+export type GameTeamFormRequest = {
+    home: {
+        name: string,
+        goals: number,
+        goalsDetails: GoalDetails[]
+    },
+    away: {
+        name: string,
+        goals: number,
+        goalsDetails: GoalDetails[]
+    }
+}
+
 export type GameDetailsRequest = {
     id: number,
     field_id: number,

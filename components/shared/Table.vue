@@ -1,15 +1,6 @@
 <script lang="ts" setup>
-import type {IPagination} from '~/interfaces'
+import type {Header, IPagination} from '~/interfaces'
 import CopyLink from '~/components/shared/copy-link.vue'
-
-type Header = {
-  title: string
-  value: string
-  align?: 'start' | 'center' | 'end'
-  sortable?: boolean
-  filterable?: boolean
-  divider?: boolean
-}
 
 defineProps({
   headers: {

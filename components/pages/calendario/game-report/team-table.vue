@@ -1,40 +1,49 @@
 <script lang="ts" setup>
+import {useGameStore} from "~/store";
+import type {Header} from "~/interfaces";
+
 type Props = {
-  nombre?: string
-  label?: string
+  teamType: 'home' | 'away'
 }
-defineProps<Props>()
+const headers: Header[] = [
+  {title: '#', value: '#'},
+  {title: 'Jugador', value: 'Jugador',},
+  {title: 'Goles', value: 'goles',},
+  {title: 'Tarjetas', value: 'tarjetas'}
+]
+const {teamType} = withDefaults(defineProps<Props>(), {
+  teamType: 'home'
+})
+const {gamePlayers} = storeToRefs(useGameStore())
 type PlayerForm = {
   '#': number
   Jugador: string
   goles: number
   tarjetas: string[]
 }
-const players = ref<PlayerForm[]>([
-  {'#': 19, Jugador: 'Juan Pérez', goles: 0, tarjetas: []},
-  {'#': 10, Jugador: 'Carlos Gómez', goles: 0, tarjetas: []},
-  {'#': 1, Jugador: 'Luis Fernández', goles: 0, tarjetas: []},
-  {'#': 8, Jugador: 'Miguel Torres', goles: 0, tarjetas: []},
-  {'#': 9, Jugador: 'Andrés Martínez', goles: 0, tarjetas: []},
-  {'#': 3, Jugador: 'José Rodríguez', goles: 0, tarjetas: []},
-  {'#': 12, Jugador: 'David Sánchez', goles: 0, tarjetas: []},
-  {'#': 33, Jugador: 'Javier López', goles: 0, tarjetas: []}])
+
 const teamPlayersDetails = {
   tarjetas: [],
   sustituciones: [],
 }
-
 const minWidth = computed(() => {
   return useDisplay().mobile ? '230' : '130'
 })
-const alert = (message: string) => {
-  console.log(message)
+const updateHandler = (type: 'goals' | 'cards', item: PlayerForm, value: number | string) => {
+  console.log(`Updating ${type} for player ${item.Jugador} with value:`, value);
 }
-const emits = defineEmits(['update:goals'])
-const updatePlayerGoals = (player: PlayerForm, value: number) => {
-  player.goles = value
-  emits('update:goals', player)
-}
+const players = computed(() => {
+  if (gamePlayers.value[teamType] === undefined) {
+    return []
+  }
+  
+  return gamePlayers.value[teamType]?.players.map((player, index) => ({
+    '#': index + 1,
+    Jugador: player.name,
+    goles: player.goals || 0,
+    tarjetas: teamPlayersDetails.tarjetas.filter(card => card.playerId === player.id).map(card => card.type)
+  }))
+})
 </script>
 <template>
   <v-data-table
@@ -42,6 +51,7 @@ const updatePlayerGoals = (player: PlayerForm, value: number) => {
       hide-default-footer
       height="320px"
       fixed-header
+      :headers="headers"
       density="compact"
       :items="players"
   >
@@ -52,7 +62,7 @@ const updatePlayerGoals = (player: PlayerForm, value: number) => {
           :model-value="item.goles"
           control-variant="stacked"
           density="compact"
-          @update:model-value="(value) => updatePlayerGoals(item, value)"
+          @update:model-value="(value) => updateHandler('goals', item, value)"
       />
     </template>
     <template #item.tarjetas>
@@ -98,21 +108,6 @@ const updatePlayerGoals = (player: PlayerForm, value: number) => {
             <Icon name="mdi:cards" class="bg-red-lighten-1" size="16"></Icon>
           </div>
         </template>
-      </v-select>
-    </template>
-    <template #item.sustitucion="{item}">
-      <v-select
-          placeholder="seleccione a un jugador"
-          variant="outlined"
-          density="compact"
-          single-line
-          :max-width="minWidth"
-          :min-width="minWidth"
-          :items="players"
-          item-value="Jugador"
-          item-title="Jugador"
-          @update:modelValue="() => alert('test')"
-      >
       </v-select>
     </template>
   </v-data-table>

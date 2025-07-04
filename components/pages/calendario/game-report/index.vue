@@ -4,7 +4,7 @@ import HeaderSection from "~/components/pages/calendario/game-report/header-sect
 import ContentSection from "~/components/pages/calendario/game-report/ContentSection.vue";
 import type {GameDetailsRequest} from "~/models/Game";
 
-const {game, gameReportDialog, gameId, gameDetailsRequest} = storeToRefs(useGameStore())
+const {game, gameReportDialog, gameId, gameDetailsRequest, gamePlayers} = storeToRefs(useGameStore())
 const onLeaving = () => {
   gameReportDialog.value = false
   gameDetailsRequest.value = null as unknown as GameDetailsRequest
@@ -13,7 +13,13 @@ const onLeaving = () => {
 
 watch(() => gameId.value, async (newGameId) => {
   if (newGameId) {
-    game.value = await useGameStore().getGame()
+    const promises = [
+      await useGameStore().getGame(),
+      await useGameStore().getGameTeamsPlayers(),
+    ]
+    const [_game, players] = await Promise.all(promises)
+    game.value = _game
+    gamePlayers.value = players
   }
 }, {immediate: true})
 </script>
@@ -31,7 +37,7 @@ watch(() => gameId.value, async (newGameId) => {
     <template #v-card-text>
       <v-container class="futzo-rounded">
         <HeaderSection :game="game"/>
-        <ContentSection :game="game"/>
+        <ContentSection/>
       </v-container>
     </template>
   </Dialog>
