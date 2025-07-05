@@ -85,8 +85,10 @@ const pagination = defineModel<IPagination>('pagination', {required: true})
     </template>
     <!-- name column-->
     <template v-if="customName" #[`item.name`]="{ item }">
-      <v-avatar :image="item.image"></v-avatar>
-      {{ item.name }}
+      <div class="d-flex">
+        <v-avatar :image="item?.image"></v-avatar>
+        <span class="d-inline-block text-truncate" style="max-width:100px"> {{ item?.name }}</span>
+      </div>
     </template>
     <template #[`item.image`]="{ item }">
       <v-avatar size="50" :image="item.image"></v-avatar>

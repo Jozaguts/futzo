@@ -26,13 +26,13 @@ const tab = ref('lineup')
       <v-icon>{{ showFabBtn ? 'mdi-close' : 'mdi-plus' }}</v-icon>
       <v-speed-dial v-model="showFabBtn" location="left center" transition="slide-y-reverse-transition" activator="parent">
         <v-btn key="1" color="secondary" icon v-tooltip:top="'Goles'">
-          <Icon name="icon-park-outline:soccer-one" size="24"/>
+          <Icon name="futzo-icon:goal" size="32"/>
         </v-btn>
         <v-btn key="2" color="secondary" icon v-tooltip:top="'Tarjetas'">
-          <Icon name="streamline:cards-solid" size="24"/>
+          <Icon name="futzo-icon:card" size="32"/>
         </v-btn>
         <v-btn key="2" color="secondary" icon v-tooltip:top="'Cambios'">
-          <Icon name="game-icons:babyfoot-players" size="24"/>
+          <Icon name="futzo-icon:substitution" size="32" color="white"/>
         </v-btn>
       </v-speed-dial>
 

@@ -11,6 +11,24 @@
         <div class="zone-2"></div>
         <div class="zone-3"></div>
         <div class="zone-4"></div>
+        <div class="pt-6">
+          <div class="row-lineup">
+            <div class="players-row-container">
+              <span class="goal-keeper-container">
+               <v-avatar text="1" border="md" color="red" size="32"/>
+              </span>
+              <div>
+                <span class="player-name">
+                  <span class="d-inline-block text-truncate" style="max-width: 80px">B. Allan</span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="row-lineup"></div>
+          <div class="row-lineup"></div>
+          <div class="row-lineup"></div>
+          <div class="row-lineup"></div>
+        </div>
       </div>
     </div>
     <div class="line"></div>
@@ -28,6 +46,31 @@
   </v-sheet>
 </template>
 <style lang="sass" scoped>
+.players-row-container
+  top: 50%
+  transform: translateY(-50%)
+  position: absolute
+  width: 100%
+
+  .goal-keeper-container
+    width: 100%
+    display: inline-block
+    text-align: center
+
+  div
+    > .player-name
+      margin-top: 4px
+      width: 98%
+      overflow: hidden
+      display: inline-block
+      text-overflow: ellipsis
+      white-space: nowrap
+      text-align: center
+
+.row-lineup
+  position: relative
+  height: 20%
+
 .linesup-container
   margin: 0 -16px 0
   font-size: 14px
