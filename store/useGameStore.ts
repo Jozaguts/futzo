@@ -9,6 +9,7 @@ export const useGameStore = defineStore('gameStore', () => {
     const gameReportDialog = ref(false);
     const showReScheduleDialog = ref(false);
     const gameDetailsRequest = ref<GameDetailsRequest>();
+    const showFabBtn = shallowRef(false);
     const gameTeamFormRequest = ref<GameTeamFormRequest>({
         home: {
             name: '',
@@ -57,6 +58,7 @@ export const useGameStore = defineStore('gameStore', () => {
         gameDetailsRequest,
         gameTeamFormRequest,
         gamePlayers,
+        showFabBtn,
         fetchGame,
         getGame,
         getGameTeamsPlayers

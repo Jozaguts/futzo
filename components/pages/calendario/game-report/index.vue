@@ -35,10 +35,8 @@ watch(() => gameId.value, async (newGameId) => {
       width="800"
   >
     <template #v-card-text>
-      <v-container class="futzo-rounded">
-        <HeaderSection :game="game"/>
-        <ContentSection/>
-      </v-container>
+      <ContentSection/>
     </template>
+
   </Dialog>
 </template>

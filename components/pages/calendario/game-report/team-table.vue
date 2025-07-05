@@ -8,8 +8,8 @@ type Props = {
 }
 const headers: Header[] = [
   {title: '#', value: '#'},
-  {title: 'Jugador', value: 'name',},
-  {title: 'Goles', value: 'goles',},
+  {title: 'Posicion', value: 'position'},
+  {title: 'Jugador', value: 'name'},
   {title: 'Tarjetas', value: 'tarjetas'}
 ]
 const props = withDefaults(defineProps<Props>(), {
