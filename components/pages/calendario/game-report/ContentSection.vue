@@ -4,10 +4,11 @@ import InfoHeaderSection from "~/components/pages/calendario/game-report/info-he
 import TeamTable from "~/components/pages/calendario/game-report/team-table.vue";
 import GameTeamActions from "~/components/pages/calendario/game-report/game-team-actions.vue";
 import {useGameStore} from "~/store";
+import LinesupContainer from "~/components/pages/calendario/game-report/linesup-container.vue";
 
 const {game, gamePlayers, showFabBtn} = storeToRefs(useGameStore())
 
-const tab = ref('home')
+const tab = ref('lineup')
 
 </script>
 <template>
@@ -78,24 +79,20 @@ const tab = ref('home')
         <v-col cols="12">
           <v-tabs align-tabs="center" v-model="tab" fixed-tabs class="bg-background">
             <v-tab class="text-uppercase" value="home">Cronología</v-tab>
-            <v-tab class="text-uppercase" value="away">Alineaciones</v-tab>
-            <v-tab class="text-uppercase" value="away">ESTADÍSTICAS</v-tab>
+            <v-tab class="text-uppercase" value="lineup">Alineaciones</v-tab>
+            <v-tab class="text-uppercase" value="home">ESTADÍSTICAS</v-tab>
           </v-tabs>
           <v-tabs-window v-model="tab" class="mt-4">
-            <v-tabs-window-item value="home" transition="fade-transition" reverse-transition="fade-transition">
-              <div class="d-flex justify-space-between">
-                <info-header-section :text="game?.home?.name" label="Alineacion"/>
-              </div>
-              <team-table team-type="home"/>
-
+            <v-tabs-window-item value="lineup" transition="fade-transition" reverse-transition="fade-transition">
+              <linesup-container/>
             </v-tabs-window-item>
             <v-tabs-window-item value="away" transition="fade-transition" reverse-transition="fade-transition">
               <info-header-section :text="game?.away?.name" label="Visitante"/>
             </v-tabs-window-item>
           </v-tabs-window>
         </v-col>
-        <v-divider/>
-        <game-team-actions/>
+        <!--        <v-divider/>-->
+        <!--        <game-team-actions/>-->
       </v-row>
     </v-container>
   </v-sheet>
