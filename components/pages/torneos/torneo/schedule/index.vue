@@ -5,9 +5,10 @@ import GameReport from '~/components/pages/calendario/game-report/index.vue'
 import Score from './score.vue'
 import {useToast} from '~/composables/useToast'
 import type {RoundStatus} from '~/models/Schedule'
+import dayjs from "dayjs";
 
 const {tournamentId, loading} = storeToRefs(useTournamentStore())
-const {gameReportDialog, gameId, showReScheduleDialog, gameDetailsRequest} = storeToRefs(useGameStore())
+const {gameReportDialog, showReScheduleDialog, reScheduleFormState} = storeToRefs(useGameStore())
 
 const {
   schedulePagination,
@@ -45,7 +46,7 @@ const updateGame = (
   schedules.value.rounds.forEach((round) => {
     if (roundId === round.round) {
       round.matches.forEach((game) => {
-        if (game.id === gameId) {
+        if (game.id === reScheduleFormState.value?.game_id) {
           if (action === 'up') {
             game[type].goals += 1
           } else {
@@ -120,22 +121,17 @@ onBeforeMount(async () => {
 onBeforeUnmount(async () => {
   schedulePagination.value.currentPage = 1
 })
-const showGameDetails = (gameId: number, fieldId: number, date: string) => {
-  gameDetailsRequest.value = {
-    id: gameId,
+const openModal = (type: 'GameReport' | 'ReScheduleGame', _gameId: number, fieldId: number, date: string) => {
+  reScheduleFormState.value = {
+    date,
     field_id: fieldId,
-    date
+    game_id: _gameId
   }
-  showReScheduleDialog.value = true
-}
-const showGameReport = (_gameId: number, fieldId: number, _date: string) => {
-  gameDetailsRequest.value = {
-    id: _gameId,
-    field_id: fieldId,
-    date: _date
+  if (type === 'GameReport') {
+    gameReportDialog.value = true
+  } else if (type === 'ReScheduleGame') {
+    showReScheduleDialog.value = true
   }
-  gameId.value = _gameId
-  gameReportDialog.value = true
 }
 const {mobile} = useDisplay()
 </script>
@@ -297,7 +293,7 @@ const {mobile} = useDisplay()
                           (game.status as RoundStatus) === 'completado' ||
                           (game.status as RoundStatus) === 'cancelado'
                         "
-                            @click="showGameDetails(game.id, game.details.field.id, game.details.raw_date)"
+                            @click="openModal('ReScheduleGame',game.id, game.details.field.id, game.details.raw_date)"
                         >
                           <Icon name="ant-design:schedule-twotone" size="25"></Icon>
                         </v-btn>
@@ -307,7 +303,7 @@ const {mobile} = useDisplay()
                             variant="text"
                             density="compact"
                             :ripple="true"
-                            @click="showGameReport(game.id, game.details.field.id, game.details.raw_date)"
+                            @click="openModal('GameReport',game.id, game.details.field.id, game.details.raw_date)"
                         >
                           <Icon name="carbon:result-draft" size="25"></Icon>
                         </v-btn>
@@ -323,9 +319,6 @@ const {mobile} = useDisplay()
     </v-col>
     <ReScheduleGame
         v-model:show="showReScheduleDialog"
-        :field-id="gameDetailsRequest?.field_id as number"
-        :game-id="gameDetailsRequest?.id as number"
-        :date="gameDetailsRequest?.date as string"
     />
     <GameReport/>
   </v-row>
