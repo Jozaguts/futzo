@@ -1,75 +1,25 @@
 <script setup lang="ts">
 import '@vuepic/vue-datepicker/dist/main.css'
 import type {Field} from '~/models/Schedule'
-import type {Game} from '~/models/Game'
-import {useGameStore, useScheduleStore, useTournamentStore} from "~/store";
+import {useGameStore, useTournamentStore} from "~/store";
+import dayjs from "dayjs";
 
-const {tournamentId} = storeToRefs(useTournamentStore())
 const gameStore = useGameStore()
-const {showReScheduleDialog} = storeToRefs(gameStore)
-const {getGame} = gameStore
-const props = defineProps<{
-  gameId: number | null
-  fieldId: number | null
-  date: string | null
-}>()
-const game = ref<Game>()
+const {tournamentId} = storeToRefs(useTournamentStore())
+const {showReScheduleDialog, game, gameDetailsRequest, reScheduleFormState} = storeToRefs(gameStore)
+const {reScheduleGame} = gameStore
 const loading = ref(true)
-const form = ref({
-  field_id: props.fieldId,
-  game_id: props.gameId,
-  date: new Date(props.date || '').toLocaleDateString(), // game.details.raw_date
-  day: null,
-  selected_time: null,
-})
-const options = ref([])
 const fields = ref<Field[]>([] as Field[])
-
-const getGameDetails = async (value: Date) => {
-  if (!value) return
-  form.value.date = value.toLocaleDateString()
-  await fetchMatch()
-}
-const saveChanges = () => {
-  const client = useSanctumClient()
-  client(`/api/v1/admin/games/${props.gameId}/reschedule`, {
-    method: 'PUT',
-    body: {
-      date: form.value.date,
-      field_id: form.value.field_id,
-      selected_time: form.value.selected_time,
-      day: form.value.day,
-    }
-  }).then(async () => {
-    useScheduleStore().schedulePagination.currentPage = 1
-    await useScheduleStore().getTournamentSchedules()
-    useToast().toast('success', 'Partido reprogramado correctamente', 'El partido se ha reprogramado con éxito')
-    showReScheduleDialog.value = false
-  }).catch((error) => {
-    useToast().toast('error', 'Error al reprogramar partido', 'Hubo un error al intentar reprogramar el partido. Por favor, intente nuevamente más tarde.')
-  })
-}
 const onLeaving = () => {
   showReScheduleDialog.value = false
-  options.value = []
-  form.value.date = new Date(game.details.raw_date).toLocaleDateString()
-  form.value.field_id = game.details.field.id
-  form.value.selected_time = game.details.raw_date
 }
 const fetchMatch = async () => {
-  if (!props.gameId) return;
-  loading.value = true;
-  try {
-    game.value = await getGame(form.value.game_id as number, form.value.field_id as number, form.value.date as string);
-    if (game.value?.options?.length > 0) {
-      options.value = game.value.options[0]
-      console.log(options.value)
-      form.value.day = options.value.available_intervals.day
-    }
-  } catch (e) {
-    console.error(e);
-  } finally {
-    loading.value = false;
+  if (reScheduleFormState.value.game_id && reScheduleFormState.value.field_id && reScheduleFormState.value.date) {
+    loading.value = true
+    await useGameStore().getGameDetails()
+        .finally(() => {
+          loading.value = false
+        })
   }
 }
 const fetchFields = async () => {
@@ -79,26 +29,34 @@ const fetchFields = async () => {
 }
 watch(() => showReScheduleDialog.value, async (isOpen) => {
   if (isOpen) {
-    form.value.field_id = props.fieldId
-    form.value.date = new Date(props.date || '').toLocaleDateString()
-    form.value.game_id = props.gameId
     await fetchFields()
     await fetchMatch()
-  } else {
-    form.value.field_id = null
-    form.value.date = null
-    form.value.selected_time = null
-    form.value.game_id = null
   }
 })
-watch(() => [form.value.field_id, form.value.date], ([newFieldId, newDate]) => {
-  if (newFieldId && newDate && showReScheduleDialog.value) {
-    getGameDetails(new Date(newDate))
+const fetchFieldAvailabilities = async (by: string, value: string | number | Date) => {
+  if (value) {
+    if (by === 'by-date') {
+      if (dayjs(value).isValid()) {
+        reScheduleFormState.value.date = value as string
+      }
+    }
+    if (by === 'by-field_id') {
+      gameDetailsRequest.value.field_id = value as number
+    }
+    await fetchMatch()
   }
+
+}
+const availableIntervalHours = computed(() => {
+  if (game.value?.options?.length) {
+    return game.value.options[0].available_intervals.hours
+  }
+  return []
 })
 </script>
 <template>
   <Dialog
+      :loading="loading"
       title="Reprogramar partido"
       subtitle="Modificá la fecha, hora o campo de juego para este partido. <br />
     Los cambios se aplicarán manteniendo la jornada original."
@@ -167,29 +125,29 @@ watch(() => [form.value.field_id, form.value.date], ([newFieldId, newDate]) => {
           <v-col cols="12" md="6" lg="6">
             <label class="text-subtitle-2">Fecha</label>
             <BaseCalendarInput
-                v-model:start_date="form.date"
+                v-model:start_date="reScheduleFormState.date"
                 :multiCalendar="false"
-                :minDate="game?.start_date"
-                :max-date="game?.end_date"
+                :min-date="false"
+                @update:start_date="(value) => fetchFieldAvailabilities('by-date', value as Date)"
             />
 
           </v-col>
           <v-col cols="12" md="6" lg="6">
             <label class="text-subtitle-2">Campo</label>
             <v-select
-                v-model="form.field_id"
+                v-model="reScheduleFormState.field_id"
                 :items="fields"
                 item-title="name"
                 item-value="id"
                 label="Selecciona un campo"
                 clearable
-                @update:model-value="getGameDetails"
+                @update:model-value="(value) => fetchFieldAvailabilities('by-field_id', value as number)"
             />
           </v-col>
-          <v-col cols="12" md="8" lg="8" v-if="options?.available_intervals?.hours?.length">
+          <v-col cols="12" md="8" lg="8" v-if="availableIntervalHours?.length">
             <label class="text-subtitle-2">Horas disponibles</label>
-            <v-chip-group v-model="form.selected_time" column>
-              <v-chip base-color="primary" filter v-for="hour in options?.available_intervals?.hours" :value="hour" :key="hour.start">
+            <v-chip-group v-model="reScheduleFormState.selected_time" column>
+              <v-chip base-color="primary" filter v-for="hour in availableIntervalHours" :value="hour" :key="hour.start">
                 {{ hour.start }} - {{ hour.end }}
               </v-chip>
             </v-chip-group>
@@ -207,7 +165,7 @@ watch(() => [form.value.field_id, form.value.date], ([newFieldId, newDate]) => {
       </v-container>
     </template>
     <template #actions>
-      <v-btn class="ml-auto mr-4" variant="elevated" @click="saveChanges">
+      <v-btn class="ml-auto mr-4" variant="elevated" @click="reScheduleGame">
         Reprogramar
       </v-btn>
     </template>
