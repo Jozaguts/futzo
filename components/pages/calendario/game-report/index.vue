@@ -4,14 +4,13 @@ import HeaderSection from "~/components/pages/calendario/game-report/header-sect
 import ContentSection from "~/components/pages/calendario/game-report/ContentSection.vue";
 import type {GameDetailsRequest} from "~/models/Game";
 
-const {game, gameReportDialog, gameId, gameDetailsRequest, gamePlayers} = storeToRefs(useGameStore())
+const {game, gameReportDialog, gameDetailsRequest, gamePlayers} = storeToRefs(useGameStore())
 const onLeaving = () => {
   gameReportDialog.value = false
   gameDetailsRequest.value = null as unknown as GameDetailsRequest
-  gameId.value = null as unknown as number
 }
 
-watch(() => gameId.value, async (newGameId) => {
+watch(() => gameDetailsRequest.value?.game_id, async (newGameId) => {
   if (newGameId) {
     const promises = [
       await useGameStore().getGame(),
