@@ -103,6 +103,7 @@ const breadcrumbs = computed((): Breadcrumbs[] => {
       ]
   }
 })
+const {mobile} = useDisplay()
 </script>
 <template>
   <v-breadcrumbs :items="breadcrumbs" active-class="active">
@@ -112,7 +113,9 @@ const breadcrumbs = computed((): Breadcrumbs[] => {
           :class="[
           item.disabled ? 'active' : 'cursor-pointer',
           breadcrumbs.length > 1 ? 'text-breadcrumbs' : 'text-breadcrumb',
+          index ? 'text-truncate' : 'text-nowrap',
         ]"
+          :style="[mobile ? 'max-width: 100px' : '']"
           @click="() => $router.push(item.href as string)"
       >
         {{ item.title }}
