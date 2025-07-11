@@ -3,16 +3,16 @@ import type {RoundStatus} from "~/models/Schedule";
 import {useScheduleStore} from "~/store/useScheduleStore";
 
 const {schedulePagination} = storeToRefs(useScheduleStore());
-const changeHandler = async (value?: RoundStatus) => {
-  useScheduleStore().schedulePagination.currentPage = 1
-  useScheduleStore().schedules.rounds = []
-  if (value?.length) {
-    return useScheduleStore().getTournamentSchedules()
-  } else {
-    useScheduleStore().schedulePagination.filterBy = undefined
-    await useScheduleStore().getTournamentSchedules()
-  }
-}
+watch(() => schedulePagination.value.filterBy, (newValue) => {
+  useScheduleStore().fetchScheduleRoundsByStatus(newValue as string);
+});
+const rounds: Array<{ value: RoundStatus, text: string }> = [
+  {value: 'programado', text: 'Programadas'},
+  {value: 'en_progreso', text: 'En progreso'},
+  {value: 'completado', text: 'Completadas'},
+  {value: 'aplazado', text: 'Aplazadas'},
+  {value: 'cancelado', text: 'Canceladas'},
+]
 </script>
 <template>
   <v-select
@@ -27,14 +27,7 @@ const changeHandler = async (value?: RoundStatus) => {
       variant="outlined"
       hide-selected
       clearable
-      @update:model-value="changeHandler"
-      :items="[
-      { value: 'programado', text: 'Programadas' },
-      { value: 'en_progreso', text: 'En progreso' },
-      { value: 'completado', text: 'Completadas' },
-      { value: 'aplazado', text: 'Aplazadas' },
-      { value: 'cancelado', text: 'Canceladas' },
-    ]"
+      :items="rounds"
   >
     <template v-slot:item="{ props: itemProps, item }">
       <v-list-item v-bind="itemProps"></v-list-item>
