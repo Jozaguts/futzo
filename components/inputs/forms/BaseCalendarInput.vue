@@ -31,17 +31,15 @@ const props = defineProps({
   },
   minDate: {
     type: Boolean,
-    default: () => false,
     required: false,
   },
   maxDate: {
     type: Date,
-    default: () => false,
     required: false,
   }
 });
 const {getDate, formatDate, customPosition, selectDate, dp} = useCalendar();
-const emits = defineEmits(['start_date_updated', 'end_date_updated']);
+const emits = defineEmits(['start_date_updated', 'end_date_updated', 'update:modelValue']);
 const attr: DatePickerAttributes = {
   position: "left",
   locale: "es",
@@ -97,13 +95,13 @@ onMounted(() => {
     }
   }
 });
+
 </script>
 <template>
   <!--  // to fix  :alt-position="customPosition" -->
   <vue-date-picker
       @cleared="() => (dates = null)"
       :format="formatDate"
-
       v-bind="{ ...attr }"
       v-model="dates"
       @update:model-value="$emit('update:modelValue', $event)"
