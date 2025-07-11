@@ -5,8 +5,8 @@ import type {
     Format,
     FormEliminationPhaseStep,
     FormGeneralScheduleRequest,
-    FormLocationAvailabilityStep,
-    FormRegularPhaseStep, LocationFieldsRequest,
+    FormRegularPhaseStep,
+    LocationFieldsRequest,
     RoundStatus,
     ScheduleRoundStatus,
     ScheduleSettings,
@@ -18,6 +18,7 @@ import {useTournamentStore} from '~/store/useTournamentStore';
 import type {Ref} from 'vue';
 import type {IPagination} from '~/interfaces';
 import type {CalendarStepsForm} from '~/models/tournament';
+import {fetchRoundByStatus} from "~/http/api/schedule";
 
 export const useScheduleStore = defineStore('scheduleStore', () => {
     const tournamentStore = useTournamentStore();
@@ -204,7 +205,11 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
             schedules.value.rounds = [];
         }
         schedules.value.tournament = response.tournament;
-        schedules.value.rounds.push(...newRounds);
+        const concatRounds = schedules.value.rounds.concat(newRounds);
+
+        schedules.value.rounds = concatRounds.filter((round, index, self) =>
+            index === self.findIndex((r) => r.round === round.round)
+        )
         schedulePagination.value.currentPage += 1;
         schedulePagination.value.lastPage = response.pagination.total_rounds;
         isLoadingSchedules.value = false;
@@ -233,6 +238,9 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
                 },
             }
         );
+        schedulePagination.value.currentPage = 1;
+        schedules.value.rounds = [];
+        await getTournamentSchedules()
     };
     const generateSchedule = async () => {
         const client = useSanctumClient();
@@ -274,10 +282,12 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
         };
         scheduleSettings.value = data.value;
     };
-    onMounted(async () => {
-        if (useRoute().name === 'torneos-torneo-calendario')
-            await getTournamentSchedules();
-    });
+    const fetchScheduleRoundsByStatus = async (filter: string) => {
+        schedulePagination.value.currentPage = 1;
+        schedules.value.rounds = [];
+        const response = await fetchRoundByStatus(tournamentStore.tournamentId as number, filter, schedulePagination.value.currentPage)
+        schedules.value.rounds = response.rounds ?? [];
+    }
 
     return {
         scheduleDialog,
@@ -299,5 +309,6 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
         generateSchedule,
         settingsSchedule,
         $resetScheduleStore,
+        fetchScheduleRoundsByStatus,
     };
 });
