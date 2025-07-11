@@ -1,3 +1,14 @@
+import type {AvailableIntervals} from "~/models/Schedule";
+
+export type ReScheduleFormState = {
+    field_id: number,
+    game_id: number,
+    date: string,
+    day?: string,
+    selected_time?: string,
+}
+
+
 export type CardType = 'yellow-card' | 'doble-card' | 'red-card';
 export type TeamType = 'home' | 'away'
 export type GameTeamsPlayers = {
@@ -43,7 +54,8 @@ export type GameTeamFormRequest = {
 export type GameDetailsRequest = {
     id: number,
     field_id: number,
-    date: string
+    date: string,
+    game_id: number,
 }
 
 export type Game = {
@@ -90,5 +102,5 @@ export type Time = {
 
 export type Option = {
     field_id: number;
-    available_intervals: any[];
+    available_intervals: AvailableIntervals;
 }
