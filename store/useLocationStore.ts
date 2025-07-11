@@ -183,11 +183,6 @@ export const useLocationStore = defineStore('locationStore', () => {
     const noLocations = computed(
         () => !locations.value || locations.value.length === 0
     );
-    onMounted(async () => {
-        if (!locations.value && useAuth().isSignUp) {
-            await getLocations();
-        }
-    });
     return {
         locations,
         locationStoreRequest,

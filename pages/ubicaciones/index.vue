@@ -6,7 +6,7 @@ import LocationCardContainer from "~/components/pages/ubicaciones/LocationCardCo
 import ConfirmDialog from "~/components/shared/confirm-dialog.vue";
 import {useLocationStore} from "~/store";
 
-const {isEdition, locationDialog, locationToDelete} = storeToRefs(useLocationStore())
+const {isEdition, locationDialog, locationToDelete, locations} = storeToRefs(useLocationStore())
 const showStoreLocationDialog = () => {
   isEdition.value = false
   locationDialog.value = true
@@ -27,6 +27,11 @@ const searchLocationHandler = useDebounceFn((place: string) => {
   useLocationStore().getLocations(place)
 }, 600)
 const {mobile} = useDisplay();
+onMounted(async () => {
+  if (!locations.value) {
+    await useLocationStore().getLocations();
+  }
+});
 </script>
 <template>
   <PageLayout>
