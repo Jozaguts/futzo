@@ -3,7 +3,7 @@ import type {FormSteps, LocationAvailability, LocationCard, LocationStoreRequest
 import {useApiError} from "~/composables/useApiError";
 import type {IPagination} from "~/interfaces";
 import {ref} from "vue";
-import {DEFAULT_AVAILABILITY_HOURS, DEFAULT_LOCATION_AVAILABILITY, DEFAULT_POSITION} from "~/utils/constants";
+import {DEFAULT_POSITION} from "~/utils/constants";
 
 export const useLocationStore = defineStore('locationStore', () => {
     const stepsCompleted = computed(() => {
@@ -184,7 +184,7 @@ export const useLocationStore = defineStore('locationStore', () => {
         () => !locations.value || locations.value.length === 0
     );
     onMounted(async () => {
-        if (!locations.value) {
+        if (!locations.value && useAuth().isSignUp) {
             await getLocations();
         }
     });

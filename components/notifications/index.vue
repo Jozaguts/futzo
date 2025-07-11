@@ -6,7 +6,7 @@ defineProps<{
   typeIcon: string;
   color: string;
   backgroundColor: string;
-  styles: object;
+  styles?: object;
 }>();
 </script>
 

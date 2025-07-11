@@ -24,6 +24,7 @@ export const useAuthStore = defineStore("authStore", () => {
             isPhone: false,
             isFetching: false,
             code: '',
+            token: '',
         }
     }
     const updateUser = (updateUserForm: UpdateUserForm) => {
