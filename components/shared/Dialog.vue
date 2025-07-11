@@ -58,7 +58,7 @@ defineProps({
         </v-card-title>
         <v-card-subtitle><span v-html="subtitle"></span></v-card-subtitle>
         <template #append>
-          <Icon name="futzo-icon:x-dialog" @click="dialog = false"/>
+          <Icon name="futzo-icon:x-dialog" @click="dialog = false" size="24" class="cursor-pointer"/>
         </template>
       </v-card-item>
       <v-progress-linear
