@@ -54,6 +54,9 @@ export const useGameStore = defineStore('gameStore', () => {
         await _getGame(reScheduleFormState.value?.game_id, reScheduleFormState.value?.date, reScheduleFormState.value?.field_id)
             .then((data) => {
                 game.value = data as Game;
+                if (game.value?.options?.length) {
+                    reScheduleFormState.value.day = game.value.options[0].available_intervals.day
+                }
             })
             .catch(() => {
                 useToast().toast('error', 'Error al obtener el partido', 'Hubo un error al intentar obtener los detalles del partido. Por favor, intente nuevamente más tarde.');
