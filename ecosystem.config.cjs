@@ -3,9 +3,8 @@ module.exports = {
         {
             name: 'futzo',
             port: '3000',
-            exec_mode: 'cluster',
-            instances: 'max',
-            script: './server/index.mjs',
+            exec_mode: 'fork',
+            script: '.output/server/index.mjs',
             env: {
                 NODE_ENV: 'production',
             },
