@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build --dotenv .env.prod",
+    "build": "nuxt build --max-old-space-size=4096 --dotenv .env.prod",
     "build:test": "nuxt build --dotenv .env",
     "dev": "rm -rf /tmp/nitro && nuxt dev",
     "generate": "nuxt generate",
