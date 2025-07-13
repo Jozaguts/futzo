@@ -5,38 +5,11 @@ import getHeaders from "~/utils/headers-table";
 
 const {
   teams,
-  teamId,
-  isEdition,
   pagination,
-  dialog,
-  teamStoreRequest,
   search,
 } = storeToRefs(useTeamStore());
 
 const headers = getHeaders("teams");
-const showTeamHandler = (_team: TeamResponse) => {
-  const {president, coach, ...team} = _team;
-  teamId.value = _team.id;
-  isEdition.value = true;
-
-  teamStoreRequest.value = {
-    team: {
-      id: team.id,
-      name: team.name,
-      tournament_id: team.tournament.id,
-      category_id: team.category.id,
-      address: team?.address,
-      colors: team?.colors,
-      description: team?.description,
-      email: team?.email,
-      image: team?.image,
-      phone: team?.phone,
-    },
-    president: {...president, image: president?.image},
-    coach: {...coach, image: coach?.image},
-  };
-  dialog.value = true;
-};
 </script>
 <template>
   <Table
@@ -57,7 +30,7 @@ const showTeamHandler = (_team: TeamResponse) => {
           rounded="md"
           variant="outlined"
           class="table-action-btn"
-          @click="showTeamHandler(item as unknown as TeamResponse)"
+          :to="`/equipos/${item.slug}`"
       >Ver Equipo
       </v-btn>
     </template>
