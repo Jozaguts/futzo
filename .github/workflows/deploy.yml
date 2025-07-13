@@ -31,8 +31,8 @@ jobs:
           NUXT_GOOGLE_MAP_ID: ${{ secrets.NUXT_GOOGLE_MAP_ID }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd "$DEPLOY_PATH" || exit 1
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+            cd  ${{ secrets.DEPLOY_PATH }}
 
             cat > .env.prod <<EOL
             NUXT_PUBLIC_URL_BACKEND=$NUXT_PUBLIC_URL_BACKEND
