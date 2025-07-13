@@ -3,10 +3,10 @@ import PositionsTable from "~/components/pages/equipos/positions-table.vue";
 import LiveGames from "~/components/pages/equipos/live-games.vue";
 import NextGamesToday from "~/components/pages/equipos/next-games-today.vue";
 import NextGames from "~/components/pages/equipos/next-games.vue";
-import CreateTournamentDialog from "~/components/pages/torneos/dialog/index.vue";
 import PageLayout from "~/components/shared/PageLayout.vue";
 import AppBar from "~/components/layout/AppBar.vue";
-import AppBarBtn from "~/components/pages/torneos/torneo/app-bar-btn.vue";
+import AppBarBtn from "~/components/pages/equipos/equipo/app-bar-btn.vue";
+import CreateTeamDialog from "~/components/pages/equipos/CreateTeamDialog/index.vue";
 </script>
 <template>
   <PageLayout>
@@ -33,7 +33,7 @@ import AppBarBtn from "~/components/pages/torneos/torneo/app-bar-btn.vue";
         <div class="next-games">
           <NextGames/>
         </div>
-        <CreateTournamentDialog/>
+        <CreateTeamDialog/>
       </div>
     </template>
   </PageLayout>
