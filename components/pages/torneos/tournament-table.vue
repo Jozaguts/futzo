@@ -58,22 +58,28 @@
     :show-link="true"
   >
     <template #actions="{ item }">
-      <v-btn
-        color="on-background"
-        size="small"
-        rounded="md"
-        variant="outlined"
-        class="mr-2 show-calendar-btn"
-        @click="() => scheduleHandler(item as Tournament)"
-      >
-        <Icon name="futzo-icon:calendar" size="large"></Icon>
-      </v-btn>
-      <v-btn
-        size="small"
-        rounded="md"
-        @click="() => handleShowTournament(item as Tournament)"
-        >Ver Torneo
-      </v-btn>
+     <div class="d-flex flex-column my-2">
+       <v-btn
+           size="small"
+           rounded="md"
+           class="my-1 show-calendar-btn"
+           variant="outlined"
+           @click="() => scheduleHandler(item as Tournament)"
+       >
+         <template #prepend>
+           <Icon name="futzo-icon:calendar" size="large"></Icon>
+         </template>
+         Ver calendario
+       </v-btn>
+       <v-btn
+           size="small"
+           rounded="md"
+           variant="outlined"
+           class="my-1 show-calendar-btn"
+           @click="() => handleShowTournament(item as Tournament)"
+       >Ver Torneo
+       </v-btn>
+     </div>
     </template>
   </Table>
 </template>
