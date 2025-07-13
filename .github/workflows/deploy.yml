@@ -32,10 +32,23 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
-            cd "${{ secrets.DEPLOY_PATH }}"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd "$DEPLOY_PATH" || exit 1
+
+            cat > .env.prod <<EOL
+            NUXT_PUBLIC_URL_BACKEND=$NUXT_PUBLIC_URL_BACKEND
+            NUXT_PUBLIC_BACKEND_PREFIX=$NUXT_PUBLIC_BACKEND_PREFIX
+            FACEBOOK_APP_ID=$FACEBOOK_APP_ID
+            NUXT_HOST=$NUXT_HOST
+            NUXT_PUBLIC_APP_NAME=$NUXT_PUBLIC_APP_NAME
+            NODE_ENV=$NODE_ENV
+            NUXT_GOOGLE_MAPS_API_KEY=$NUXT_GOOGLE_MAPS_API_KEY
+            NUXT_GOOGLE_MAP_ID=$NUXT_GOOGLE_MAP_ID
+            GITHUB_TOKEN=$GITHUB_TOKEN
+            EOL
+  
             git pull origin main
             npm install --frozen-lockfile
-            node --max-old-space-size=4096 node_modules/.bin/nuxt build
+            node --max-old-space-size=4096 node_modules/.bin/nuxt build --dotenv .env.prod
             pm2 restart ecosystem.config.cjs
           EOF
