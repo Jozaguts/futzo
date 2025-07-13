@@ -32,7 +32,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
             cd $DEPLOY_PATH || exit 1
             git pull origin main
             npm install --frozen-lockfile
