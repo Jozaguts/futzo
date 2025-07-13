@@ -90,6 +90,15 @@ const pagination = defineModel<IPagination>('pagination', {required: true})
         <span class="d-inline-block text-truncate" style="max-width:100px"> {{ item?.name }}</span>
       </div>
     </template>
+    <template #[`item.president.email`]="{ item }">
+      <span class="d-inline-block text-truncate" style="max-width:100px"> {{ item?.president?.email }}</span>
+    </template>
+    <template #[`item.tournament.name`]="{ item }">
+      <span class="d-inline-block text-truncate" style="max-width:100px"> {{ item?.tournament?.name }}</span>
+    </template>
+    <template #[`item.president.phone`]="{ item }">
+      <span class="d-inline-block text-truncate" style="max-width:100px"> {{ item?.president?.phone }}</span>
+    </template>
     <template #[`item.image`]="{ item }">
       <v-avatar size="50" :image="item.image"></v-avatar>
     </template>

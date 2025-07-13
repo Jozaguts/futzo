@@ -19,6 +19,7 @@ export default function getHeaders(tableName: string): Header[] {
                     title: 'Delegado/Presidente',
                     value: 'president.name',
                     sortable: true,
+                    align: 'center',
                 },
                 {
                     title: 'Teléfono',
