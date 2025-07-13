@@ -18,3 +18,24 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy Nuxt App via SSH
+        env:
+          NUXT_PUBLIC_URL_BACKEND: ${{ secrets.NUXT_PUBLIC_URL_BACKEND }}
+          NUXT_PUBLIC_BACKEND_PREFIX: ${{ secrets.NUXT_PUBLIC_BACKEND_PREFIX }}
+          FACEBOOK_APP_ID: ${{ secrets.FACEBOOK_APP_ID }}
+          NUXT_HOST: ${{ secrets.NUXT_HOST }}
+          NUXT_PUBLIC_APP_NAME: ${{ secrets.NUXT_PUBLIC_APP_NAME }}
+          NODE_ENV: ${{ secrets.NODE_ENV }}
+          NUXT_GOOGLE_MAPS_API_KEY: ${{ secrets.NUXT_GOOGLE_MAPS_API_KEY }}
+          NUXT_GOOGLE_MAP_ID: ${{ secrets.NUXT_GOOGLE_MAP_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+            cd "${{ secrets.DEPLOY_PATH }}"
+            git pull origin main
+            npm install --frozen-lockfile
+            node --max-old-space-size=4096 node_modules/.bin/nuxt build
+            pm2 restart ecosystem.config.cjs
+          EOF
