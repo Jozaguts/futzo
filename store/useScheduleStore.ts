@@ -204,12 +204,17 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
         if (!schedules.value.rounds.length) {
             schedules.value.rounds = [];
         }
-        schedules.value.tournament = response.tournament;
-        const concatRounds = schedules.value.rounds.concat(newRounds);
 
-        schedules.value.rounds = concatRounds.filter((round, index, self) =>
-            index === self.findIndex((r) => r.round === round.round)
-        )
+        const existingRound = schedules.value.rounds.find( r => r.round === newRounds[0].round);
+        if (existingRound) {
+            schedules.value.rounds = schedules.value.rounds.map(round =>
+                round.round === existingRound.round ? newRounds[0] : round
+            );
+        } else {
+            schedules.value.rounds.push(...newRounds);
+        }
+        schedules.value.tournament = response.tournament;
+
         schedulePagination.value.currentPage += 1;
         schedulePagination.value.lastPage = response.pagination.total_rounds;
         isLoadingSchedules.value = false;
