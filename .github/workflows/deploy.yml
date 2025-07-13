@@ -31,18 +31,16 @@ jobs:
           NUXT_GOOGLE_MAP_ID: ${{ secrets.NUXT_GOOGLE_MAP_ID }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
-            cd "${{ secrets.DEPLOY_PATH }}"
-            cat > .env.prod <<EOL
-            NUXT_PUBLIC_URL_BACKEND=$NUXT_PUBLIC_URL_BACKEND
-            NUXT_PUBLIC_BACKEND_PREFIX=$NUXT_PUBLIC_BACKEND_PREFIX
-            FACEBOOK_APP_ID=$FACEBOOK_APP_ID
-            NUXT_HOST=$NUXT_HOST
-            NUXT_PUBLIC_APP_NAME=$NUXT_PUBLIC_APP_NAME
-            NODE_ENV=$NODE_ENV
-            NUXT_GOOGLE_MAPS_API_KEY=$NUXT_GOOGLE_MAPS_API_KEY
-            NUXT_GOOGLE_MAP_ID=$NUXT_GOOGLE_MAP_ID
-            EOL
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd ${{ secrets.DEPLOY_PATH }}
+            echo "NUXT_PUBLIC_URL_BACKEND=$NUXT_PUBLIC_URL_BACKEND" > .env.prod
+            echo "NUXT_PUBLIC_BACKEND_PREFIX=$NUXT_PUBLIC_BACKEND_PREFIX" >> .env.prod
+            echo "FACEBOOK_APP_ID=$FACEBOOK_APP_ID" >> .env.prod
+            echo "NUXT_HOST=$NUXT_HOST" >> .env.prod
+            echo "NUXT_PUBLIC_APP_NAME=$NUXT_PUBLIC_APP_NAME" >> .env.prod
+            echo "NODE_ENV=$NODE_ENV" >> .env.prod
+            echo "NUXT_GOOGLE_MAPS_API_KEY=$NUXT_GOOGLE_MAPS_API_KEY" >> .env.prod
+            echo "NUXT_GOOGLE_MAP_ID=$NUXT_GOOGLE_MAP_ID" >> .env.prod
   
             git pull origin main
             npm install --frozen-lockfile
