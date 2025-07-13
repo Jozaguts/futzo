@@ -55,6 +55,8 @@ const showTeamHandler = (_team: TeamResponse) => {
       <v-btn
           size="small"
           rounded="md"
+          variant="outlined"
+          class="table-action-btn"
           @click="showTeamHandler(item as unknown as TeamResponse)"
       >Ver Equipo
       </v-btn>

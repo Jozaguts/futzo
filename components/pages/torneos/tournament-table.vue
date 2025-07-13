@@ -62,7 +62,7 @@
        <v-btn
            size="small"
            rounded="md"
-           class="my-1 show-calendar-btn"
+           class="table-action-btn"
            variant="outlined"
            @click="() => scheduleHandler(item as Tournament)"
        >
@@ -75,7 +75,7 @@
            size="small"
            rounded="md"
            variant="outlined"
-           class="my-1 show-calendar-btn"
+           class="table-action-btn"
            @click="() => handleShowTournament(item as Tournament)"
        >Ver Torneo
        </v-btn>
@@ -83,11 +83,3 @@
     </template>
   </Table>
 </template>
-<style scoped>
-  .show-calendar-btn {
-    border-radius: 8px;
-    border: 1px solid #d0d5dd;
-    background: #fff;
-    box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
-  }
-</style>
