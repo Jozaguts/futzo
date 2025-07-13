@@ -29,7 +29,6 @@ jobs:
           NODE_ENV: ${{ secrets.NODE_ENV }}
           NUXT_GOOGLE_MAPS_API_KEY: ${{ secrets.NUXT_GOOGLE_MAPS_API_KEY }}
           NUXT_GOOGLE_MAP_ID: ${{ secrets.NUXT_GOOGLE_MAP_ID }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
@@ -44,7 +43,6 @@ jobs:
             NODE_ENV=$NODE_ENV
             NUXT_GOOGLE_MAPS_API_KEY=$NUXT_GOOGLE_MAPS_API_KEY
             NUXT_GOOGLE_MAP_ID=$NUXT_GOOGLE_MAP_ID
-            GITHUB_TOKEN=$GITHUB_TOKEN
             EOL
   
             git pull origin main
