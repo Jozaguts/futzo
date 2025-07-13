@@ -37,5 +37,5 @@ jobs:
             git pull origin main
             npm install --frozen-lockfile
             node --max-old-space-size=4096 node_modules/.bin/nuxt build
-            pm2 reload ecosystem.config.cjs --env production || pm2 start ecosystem.config.cjs --env production
+            pm2 restart ecosystem.config.cjs
           EOF
