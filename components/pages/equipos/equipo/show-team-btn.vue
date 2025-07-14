@@ -48,7 +48,7 @@ const showTeamHandler = () => {
   <PrimaryBtn
       :loading="loading"
       variant="elevated"
-      icon="futzo-icon:calendar-white"
+      icon="mdi:edit"
       text="Editar equipo"
       @click="showTeamHandler"
   />

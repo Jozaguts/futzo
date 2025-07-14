@@ -62,7 +62,7 @@
         // si es el último paso
         loading.value = true
         if (teamStore.isEdition) {
-          await teamStore.updateTeam(teamStoreRequest.value.team.id)
+          await teamStore.updateTeam(teamStoreRequest.value?.team?.id as number)
         } else {
           await teamStore.createTeam().then(() => {
             const route = useRoute()
