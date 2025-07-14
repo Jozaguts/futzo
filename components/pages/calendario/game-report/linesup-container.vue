@@ -1,6 +1,15 @@
 <script lang="ts" setup>
+import PlayerDot from "~/components/pages/calendario/game-report/player-dot.vue";
 defineProps({
-  showComplete: Boolean
+  showComplete: Boolean,
+  home:{
+    type: Object,
+    default: () => ({})
+  },
+  away:{
+    type: Object,
+    default: () => ({})
+  }
 })
 </script>
 <template>
@@ -14,23 +23,35 @@ defineProps({
         <div class="zone-2"></div>
         <div class="zone-3"></div>
         <div class="zone-4"></div>
-        <div class="pt-6">
+        <div class="midfield">
           <div class="row-lineup">
             <div class="players-row-container">
-              <span class="goal-keeper-container">
-               <v-avatar text="1" border="md" color="red" size="32"/>
-              </span>
-              <div>
-                <span class="player-name">
-                  <span class="d-inline-block text-truncate" style="max-width: 80px">B. Allan</span>
-                </span>
+             <PlayerDot />
+            </div>
+          </div>
+          <div class="row-lineup">
+            <div class="players-row-container">
+              <div class="d-flex justify-center justify-space-around">
+                <PlayerDot />
+                <PlayerDot />
+                <PlayerDot />
               </div>
             </div>
           </div>
-          <div class="row-lineup"></div>
-          <div class="row-lineup"></div>
-          <div class="row-lineup"></div>
-          <div class="row-lineup"></div>
+          <div class="row-lineup">
+            <div class="d-flex justify-center justify-space-around">
+              <PlayerDot />
+              <PlayerDot />
+              <PlayerDot />
+              <PlayerDot />
+            </div>
+          </div>
+          <div class="row-lineup">
+            <div class="d-flex justify-center justify-space-around">
+              <PlayerDot />
+              <PlayerDot />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -48,7 +69,7 @@ defineProps({
     </div>
   </v-sheet>
 </template>
-<style lang="sass" scoped>
+<style lang="sass">
 .players-row-container
   top: 50%
   transform: translateY(-50%)
@@ -72,7 +93,7 @@ defineProps({
 
 .row-lineup
   position: relative
-  height: 20%
+  height: 25%
 
 .linesup-container
   margin: 0 -16px 0
@@ -110,6 +131,8 @@ defineProps({
     height: 88%
     position: relative
     width: 100%
+    .midfield
+      height: 100%
 
 .zone-1
   top: 13.6%

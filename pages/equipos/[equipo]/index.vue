@@ -19,9 +19,12 @@ import LinesupContainer from "~/components/pages/calendario/game-report/linesup-
       </AppBar>
     </template>
     <template #default>
-      <div class="tournament-details-container">
-        <div class="table-container ">
-          <LinesupContainer/>
+      <div class="teams-team-container">
+        <div class="table-container">
+          <div>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus, reprehenderit?
+          </div>
+          <LinesupContainer />
         </div>
         <div class="games-container">
           <div class="live-games">
@@ -40,5 +43,5 @@ import LinesupContainer from "~/components/pages/calendario/game-report/linesup-
   </PageLayout>
 </template>
 <style lang="sass">
-@use "~@/assets/scss/pages/teams-team.sass"
+@use "@/assets/scss/pages/teams-team.sass"
 </style>
