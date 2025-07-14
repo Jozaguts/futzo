@@ -69,6 +69,21 @@ const breadcrumbs = computed((): Breadcrumbs[] => {
           disabled: false,
         },
       ]
+    case 'equipos-equipo':
+      return [
+        {
+          title: 'Equipos',
+          href: '/equipos',
+          disabled: false,
+        },
+        {
+          title: useRoute()
+              .params.equipo.toString()
+              .replace(/-/g, ' ') as string,
+          href: ('/equipos/' + useRoute().params.equipo) as string,
+          disabled: true,
+        },
+      ]
     case 'jugadores':
       return [
         {
