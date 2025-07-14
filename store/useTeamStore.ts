@@ -240,7 +240,9 @@ export const useTeamStore = defineStore("teamStore", () => {
             console.log(error);
         }
     };
-
+    const getBySlug = async (slug: string) => {
+        return await getTeamBySlug(slug);
+    }
     const getTeam = async (id: number) => {
         try {
             return await client<{ data: TeamStoreRequest }>(
@@ -271,5 +273,6 @@ export const useTeamStore = defineStore("teamStore", () => {
         importTeamsHandler,
         downloadTemplate,
         searchTeams,
+        getBySlug
     };
 });

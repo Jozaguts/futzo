@@ -4,40 +4,49 @@ import {useTeamStore} from "~/store";
 
 const route = useRoute();
 const {
-  teams,
   teamId,
   isEdition,
   dialog,
   teamStoreRequest,
 } = storeToRefs(useTeamStore());
+const loading = ref(false);
 const showTeamHandler = () => {
-  const _team = teams.value?.find((t) => t.slug === route.params.equipo as string);
+  loading.value = true;
+  const slug = route.params.equipo as string;
+  console.log({slug})
+  if (slug) {
+    useTeamStore().getBySlug(slug)
+        .then((data: TeamResponse) => {
+          const {president, coach, ...team} = data;
+          teamId.value = data.id;
+          isEdition.value = true;
+          teamStoreRequest.value = {
+            team: {
+              id: team.id,
+              name: team.name,
+              tournament_id: team.tournament.id,
+              category_id: team.category.id,
+              address: team?.address,
+              colors: team?.colors,
+              description: team?.description,
+              email: team?.email,
+              image: team?.image,
+              phone: team?.phone,
+            },
+            president: {...president, image: president?.image},
+            coach: {...coach, image: coach?.image},
+          };
+          dialog.value = true;
+        })
+        .finally(() => loading.value = false)
 
-  const {president, coach, ...team} = _team;
-  teamId.value = _team.id;
-  isEdition.value = true;
-
-  teamStoreRequest.value = {
-    team: {
-      id: team.id,
-      name: team.name,
-      tournament_id: team.tournament.id,
-      category_id: team.category.id,
-      address: team?.address,
-      colors: team?.colors,
-      description: team?.description,
-      email: team?.email,
-      image: team?.image,
-      phone: team?.phone,
-    },
-    president: {...president, image: president?.image},
-    coach: {...coach, image: coach?.image},
-  };
-  dialog.value = true;
+  }
 };
+
 </script>
 <template>
   <PrimaryBtn
+      :loading="loading"
       variant="elevated"
       icon="futzo-icon:calendar-white"
       text="Editar equipo"
