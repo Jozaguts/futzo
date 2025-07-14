@@ -8,27 +8,13 @@ const teamStore = useTeamStore();
 const {steps, isEdition, teamStoreRequest} = storeToRefs(teamStore);
 const leaveHandler = () => {
   steps.value.current = "createTeam";
-  steps.value.completed = [];
+  steps.value.steps?.map((step) => step.completed = false);
   isEdition.value = false;
   teamStoreRequest.value = {};
 };
 onMounted(() => {
-  loadGoogleMapsScript();
   useTournamentStore().fetchTournamentsByLeagueId();
 });
-const loadGoogleMapsScript = () => {
-  const script = document.createElement("script");
-  script.src = `https://maps.googleapis.com/maps/api/js?key=${useRuntimeConfig().public.googleMapsAPIKey}&libraries=places&loading=async`;
-  script.async = true;
-  script.defer = true;
-  document.head.appendChild(script);
-};
-onUnmounted(() => {
-  const script = document.querySelector(`script[src="https://maps.googleapis.com/maps/api/js?key=${useRuntimeConfig().public.googleMapsAPIKey}&libraries=places&loading=async"]`);
-  if (script) {
-    script.remove();
-  }
-})
 </script>
 <template>
   <v-dialog

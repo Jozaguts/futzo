@@ -28,26 +28,6 @@ useSanctumClient()('/api/v1/admin/tournaments/' + tournamentId, {
         console.error('League ID is not available in the tournament data.')
       }
     })
-
-onMounted(async () => {
-  loadGoogleMapsScript()
-})
-onUnmounted(() => {
-  const script = document.querySelector(
-      `script[src="https://maps.googleapis.com/maps/api/js?key=${useRuntimeConfig().public.googleMapsAPIKey}&libraries=places&loading=async"]`
-  )
-  if (script) {
-    script.remove()
-  }
-})
-
-const loadGoogleMapsScript = () => {
-  const script = document.createElement('script')
-  script.src = `https://maps.googleapis.com/maps/api/js?key=${useRuntimeConfig().public.googleMapsAPIKey}&libraries=places&loading=async`
-  script.async = true
-  script.defer = true
-  document.head.appendChild(script)
-}
 const registeredTeamHandler = async (value: TeamStoreRequest) => {
   registeredTeam.value = true
   teamRequest.value = value as TeamStoreRequest
