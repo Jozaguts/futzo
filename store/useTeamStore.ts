@@ -1,6 +1,8 @@
 import {defineStore} from "pinia";
 import type {FormSteps, Team, TeamResponse, TeamStoreRequest} from "~/models/Team";
 import type {IPagination} from "~/interfaces";
+import {getTeamBySlug} from "~/http/api/team";
+import prepareForm from "~/utils/prepareFormData";
 
 export const useTeamStore = defineStore("teamStore", () => {
     const {toast} = useToast();
@@ -101,7 +103,7 @@ export const useTeamStore = defineStore("teamStore", () => {
     }
 
     const createTeam = async () => {
-        let form = prepareForm();
+        let form = prepareForm(teamStoreRequest);
 
         await client("/api/v1/admin/teams", {
             method: "POST",
@@ -127,7 +129,7 @@ export const useTeamStore = defineStore("teamStore", () => {
             });
     };
     const updateTeam = async (teamId: number) => {
-        let form = prepareForm();
+        let form = prepareForm(teamStoreRequest);
         await client(`/api/v1/admin/teams/${teamId}`, {
             method: "PUT",
             body: form,
@@ -150,66 +152,66 @@ export const useTeamStore = defineStore("teamStore", () => {
                 );
             });
     };
-    const prepareForm = (): FormData => {
-        let form = new FormData();
-
-        for (const key in teamStoreRequest.value) {
-            if (key === "team") {
-                for (const keyTeam in teamStoreRequest.value.team) {
-                    if (teamStoreRequest.value?.team[keyTeam] instanceof File) {
-                        form.append(
-                            `team[${keyTeam}]`,
-                            teamStoreRequest.value.team[keyTeam],
-                        );
-                    }
-                    if (
-                        (typeof teamStoreRequest.value.team[keyTeam] === "object" &&
-                            keyTeam === "colors") ||
-                        keyTeam === "address"
-                    ) {
-                        form.append(
-                            `team[${keyTeam}]`,
-                            JSON.stringify(teamStoreRequest.value.team[keyTeam]),
-                        );
-                    } else {
-                        form.append(
-                            `team[${keyTeam}]`,
-                            teamStoreRequest.value.team[keyTeam],
-                        );
-                    }
-                }
-            } else if (key === "coach") {
-                for (const keyCoach in teamStoreRequest.value.coach) {
-                    if (teamStoreRequest.value.coach[keyCoach] instanceof File) {
-                        form.append(
-                            `coach[${keyCoach}]`,
-                            teamStoreRequest.value.coach[keyCoach],
-                        );
-                    } else {
-                        form.append(
-                            `coach[${keyCoach}]`,
-                            teamStoreRequest.value.coach[keyCoach],
-                        );
-                    }
-                }
-            } else if (key === "president") {
-                for (const keyPresident in teamStoreRequest.value.president) {
-                    if (teamStoreRequest.value.president[keyPresident] instanceof File) {
-                        form.append(
-                            `president[${keyPresident}]`,
-                            teamStoreRequest.value.president[keyPresident],
-                        );
-                    } else {
-                        form.append(
-                            `president[${keyPresident}]`,
-                            teamStoreRequest.value.president[keyPresident],
-                        );
-                    }
-                }
-            }
-        }
-        return form;
-    };
+    // const prepareForm = (): FormData => {
+    //     let form = new FormData();
+    //
+    //     for (const key in teamStoreRequest.value) {
+    //         if (key === "team") {
+    //             for (const keyTeam in teamStoreRequest.value.team) {
+    //                 if (teamStoreRequest.value?.team[keyTeam] instanceof File) {
+    //                     form.append(
+    //                         `team[${keyTeam}]`,
+    //                         teamStoreRequest.value.team[keyTeam],
+    //                     );
+    //                 }
+    //                 if (
+    //                     (typeof teamStoreRequest.value.team[keyTeam] === "object" &&
+    //                         keyTeam === "colors") ||
+    //                     keyTeam === "address"
+    //                 ) {
+    //                     form.append(
+    //                         `team[${keyTeam}]`,
+    //                         JSON.stringify(teamStoreRequest.value.team[keyTeam]),
+    //                     );
+    //                 } else {
+    //                     form.append(
+    //                         `team[${keyTeam}]`,
+    //                         teamStoreRequest.value.team[keyTeam],
+    //                     );
+    //                 }
+    //             }
+    //         } else if (key === "coach") {
+    //             for (const keyCoach in teamStoreRequest.value.coach) {
+    //                 if (teamStoreRequest.value.coach[keyCoach] instanceof File) {
+    //                     form.append(
+    //                         `coach[${keyCoach}]`,
+    //                         teamStoreRequest.value.coach[keyCoach],
+    //                     );
+    //                 } else {
+    //                     form.append(
+    //                         `coach[${keyCoach}]`,
+    //                         teamStoreRequest.value.coach[keyCoach],
+    //                     );
+    //                 }
+    //             }
+    //         } else if (key === "president") {
+    //             for (const keyPresident in teamStoreRequest.value.president) {
+    //                 if (teamStoreRequest.value.president[keyPresident] instanceof File) {
+    //                     form.append(
+    //                         `president[${keyPresident}]`,
+    //                         teamStoreRequest.value.president[keyPresident],
+    //                     );
+    //                 } else {
+    //                     form.append(
+    //                         `president[${keyPresident}]`,
+    //                         teamStoreRequest.value.president[keyPresident],
+    //                     );
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return form;
+    // };
     const getTeams = async () => {
         try {
             await client(
