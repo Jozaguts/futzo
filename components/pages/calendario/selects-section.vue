@@ -85,7 +85,7 @@ const showCustomDaysSelect = computed(() => {
       <v-select
         label="Dias de juego"
         placeholder="Selecciona los dias de juego"
-        v-if="scheduleParams.tournamentId"
+        v-if="scheduleParams?.tournamentId"
         v-model="daysToPlaySelected"
         :items="daysToPlay"
         return-object

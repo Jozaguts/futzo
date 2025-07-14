@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {useTeamStore} from "~/store";
-import type {TeamResponse} from "~/models/Team";
 import getHeaders from "~/utils/headers-table";
 
 const {
