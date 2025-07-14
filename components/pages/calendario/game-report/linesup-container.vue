@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+defineProps({
+  showComplete: Boolean
+})
 </script>
 <template>
   <v-sheet class="linesup-container">
@@ -31,8 +34,8 @@
         </div>
       </div>
     </div>
-    <div class="line"></div>
-    <div class="linesup-team-container">
+    <div v-if="showComplete" class="line"></div>
+    <div v-if="showComplete" class="linesup-team-container">
       <div class="lineup">
         <div class="zone-1-away"></div>
         <div class="zone-2-away"></div>
