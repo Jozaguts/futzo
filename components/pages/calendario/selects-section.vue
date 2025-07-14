@@ -77,7 +77,6 @@ const showCustomDaysSelect = computed(() => {
         variant="outlined"
         :items="tournaments"
         :loading="loadingTournaments"
-        no-data-text="No existen torneos para esta liga"
         clearable
       >
       </v-select>

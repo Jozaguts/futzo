@@ -128,7 +128,6 @@ const removeTag = (tag: string) => {
                 @update:modelValue="handleSelectLocation"
                 @blur="$emit('update:modelValue', $event)"
                 :items="foundedLocations"
-                no-data-text="No hay resultados"
                 outlined
                 return-object
                 hide-selected

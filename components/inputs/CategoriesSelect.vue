@@ -20,7 +20,6 @@ defineProps({
 <template>
   <v-select
     :disabled="disabled"
-    no-data-text="No hay categorías"
     :items="categories"
     density="compact"
     item-title="name"

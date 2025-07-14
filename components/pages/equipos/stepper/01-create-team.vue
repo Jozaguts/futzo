@@ -150,7 +150,6 @@
         <v-autocomplete
           v-model="fields.address.fieldValue"
           :items="locationsFind"
-          no-data-text="No hay resultados"
           outlined
           return-object
           hide-selected

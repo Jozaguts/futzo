@@ -69,7 +69,6 @@ defineExpose({
     <BaseInput label="Formato*">
       <template #input>
         <v-select
-            no-data-text="No hay formatos"
             :items="formats"
             density="compact"
             item-title="name"
@@ -92,7 +91,6 @@ defineExpose({
     <BaseInput label="Tipo de torneo*">
       <template #input>
         <v-select
-            no-data-text="No hay formatos"
             :items="footballTypes"
             density="compact"
             item-title="name"
