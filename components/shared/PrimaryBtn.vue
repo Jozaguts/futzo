@@ -12,6 +12,7 @@ interface Props {
       | undefined;
   showIcon?: boolean;
   disabled?: boolean;
+  loading?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -20,6 +21,7 @@ const props = withDefaults(defineProps<Props>(), {
   variant: "elevated",
   showIcon: true,
   disabled: false,
+  loading: false,
 });
 const emits = defineEmits(["click"]);
 </script>
@@ -28,6 +30,7 @@ const emits = defineEmits(["click"]);
       :variant="props.variant"
       class="app-bar-cat-btn"
       size="large"
+      :loading="props.loading"
       :disabled="props.disabled"
       @click="emits('click')"
   >
