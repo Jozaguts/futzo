@@ -2,9 +2,16 @@ import type { AvailableIntervals } from '~/models/Schedule';
 
 export type Formation = {
   name: string;
-  defenses: number;
-  midfielders: number;
-  forwards: number;
+  defenses: FormationPlayer[];
+  midfielders: FormationPlayer[];
+  forwards: FormationPlayer[];
+};
+export type FormationPlayer = {
+  name: string;
+  abbr: string;
+  number: number;
+  user_id?: number;
+  player_id?: number;
 };
 
 export type ReScheduleFormState = {
