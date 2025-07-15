@@ -2,6 +2,7 @@ import type { AvailableIntervals } from '~/models/Schedule';
 
 export type Formation = {
   name: string;
+  goalkeeper: FormationPlayer;
   defenses: FormationPlayer[];
   midfielders: FormationPlayer[];
   forwards: FormationPlayer[];
@@ -12,6 +13,13 @@ export type FormationPlayer = {
   number: number;
   user_id?: number;
   player_id?: number;
+  goals: number;
+  cards: {
+    red: boolean;
+    yellow: boolean;
+    doble_yellow_card: boolean;
+  };
+  substituted: boolean;
 };
 
 export type ReScheduleFormState = {

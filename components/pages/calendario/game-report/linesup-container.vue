@@ -2,7 +2,7 @@
   import { formations } from '~/utils/constants'
   import PlayerDot from '~/components/pages/calendario/game-report/player-dot.vue'
   import type { Team } from '~/models/Team'
-  import type { Formation } from '~/models/Game'
+  import type { Formation, FormationPlayer } from '~/models/Game'
   defineProps({
     showComplete: Boolean,
     home: {
@@ -13,6 +13,33 @@
     },
   })
   const formation = ref<Formation>(formations.value[0])
+  const goalKeeper = ref(formation.value.goalkeeper)
+  const midfielders = ref(formation.value.midfielders)
+  const defenders = ref(formation.value.defenses)
+  const forwards = ref(formation.value.forwards)
+  const updateFormation = (value: Formation) => {
+    const _formation = value.name.split('-')
+    const allPlayers = [
+      goalKeeper.value,
+      ...defenders.value,
+      ...midfielders.value,
+      ...forwards.value,
+    ]
+
+    goalKeeper.value = allPlayers[0]
+    defenders.value = allPlayers.slice(1, 1 + parseInt(_formation[0]))
+    midfielders.value = allPlayers.slice(
+      1 + parseInt(_formation[0]),
+      1 + parseInt(_formation[0]) + parseInt(_formation[1])
+    )
+    forwards.value = allPlayers.slice(
+      1 + parseInt(_formation[0]) + parseInt(_formation[1]),
+      allPlayers.length
+    )
+  }
+  const addPlayer = (id: string) => {
+    console.log(id)
+  }
 </script>
 <template>
   <v-sheet class="linesup-container">
@@ -28,8 +55,8 @@
             v-model="formation"
             min-width="100"
             densityc="compact"
-            center-affix
             variant="plain"
+            @update:model-value="updateFormation"
           >
           </v-select>
         </span>
@@ -42,32 +69,54 @@
         <div class="midfield">
           <div class="row-lineup">
             <div class="players-row-container">
-              <PlayerDot />
+              <PlayerDot
+                :player="goalKeeper"
+                id="PR-1"
+                @addPlayer="addPlayer"
+              />
             </div>
           </div>
           <div class="row-lineup">
             <div class="players-row-container">
-              <div class="d-flex justify-center justify-space-around">
+              <div
+                class="d-flex justify-center justify-space-around"
+                v-auto-animate
+              >
                 <PlayerDot
-                  v-for="item in formation.defenses.length"
-                  :key="item"
+                  v-for="(player, index) in defenders"
+                  :key="index"
+                  :player="player"
+                  :id="`${player.abbr}-${index + 1}`"
+                  @addPlayer="addPlayer"
                 />
               </div>
             </div>
           </div>
           <div class="row-lineup">
-            <div class="d-flex justify-center justify-space-around">
+            <div
+              class="d-flex justify-center justify-space-around"
+              v-auto-animate
+            >
               <PlayerDot
-                v-for="item in formation.midfielders.length"
-                :key="item"
+                v-for="(player, index) in midfielders"
+                :key="index"
+                :player="player"
+                :id="`${player.abbr}-${index + 1}`"
+                @addPlayer="addPlayer"
               />
             </div>
           </div>
           <div class="row-lineup">
-            <div class="d-flex justify-center justify-space-around">
+            <div
+              class="d-flex justify-center justify-space-around"
+              v-auto-animate
+            >
               <PlayerDot
-                v-for="item in formation.forwards.length"
-                :key="item"
+                v-for="(player, index) in forwards"
+                :key="index"
+                :player="player"
+                :id="`${player.abbr}-${index + 1}`"
+                @addPlayer="addPlayer"
               />
             </div>
           </div>
@@ -82,7 +131,23 @@
         <div class="zone-3-away"></div>
         <div class="zone-4-away"></div>
       </div>
-      <div class="heading">asdas</div>
+      <div class="heading">
+        <v-avatar :image="away?.image" class="mx-4" size="32"></v-avatar>
+        <span class="mx-2"> {{ away?.name }}</span>
+        <span class="formation">
+          <v-select
+            :items="formations"
+            item-title="name"
+            return-object
+            v-model="formation"
+            min-width="100"
+            densityc="compact"
+            center-affix
+            variant="plain"
+          >
+          </v-select>
+        </span>
+      </div>
     </div>
   </v-sheet>
 </template>
