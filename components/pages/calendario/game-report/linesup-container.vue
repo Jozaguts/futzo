@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import PlayerDot from '~/components/pages/calendario/game-report/player-dot.vue'
   import type { Team } from '~/models/Team'
+  import type { Formation } from '~/models/Game'
   defineProps({
     showComplete: Boolean,
     home: {
@@ -10,13 +11,125 @@
       type: Object as PropType<Team>,
     },
   })
+
+  const formations = ref<Formation[]>([
+    {
+      name: '4-4-2',
+      defenses: 4,
+      midfielders: 4,
+      forwards: 2,
+    },
+    {
+      name: '4-3-3',
+      defenses: 4,
+      midfielders: 3,
+      forwards: 3,
+    },
+    {
+      name: '4-5-1',
+      defenses: 4,
+      midfielders: 5,
+      forwards: 1,
+    },
+    {
+      name: '3-5-2',
+      defenses: 3,
+      midfielders: 5,
+      forwards: 2,
+    },
+    {
+      name: '4-1-2-1-2',
+      defenses: 4,
+      midfielders: 4,
+      forwards: 2,
+    },
+    {
+      name: '4-2-3-1',
+      defenses: 4,
+      midfielders: 5,
+      forwards: 1,
+    },
+    {
+      name: '4-4-1-1',
+      defenses: 4,
+      midfielders: 4,
+      forwards: 2,
+    },
+    {
+      name: '4-1-3-2',
+      defenses: 4,
+      midfielders: 4,
+      forwards: 2,
+    },
+    {
+      name: '3-4-3',
+      defenses: 3,
+      midfielders: 4,
+      forwards: 3,
+    },
+    {
+      name: '5-4-1',
+      defenses: 5,
+      midfielders: 4,
+      forwards: 1,
+    },
+    {
+      name: '3-5-1-1',
+      defenses: 3,
+      midfielders: 5,
+      forwards: 1,
+    },
+    {
+      name: '4-1-4-1',
+      defenses: 4,
+      midfielders: 5,
+      forwards: 1,
+    },
+    {
+      name: '4-3-1-2',
+      defenses: 4,
+      midfielders: 4,
+      forwards: 2,
+    },
+    {
+      name: '4-1-2-3',
+      defenses: 4,
+      midfielders: 5,
+      forwards: 1,
+    },
+    {
+      name: '5-3-2',
+      defenses: 5,
+      midfielders: 3,
+      forwards: 2,
+    },
+  ])
+  const formation = ref<Formation>({
+    name: '4-4-2',
+    defenses: 4,
+    midfielders: 4,
+    forwards: 2,
+  })
 </script>
 <template>
   <v-sheet class="linesup-container">
     <div class="linesup-team-container">
       <div class="heading">
-        <v-avatar :image="home?.image"></v-avatar>
-        {{ home?.name }}
+        <v-avatar :image="home?.image" class="mx-4" size="32"></v-avatar>
+        <span class="mx-2"> {{ home?.name }}</span>
+        <span class="formation">
+          <v-select
+            :items="formations"
+            item-title="name"
+            return-object
+            v-model="formation"
+            min-width="100"
+            densityc="compact"
+            center-affix
+            variant="plain"
+          >
+          </v-select>
+        </span>
       </div>
       <div class="lineup">
         <div class="zone-1"></div>
@@ -32,24 +145,18 @@
           <div class="row-lineup">
             <div class="players-row-container">
               <div class="d-flex justify-center justify-space-around">
-                <PlayerDot />
-                <PlayerDot />
-                <PlayerDot />
+                <PlayerDot v-for="item in formation.defenses" :key="item" />
               </div>
             </div>
           </div>
           <div class="row-lineup">
             <div class="d-flex justify-center justify-space-around">
-              <PlayerDot />
-              <PlayerDot />
-              <PlayerDot />
-              <PlayerDot />
+              <PlayerDot v-for="item in formation.midfielders" :key="item" />
             </div>
           </div>
           <div class="row-lineup">
             <div class="d-flex justify-center justify-space-around">
-              <PlayerDot />
-              <PlayerDot />
+              <PlayerDot v-for="item in formation.forwards" :key="item" />
             </div>
           </div>
         </div>
@@ -124,6 +231,14 @@
       color: #fff
       font-size: 14px
       height: 12%
+      display: flex
+      justify-content: start
+      align-items: center
+      padding: 0 16px
+      .formation
+        margin-left: auto
+        font-weight: 600
+        font-size: 16px
 
     .lineup
       height: 88%
