@@ -9,7 +9,6 @@
   const showTeamHandler = () => {
     loading.value = true
     const slug = route.params.equipo as string
-    console.log({ slug })
     if (slug) {
       useTeamStore()
         .getTeam(slug)
