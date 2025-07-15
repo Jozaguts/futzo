@@ -6,12 +6,7 @@
     </span>
     <div>
       <span class="player-name">
-        <span
-          class="d-inline-block text-truncate"
-          style="
-            max-width: 80px;
-
-          "
+        <span class="d-inline-block text-truncate" style="max-width: 80px"
           >B. Allan</span
         >
       </span>
