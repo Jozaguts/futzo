@@ -109,20 +109,53 @@ const generateFormation = (
 ): Formation => {
   return {
     name,
+    goalkeeper: {
+      abbr: 'PR',
+      number: 1,
+      name: '',
+      goals: 0,
+      cards: {
+        red: false,
+        yellow: false,
+        doble_yellow_card: false,
+      },
+      substituted: false,
+    },
     defenses: Array.from({ length: defenses }, (_, i) => ({
       abbr: 'DF',
       number: i + 1,
       name: '',
+      goals: 0,
+      cards: {
+        red: false,
+        yellow: false,
+        doble_yellow_card: false,
+      },
+      substituted: false,
     })),
     midfielders: Array.from({ length: midfielders }, (_, i) => ({
       abbr: 'MF',
-      number: i + 1,
+      number: i + 5,
       name: '',
+      goals: 0,
+      cards: {
+        red: false,
+        yellow: false,
+        doble_yellow_card: false,
+      },
+      substituted: false,
     })),
     forwards: Array.from({ length: forwards }, (_, i) => ({
       abbr: 'FW',
-      number: i + 1,
+      number: i + 9,
       name: '',
+      goals: 0,
+      cards: {
+        red: false,
+        yellow: false,
+        doble_yellow_card: false,
+      },
+      substituted: false,
     })),
   };
 };
