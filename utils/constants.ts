@@ -101,95 +101,45 @@ export const DEFAULT_LOCATION_AVAILABILITY: LocationAvailability = {
 };
 export const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 export const phoneRegex = /^\d{10}$/;
+const generateFormation = (
+  name: string,
+  defenses: number,
+  midfielders: number,
+  forwards: number
+): Formation => {
+  return {
+    name,
+    defenses: Array.from({ length: defenses }, (_, i) => ({
+      abbr: 'DF',
+      number: i + 1,
+      name: '',
+    })),
+    midfielders: Array.from({ length: midfielders }, (_, i) => ({
+      abbr: 'MF',
+      number: i + 1,
+      name: '',
+    })),
+    forwards: Array.from({ length: forwards }, (_, i) => ({
+      abbr: 'FW',
+      number: i + 1,
+      name: '',
+    })),
+  };
+};
 export const formations = ref<Formation[]>([
-  {
-    name: '4-4-2',
-    defenses: 4,
-    midfielders: 4,
-    forwards: 2,
-  },
-  {
-    name: '4-3-3',
-    defenses: 4,
-    midfielders: 3,
-    forwards: 3,
-  },
-  {
-    name: '4-5-1',
-    defenses: 4,
-    midfielders: 5,
-    forwards: 1,
-  },
-  {
-    name: '3-5-2',
-    defenses: 3,
-    midfielders: 5,
-    forwards: 2,
-  },
-  {
-    name: '4-1-2-1-2',
-    defenses: 4,
-    midfielders: 4,
-    forwards: 2,
-  },
-  {
-    name: '4-2-3-1',
-    defenses: 4,
-    midfielders: 5,
-    forwards: 1,
-  },
-  {
-    name: '4-4-1-1',
-    defenses: 4,
-    midfielders: 4,
-    forwards: 2,
-  },
-  {
-    name: '4-1-3-2',
-    defenses: 4,
-    midfielders: 4,
-    forwards: 2,
-  },
-  {
-    name: '3-4-3',
-    defenses: 3,
-    midfielders: 4,
-    forwards: 3,
-  },
-  {
-    name: '5-4-1',
-    defenses: 5,
-    midfielders: 4,
-    forwards: 1,
-  },
-  {
-    name: '3-5-1-1',
-    defenses: 3,
-    midfielders: 5,
-    forwards: 1,
-  },
-  {
-    name: '4-1-4-1',
-    defenses: 4,
-    midfielders: 5,
-    forwards: 1,
-  },
-  {
-    name: '4-3-1-2',
-    defenses: 4,
-    midfielders: 4,
-    forwards: 2,
-  },
-  {
-    name: '4-1-2-3',
-    defenses: 4,
-    midfielders: 5,
-    forwards: 1,
-  },
-  {
-    name: '5-3-2',
-    defenses: 5,
-    midfielders: 3,
-    forwards: 2,
-  },
+  generateFormation('4-4-2', 4, 4, 2),
+  generateFormation('4-3-3', 4, 3, 3),
+  generateFormation('4-5-1', 5, 4, 1),
+  generateFormation('3-5-2', 3, 5, 2),
+  generateFormation('4-1-2-1-2', 4, 5, 1),
+  generateFormation('4-2-3-1', 4, 5, 1),
+  generateFormation('4-4-1-1', 4, 4, 2),
+  generateFormation('4-1-3-2', 4, 4, 2),
+  generateFormation('3-4-3', 3, 4, 3),
+  generateFormation('5-4-1', 5, 4, 1),
+  generateFormation('3-5-1-1', 3, 5, 1),
+  generateFormation('4-1-4-1', 4, 5, 1),
+  generateFormation('4-3-1-2', 4, 4, 2),
+  generateFormation('4-1-2-3', 4, 4, 1),
+  generateFormation('5-3-2', 5, 3, 2),
 ]);
