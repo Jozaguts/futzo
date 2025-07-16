@@ -102,13 +102,13 @@ export const DEFAULT_LOCATION_AVAILABILITY: LocationAvailability = {
 export const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 export const phoneRegex = /^\d{10}$/;
 const generateFormation = (
-  name: string,
+  formation: string,
   defenses: number,
   midfielders: number,
   forwards: number
 ): Formation => {
   return {
-    name,
+    formation,
     goalkeeper: {
       abbr: 'PR',
       number: 1,
