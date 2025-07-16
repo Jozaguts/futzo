@@ -6,3 +6,7 @@ export const getTeamBy = async (term: number | string) => {
     `/api/v1/admin/teams/${term}?by_slug=${typeof term === 'string'}`
   );
 };
+export const teamPlayers = async (team: Team) => {
+  const client = useSanctumClient();
+  return await client(`/api/v1/admin/teams/${team.id}/players`);
+};
