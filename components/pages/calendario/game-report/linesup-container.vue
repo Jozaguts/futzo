@@ -3,7 +3,8 @@
   import PlayerDot from '~/components/pages/calendario/game-report/player-dot.vue'
   import type { Team } from '~/models/Team'
   import type { Formation, FormationPlayer } from '~/models/Game'
-  defineProps({
+  import { getTeamFormation } from '~/http/api/team'
+  const { home } = defineProps({
     showComplete: Boolean,
     home: {
       type: Object as PropType<Team>,
@@ -13,12 +14,12 @@
     },
   })
   const formation = ref<Formation>(formations.value[0])
-  const goalKeeper = ref(formation.value.goalkeeper)
+  const goalKeeper = ref([])
   const midfielders = ref(formation.value.midfielders)
   const defenders = ref(formation.value.defenses)
   const forwards = ref(formation.value.forwards)
   const updateFormation = (value: Formation) => {
-    const _formation = value.name.split('-')
+    const _formation = value.formation.split('-')
     const allPlayers = [
       goalKeeper.value,
       ...defenders.value,
@@ -40,6 +41,13 @@
   const addPlayer = (id: string) => {
     console.log(id)
   }
+  watchEffect(async () => {
+    if (home) {
+      getTeamFormation(home).then((response: Formation) => {
+        console.log(response)
+      })
+    }
+  })
 </script>
 <template>
   <v-sheet class="linesup-container">
@@ -50,7 +58,7 @@
         <span class="formation">
           <v-select
             :items="formations"
-            item-title="name"
+            item-title="formation"
             return-object
             v-model="formation"
             min-width="100"
@@ -137,7 +145,7 @@
         <span class="formation">
           <v-select
             :items="formations"
-            item-title="name"
+            item-title="formation"
             return-object
             v-model="formation"
             min-width="100"
