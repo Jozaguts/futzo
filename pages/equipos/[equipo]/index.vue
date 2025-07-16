@@ -10,9 +10,11 @@
   import type { Team } from '~/models/Team'
   import { useTeamStore } from '~/store'
   const team = ref<Team>()
-  onMounted(async () => {
-    const params = useRoute().params?.equipo
-    team.value = await useTeamStore().getTeam(params as string)
+
+  watchEffect(async () => {
+    team.value = await useTeamStore().getTeam(
+      useRoute().params?.equipo as string
+    )
   })
 </script>
 <template>
@@ -27,10 +29,6 @@
     <template #default>
       <div class="teams-team-container">
         <div class="table-container">
-          <div>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus,
-            reprehenderit?
-          </div>
           <LinesupContainer :home="team" />
         </div>
         <div class="games-container">
