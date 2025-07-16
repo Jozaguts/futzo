@@ -10,3 +10,7 @@ export const teamPlayers = async (team: Team) => {
   const client = useSanctumClient();
   return await client(`/api/v1/admin/teams/${team.id}/players`);
 };
+export const getTeamFormation = async (team: Team) => {
+  const client = useSanctumClient();
+  return await client(`/api/v1/admin/teams/${team.id}/formation`);
+};
