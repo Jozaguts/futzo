@@ -26,20 +26,18 @@
       </AppBar>
     </template>
     <template #default>
-      <div class="tournament-details-container">
-        <div class="table-container">
+      <div class="teams-team-container">
+        <div class="primary-zone">
           <PositionsTable />
         </div>
-        <div class="games-container">
-          <div class="live-games">
-            <LiveGames />
-          </div>
-          <div class="next-games-today">
-            <NextGamesToday />
-          </div>
-        </div>
-        <div class="next-games">
+        <div class="secondary-zone">
           <NextGames />
+        </div>
+        <div class="right-up-zone">
+          <LiveGames />
+        </div>
+        <div class="right-down-zone">
+          <NextGamesToday />
         </div>
         <CreateTournamentDialog />
       </div>
