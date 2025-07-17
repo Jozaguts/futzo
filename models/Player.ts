@@ -1,3 +1,9 @@
+export type TeamLineupAvailablePlayers = {
+  id: number;
+  name: string;
+  number: number;
+  position: string;
+};
 export interface Player {
   id?: number;
   name: string;
@@ -21,11 +27,11 @@ export interface PlayerSteps {
 }
 
 export type FormLabelStep =
-  | "Información básica"
-  | "Detalles del jugador"
-  | "Información de contacto";
+  | 'Información básica'
+  | 'Detalles del jugador'
+  | 'Información de contacto';
 
-export type CurrentStep = "basic-info" | "details-info" | "contact-info";
+export type CurrentStep = 'basic-info' | 'details-info' | 'contact-info';
 
 export interface CreatePlayerForm extends PlayerStoreRequest {}
 
