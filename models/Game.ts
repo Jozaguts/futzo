@@ -2,7 +2,7 @@ import type { AvailableIntervals } from '~/models/Schedule';
 
 export type Formation = {
   formation: string;
-  goalkeeper: FormationPlayer;
+  goalkeeper: FormationPlayer[];
   defenses: FormationPlayer[];
   midfielders: FormationPlayer[];
   forwards: FormationPlayer[];
