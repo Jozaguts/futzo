@@ -62,7 +62,7 @@
 </script>
 <template>
   <v-sheet class="linesup-container">
-    <div class="linesup-team-container">
+    <div class="linesup-team-container futzo-rounded">
       <div class="heading">
         <v-avatar :image="home?.image" class="mx-4" size="32"></v-avatar>
         <span class="mx-2"> {{ home?.name }}</span>
@@ -171,7 +171,9 @@
 <style lang="sass">
   @use '@/assets/scss/components/linesup.sass'
   .linesup-container
-    height: v-bind(linesupHeightContainer)
+    //height: v-bind(linesupHeightContainer)
+    height: 100%
+    padding-bottom: .5rem
   .linesup-team-container
     height: v-bind(linesupTeamHeightContainer)
 </style>

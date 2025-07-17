@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import LiveGames from '~/components/pages/equipos/live-games.vue'
+  import PlayersList from '~/components/pages/equipos/live-games.vue'
   import NextGamesToday from '~/components/pages/equipos/next-games-today.vue'
   import NextGames from '~/components/pages/equipos/next-games.vue'
   import PageLayout from '~/components/shared/PageLayout.vue'
@@ -8,7 +8,8 @@
   import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
   import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
   import type { Team } from '~/models/Team'
-  import { useTeamStore } from '~/store'
+  import { usePlayerStore, useTeamStore } from '~/store'
+  const { defaultLineupAvailableTeamPlayers } = storeToRefs(usePlayerStore())
   const team = ref<Team>()
 
   watchEffect(async () => {
@@ -28,19 +29,28 @@
     </template>
     <template #default>
       <div class="teams-team-container">
-        <div class="table-container">
+        <div class="primary-zone">
           <LinesupContainer :home="team" :show-complete="false" />
         </div>
-        <div class="games-container">
-          <div class="live-games">
-            <LiveGames />
-          </div>
-          <div class="next-games-today">
-            <NextGamesToday />
-          </div>
-        </div>
-        <div class="next-games">
+        <div class="secondary-zone">
           <NextGames />
+        </div>
+        <div class="right-up-zone">
+          <PlayersList title="Jugadores">
+            <template #table-body>
+              <tr
+                v-for="player in defaultLineupAvailableTeamPlayers"
+                :key="player.id"
+              >
+                <td>
+                  <p>{{ player.number }} {{ player.name }}</p>
+                </td>
+              </tr>
+            </template>
+          </PlayersList>
+        </div>
+        <div class="right-down-zone">
+          <NextGamesToday />
         </div>
         <CreateTeamDialog />
       </div>

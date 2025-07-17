@@ -1,33 +1,32 @@
 .teams-team-container 
   display: grid
-  grid-auto-columns: 1fr
-  grid-template-columns: calc(70% - 20px) calc(30% + 20px)
-  grid-template-rows: calc(70% - 20px) calc(30% + 20px)
+  grid-template-columns: 16.66% 16.66% 16.66% 16.66% 16.66% 16.66%
+  grid-template-rows: 16.66% 16.66% 16.66% 16.66% 16.66% 16.66%
   gap: 1em 1em
-  grid-template-areas: "table-container games-container" "next-games games-container"
+  grid-template-areas: "primary-zone primary-zone primary-zone primary-zone right-up-zone right-up-zone" "primary-zone primary-zone primary-zone primary-zone right-up-zone right-up-zone" "primary-zone primary-zone primary-zone primary-zone right-up-zone right-up-zone" "primary-zone primary-zone primary-zone primary-zone right-up-zone right-up-zone" "secondary-zone secondary-zone secondary-zone secondary-zone right-down-zone right-down-zone" "secondary-zone secondary-zone secondary-zone secondary-zone right-down-zone right-down-zone"
 
-
-.table-container 
-  grid-area: table-container
+.primary-zone
+  grid-area: primary-zone
   padding: 1rem 2rem 0 2rem
   border-radius: var(--radius-2xl, 16px)
   background: var(--Colors-Base-White, #fff)
-
-
-.games-container 
-  grid-area: games-container
-
-
-.games-container > :first-child 
-  margin-bottom: 2rem
-
+  align-self: stretch
+.right-up-zone
+  grid-area: right-up-zone
+.right-down-zone
+  grid-area: right-down-zone
+  display: flex
+  justify-content: space-between
+  align-items: center
+  align-self: stretch
 
 .live-games 
   display: flex
   width: 100%
   flex-direction: column
   align-items: flex-start
-  gap: var(--spacing-xl, 16px)
+  //gap: var(--spacing-xl, 16px)
+  //height: calc(70% - 20px)
 
 
 .next-games-today 
@@ -36,10 +35,11 @@
   flex-direction: column
   align-items: flex-start
   gap: var(--spacing-xl, 16px)
+  //height: calc(35% - 20px)
 
 
-.next-games 
-  grid-area: next-games
+.secondary-zone
+  grid-area: secondary-zone
   display: flex
   flex-direction: column
   align-items: flex-start
