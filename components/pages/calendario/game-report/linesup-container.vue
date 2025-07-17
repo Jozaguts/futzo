@@ -1,9 +1,10 @@
 <script lang="ts" setup>
   import PlayerDot from '~/components/pages/calendario/game-report/player-dot.vue'
   import type { Team } from '~/models/Team'
-  import type { Formation, FormationPlayer } from '~/models/Game'
-  import { getTeamFormation } from '~/http/api/team'
-  const { home } = defineProps({
+  import type { Formation } from '~/models/Game'
+  import { getTeamFormation, teamPlayers } from '~/http/api/team'
+  import type { Player } from '~/models/Player'
+  const { home, away } = defineProps({
     showComplete: Boolean,
     home: {
       type: Object as PropType<Team>,
@@ -12,41 +13,23 @@
       type: Object as PropType<Team>,
     },
   })
-  const formation = ref<Formation>({} as Formation)
-  const goalKeeper = ref<FormationPlayer[]>([] as FormationPlayer[])
-  const midfielders = ref<FormationPlayer[]>([] as FormationPlayer[])
-  const defenders = ref<FormationPlayer[]>([] as FormationPlayer[])
-  const forwards = ref<FormationPlayer[]>([] as FormationPlayer[])
-  const updateFormation = (value: Formation) => {
-    const _formation = value.formation.split('-')
-    const allPlayers = [
-      ...goalKeeper.value,
-      ...defenders.value,
-      ...midfielders.value,
-      ...forwards.value,
-    ]
-
-    goalKeeper.value = allPlayers.slice(0, 1)
-    defenders.value = allPlayers.slice(1, 1 + parseInt(_formation[0]))
-    midfielders.value = allPlayers.slice(
-      1 + parseInt(_formation[0]),
-      1 + parseInt(_formation[0]) + parseInt(_formation[1])
-    )
-    forwards.value = allPlayers.slice(
-      1 + parseInt(_formation[0]) + parseInt(_formation[1]),
-      allPlayers.length
-    )
-  }
+  const homeFormation = ref<Formation>()
+  const awayFormation = ref<Formation>()
+  const players = ref<Player[]>([] as Player[])
   const addPlayer = (id: string) => {
     console.log(id)
   }
   watchEffect(async () => {
     if (home) {
       getTeamFormation(home).then((response: Formation) => {
-        goalKeeper.value = response.goalkeeper
-        midfielders.value = response.midfielders
-        defenders.value = response.defenses
-        forwards.value = response.forwards
+        console.log({ response })
+        home?.id === response.team_id
+          ? (homeFormation.value = response)
+          : (awayFormation.value = response)
+      })
+      teamPlayers(home).then((response: Player[]) => {
+        console.log(response)
+        players.value = response
       })
     }
   })
@@ -57,19 +40,16 @@
       <div class="heading">
         <v-avatar :image="home?.image" class="mx-4" size="32"></v-avatar>
         <span class="mx-2"> {{ home?.name }}</span>
-        <span class="formation">
+        <span v-if="!!homeFormation" class="formation">
           <v-select
-            :items="formations"
-            item-title="formation"
-            return-object
-            v-model="formation"
+            item-title="name"
             min-width="100"
+            v-model="homeFormation.formation"
             densityc="compact"
             variant="plain"
-            @update:model-value="updateFormation"
           >
-          </v-select
-        ></span>
+          </v-select>
+        </span>
       </div>
       <div class="lineup">
         <div class="zone-1"></div>
@@ -80,11 +60,12 @@
           <div class="row-lineup">
             <div class="players-row-container">
               <PlayerDot
-                v-for="(player, index) in goalKeeper"
+                v-for="(player, index) in homeFormation?.goalkeeper"
                 :key="index"
                 :player="player"
                 :id="`${player.abbr}-${index + 1}`"
                 @addPlayer="addPlayer"
+                :players="players"
               />
             </div>
           </div>
@@ -95,11 +76,12 @@
                 v-auto-animate
               >
                 <PlayerDot
-                  v-for="(player, index) in defenders"
+                  v-for="(player, index) in homeFormation?.defenses"
                   :key="index"
                   :player="player"
                   :id="`${player.abbr}-${index + 1}`"
                   @addPlayer="addPlayer"
+                  :players="players"
                 />
               </div>
             </div>
@@ -110,11 +92,12 @@
               v-auto-animate
             >
               <PlayerDot
-                v-for="(player, index) in midfielders"
+                v-for="(player, index) in homeFormation?.midfielders"
                 :key="index"
                 :player="player"
                 :id="`${player.abbr}-${index + 1}`"
                 @addPlayer="addPlayer"
+                :players="players"
               />
             </div>
           </div>
@@ -124,19 +107,20 @@
               v-auto-animate
             >
               <PlayerDot
-                v-for="(player, index) in forwards"
+                v-for="(player, index) in homeFormation?.forwards"
                 :key="index"
                 :player="player"
                 :id="`${player.abbr}-${index + 1}`"
                 @addPlayer="addPlayer"
+                :players="players"
               />
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div v-if="showComplete" class="line"></div>
-    <div v-if="showComplete" class="linesup-team-container">
+    <div v-if="!!away" class="line"></div>
+    <div v-if="!!away" class="linesup-team-container">
       <div class="lineup">
         <div class="zone-1-away"></div>
         <div class="zone-2-away"></div>
@@ -149,12 +133,11 @@
         <span class="formation">
           <v-select
             :items="formations"
-            item-title="formation"
+            item-title="name"
             return-object
-            v-model="formation"
+            v-model="awayFormation"
             min-width="100"
             densityc="compact"
-            center-affix
             variant="plain"
           >
           </v-select>
