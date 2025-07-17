@@ -20,22 +20,18 @@
       />
       <v-menu v-else max-height="150" location="start">
         <template v-slot:activator="{ props }"
-          ><v-btn
-            v-bind="props"
-            icon
-            density="compact"
-            border="md"
-            @click="$emit('addPlayer', id)"
-            >+</v-btn
-          >
+          ><v-btn v-bind="props" icon density="compact" border="md">+</v-btn>
         </template>
         <v-list density="compact" variant="text">
           <v-list-item
             v-for="(item, index) in players"
             :key="index"
-            :value="item.id"
+            :value="item"
+            @click="$emit('addPlayer', { id, player: item })"
           >
-            <v-list-item-title>{{ item.name }}</v-list-item-title>
+            <v-list-item-title
+              >{{ item?.name }} | {{ item?.position }}</v-list-item-title
+            >
           </v-list-item>
         </v-list>
       </v-menu>

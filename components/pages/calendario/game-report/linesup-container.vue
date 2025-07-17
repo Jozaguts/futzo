@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import PlayerDot from '~/components/pages/calendario/game-report/player-dot.vue'
   import type { Team } from '~/models/Team'
-  import type { Formation } from '~/models/Game'
+  import type { Formation, FormationPlayer } from '~/models/Game'
   import { getTeamFormation, teamPlayers } from '~/http/api/team'
   import type { Player } from '~/models/Player'
   const { home, away } = defineProps({
@@ -16,8 +16,30 @@
   const homeFormation = ref<Formation>()
   const awayFormation = ref<Formation>()
   const players = ref<Player[]>([] as Player[])
-  const addPlayer = (id: string) => {
-    console.log(id)
+  const addPlayer = (playerData: Partial<Player>) => {
+    const abbr = String(playerData?.id).split('-')[0]
+    const position = String(playerData?.id).split('-')[1] // posicion donde quieor que se agrege el jugador dentro del array ejemplo si postion es 1 se colocarion en  en position 2[1,'aqui']
+    const player = {
+      abbr: playerData?.player.position,
+      number: playerData?.player.number,
+      name: playerData?.player?.name,
+      goals: 0,
+      cards: {
+        red: false,
+        yellow: false,
+        doble_yellow_card: false,
+      },
+      substituted: false,
+    } as FormationPlayer
+    if (abbr === 'GP') {
+      homeFormation.value?.goalkeeper.splice(Number(position) - 1, 1, player)
+    } else if (abbr === 'DF') {
+      homeFormation.value?.defenses.splice(Number(position) - 1, 1, player)
+    } else if (abbr === 'MD') {
+      homeFormation.value?.midfielders.splice(Number(position) - 1, 1, player)
+    } else if (abbr === 'FW') {
+      homeFormation.value?.forwards.splice(Number(position) - 1, 1, player)
+    }
   }
   watchEffect(async () => {
     if (home) {
@@ -63,7 +85,7 @@
                 v-for="(player, index) in homeFormation?.goalkeeper"
                 :key="index"
                 :player="player"
-                :id="`${player.abbr}-${index + 1}`"
+                :id="`GP-${index + 1}`"
                 @addPlayer="addPlayer"
                 :players="players"
               />
@@ -79,7 +101,7 @@
                   v-for="(player, index) in homeFormation?.defenses"
                   :key="index"
                   :player="player"
-                  :id="`${player.abbr}-${index + 1}`"
+                  :id="`DF-${index + 1}`"
                   @addPlayer="addPlayer"
                   :players="players"
                 />
@@ -95,7 +117,7 @@
                 v-for="(player, index) in homeFormation?.midfielders"
                 :key="index"
                 :player="player"
-                :id="`${player.abbr}-${index + 1}`"
+                :id="`MD-${index + 1}`"
                 @addPlayer="addPlayer"
                 :players="players"
               />
@@ -110,7 +132,7 @@
                 v-for="(player, index) in homeFormation?.forwards"
                 :key="index"
                 :player="player"
-                :id="`${player.abbr}-${index + 1}`"
+                :id="`FW-${index + 1}`"
                 @addPlayer="addPlayer"
                 :players="players"
               />
