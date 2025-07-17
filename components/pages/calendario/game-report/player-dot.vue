@@ -1,8 +1,10 @@
 <script lang="ts" setup>
   import type { FormationPlayer } from '~/models/Game'
+  import type { Player } from '~/models/Player'
   defineProps<{
     player: FormationPlayer
     id: String
+    players: Player[]
   }>()
   const emits = defineEmits(['addPlayer'])
 </script>
@@ -16,9 +18,27 @@
         color="red"
         v-if="player?.name"
       />
-      <v-btn icon density="compact" border="md" @click="$emit('addPlayer', id)">
-        +
-      </v-btn>
+      <v-menu v-else max-height="150" location="start">
+        <template v-slot:activator="{ props }"
+          ><v-btn
+            v-bind="props"
+            icon
+            density="compact"
+            border="md"
+            @click="$emit('addPlayer', id)"
+            >+</v-btn
+          >
+        </template>
+        <v-list density="compact" variant="text">
+          <v-list-item
+            v-for="(item, index) in players"
+            :key="index"
+            :value="item.id"
+          >
+            <v-list-item-title>{{ item.name }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
       <Icon
         name="futzo-icon:dot-player-yellow-card"
         class="dot-player-card"
