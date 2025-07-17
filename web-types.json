@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "name": "my-project",
+  "framework": "vue",
+  "version": "1.0.0",
+  "contributions": {
+    "html": {
+      "vue-directives": [
+        {
+          "name": "auto-animate",
+          "description": "AutoAnimate adds automatic animations to your JavaScript applications with a single line of code. Here's the same list component with and without AutoAnimate applied to the wrapping element",
+          "doc-url": "https://auto-animate.formkit.com"
+        },
+        {
+          "name": "Unknown directive",
+          "pattern": ".*"
+        }
+      ]
+    }
+  }
+}
