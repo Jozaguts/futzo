@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-  import { formations } from '~/utils/constants'
   import PlayerDot from '~/components/pages/calendario/game-report/player-dot.vue'
   import type { Team } from '~/models/Team'
   import type { Formation, FormationPlayer } from '~/models/Game'
@@ -13,21 +12,21 @@
       type: Object as PropType<Team>,
     },
   })
-  const formation = ref<Formation>(formations.value[0])
-  const goalKeeper = ref([])
-  const midfielders = ref(formation.value.midfielders)
-  const defenders = ref(formation.value.defenses)
-  const forwards = ref(formation.value.forwards)
+  const formation = ref<Formation>({} as Formation)
+  const goalKeeper = ref<FormationPlayer[]>([] as FormationPlayer[])
+  const midfielders = ref<FormationPlayer[]>([] as FormationPlayer[])
+  const defenders = ref<FormationPlayer[]>([] as FormationPlayer[])
+  const forwards = ref<FormationPlayer[]>([] as FormationPlayer[])
   const updateFormation = (value: Formation) => {
     const _formation = value.formation.split('-')
     const allPlayers = [
-      goalKeeper.value,
+      ...goalKeeper.value,
       ...defenders.value,
       ...midfielders.value,
       ...forwards.value,
     ]
 
-    goalKeeper.value = allPlayers[0]
+    goalKeeper.value = allPlayers.slice(0, 1)
     defenders.value = allPlayers.slice(1, 1 + parseInt(_formation[0]))
     midfielders.value = allPlayers.slice(
       1 + parseInt(_formation[0]),
@@ -44,7 +43,10 @@
   watchEffect(async () => {
     if (home) {
       getTeamFormation(home).then((response: Formation) => {
-        console.log(response)
+        goalKeeper.value = response.goalkeeper
+        midfielders.value = response.midfielders
+        defenders.value = response.defenses
+        forwards.value = response.forwards
       })
     }
   })
@@ -66,8 +68,8 @@
             variant="plain"
             @update:model-value="updateFormation"
           >
-          </v-select>
-        </span>
+          </v-select
+        ></span>
       </div>
       <div class="lineup">
         <div class="zone-1"></div>
@@ -78,8 +80,10 @@
           <div class="row-lineup">
             <div class="players-row-container">
               <PlayerDot
-                :player="goalKeeper"
-                id="PR-1"
+                v-for="(player, index) in goalKeeper"
+                :key="index"
+                :player="player"
+                :id="`${player.abbr}-${index + 1}`"
                 @addPlayer="addPlayer"
               />
             </div>
