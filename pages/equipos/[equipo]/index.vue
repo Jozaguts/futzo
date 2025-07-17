@@ -29,7 +29,7 @@
     <template #default>
       <div class="teams-team-container">
         <div class="table-container">
-          <LinesupContainer :home="team" />
+          <LinesupContainer :home="team" :show-complete="false" />
         </div>
         <div class="games-container">
           <div class="live-games">

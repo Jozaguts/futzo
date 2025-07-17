@@ -5,7 +5,7 @@
   import { getTeamFormation } from '~/http/api/team'
   import type { Player } from '~/models/Player'
   import { usePlayerStore } from '~/store'
-  const { home, away } = defineProps({
+  const { home, away, showComplete } = defineProps({
     showComplete: Boolean,
     home: {
       type: Object as PropType<Team>,
@@ -52,6 +52,12 @@
         await usePlayerStore().getDefaultLineupAvailableTeamPlayers(home)
       }
     }
+  })
+  const linesupHeightContainer = computed(() => {
+    return showComplete ? '880px' : '440px'
+  })
+  const linesupTeamHeightContainer = computed(() => {
+    return showComplete ? '50%' : '100%'
   })
 </script>
 <template>
@@ -135,33 +141,37 @@
         </div>
       </div>
     </div>
-    <div v-if="!!away" class="line"></div>
-    <div v-if="!!away" class="linesup-team-container">
-      <div class="lineup">
-        <div class="zone-1-away"></div>
-        <div class="zone-2-away"></div>
-        <div class="zone-3-away"></div>
-        <div class="zone-4-away"></div>
-      </div>
-      <div class="heading">
-        <v-avatar :image="away?.image" class="mx-4" size="32"></v-avatar>
-        <span class="mx-2"> {{ away?.name }}</span>
-        <span class="formation">
-          <v-select
-            :items="formations"
-            item-title="name"
-            return-object
-            v-model="awayFormation"
-            min-width="100"
-            densityc="compact"
-            variant="plain"
-          >
-          </v-select>
-        </span>
-      </div>
-    </div>
+    <div class="line"></div>
+    <!--    <div class="linesup-team-container">-->
+    <!--      <div class="lineup">-->
+    <!--        <div class="zone-1-away"></div>-->
+    <!--        <div class="zone-2-away"></div>-->
+    <!--        <div class="zone-3-away"></div>-->
+    <!--        <div class="zone-4-away"></div>-->
+    <!--      </div>-->
+    <!--      <div class="heading">-->
+    <!--        <v-avatar :image="away?.image" class="mx-4" size="32"></v-avatar>-->
+    <!--        <span class="mx-2"> {{ away?.name }}</span>-->
+    <!--        <span class="formation">-->
+    <!--          <v-select-->
+    <!--            :items="formations"-->
+    <!--            item-title="name"-->
+    <!--            return-object-->
+    <!--            v-model="awayFormation"-->
+    <!--            min-width="100"-->
+    <!--            densityc="compact"-->
+    <!--            variant="plain"-->
+    <!--          >-->
+    <!--          </v-select>-->
+    <!--        </span>-->
+    <!--      </div>-->
+    <!--    </div>-->
   </v-sheet>
 </template>
 <style lang="sass">
   @use '@/assets/scss/components/linesup.sass'
+  .linesup-container
+    height: v-bind(linesupHeightContainer)
+  .linesup-team-container
+    height: v-bind(linesupTeamHeightContainer)
 </style>
