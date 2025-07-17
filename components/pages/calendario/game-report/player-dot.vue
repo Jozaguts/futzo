@@ -1,40 +1,20 @@
 <script lang="ts" setup>
+  import PlayersMenu from '~/components/pages/calendario/game-report/players-menu.vue'
   import type { FormationPlayer } from '~/models/Game'
-  import type { Player } from '~/models/Player'
   defineProps<{
     player: FormationPlayer
     id: String
-    players: Player[]
   }>()
   const emits = defineEmits(['addPlayer'])
+  const show = ref(true)
+  const showModel = () => {
+    console.log('test')
+  }
 </script>
 <template>
   <div class="dot-container">
-    <span class="dot-player-container">
-      <v-avatar
-        :text="player?.number?.toString()"
-        size="32"
-        border="lg"
-        color="red"
-        v-if="player?.name"
-      />
-      <v-menu v-else max-height="150" location="start">
-        <template v-slot:activator="{ props }"
-          ><v-btn v-bind="props" icon density="compact" border="md">+</v-btn>
-        </template>
-        <v-list density="compact" variant="text">
-          <v-list-item
-            v-for="(item, index) in players"
-            :key="index"
-            :value="item"
-            @click="$emit('addPlayer', { id, player: item })"
-          >
-            <v-list-item-title
-              >{{ item?.name }} | {{ item?.position }}</v-list-item-title
-            >
-          </v-list-item>
-        </v-list>
-      </v-menu>
+    <div class="dot-player-container">
+      <PlayersMenu icon="tabler:switch-vertical" :number="player.number" />
       <Icon
         name="futzo-icon:dot-player-yellow-card"
         class="dot-player-card"
@@ -67,7 +47,7 @@
         size="24"
         v-if="player?.goals && player?.goals > 0"
       />
-    </span>
+    </div>
     <div>
       <span class="player-name">
         <span class="d-inline-block text-truncate" style="max-width: 80px">{{
