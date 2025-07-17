@@ -2,8 +2,9 @@
   import PlayerDot from '~/components/pages/calendario/game-report/player-dot.vue'
   import type { Team } from '~/models/Team'
   import type { Formation, FormationPlayer } from '~/models/Game'
-  import { getTeamFormation, teamPlayers } from '~/http/api/team'
+  import { getTeamFormation } from '~/http/api/team'
   import type { Player } from '~/models/Player'
+  import { usePlayerStore } from '~/store'
   const { home, away } = defineProps({
     showComplete: Boolean,
     home: {
@@ -15,7 +16,6 @@
   })
   const homeFormation = ref<Formation>()
   const awayFormation = ref<Formation>()
-  const players = ref<Player[]>([] as Player[])
   const addPlayer = (playerData: Partial<Player>) => {
     const abbr = String(playerData?.id).split('-')[0]
     const position = String(playerData?.id).split('-')[1] // posicion donde quieor que se agrege el jugador dentro del array ejemplo si postion es 1 se colocarion en  en position 2[1,'aqui']
@@ -44,15 +44,13 @@
   watchEffect(async () => {
     if (home) {
       getTeamFormation(home).then((response: Formation) => {
-        console.log({ response })
         home?.id === response.team_id
           ? (homeFormation.value = response)
           : (awayFormation.value = response)
       })
-      teamPlayers(home).then((response: Player[]) => {
-        console.log(response)
-        players.value = response
-      })
+      if (!!home) {
+        await usePlayerStore().getDefaultLineupAvailableTeamPlayers(home)
+      }
     }
   })
 </script>
@@ -66,7 +64,7 @@
           <v-select
             item-title="name"
             min-width="100"
-            v-model="homeFormation.formation"
+            v-model="homeFormation.name"
             densityc="compact"
             variant="plain"
           >
@@ -87,7 +85,6 @@
                 :player="player"
                 :id="`GP-${index + 1}`"
                 @addPlayer="addPlayer"
-                :players="players"
               />
             </div>
           </div>
@@ -103,7 +100,6 @@
                   :player="player"
                   :id="`DF-${index + 1}`"
                   @addPlayer="addPlayer"
-                  :players="players"
                 />
               </div>
             </div>
@@ -119,7 +115,6 @@
                 :player="player"
                 :id="`MD-${index + 1}`"
                 @addPlayer="addPlayer"
-                :players="players"
               />
             </div>
           </div>
@@ -134,7 +129,6 @@
                 :player="player"
                 :id="`FW-${index + 1}`"
                 @addPlayer="addPlayer"
-                :players="players"
               />
             </div>
           </div>
