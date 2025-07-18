@@ -4,6 +4,7 @@
   import type { Formation, FormationPlayer } from '~/models/Game'
   import { getTeamFormation } from '~/http/api/team'
   import type { Team } from '~/models/Team'
+  import { sortFormation } from '~/utils/sort-formation'
   const { defaultLineupAvailableTeamPlayers } = storeToRefs(usePlayerStore())
   const { homeFormation, awayFormation } = storeToRefs(useTeamStore())
   const { icon, field_location, number, currentPlayer } = defineProps<{
@@ -20,6 +21,7 @@
     )
     getTeamFormation({ id: player.team_id } as Team).then(
       (response: Formation) => {
+        response = sortFormation(response)
         homeFormation.value = response
       }
     )

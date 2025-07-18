@@ -4,6 +4,7 @@
   import { getTeamFormation } from '~/http/api/team'
   import { usePlayerStore, useTeamStore } from '~/store'
   import type { Team } from '~/models/Team'
+  import { sortFormation } from '~/utils/sort-formation'
   const { showComplete } = defineProps({
     showComplete: Boolean,
   })
@@ -13,6 +14,7 @@
   watch([homeTeam, awayTeam], async ([newHomeTeam, newAwayTeam]) => {
     if (!!newHomeTeam?.id) {
       getTeamFormation(newHomeTeam as Team).then((response: Formation) => {
+        response = sortFormation(response)
         homeFormation.value = response
       })
       await usePlayerStore().getDefaultLineupAvailableTeamPlayers(newHomeTeam)
