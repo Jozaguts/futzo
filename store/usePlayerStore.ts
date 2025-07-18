@@ -9,8 +9,7 @@ import prepareForm from '~/utils/prepareFormData';
 import type { IPagination } from '~/interfaces';
 import type { Team } from '~/models/Team';
 import * as teamAPI from '~/http/api/team';
-import { getTeamFormation, updateDefaultLineup } from '~/http/api/team';
-import type { Formation, FormationPlayer } from '~/models/Game';
+import type { FormationPlayer } from '~/models/Game';
 
 export const usePlayerStore = defineStore('playerStore', () => {
   const { toast } = useToast();
