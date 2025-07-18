@@ -7,13 +7,12 @@
   import AppBarBtn from '~/components/pages/equipos/equipo/app-bar-btn.vue'
   import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
   import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
-  import type { Team } from '~/models/Team'
   import { usePlayerStore, useTeamStore } from '~/store'
   const { defaultLineupAvailableTeamPlayers } = storeToRefs(usePlayerStore())
-  const team = ref<Team>()
+  const { homeTeam } = storeToRefs(useTeamStore())
 
   watchEffect(async () => {
-    team.value = await useTeamStore().getTeam(
+    homeTeam.value = await useTeamStore().getTeam(
       useRoute().params?.equipo as string
     )
   })
@@ -30,7 +29,7 @@
     <template #default>
       <div class="teams-team-container">
         <div class="primary-zone">
-          <LinesupContainer :home="team" :show-complete="false" />
+          <LinesupContainer :show-complete="false" />
         </div>
         <div class="secondary-zone">
           <NextGames />
