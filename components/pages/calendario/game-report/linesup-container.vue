@@ -1,60 +1,28 @@
 <script lang="ts" setup>
   import PlayerDot from '~/components/pages/calendario/game-report/player-dot.vue'
-  import type { Team } from '~/models/Team'
-  import type { Formation, FormationPlayer } from '~/models/Game'
+  import type { Formation } from '~/models/Game'
   import { getTeamFormation } from '~/http/api/team'
-  import type { Player } from '~/models/Player'
-  import { usePlayerStore } from '~/store'
-  const { home, away, showComplete } = defineProps({
+  import { usePlayerStore, useTeamStore } from '~/store'
+  import type { Team } from '~/models/Team'
+  const { showComplete } = defineProps({
     showComplete: Boolean,
-    home: {
-      type: Object as PropType<Team>,
-    },
-    away: {
-      type: Object as PropType<Team>,
-    },
   })
-  const homeFormation = ref<Formation>()
-  const awayFormation = ref<Formation>()
-  const addPlayer = (playerData: Partial<Player>) => {
-    const abbr = String(playerData?.id).split('-')[0]
-    const position = String(playerData?.id).split('-')[1] // posicion donde quieor que se agrege el jugador dentro del array ejemplo si postion es 1 se colocarion en  en position 2[1,'aqui']
-    const player = {
-      abbr: playerData?.player.position,
-      number: playerData?.player.number,
-      name: playerData?.player?.name,
-      goals: 0,
-      cards: {
-        red: false,
-        yellow: false,
-        doble_yellow_card: false,
-      },
-      substituted: false,
-    } as FormationPlayer
-    if (abbr === 'GP') {
-      homeFormation.value?.goalkeeper.splice(Number(position) - 1, 1, player)
-    } else if (abbr === 'DF') {
-      homeFormation.value?.defenses.splice(Number(position) - 1, 1, player)
-    } else if (abbr === 'MD') {
-      homeFormation.value?.midfielders.splice(Number(position) - 1, 1, player)
-    } else if (abbr === 'FW') {
-      homeFormation.value?.forwards.splice(Number(position) - 1, 1, player)
-    }
-  }
-  watchEffect(async () => {
-    if (home) {
-      getTeamFormation(home).then((response: Formation) => {
-        home?.id === response.team_id
-          ? (homeFormation.value = response)
-          : (awayFormation.value = response)
+  const { homeTeam, awayTeam, homeFormation, awayFormation } =
+    storeToRefs(useTeamStore())
+
+  watch([homeTeam, awayTeam], async ([newHomeTeam, newAwayTeam]) => {
+    if (!!newHomeTeam?.id) {
+      getTeamFormation(newHomeTeam as Team).then((response: Formation) => {
+        homeFormation.value = response
       })
-      if (!!home) {
-        await usePlayerStore().getDefaultLineupAvailableTeamPlayers(home)
-      }
+      await usePlayerStore().getDefaultLineupAvailableTeamPlayers(newHomeTeam)
     }
-  })
-  const linesupHeightContainer = computed(() => {
-    return showComplete ? '880px' : '440px'
+    if (!!newAwayTeam?.id) {
+      getTeamFormation(newAwayTeam as Team).then((response: Formation) => {
+        awayFormation.value = response
+      })
+      await usePlayerStore().getDefaultLineupAvailableTeamPlayers(newAwayTeam)
+    }
   })
   const linesupTeamHeightContainer = computed(() => {
     return showComplete ? '50%' : '100%'
@@ -64,8 +32,8 @@
   <v-sheet class="linesup-container">
     <div class="linesup-team-container futzo-rounded">
       <div class="heading">
-        <v-avatar :image="home?.image" class="mx-4" size="32"></v-avatar>
-        <span class="mx-2"> {{ home?.name }}</span>
+        <v-avatar :image="homeTeam?.image" class="mx-4" size="32"></v-avatar>
+        <span class="mx-2"> {{ homeTeam?.name }}</span>
         <span v-if="!!homeFormation" class="formation">
           <v-select
             item-title="name"
@@ -73,6 +41,7 @@
             v-model="homeFormation.name"
             densityc="compact"
             variant="plain"
+            class="lineup-formation-select"
           >
           </v-select>
         </span>
@@ -89,8 +58,7 @@
                 v-for="(player, index) in homeFormation?.goalkeeper"
                 :key="index"
                 :player="player"
-                :id="`GP-${index + 1}`"
-                @addPlayer="addPlayer"
+                :field_location="index + 1"
               />
             </div>
           </div>
@@ -104,8 +72,7 @@
                   v-for="(player, index) in homeFormation?.defenses"
                   :key="index"
                   :player="player"
-                  :id="`DF-${index + 1}`"
-                  @addPlayer="addPlayer"
+                  :field_location="index + 1"
                 />
               </div>
             </div>
@@ -119,8 +86,7 @@
                 v-for="(player, index) in homeFormation?.midfielders"
                 :key="index"
                 :player="player"
-                :id="`MD-${index + 1}`"
-                @addPlayer="addPlayer"
+                :field_location="index + 1"
               />
             </div>
           </div>
@@ -133,8 +99,7 @@
                 v-for="(player, index) in homeFormation?.forwards"
                 :key="index"
                 :player="player"
-                :id="`FW-${index + 1}`"
-                @addPlayer="addPlayer"
+                :field_location="index + 1"
               />
             </div>
           </div>
@@ -171,7 +136,6 @@
 <style lang="sass">
   @use '@/assets/scss/components/linesup.sass'
   .linesup-container
-    //height: v-bind(linesupHeightContainer)
     height: 100%
     padding-bottom: .5rem
   .linesup-team-container
