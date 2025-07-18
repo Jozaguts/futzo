@@ -11,6 +11,7 @@ export type Formation = {
 export type FormationPlayer = {
   name: string;
   abbr: string;
+  default_lineup_player_id: number;
   number: number;
   user_id?: number;
   player_id?: number;
