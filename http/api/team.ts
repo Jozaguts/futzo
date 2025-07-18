@@ -32,6 +32,19 @@ export const updateDefaultLineup = async (
     }
   );
 };
+export const addDefaultLineupPlayer = async (
+  player: TeamLineupAvailablePlayers,
+  field_location: number
+) => {
+  const client = useSanctumClient();
+  return await client<Promise<TeamLineupAvailablePlayers[]>>(
+    `/api/v1/admin/teams/${player.team_id}/default-lineup-players`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ player, field_location }),
+    }
+  );
+};
 export const nextGames = async (teamId: number, limit: number = 3) => {
   const client = useSanctumClient();
   return await client<Promise<NextGames>>(
