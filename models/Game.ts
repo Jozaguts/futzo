@@ -12,6 +12,7 @@ export type FormationPlayer = {
   name: string;
   abbr: string;
   default_lineup_player_id: number;
+  field_location: number;
   number: number;
   user_id?: number;
   player_id?: number;
