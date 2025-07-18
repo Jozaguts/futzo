@@ -1,5 +1,6 @@
 export type TeamLineupAvailablePlayers = {
-  id: number;
+  player_id: number;
+  team_id: number;
   name: string;
   number: number;
   position: string;
