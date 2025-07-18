@@ -28,7 +28,7 @@
     </template>
     <template #default>
       <div class="teams-team-container">
-        <div class="primary-zone">
+        <div class="primary-zone pa-0">
           <LinesupContainer :show-complete="false" />
         </div>
         <div class="secondary-zone">
