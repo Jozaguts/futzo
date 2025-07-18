@@ -127,3 +127,45 @@ export type Option = {
   field_id: number;
   available_intervals: AvailableIntervals;
 };
+
+export type NextGames = {
+  data: Datum[];
+};
+
+export type Datum = {
+  id: number;
+  tournament: Tournament;
+  home_team: Team;
+  away_team: Team;
+  location: Field;
+  field: Field;
+  match_date: string;
+  match_time: string;
+};
+
+export type Team = {
+  id: number;
+  name: string;
+  image: string;
+};
+
+export type Tournament = {
+  id: number;
+  league_id: number;
+  category_id: number;
+  tournament_format_id: number;
+  football_type_id: number;
+  name: string;
+  slug: string;
+  image: string;
+  thumbnail: string;
+  start_date: Date;
+  end_date: Date;
+  prize: string;
+  winner: null;
+  description: string;
+  status: string;
+  deleted_at: null;
+  created_at: Date;
+  updated_at: Date;
+};
