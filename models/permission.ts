@@ -1,5 +1,4 @@
-interface Permission {
-    id: number,
-    name: string
-}
-export {Permission}
+export type Permission = {
+  id: number;
+  name: string;
+};
