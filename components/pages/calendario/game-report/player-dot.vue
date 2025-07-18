@@ -3,18 +3,18 @@
   import type { FormationPlayer } from '~/models/Game'
   defineProps<{
     player: FormationPlayer
-    id: String
+    field_location: number
   }>()
-  const emits = defineEmits(['addPlayer'])
-  const show = ref(true)
-  const showModel = () => {
-    console.log('test')
-  }
 </script>
 <template>
   <div class="dot-container">
     <div class="dot-player-container">
-      <PlayersMenu icon="tabler:switch-vertical" :number="player.number" />
+      <PlayersMenu
+        icon="tabler:switch-vertical"
+        :number="player.number"
+        :field_location="field_location"
+        :current-player="player"
+      />
       <Icon
         name="futzo-icon:dot-player-yellow-card"
         class="dot-player-card"
