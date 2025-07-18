@@ -14,11 +14,16 @@
     currentPlayer: FormationPlayer
   }>()
   const addPlayer = async (player: TeamLineupAvailablePlayers) => {
-    await usePlayerStore().updateDefaultLineup(
-      player,
-      currentPlayer,
-      field_location
-    )
+    if (currentPlayer.default_lineup_player_id) {
+      await usePlayerStore().updateDefaultLineup(
+        player,
+        currentPlayer,
+        field_location
+      )
+    } else {
+      await usePlayerStore().addDefaultLineupPlayer(player, field_location)
+    }
+
     getTeamFormation({ id: player.team_id } as Team).then(
       (response: Formation) => {
         response = sortFormation(response)
@@ -30,18 +35,27 @@
 <template>
   <v-menu max-height="250" location="start">
     <template v-slot:activator="{ props }">
-      <v-btn staked icon size="32" border="lg" color="red" readonly>
+      <v-btn
+        staked
+        v-bind="props"
+        icon
+        size="40"
+        border="lg"
+        :color="!!currentPlayer.name ? 'primary' : 'secondary'"
+        :readonly="!!currentPlayer.name"
+      >
         <v-badge
           v-bind="props"
           offset-x="-10"
           offset-y="-10"
           location="top end"
-          color="primary"
+          color="info"
+          :model-value="!!currentPlayer.name"
         >
           <template #badge>
             <Icon :name="icon"></Icon>
           </template>
-          {{ number }}</v-badge
+          {{ !!currentPlayer.name ? number : '+' }}</v-badge
         >
       </v-btn>
     </template>
