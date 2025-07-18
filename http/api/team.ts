@@ -1,6 +1,6 @@
 import type { Team } from '~/models/Team';
 import type { TeamLineupAvailablePlayers } from '~/models/Player';
-import type { FormationPlayer, Game, NextGames } from '~/models/Game';
+import type { FormationPlayer, NextGames } from '~/models/Game';
 
 export const getTeamBy = async (term: number | string) => {
   const client = useSanctumClient();

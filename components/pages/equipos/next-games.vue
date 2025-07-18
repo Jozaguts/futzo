@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-  import GamesCard from '~/components/pages/torneos/games-card.vue'
   import type { NextGames } from '~/models/Game'
 
   const { nextGames } = defineProps({
