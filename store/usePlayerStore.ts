@@ -9,6 +9,8 @@ import prepareForm from '~/utils/prepareFormData';
 import type { IPagination } from '~/interfaces';
 import type { Team } from '~/models/Team';
 import * as teamAPI from '~/http/api/team';
+import { getTeamFormation, updateDefaultLineup } from '~/http/api/team';
+import type { Formation, FormationPlayer } from '~/models/Game';
 
 export const usePlayerStore = defineStore('playerStore', () => {
   const { toast } = useToast();
@@ -167,7 +169,15 @@ export const usePlayerStore = defineStore('playerStore', () => {
   };
   const getDefaultLineupAvailableTeamPlayers = async (team: Team) => {
     defaultLineupAvailableTeamPlayers.value =
-      await teamAPI.geDefaultLineupAvailableTeemPlayers(team);
+      await teamAPI.getDefaultLineupAvailableTeemPlayers(team);
+  };
+  const updateDefaultLineup = async (
+    player: TeamLineupAvailablePlayers,
+    currentPlayer: FormationPlayer,
+    field_location: number
+  ) => {
+    await teamAPI.updateDefaultLineup(player, currentPlayer, field_location);
+    await getDefaultLineupAvailableTeamPlayers({ id: player.team_id } as Team);
   };
   return {
     players,
@@ -192,5 +202,6 @@ export const usePlayerStore = defineStore('playerStore', () => {
     downloadTemplate,
     getPlayer,
     getDefaultLineupAvailableTeamPlayers,
+    updateDefaultLineup,
   };
 });
