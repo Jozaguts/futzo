@@ -8,7 +8,7 @@ import type {
 import type { IPagination } from '~/interfaces';
 import * as teamAPI from '~/http/api/team';
 import prepareForm from '~/utils/prepareFormData';
-import type { Formation, Game } from '~/models/Game';
+import type { Formation, NextGames } from '~/models/Game';
 
 export const useTeamStore = defineStore('teamStore', () => {
   const { toast } = useToast();
@@ -55,7 +55,7 @@ export const useTeamStore = defineStore('teamStore', () => {
   const awayTeam = ref<Team>({} as Team);
   const homeFormation = ref<Formation>();
   const awayFormation = ref<Formation>();
-  const nextGames = ref<Game[]>([] as Game[]);
+  const nextGames = ref<NextGames>({} as NextGames);
 
   const downloadTemplate = async () => {
     loading.value = true;
