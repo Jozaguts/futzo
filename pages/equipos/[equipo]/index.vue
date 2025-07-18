@@ -9,12 +9,16 @@
   import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
   import { usePlayerStore, useTeamStore } from '~/store'
   const { defaultLineupAvailableTeamPlayers } = storeToRefs(usePlayerStore())
-  const { homeTeam } = storeToRefs(useTeamStore())
+  const { homeTeam, nextGames } = storeToRefs(useTeamStore())
 
   watchEffect(async () => {
+    console.log('useRoute().params?.equipo', useRoute().params?.equipo)
     homeTeam.value = await useTeamStore().getTeam(
       useRoute().params?.equipo as string
     )
+    if (homeTeam.value?.id) {
+      await useTeamStore().getNextGames(homeTeam.value.id)
+    }
   })
 </script>
 <template>
@@ -32,7 +36,7 @@
           <LinesupContainer :show-complete="false" />
         </div>
         <div class="secondary-zone">
-          <NextGames />
+          <NextGames :nextGames />
         </div>
         <div class="right-up-zone">
           <PlayersList title="Jugadores">
@@ -49,7 +53,7 @@
           </PlayersList>
         </div>
         <div class="right-down-zone">
-          <NextGamesToday />
+          <NextGamesToday /> // ultimos partidos
         </div>
         <CreateTeamDialog />
       </div>

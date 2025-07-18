@@ -1,6 +1,6 @@
 import type { Team } from '~/models/Team';
 import type { TeamLineupAvailablePlayers } from '~/models/Player';
-import type { FormationPlayer } from '~/models/Game';
+import type { FormationPlayer, Game } from '~/models/Game';
 
 export const getTeamBy = async (term: number | string) => {
   const client = useSanctumClient();
@@ -30,5 +30,11 @@ export const updateDefaultLineup = async (
       method: 'PUT',
       body: JSON.stringify({ player, field_location }),
     }
+  );
+};
+export const nextGames = async (teamId: number) => {
+  const client = useSanctumClient();
+  return await client<Promise<Game[]>>(
+    `/api/v1/admin/teams/${teamId}/next-games`
   );
 };

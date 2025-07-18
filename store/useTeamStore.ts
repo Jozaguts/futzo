@@ -6,9 +6,9 @@ import type {
   TeamStoreRequest,
 } from '~/models/Team';
 import type { IPagination } from '~/interfaces';
-import { getTeamBy } from '~/http/api/team';
+import * as teamAPI from '~/http/api/team';
 import prepareForm from '~/utils/prepareFormData';
-import type { Formation } from '~/models/Game';
+import type { Formation, Game } from '~/models/Game';
 
 export const useTeamStore = defineStore('teamStore', () => {
   const { toast } = useToast();
@@ -51,10 +51,11 @@ export const useTeamStore = defineStore('teamStore', () => {
   });
   const isEdition = ref(false);
   const loading = ref(false);
-  const homeTeam = ref<Team>({} as Team);
+  const homeTeam = ref<Team>();
   const awayTeam = ref<Team>({} as Team);
   const homeFormation = ref<Formation>();
   const awayFormation = ref<Formation>();
+  const nextGames = ref<Game[]>([] as Game[]);
 
   const downloadTemplate = async () => {
     loading.value = true;
@@ -189,10 +190,17 @@ export const useTeamStore = defineStore('teamStore', () => {
       console.log(error);
     }
   };
-
   const getTeam = async (term: number | string) => {
     try {
-      return await getTeamBy(term);
+      return await teamAPI.getTeamBy(term);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getNextGames = async (teamId: number) => {
+    try {
+      nextGames.value = await teamAPI.nextGames(teamId);
     } catch (error) {
       console.log(error);
     }
@@ -214,6 +222,7 @@ export const useTeamStore = defineStore('teamStore', () => {
     awayTeam,
     homeFormation,
     awayFormation,
+    nextGames,
     createTeam,
     getTeams,
     getTeam,
@@ -222,5 +231,6 @@ export const useTeamStore = defineStore('teamStore', () => {
     importTeamsHandler,
     downloadTemplate,
     searchTeams,
+    getNextGames,
   };
 });
