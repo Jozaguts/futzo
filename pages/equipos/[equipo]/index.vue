@@ -12,7 +12,6 @@
   const { homeTeam, nextGames } = storeToRefs(useTeamStore())
 
   watchEffect(async () => {
-    console.log('useRoute().params?.equipo', useRoute().params?.equipo)
     homeTeam.value = await useTeamStore().getTeam(
       useRoute().params?.equipo as string
     )
@@ -53,7 +52,7 @@
           </PlayersList>
         </div>
         <div class="right-down-zone">
-          <NextGamesToday /> // ultimos partidos
+          <NextGamesToday />
         </div>
         <CreateTeamDialog />
       </div>

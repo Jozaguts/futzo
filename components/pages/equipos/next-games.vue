@@ -1,13 +1,12 @@
 <script lang="ts" setup>
   import GamesCard from '~/components/pages/torneos/games-card.vue'
-  import type { Game } from '~/models/Game'
+  import type { NextGames } from '~/models/Game'
 
   const { nextGames } = defineProps({
-    nextGames: Array as PropType<Array<Game>>,
+    nextGames: Object as PropType<NextGames>,
   })
 </script>
 <template>
-  {{ nextGames }}
   <v-table class="next-games-table futzo-rounded" :hover="false">
     <template #top>
       <div class="next-games-table__header">
@@ -19,72 +18,42 @@
       <div class="v-table__wrapper">
         <table>
           <tbody>
-            <tr>
+            <tr v-for="(game, index) in nextGames?.data" :key="index">
               <td>
                 <div class="game-container">
                   <div class="teams">
                     <div class="team-local">
                       <img
-                        src="https://placehold.co/50x50"
+                        :src="game.home_team.image"
                         alt="team logo"
                         class="logo"
                       />
-                      <span class="team_name">Equipo 1</span>
+                      <span
+                        class="team_name text-truncate"
+                        style="max-width: 130px"
+                        >{{ game.home_team.name }}</span
+                      >
                     </div>
                     <div class="vs-container">
                       <div class="vs">vs</div>
                     </div>
                     <div class="team-away">
                       <img
-                        src="https://placehold.co/50x50"
+                        :src="game.away_team.image"
                         alt="team logo"
                         class="logo"
                       />
-                      <span class="team_name">Equipo 1</span>
+                      <span
+                        class="team_name text-truncate"
+                        style="max-width: 130px"
+                        >{{ game.away_team.name }}</span
+                      >
                     </div>
                   </div>
                   <div class="data">
-                    <span class="date">24/06/2024</span>
-                    <span class="hour">10:00</span>
-                    <span class="field">Campo 1</span>
-                  </div>
-                  <div class="btn-container">
-                    <nuxt-link class="d-flex align-center">
-                      <span class="btn-text"> Ver detalles</span>
-                      <Icon name="futzo-icon:arrow-right" />
-                    </nuxt-link>
-                  </div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="game-container">
-                  <div class="teams">
-                    <div class="team-local">
-                      <img
-                        src="https://placehold.co/50x50"
-                        alt="team logo"
-                        class="logo"
-                      />
-                      <span class="team_name">Equipo 1</span>
-                    </div>
-                    <div class="vs-container">
-                      <div class="vs">vs</div>
-                    </div>
-                    <div class="team-away">
-                      <img
-                        src="https://placehold.co/50x50"
-                        alt="team logo"
-                        class="logo"
-                      />
-                      <span class="team_name">Equipo 1</span>
-                    </div>
-                  </div>
-                  <div class="data">
-                    <span class="date">24/06/2024</span>
-                    <span class="hour">10:00</span>
-                    <span class="field">Campo 1</span>
+                    <span class="date">{{ game.match_date }}</span>
+                    <span class="hour">{{ game.match_time }}</span>
+                    <span class="field">{{ game.field.name }}</span>
                   </div>
                   <div class="btn-container">
                     <nuxt-link class="d-flex align-center">
