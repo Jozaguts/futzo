@@ -1,21 +1,35 @@
 <script lang="ts" setup>
   import type { NextGames } from '~/models/Game'
+  import NoGames from '~/components/shared/empty-states/NoGames.vue'
 
-  const { nextGames } = defineProps({
+  const { nextGames, title } = defineProps({
     nextGames: Object as PropType<NextGames>,
+    title: {
+      type: String,
+      default: 'Próximos partidos',
+    },
+  })
+  const disabled = computed(() => {
+    return !nextGames || nextGames.data?.length === 0
   })
 </script>
 <template>
   <v-table class="next-games-table futzo-rounded" :hover="false">
     <template #top>
       <div class="next-games-table__header">
-        <h2 class="next-games-table-title">Próximos juegos</h2>
-        <nuxt-link to="/" class="next-games-table-link">Ver todos</nuxt-link>
+        <h2 class="next-games-table-title">{{ title }}</h2>
+        <v-btn
+          variant="text"
+          :disabled="disabled"
+          to="/"
+          class="next-games-table-link"
+          >Ver todos</v-btn
+        >
       </div>
     </template>
     <template #wrapper>
       <div class="v-table__wrapper">
-        <table>
+        <table v-if="!disabled">
           <tbody>
             <tr v-for="(game, index) in nextGames?.data" :key="index">
               <td>
@@ -65,6 +79,7 @@
             </tr>
           </tbody>
         </table>
+        <NoGames v-else />
       </div>
     </template>
   </v-table>
