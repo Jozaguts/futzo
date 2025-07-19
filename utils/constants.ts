@@ -1,6 +1,6 @@
-import type { LocationAvailability } from '~/models/Location';
+import type { Interval, LocationAvailability } from '~/models/Location';
 import type { ScheduleLocationAvailability } from '~/models/Schedule';
-import type { Formation } from '~/models/Game';
+import type { TeamFormation } from '~/models/Game';
 
 export const MAIN_PADDING_TOP = 48;
 export const MAIN_PADDING_BOTTOM = 64;
@@ -67,112 +67,51 @@ export const DEFAULT_LOCATION_AVAILABILITY: LocationAvailability = {
     enabled: false,
     start: { hours: '09', minutes: '00' },
     end: { hours: '17', minutes: '00' },
+    intervals: [] as Interval[],
+    available_range: '00:00-23:59',
   },
   tuesday: {
     enabled: false,
     start: { hours: '09', minutes: '00' },
     end: { hours: '17', minutes: '00' },
+    intervals: [] as Interval[],
+    available_range: '00:00-23:59',
   },
   wednesday: {
     enabled: false,
     start: { hours: '09', minutes: '00' },
     end: { hours: '17', minutes: '00' },
+    intervals: [] as Interval[],
+    available_range: '00:00-23:59',
   },
   thursday: {
     enabled: false,
     start: { hours: '09', minutes: '00' },
     end: { hours: '17', minutes: '00' },
+    intervals: [] as Interval[],
+    available_range: '00:00-23:59',
   },
   friday: {
     enabled: true,
     start: { hours: '09', minutes: '00' },
     end: { hours: '17', minutes: '00' },
+    intervals: [] as Interval[],
+    available_range: '00:00-23:59',
   },
   saturday: {
     enabled: true,
     start: { hours: '09', minutes: '00' },
     end: { hours: '17', minutes: '00' },
+    intervals: [] as Interval[],
+    available_range: '00:00-23:59',
   },
   sunday: {
     enabled: true,
     start: { hours: '09', minutes: '00' },
     end: { hours: '17', minutes: '00' },
+    intervals: [] as Interval[],
+    available_range: '00:00-23:59',
   },
 };
 export const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 export const phoneRegex = /^\d{10}$/;
-const generateFormation = (
-  formation: string,
-  defenses: number,
-  midfielders: number,
-  forwards: number
-): Formation => {
-  return {
-    formation,
-    goalkeeper: {
-      abbr: 'PR',
-      number: 1,
-      name: '',
-      goals: 0,
-      cards: {
-        red: false,
-        yellow: false,
-        doble_yellow_card: false,
-      },
-      substituted: false,
-    },
-    defenses: Array.from({ length: defenses }, (_, i) => ({
-      abbr: 'DF',
-      number: i + 1,
-      name: '',
-      goals: 0,
-      cards: {
-        red: false,
-        yellow: false,
-        doble_yellow_card: false,
-      },
-      substituted: false,
-    })),
-    midfielders: Array.from({ length: midfielders }, (_, i) => ({
-      abbr: 'MF',
-      number: i + 5,
-      name: '',
-      goals: 0,
-      cards: {
-        red: false,
-        yellow: false,
-        doble_yellow_card: false,
-      },
-      substituted: false,
-    })),
-    forwards: Array.from({ length: forwards }, (_, i) => ({
-      abbr: 'FW',
-      number: i + 9,
-      name: '',
-      goals: 0,
-      cards: {
-        red: false,
-        yellow: false,
-        doble_yellow_card: false,
-      },
-      substituted: false,
-    })),
-  };
-};
-export const formations = ref<Formation[]>([
-  generateFormation('4-4-2', 4, 4, 2),
-  generateFormation('4-3-3', 4, 3, 3),
-  generateFormation('4-5-1', 5, 4, 1),
-  generateFormation('3-5-2', 3, 5, 2),
-  generateFormation('4-1-2-1-2', 4, 5, 1),
-  generateFormation('4-2-3-1', 4, 5, 1),
-  generateFormation('4-4-1-1', 4, 4, 2),
-  generateFormation('4-1-3-2', 4, 4, 2),
-  generateFormation('3-4-3', 3, 4, 3),
-  generateFormation('5-4-1', 5, 4, 1),
-  generateFormation('3-5-1-1', 3, 5, 1),
-  generateFormation('4-1-4-1', 4, 5, 1),
-  generateFormation('4-3-1-2', 4, 4, 2),
-  generateFormation('4-1-2-3', 4, 4, 1),
-  generateFormation('5-3-2', 5, 3, 2),
-]);
