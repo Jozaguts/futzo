@@ -3,15 +3,17 @@
   import type { TeamFormation } from '~/models/Game'
   import { getTeamFormation } from '~/http/api/team'
   import { usePlayerStore, useTeamStore } from '~/store'
-  import type { Team } from '~/models/Team'
+  import type { Formation, Team } from '~/models/Team'
   import { sortFormation } from '~/utils/sort-formation'
-  const { showComplete } = defineProps({
+  const { showComplete, isReport } = defineProps({
     showComplete: Boolean,
+    isReport: Boolean,
   })
   const { homeTeam, awayTeam, homeFormation, awayFormation, formations } =
     storeToRefs(useTeamStore())
 
   watch([homeTeam, awayTeam], async ([newHomeTeam, newAwayTeam]) => {
+    if (isReport) return
     if (!!newHomeTeam?.id) {
       getTeamFormation(newHomeTeam as Team).then((response: TeamFormation) => {
         response = sortFormation(response)
@@ -53,6 +55,13 @@
   })
   const linesupTeamHeightContainerStyle = computed(() => {
     return showComplete ? '50%' : '100%'
+  })
+  onUnmounted(() => {
+    homeTeam.value = {} as Team
+    awayTeam.value = {} as Team
+    homeFormation.value = {} as TeamFormation
+    awayFormation.value = {} as TeamFormation
+    formations.value = [] as Formation[]
   })
 </script>
 <template>

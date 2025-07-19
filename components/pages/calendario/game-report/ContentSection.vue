@@ -106,7 +106,7 @@
               transition="fade-transition"
               reverse-transition="fade-transition"
             >
-              <linesup-container show-complete />
+              <linesupContainer show-complete />
             </v-tabs-window-item>
             <v-tabs-window-item
               value="away"

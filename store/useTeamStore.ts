@@ -52,10 +52,10 @@ export const useTeamStore = defineStore('teamStore', () => {
   });
   const isEdition = ref(false);
   const loading = ref(false);
-  const homeTeam = ref<Team>();
+  const homeTeam = ref<Team>({} as Team);
   const awayTeam = ref<Team>({} as Team);
-  const homeFormation = ref<TeamFormation>();
-  const awayFormation = ref<TeamFormation>();
+  const homeFormation = ref<TeamFormation>({} as TeamFormation);
+  const awayFormation = ref<TeamFormation>({} as TeamFormation);
   const nextGames = ref<NextGames>({} as NextGames);
   const formations = ref<Formation[]>([] as Formation[]);
   const downloadTemplate = async () => {
