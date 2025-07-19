@@ -5,7 +5,6 @@ import type {
   GameDetailsRequest,
   GameTeam,
   GameTeamFormRequest,
-  ReScheduleFormState,
   TeamType,
 } from '~/models/Game';
 import { useScheduleStore } from '~/store/useScheduleStore';
@@ -20,9 +19,6 @@ export const useGameStore = defineStore('gameStore', () => {
   const showReScheduleDialog = ref(false);
   const gameDetailsRequest = ref<GameDetailsRequest>({} as GameDetailsRequest);
   const showFabBtn = shallowRef(false);
-  const reScheduleFormState = ref<ReScheduleFormState>(
-    {} as ReScheduleFormState
-  );
   const gameTeamFormRequest = ref<GameTeamFormRequest>({
     home: {
       name: '',
@@ -57,21 +53,21 @@ export const useGameStore = defineStore('gameStore', () => {
     game.value = await client(`/api/v1/admin/games/${id}`);
   };
   const getGameDetails = async () => {
-    if (dayjs(reScheduleFormState.value?.date).isValid()) {
-      reScheduleFormState.value.date = dayjs(
-        reScheduleFormState.value?.date
+    if (dayjs(gameDetailsRequest.value?.date).isValid()) {
+      gameDetailsRequest.value.date = dayjs(
+        gameDetailsRequest.value?.date
       ).format('YYYY-MM-DD');
     }
     await gameAPI
       .getGame(
-        reScheduleFormState.value?.game_id,
-        reScheduleFormState.value?.date,
-        reScheduleFormState.value?.field_id
+        gameDetailsRequest.value?.game_id,
+        gameDetailsRequest.value?.date,
+        gameDetailsRequest.value?.field_id
       )
       .then((data) => {
         game.value = data as Game;
         if (game.value?.options?.length) {
-          reScheduleFormState.value.day =
+          gameDetailsRequest.value.day =
             game.value.options[0].available_intervals.day;
         }
       })
@@ -86,14 +82,14 @@ export const useGameStore = defineStore('gameStore', () => {
   const reScheduleGame = async () => {
     const client = useSanctumClient();
     client(
-      `/api/v1/admin/games/${reScheduleFormState.value?.game_id}/reschedule`,
+      `/api/v1/admin/games/${gameDetailsRequest.value?.game_id}/reschedule`,
       {
         method: 'PUT',
         body: {
-          date: reScheduleFormState.value?.date,
-          field_id: reScheduleFormState.value?.field_id,
-          selected_time: reScheduleFormState.value?.selected_time,
-          day: reScheduleFormState.value?.day,
+          date: gameDetailsRequest.value?.date,
+          field_id: gameDetailsRequest.value?.field_id,
+          selected_time: gameDetailsRequest.value?.selected_time,
+          day: gameDetailsRequest.value?.day,
         },
       }
     )
@@ -126,7 +122,6 @@ export const useGameStore = defineStore('gameStore', () => {
     gameTeamFormRequest,
     gamePlayers,
     showFabBtn,
-    reScheduleFormState,
     fetchGame,
     getGameDetails,
     getGameTeamsPlayers,

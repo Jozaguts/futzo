@@ -13,7 +13,12 @@
   watch(
     () => gameDetailsRequest.value?.game_id,
     async (newGameId) => {
-      console.log('test')
+      console.log(newGameId)
+      console.log({
+        game: game.value,
+        gameDetailsRequest: gameDetailsRequest.value,
+        gamePlayers: gamePlayers.value,
+      })
       if (newGameId) {
         const promises = [
           await useGameStore().getGame(),

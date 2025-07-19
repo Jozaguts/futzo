@@ -25,14 +25,6 @@ export type FormationPlayer = {
   substituted: boolean;
 };
 
-export type ReScheduleFormState = {
-  field_id: number;
-  game_id: number;
-  date: string;
-  day?: string;
-  selected_time?: string;
-};
-
 export type CardType = 'yellow-card' | 'doble-card' | 'red-card';
 export type TeamType = 'home' | 'away';
 export type GameTeamsPlayers = {
@@ -75,10 +67,12 @@ export type GameTeamFormRequest = {
 };
 
 export type GameDetailsRequest = {
-  id: number;
+  id?: number;
   field_id: number;
-  date: string;
   game_id: number;
+  date: string;
+  day?: string;
+  selected_time?: string;
 };
 
 export type Game = {
