@@ -2,9 +2,7 @@
   type Props = {
     title?: string
   }
-  const { title } = withDefaults(defineProps<Props>(), {
-    title: 'Tabla de posiciones',
-  })
+  const { title = 'Tabla de posiciones' } = defineProps<Props>()
 </script>
 <template>
   <v-table class="live-games-table futzo-rounded" density="comfortable">
