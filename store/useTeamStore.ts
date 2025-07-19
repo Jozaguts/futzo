@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import type {
+  Formation,
   FormSteps,
   Team,
   TeamResponse,
@@ -8,7 +9,8 @@ import type {
 import type { IPagination } from '~/interfaces';
 import * as teamAPI from '~/http/api/team';
 import prepareForm from '~/utils/prepareFormData';
-import type { Formation, NextGames } from '~/models/Game';
+import type { TeamFormation, NextGames } from '~/models/Game';
+import { updateTeamFormationType } from '~/http/api/team';
 
 export const useTeamStore = defineStore('teamStore', () => {
   const { toast } = useToast();
@@ -53,10 +55,10 @@ export const useTeamStore = defineStore('teamStore', () => {
   const loading = ref(false);
   const homeTeam = ref<Team>();
   const awayTeam = ref<Team>({} as Team);
-  const homeFormation = ref<Formation>();
-  const awayFormation = ref<Formation>();
+  const homeFormation = ref<TeamFormation>();
+  const awayFormation = ref<TeamFormation>();
   const nextGames = ref<NextGames>({} as NextGames);
-
+  const formations = ref<Formation[]>([] as Formation[]);
   const downloadTemplate = async () => {
     loading.value = true;
     await client('/api/v1/admin/teams/template', {
@@ -205,10 +207,17 @@ export const useTeamStore = defineStore('teamStore', () => {
       console.log(error);
     }
   };
+  const getFormations = async () => {
+    formations.value = await teamAPI.getFormations();
+  };
+  const updateFormationType = async (team_id: number, formation_id: number) => {
+    return await teamAPI.updateTeamFormationType(team_id, formation_id);
+  };
 
   return {
     teams,
     team,
+    formations,
     dialog,
     steps,
     isEdition,
@@ -232,5 +241,7 @@ export const useTeamStore = defineStore('teamStore', () => {
     downloadTemplate,
     searchTeams,
     getNextGames,
+    getFormations,
+    updateFormationType,
   };
 });

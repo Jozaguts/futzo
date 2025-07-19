@@ -1,3 +1,11 @@
+export type Formation = {
+  id: number;
+  name: string;
+  goalkeeper: number;
+  defenses: number;
+  midfielders: number;
+  forwards: number;
+};
 export interface FormSteps {
   current: CurrentStep;
   steps: TeamSteps[];
@@ -8,11 +16,11 @@ export type TeamSteps = {
   completed: boolean;
   label: FormLabelStep;
 };
-export type CurrentStep = "createTeam" | "createDt" | "createOwner";
+export type CurrentStep = 'createTeam' | 'createDt' | 'createOwner';
 export type FormLabelStep =
-  | "Crea un equipo"
-  | "Crea el DT"
-  | "Crea el presidente";
+  | 'Crea un equipo'
+  | 'Crea el DT'
+  | 'Crea el presidente';
 
 export type CreateTeamForm = {
   id?: number;

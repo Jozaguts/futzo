@@ -1,6 +1,6 @@
 <script lang="ts" setup>
   import PlayerDot from '~/components/pages/calendario/game-report/player-dot.vue'
-  import type { Formation } from '~/models/Game'
+  import type { TeamFormation } from '~/models/Game'
   import { getTeamFormation } from '~/http/api/team'
   import { usePlayerStore, useTeamStore } from '~/store'
   import type { Team } from '~/models/Team'
@@ -8,19 +8,19 @@
   const { showComplete } = defineProps({
     showComplete: Boolean,
   })
-  const { homeTeam, awayTeam, homeFormation, awayFormation } =
+  const { homeTeam, awayTeam, homeFormation, awayFormation, formations } =
     storeToRefs(useTeamStore())
 
   watch([homeTeam, awayTeam], async ([newHomeTeam, newAwayTeam]) => {
     if (!!newHomeTeam?.id) {
-      getTeamFormation(newHomeTeam as Team).then((response: Formation) => {
+      getTeamFormation(newHomeTeam as Team).then((response: TeamFormation) => {
         response = sortFormation(response)
         homeFormation.value = response
       })
       await usePlayerStore().getDefaultLineupAvailableTeamPlayers(newHomeTeam)
     }
     if (!!newAwayTeam?.id) {
-      getTeamFormation(newAwayTeam as Team).then((response: Formation) => {
+      getTeamFormation(newAwayTeam as Team).then((response: TeamFormation) => {
         awayFormation.value = response
       })
       await usePlayerStore().getDefaultLineupAvailableTeamPlayers(newAwayTeam)
@@ -29,6 +29,18 @@
   const linesupTeamHeightContainer = computed(() => {
     return showComplete ? '50%' : '100%'
   })
+  const updateFormationType = async (team_id: number, formation_id: number) => {
+    await useTeamStore()
+      .updateFormationType(team_id, formation_id)
+      .then(() => {
+        getTeamFormation({ id: team_id } as Team).then(
+          (response: TeamFormation) => {
+            response = sortFormation(response)
+            homeFormation.value = response
+          }
+        )
+      })
+  }
 </script>
 <template>
   <v-sheet class="linesup-container">
@@ -40,10 +52,15 @@
           <v-select
             item-title="name"
             min-width="100"
+            :items="formations"
             v-model="homeFormation.name"
             densityc="compact"
             variant="plain"
             class="lineup-formation-select"
+            item-value="id"
+            @update:model-value="
+              (value) => updateFormationType(homeTeam?.id, Number(value))
+            "
           >
           </v-select>
         </span>

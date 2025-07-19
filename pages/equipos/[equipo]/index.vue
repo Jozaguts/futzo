@@ -17,6 +17,7 @@
     )
     if (homeTeam.value?.id) {
       await useTeamStore().getNextGames(homeTeam.value.id)
+      await useTeamStore().getFormations()
     }
   })
 </script>

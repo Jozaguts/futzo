@@ -1,6 +1,6 @@
-import type { Team } from '~/models/Team';
+import type { Formation, Team } from '~/models/Team';
 import type { TeamLineupAvailablePlayers } from '~/models/Player';
-import type { FormationPlayer, NextGames } from '~/models/Game';
+import type { FormationPlayer, NextGames, TeamFormation } from '~/models/Game';
 
 export const getTeamBy = async (term: number | string) => {
   const client = useSanctumClient();
@@ -49,5 +49,22 @@ export const nextGames = async (teamId: number, limit: number = 3) => {
   const client = useSanctumClient();
   return await client<Promise<NextGames>>(
     `/api/v1/admin/teams/${teamId}/next-games?limit=${limit}`
+  );
+};
+export const getFormations = async () => {
+  const client = useSanctumClient();
+  return await client<Promise<Formation[]>>('/api/v1/admin/games/formations');
+};
+export const updateTeamFormationType = async (
+  $team_id: number,
+  formation_id: number
+) => {
+  const client = useSanctumClient();
+  return await client<Promise<TeamFormation>>(
+    `/api/v1/admin/teams/${$team_id}/formation`,
+    {
+      method: 'PUT',
+      body: JSON.stringify({ formation_id }),
+    }
   );
 };
