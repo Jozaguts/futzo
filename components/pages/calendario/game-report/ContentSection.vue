@@ -1,8 +1,5 @@
 <script setup lang="ts">
   import InfoHeaderSection from '~/components/pages/calendario/game-report/info-header-section.vue'
-
-  import TeamTable from '~/components/pages/calendario/game-report/team-table.vue'
-  import GameTeamActions from '~/components/pages/calendario/game-report/game-team-actions.vue'
   import { useGameStore } from '~/store'
   import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
 

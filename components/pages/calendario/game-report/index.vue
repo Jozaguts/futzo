@@ -1,6 +1,5 @@
 <script lang="ts" setup>
   import { useGameStore } from '~/store'
-  import HeaderSection from '~/components/pages/calendario/game-report/header-section.vue'
   import ContentSection from '~/components/pages/calendario/game-report/ContentSection.vue'
   import type { GameDetailsRequest } from '~/models/Game'
 
