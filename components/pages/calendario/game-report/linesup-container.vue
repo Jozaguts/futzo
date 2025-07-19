@@ -29,6 +29,16 @@
   const linesupTeamHeightContainer = computed(() => {
     return showComplete ? '50%' : '100%'
   })
+  const formationDetails = computed(() => {
+    return {
+      home: formations.value.find(
+        (formation) => formation.name === homeFormation.value?.name
+      ),
+      away: formations.value.find(
+        (formation) => formation.name === awayFormation.value?.name
+      ),
+    }
+  })
   const updateFormationType = async (team_id: number, formation_id: number) => {
     await useTeamStore()
       .updateFormationType(team_id, formation_id)
@@ -77,7 +87,7 @@
                 v-for="(player, index) in homeFormation?.goalkeeper"
                 :key="index"
                 :player="player"
-                :field_location="index + 1"
+                :field_location="Number(formationDetails?.home?.goalkeeper)"
               />
             </div>
           </div>
@@ -91,7 +101,10 @@
                   v-for="(player, index) in homeFormation?.defenses"
                   :key="index"
                   :player="player"
-                  :field_location="index + 1"
+                  :field_location="
+                    Number(index + 1) +
+                    Number(formationDetails?.home?.goalkeeper ?? 0)
+                  "
                 />
               </div>
             </div>
@@ -105,7 +118,11 @@
                 v-for="(player, index) in homeFormation?.midfielders"
                 :key="index"
                 :player="player"
-                :field_location="index + 1"
+                :field_location="
+                  Number(index + 1) +
+                  Number(formationDetails?.home?.defenses ?? 0) +
+                  Number(formationDetails?.home?.goalkeeper ?? 0)
+                "
               />
             </div>
           </div>
@@ -118,7 +135,12 @@
                 v-for="(player, index) in homeFormation?.forwards"
                 :key="index"
                 :player="player"
-                :field_location="index + 1"
+                :field_location="
+                  Number(index + 1) +
+                  Number(formationDetails?.home?.defenses ?? 0) +
+                  Number(formationDetails?.home?.midfielders ?? 0) +
+                  Number(formationDetails?.home?.goalkeeper ?? 0)
+                "
               />
             </div>
           </div>
