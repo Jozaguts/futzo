@@ -412,15 +412,6 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
       `api/v1/admin/leagues/${leagueId}/tournaments`
     );
     tournaments.value = data || [];
-    // todo revisar la manera en la que contamos el teamCount y machesByRound
-    // creo debería ser un computed que se actualice cuando cambie el valor de tournaments
-
-    // console.log({tournaments:tournaments.value })
-    // teamsCount.value = data.teams_count || 0;
-    // const test = teamsCount.value / 2 ;
-    // matchesByRound.value = teamsCount.value / 2 ;
-
-    // console.log( matchesByRound.value, 2222222)
   }
 
   async function updateTournamentStatus(status: TournamentStatus) {
