@@ -53,7 +53,7 @@
           </PlayersList>
         </div>
         <div class="right-down-zone">
-          <NextGamesToday />
+          <NextGamesToday title="Últimos resultados" />
         </div>
         <CreateTeamDialog />
       </div>

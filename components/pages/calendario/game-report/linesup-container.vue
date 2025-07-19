@@ -69,7 +69,8 @@
             class="lineup-formation-select"
             item-value="id"
             @update:model-value="
-              (value) => updateFormationType(homeTeam?.id, Number(value))
+              (value) =>
+                updateFormationType(Number(homeTeam?.id), Number(value))
             "
           >
           </v-select>

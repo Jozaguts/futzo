@@ -1,8 +1,15 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+  const { title } = defineProps({
+    title: {
+      type: String,
+      default: 'Próximos partidos hoy',
+    },
+  })
+</script>
 <template>
   <v-table class="next-games-today-table futzo-rounded" density="comfortable">
     <template #top>
-      <h2 class="next-games-today-table__title">Próximos partidos hoy</h2>
+      <h2 class="next-games-today-table__title">{{ title }}</h2>
     </template>
     <template #wrapper>
       <div class="v-table__wrapper content">
