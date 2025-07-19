@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import { usePlayerStore, useTeamStore } from '~/store'
   import type { TeamLineupAvailablePlayers } from '~/models/Player'
-  import type { Formation, FormationPlayer } from '~/models/Game'
+  import type { TeamFormation, FormationPlayer } from '~/models/Game'
   import { getTeamFormation } from '~/http/api/team'
   import type { Team } from '~/models/Team'
   import { sortFormation } from '~/utils/sort-formation'
@@ -25,7 +25,7 @@
     }
 
     getTeamFormation({ id: player.team_id } as Team).then(
-      (response: Formation) => {
+      (response: TeamFormation) => {
         response = sortFormation(response)
         homeFormation.value = response
       }
