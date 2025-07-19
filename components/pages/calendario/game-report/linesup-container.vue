@@ -26,9 +26,6 @@
       await usePlayerStore().getDefaultLineupAvailableTeamPlayers(newAwayTeam)
     }
   })
-  const linesupTeamHeightContainer = computed(() => {
-    return showComplete ? '50%' : '100%'
-  })
   const formationDetails = computed(() => {
     return {
       home: formations.value.find(
@@ -51,10 +48,16 @@
         )
       })
   }
+  const linesupHeightContainer = computed(() => {
+    return showComplete ? '880px' : '100%'
+  })
+  const linesupTeamHeightContainerStyle = computed(() => {
+    return showComplete ? '50%' : '100%'
+  })
 </script>
 <template>
   <v-sheet class="linesup-container">
-    <div class="linesup-team-container futzo-rounded">
+    <div class="linesup-team-container">
       <div class="heading">
         <v-avatar :image="homeTeam?.image" class="mx-4" size="32"></v-avatar>
         <span class="mx-2"> {{ homeTeam?.name }}</span>
@@ -149,37 +152,40 @@
       </div>
     </div>
     <div class="line"></div>
-    <!--    <div class="linesup-team-container">-->
-    <!--      <div class="lineup">-->
-    <!--        <div class="zone-1-away"></div>-->
-    <!--        <div class="zone-2-away"></div>-->
-    <!--        <div class="zone-3-away"></div>-->
-    <!--        <div class="zone-4-away"></div>-->
-    <!--      </div>-->
-    <!--      <div class="heading">-->
-    <!--        <v-avatar :image="away?.image" class="mx-4" size="32"></v-avatar>-->
-    <!--        <span class="mx-2"> {{ away?.name }}</span>-->
-    <!--        <span class="formation">-->
-    <!--          <v-select-->
-    <!--            :items="formations"-->
-    <!--            item-title="name"-->
-    <!--            return-object-->
-    <!--            v-model="awayFormation"-->
-    <!--            min-width="100"-->
-    <!--            densityc="compact"-->
-    <!--            variant="plain"-->
-    <!--          >-->
-    <!--          </v-select>-->
-    <!--        </span>-->
-    <!--      </div>-->
-    <!--    </div>-->
+    <div class="linesup-team-container" v-if="showComplete">
+      <div class="lineup">
+        <div class="zone-1-away"></div>
+        <div class="zone-2-away"></div>
+        <div class="zone-3-away"></div>
+        <div class="zone-4-away"></div>
+      </div>
+      <div class="heading">
+        <v-avatar :image="awayTeam?.image" class="mx-4" size="32"></v-avatar>
+        <span class="mx-2"> {{ awayTeam?.name }}</span>
+        <span class="formation">
+          <v-select
+            item-title="name"
+            min-width="100"
+            :items="formations"
+            densityc="compact"
+            variant="plain"
+            class="lineup-formation-select"
+            item-value="id"
+            @update:model-value="
+              (value) =>
+                updateFormationType(Number(awayTeam?.id), Number(value))
+            "
+          >
+          </v-select>
+        </span>
+      </div>
+    </div>
   </v-sheet>
 </template>
 <style lang="sass">
   @use '@/assets/scss/components/linesup.sass'
   .linesup-container
-    height: 100%
-    padding-bottom: .5rem
+    height: v-bind(linesupHeightContainer)
   .linesup-team-container
-    height: v-bind(linesupTeamHeightContainer)
+    height: v-bind(linesupTeamHeightContainerStyle)
 </style>
