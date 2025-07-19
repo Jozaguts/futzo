@@ -1,6 +1,6 @@
 import type { AvailableIntervals } from '~/models/Schedule';
 
-export type Formation = {
+export type TeamFormation = {
   name: string;
   team_id: number;
   goalkeeper: FormationPlayer[];
