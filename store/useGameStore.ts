@@ -107,7 +107,7 @@ export const useGameStore = defineStore('gameStore', () => {
         );
         showReScheduleDialog.value = false;
       })
-      .catch((error) => {
+      .catch(() => {
         useToast().toast(
           'error',
           'Error al reprogramar partido',

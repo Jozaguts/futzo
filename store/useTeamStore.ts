@@ -10,7 +10,6 @@ import type { IPagination } from '~/interfaces';
 import * as teamAPI from '~/http/api/team';
 import prepareForm from '~/utils/prepareFormData';
 import type { TeamFormation, NextGames } from '~/models/Game';
-import { updateTeamFormationType } from '~/http/api/team';
 
 export const useTeamStore = defineStore('teamStore', () => {
   const { toast } = useToast();
