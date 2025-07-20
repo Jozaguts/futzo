@@ -95,7 +95,6 @@
           >
             <v-tab class="text-uppercase" value="home">Cronología</v-tab>
             <v-tab class="text-uppercase" value="lineup">Alineaciones</v-tab>
-            <v-tab class="text-uppercase" value="home">ESTADÍSTICAS</v-tab>
           </v-tabs>
           <v-tabs-window v-model="tab" class="mt-4">
             <v-tabs-window-item

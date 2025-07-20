@@ -21,11 +21,10 @@
       })
       if (newGameId) {
         const promises = [
-          await useGameStore().getGame(),
+          await useGameStore().getGameDetails(),
           await useGameStore().getGameTeamsPlayers(),
         ]
         const [_game, players] = await Promise.all(promises)
-        game.value = _game
         gamePlayers.value = players
       }
     },
