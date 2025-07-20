@@ -111,6 +111,9 @@ export const useGameStore = defineStore('gameStore', () => {
         );
       });
   };
+  const initializeGameReport = async (game_id: number) => {
+    await gameAPI.initializeGameReport(game_id);
+  };
 
   return {
     game,
@@ -126,5 +129,6 @@ export const useGameStore = defineStore('gameStore', () => {
     getGameDetails,
     getGameTeamsPlayers,
     reScheduleGame,
+    initializeGameReport,
   };
 });

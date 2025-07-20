@@ -18,3 +18,8 @@ export const getGame = async (
     query: { date, field_id },
   });
 };
+
+export const initializeGameReport = async (gameId: number) => {
+  const client = useSanctumClient();
+  return await client(`/api/v1/admin/games/${gameId}/report/initialize`);
+};

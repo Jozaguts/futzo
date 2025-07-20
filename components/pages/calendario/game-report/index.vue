@@ -23,6 +23,7 @@
         const promises = [
           await useGameStore().getGameDetails(),
           await useGameStore().getGameTeamsPlayers(),
+          await useGameStore().initializeGameReport(newGameId),
         ]
         const [_game, players] = await Promise.all(promises)
         gamePlayers.value = players

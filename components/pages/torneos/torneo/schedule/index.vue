@@ -5,7 +5,6 @@
   import Score from './score.vue'
   import { useToast } from '~/composables/useToast'
   import type { RoundStatus } from '~/models/Schedule'
-  import dayjs from 'dayjs'
 
   const { tournamentId, loading } = storeToRefs(useTournamentStore())
   const { gameReportDialog, showReScheduleDialog, gameDetailsRequest } =
