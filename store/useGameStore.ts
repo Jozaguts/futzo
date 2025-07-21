@@ -112,7 +112,7 @@ export const useGameStore = defineStore('gameStore', () => {
       });
   };
   const initializeGameReport = async (game_id: number) => {
-    await gameAPI.initializeGameReport(game_id);
+    return await gameAPI.initializeGameReport(game_id);
   };
 
   return {

@@ -207,6 +207,7 @@ export const useTeamStore = defineStore('teamStore', () => {
     }
   };
   const getFormations = async () => {
+    if (formations.value.length > 0) return;
     formations.value = await teamAPI.getFormations();
   };
   const updateFormationType = async (team_id: number, formation_id: number) => {
