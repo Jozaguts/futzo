@@ -94,5 +94,5 @@
   </PageLayout>
 </template>
 <style lang="scss">
-  @use '@/assets/scss/pages/dashboard.scss';
+  @use 'assets/scss/pages/dashboard.scss';
 </style>

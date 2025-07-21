@@ -192,7 +192,7 @@
   </v-sheet>
 </template>
 <style lang="sass">
-  @use '@/assets/scss/components/linesup.sass'
+  @use 'assets/scss/components/linesup.sass'
   .linesup-container
     height: v-bind(linesupHeightContainer)
   .linesup-team-container

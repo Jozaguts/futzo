@@ -61,5 +61,5 @@
   </PageLayout>
 </template>
 <style lang="sass">
-  @use "@/assets/scss/pages/teams-team.sass"
+  @use "assets/scss/pages/teams-team.sass"
 </style>

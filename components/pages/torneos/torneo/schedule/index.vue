@@ -347,5 +347,5 @@
   </v-row>
 </template>
 <style lang="sass">
-  @use '~/assets/scss/pages/schedule.sass'
+  @use 'assets/scss/pages/schedule.sass'
 </style>
