@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { useGameStore, useTeamStore } from '~/store'
+  import { useGameStore } from '~/store'
   import ContentSection from '~/components/pages/calendario/game-report/ContentSection.vue'
   import type { GameDetailsRequest } from '~/models/Game'
 
