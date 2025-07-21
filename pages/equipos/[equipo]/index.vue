@@ -8,18 +8,54 @@
   import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
   import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
   import { usePlayerStore, useTeamStore } from '~/store'
+  import { getTeamFormation } from '~/http/api/team'
+  import type { Team } from '~/models/Team'
+  import type { TeamFormation } from '~/models/Game'
+  import { sortFormation } from '~/utils/sort-formation'
   const { defaultLineupAvailableTeamPlayers } = storeToRefs(usePlayerStore())
-  const { homeTeam, nextGames } = storeToRefs(useTeamStore())
+  const { homeTeam, nextGames, formations, homeFormation } =
+    storeToRefs(useTeamStore())
 
   watchEffect(async () => {
-    homeTeam.value = await useTeamStore().getTeam(
+    homeTeam.value = (await useTeamStore().getTeam(
       useRoute().params?.equipo as string
-    )
+    )) as Team
     if (homeTeam.value?.id) {
+      await usePlayerStore().getDefaultLineupAvailableTeamPlayers(
+        homeTeam.value
+      )
       await useTeamStore().getNextGames(homeTeam.value.id)
+      await getTeamFormation(homeTeam.value as Team).then(
+        (response: TeamFormation) => {
+          response = sortFormation(response)
+          homeFormation.value = response
+        }
+      )
       await useTeamStore().getFormations()
     }
   })
+  const updateFormationType = (
+    isHome: boolean,
+    team_id: number,
+    formation_id: number
+  ) => {
+    useTeamStore()
+      .updateFormationType(team_id, formation_id)
+      .then(() => {
+        getTeamFormation({ id: team_id } as Team).then(
+          (response: TeamFormation) => {
+            response = sortFormation(response)
+            if (isHome) {
+              homeFormation.value = response
+            }
+          }
+        )
+      })
+  }
+  const leaving = () => {
+    homeTeam.value = {} as Team
+    homeFormation.value = {} as TeamFormation
+  }
 </script>
 <template>
   <PageLayout>
@@ -33,7 +69,15 @@
     <template #default>
       <div class="teams-team-container">
         <div class="primary-zone pa-0">
-          <LinesupContainer :show-complete="false" />
+          <LinesupContainer
+            :show-complete="false"
+            :isReport="false"
+            :homeTeam="homeTeam"
+            :homeFormation="homeFormation"
+            :formations="formations"
+            @update-formation-type="updateFormationType"
+            @leaving="leaving"
+          />
         </div>
         <div class="secondary-zone">
           <NextGames :nextGames />
@@ -61,5 +105,5 @@
   </PageLayout>
 </template>
 <style lang="sass">
-  @use "assets/scss/pages/teams-team.sass"
+  @use "~/assets/scss/pages/teams-team.sass"
 </style>
