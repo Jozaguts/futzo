@@ -4,12 +4,14 @@
   defineProps<{
     player: FormationPlayer
     field_location: number
+    isReport: Boolean
   }>()
 </script>
 <template>
   <div class="dot-container">
     <div class="dot-player-container">
       <PlayersMenu
+        :isReport="isReport"
         icon="tabler:switch-vertical"
         :number="player.number"
         :field_location="field_location"

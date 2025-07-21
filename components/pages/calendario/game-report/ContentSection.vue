@@ -126,6 +126,7 @@
             >
               <linesupContainer
                 show-complete
+                is-report
                 :homeTeam
                 :awayTeam
                 :formations

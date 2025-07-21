@@ -87,6 +87,7 @@
           <div class="row-lineup">
             <div class="players-row-container">
               <PlayerDot
+                :isReport="isReport"
                 v-for="(player, index) in homeFormation?.goalkeeper"
                 :key="index"
                 :player="player"
@@ -101,6 +102,7 @@
                 v-auto-animate
               >
                 <PlayerDot
+                  :isReport="isReport"
                   v-for="(player, index) in homeFormation?.defenses"
                   :key="index"
                   :player="player"
@@ -118,6 +120,7 @@
               v-auto-animate
             >
               <PlayerDot
+                :isReport="isReport"
                 v-for="(player, index) in homeFormation?.midfielders"
                 :key="index"
                 :player="player"
@@ -135,6 +138,7 @@
               v-auto-animate
             >
               <PlayerDot
+                :isReport="isReport"
                 v-for="(player, index) in homeFormation?.forwards"
                 :key="index"
                 :player="player"
@@ -164,6 +168,7 @@
               v-auto-animate
             >
               <PlayerDot
+                :isReport="isReport"
                 v-for="(player, index) in awayFormation?.forwards"
                 :key="index"
                 :player="player"
@@ -182,6 +187,7 @@
               v-auto-animate
             >
               <PlayerDot
+                :isReport="isReport"
                 v-for="(player, index) in awayFormation?.midfielders"
                 :key="index"
                 :player="player"
@@ -200,6 +206,7 @@
                 v-auto-animate
               >
                 <PlayerDot
+                  :isReport="isReport"
                   v-for="(player, index) in awayFormation?.defenses"
                   :key="index"
                   :player="player"
@@ -214,6 +221,7 @@
           <div class="row-lineup">
             <div class="players-row-container">
               <PlayerDot
+                :isReport="isReport"
                 v-for="(player, index) in awayFormation?.goalkeeper"
                 :key="index"
                 :player="player"

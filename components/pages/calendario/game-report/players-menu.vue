@@ -6,30 +6,35 @@
   import type { Team } from '~/models/Team'
   import { sortFormation } from '~/utils/sort-formation'
   const { defaultLineupAvailableTeamPlayers } = storeToRefs(usePlayerStore())
-  const { homeFormation, awayFormation } = storeToRefs(useTeamStore())
-  const { icon, field_location, number, currentPlayer } = defineProps<{
-    icon: string
-    number: number
-    field_location: number
-    currentPlayer: FormationPlayer
-  }>()
+  const { homeFormation } = storeToRefs(useTeamStore())
+  const { icon, field_location, number, currentPlayer, isReport } =
+    defineProps<{
+      icon: string
+      number: number
+      field_location: number
+      currentPlayer: FormationPlayer
+      isReport: Boolean
+    }>()
   const addPlayer = async (player: TeamLineupAvailablePlayers) => {
-    if (currentPlayer.default_lineup_player_id) {
-      await usePlayerStore().updateDefaultLineup(
-        player,
-        currentPlayer,
-        field_location
-      )
-    } else {
-      await usePlayerStore().addDefaultLineupPlayer(player, field_location)
-    }
-
-    getTeamFormation({ id: player.team_id } as Team).then(
-      (response: TeamFormation) => {
-        response = sortFormation(response)
-        homeFormation.value = response
+    console.log(player)
+    if (!isReport) {
+      if (currentPlayer.default_lineup_player_id) {
+        await usePlayerStore().updateDefaultLineup(
+          player,
+          currentPlayer,
+          field_location
+        )
+      } else {
+        await usePlayerStore().addDefaultLineupPlayer(player, field_location)
       }
-    )
+
+      getTeamFormation({ id: player.team_id } as Team).then(
+        (response: TeamFormation) => {
+          response = sortFormation(response)
+          homeFormation.value = response
+        }
+      )
+    }
   }
 </script>
 <template>
