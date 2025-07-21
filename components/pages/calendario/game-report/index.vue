@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-  import { useGameStore } from '~/store'
+  import { useGameStore, useTeamStore } from '~/store'
   import ContentSection from '~/components/pages/calendario/game-report/ContentSection.vue'
   import type { GameDetailsRequest } from '~/models/Game'
 
-  const { game, gameReportDialog, gameDetailsRequest, gamePlayers } =
-    storeToRefs(useGameStore())
+  const { gameReportDialog, gameDetailsRequest } = storeToRefs(useGameStore())
   const onLeaving = () => {
     gameReportDialog.value = false
     gameDetailsRequest.value = null as unknown as GameDetailsRequest
@@ -13,20 +12,8 @@
   watch(
     () => gameDetailsRequest.value?.game_id,
     async (newGameId) => {
-      console.log(newGameId)
-      console.log({
-        game: game.value,
-        gameDetailsRequest: gameDetailsRequest.value,
-        gamePlayers: gamePlayers.value,
-      })
       if (newGameId) {
-        const promises = [
-          await useGameStore().getGameDetails(),
-          await useGameStore().getGameTeamsPlayers(),
-          await useGameStore().initializeGameReport(newGameId),
-        ]
-        const [_game, players] = await Promise.all(promises)
-        gamePlayers.value = players
+        await useGameStore().getGameDetails()
       }
     },
     { immediate: true }
