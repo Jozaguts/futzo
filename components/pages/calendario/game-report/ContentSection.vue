@@ -1,10 +1,32 @@
 <script setup lang="ts">
   import InfoHeaderSection from '~/components/pages/calendario/game-report/info-header-section.vue'
-  import { useGameStore } from '~/store'
+  import { useGameStore, useTeamStore } from '~/store'
   import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
+  import type { Team } from '~/models/Team'
+  import type { Game } from '~/models/Game'
 
   const { game, gamePlayers, showFabBtn } = storeToRefs(useGameStore())
   const tab = ref('lineup')
+  const { homeTeam, awayTeam, homeFormation, awayFormation, formations } =
+    storeToRefs(useTeamStore())
+
+  watch(game, async (newGame) => {
+    console.log(newGame)
+    if (!newGame?.home?.id || !newGame?.away?.id) return
+    console.log('Game Report: ', newGame?.home?.id)
+    const initialize = await useGameStore().initializeGameReport(newGame?.id)
+    homeTeam.value = initialize.home.team as Team
+    awayTeam.value = initialize.away.team as Team
+    delete initialize.home.team
+    delete initialize.away.team
+    homeFormation.value = initialize.home
+    awayFormation.value = initialize.away
+  })
+  onMounted(() => {
+    useTeamStore().getFormations()
+    game.value = {} as Game
+    console.log('Game Report Mounted: ', game.value)
+  })
 </script>
 <template>
   <v-sheet class="futzo-rounded" position="static">
@@ -102,7 +124,14 @@
               transition="fade-transition"
               reverse-transition="fade-transition"
             >
-              <linesupContainer show-complete />
+              <linesupContainer
+                show-complete
+                :homeTeam
+                :awayTeam
+                :formations
+                :awayFormation
+                :homeFormation
+              />
             </v-tabs-window-item>
             <v-tabs-window-item
               value="away"
