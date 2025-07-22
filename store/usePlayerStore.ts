@@ -10,7 +10,7 @@ import type { IPagination } from '~/interfaces';
 import type { Team } from '~/models/Team';
 import * as teamAPI from '~/http/api/team';
 import type { FormationPlayer } from '~/models/Game';
-import { addDefaultLineupPlayer } from '~/http/api/team';
+import { addDefaultLineupPlayer, updateLineup } from '~/http/api/team';
 
 export const usePlayerStore = defineStore('playerStore', () => {
   const { toast } = useToast();
@@ -168,8 +168,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
       .finally(() => (isImporting.value = false));
   };
   const getDefaultLineupAvailableTeamPlayers = async (team: Team) => {
-    defaultLineupAvailableTeamPlayers.value =
-      await teamAPI.getDefaultLineupAvailableTeemPlayers(team);
+    return await teamAPI.getDefaultLineupAvailableTeemPlayers(team);
   };
   const updateDefaultLineup = async (
     player: TeamLineupAvailablePlayers,
@@ -177,15 +176,31 @@ export const usePlayerStore = defineStore('playerStore', () => {
     field_location: number
   ) => {
     await teamAPI.updateDefaultLineup(player, currentPlayer, field_location);
-    await getDefaultLineupAvailableTeamPlayers({ id: player.team_id } as Team);
+    // await getDefaultLineupAvailableTeamPlayers({ id: player.team_id } as Team); // todo
   };
   const addDefaultLineupPlayer = async (
     player: TeamLineupAvailablePlayers,
     field_location: number
   ) => {
     await teamAPI.addDefaultLineupPlayer(player, field_location);
-    await getDefaultLineupAvailableTeamPlayers({ id: player.team_id } as Team);
+    // await getDefaultLineupAvailableTeamPlayers({ id: player.team_id } as Team); todo
   };
+  const updateLineup = async (
+    player: TeamLineupAvailablePlayers,
+    currentPlayer: FormationPlayer,
+    field_location: number
+  ) => {
+    await teamAPI.updateLineup(player, currentPlayer, field_location);
+    // await getDefaultLineupAvailableTeamPlayers({ id: player.team_id } as Team); // todo
+  };
+  const addLineupPlayer = async (
+    player: TeamLineupAvailablePlayers,
+    field_location: number
+  ) => {
+    await teamAPI.addLineupPlayer(player, field_location);
+    // await getDefaultLineupAvailableTeamPlayers({ id: player.team_id } as Team); todo
+  };
+
   return {
     players,
     dialog,
@@ -211,5 +226,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
     getDefaultLineupAvailableTeamPlayers,
     updateDefaultLineup,
     addDefaultLineupPlayer,
+    updateLineup,
+    addLineupPlayer,
   };
 });

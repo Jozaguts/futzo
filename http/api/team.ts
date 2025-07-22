@@ -68,3 +68,30 @@ export const updateTeamFormationType = async (
     }
   );
 };
+export const updateLineup = async (
+  player: TeamLineupAvailablePlayers,
+  currentPlayer: FormationPlayer,
+  field_location: number
+) => {
+  const client = useSanctumClient();
+  return await client<Promise<TeamLineupAvailablePlayers[]>>(
+    `/api/v1/admin/teams/${player.team_id}/lineup-players/${currentPlayer.lineup_player_id}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify({ player, field_location }),
+    }
+  );
+};
+export const addLineupPlayer = async (
+  player: TeamLineupAvailablePlayers,
+  field_location: number
+) => {
+  const client = useSanctumClient();
+  return await client<Promise<TeamLineupAvailablePlayers[]>>(
+    `/api/v1/admin/teams/${player.team_id}/lineup-players`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ player, field_location }),
+    }
+  );
+};
