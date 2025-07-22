@@ -55,7 +55,7 @@ export const getFormations = async () => {
   const client = useSanctumClient();
   return await client<Promise<Formation[]>>('/api/v1/admin/games/formations');
 };
-export const updateTeamFormationType = async (
+export const updateDefaultFormationType = async (
   $team_id: number,
   formation_id: number
 ) => {
@@ -93,6 +93,20 @@ export const addLineupPlayer = async (
     {
       method: 'POST',
       body: JSON.stringify({ player, field_location }),
+    }
+  );
+};
+export const updateGameTeamFormationType = async (
+  team_id: number,
+  game_id: number,
+  formation_id: number
+) => {
+  const client = useSanctumClient();
+  return await client<Promise<TeamFormation>>(
+    `/api/v1/admin/teams/${team_id}/games/${game_id}/formation`,
+    {
+      method: 'PUT',
+      body: JSON.stringify({ formation_id }),
     }
   );
 };

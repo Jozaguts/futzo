@@ -41,7 +41,7 @@
     formation_id: number
   ) => {
     useTeamStore()
-      .updateFormationType(team_id, formation_id)
+      .updateDefaultFormationType(team_id, formation_id)
       .then(() => {
         getTeamFormation({ id: team_id } as Team).then(
           (response: TeamFormation) => {
