@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import type { FormationPlayer, TeamFormation } from '~/models/Game'
+  import type { FormationPlayer } from '~/models/Game'
   import type { TeamLineupAvailablePlayers } from '~/models/Player'
   import { useGameStore, usePlayerStore, useTeamStore } from '~/store'
   import { getTeamFormation } from '~/http/api/team'
@@ -8,14 +8,13 @@
   const { homeFormation, awayFormation, homePlayers, awayPlayers } =
     storeToRefs(useTeamStore())
   const { game } = storeToRefs(useGameStore())
-  const { isReport, players, isHomeTeam, field_location, player } =
-    defineProps<{
-      player: FormationPlayer
-      field_location: number
-      isReport: Boolean
-      players: Array<TeamLineupAvailablePlayers>
-      isHomeTeam: Boolean
-    }>()
+  const { isReport, players, field_location, player } = defineProps<{
+    player: FormationPlayer
+    field_location: number
+    isReport: Boolean
+    players: Array<TeamLineupAvailablePlayers>
+    isHomeTeam: Boolean
+  }>()
   const addPlayer = async (newPlayer: TeamLineupAvailablePlayers) => {
     if (!isReport) {
       if (player.default_lineup_player_id) {
