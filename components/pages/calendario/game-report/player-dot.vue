@@ -39,7 +39,11 @@
       if (player.lineup_player_id) {
         await usePlayerStore().updateLineup(newPlayer, player, field_location)
       } else {
-        await usePlayerStore().addLineupPlayer(newPlayer, field_location)
+        await usePlayerStore().addLineupPlayer(
+          newPlayer,
+          field_location,
+          game.value.id
+        )
       }
       const initialize = await useGameStore().initializeGameReport(
         game.value?.id

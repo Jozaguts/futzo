@@ -84,11 +84,12 @@ export const updateLineup = async (
 };
 export const addLineupPlayer = async (
   player: TeamLineupAvailablePlayers,
-  field_location: number
+  field_location: number,
+  game_id: number
 ) => {
   const client = useSanctumClient();
   return await client<Promise<TeamLineupAvailablePlayers[]>>(
-    `/api/v1/admin/teams/${player.team_id}/lineup-players`,
+    `/api/v1/admin/teams/${player.team_id}/games/${game_id}/lineup-players`,
     {
       method: 'POST',
       body: JSON.stringify({ player, field_location }),

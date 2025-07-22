@@ -189,9 +189,10 @@ export const usePlayerStore = defineStore('playerStore', () => {
   };
   const addLineupPlayer = async (
     player: TeamLineupAvailablePlayers,
-    field_location: number
+    field_location: number,
+    game_id: number
   ) => {
-    await teamAPI.addLineupPlayer(player, field_location);
+    await teamAPI.addLineupPlayer(player, field_location, game_id);
   };
 
   return {
