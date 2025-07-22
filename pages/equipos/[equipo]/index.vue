@@ -12,18 +12,22 @@
   import type { Team } from '~/models/Team'
   import type { TeamFormation } from '~/models/Game'
   import { sortFormation } from '~/utils/sort-formation'
+  import type { TeamLineupAvailablePlayers } from '~/models/Player'
   const { defaultLineupAvailableTeamPlayers } = storeToRefs(usePlayerStore())
   const { homeTeam, nextGames, formations, homeFormation } =
     storeToRefs(useTeamStore())
-
+  const homePlayers = ref<TeamLineupAvailablePlayers[]>(
+    [] as TeamLineupAvailablePlayers[]
+  )
   watchEffect(async () => {
     homeTeam.value = (await useTeamStore().getTeam(
       useRoute().params?.equipo as string
     )) as Team
     if (homeTeam.value?.id) {
-      await usePlayerStore().getDefaultLineupAvailableTeamPlayers(
-        homeTeam.value
-      )
+      homePlayers.value =
+        await usePlayerStore().getDefaultLineupAvailableTeamPlayers(
+          homeTeam.value
+        )
       await useTeamStore().getNextGames(homeTeam.value.id)
       await getTeamFormation(homeTeam.value as Team).then(
         (response: TeamFormation) => {
@@ -75,6 +79,7 @@
             :homeTeam="homeTeam"
             :homeFormation="homeFormation"
             :formations="formations"
+            :homePlayers
             @update-formation-type="updateFormationType"
             @leaving="leaving"
           />
