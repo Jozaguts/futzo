@@ -10,7 +10,6 @@ import type { IPagination } from '~/interfaces';
 import type { Team } from '~/models/Team';
 import * as teamAPI from '~/http/api/team';
 import type { FormationPlayer } from '~/models/Game';
-import { addDefaultLineupPlayer, updateLineup } from '~/http/api/team';
 
 export const usePlayerStore = defineStore('playerStore', () => {
   const { toast } = useToast();
