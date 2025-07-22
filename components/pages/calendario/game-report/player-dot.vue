@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-  import PlayersMenu from '~/components/pages/calendario/game-report/players-menu.vue'
   import type { FormationPlayer, TeamFormation } from '~/models/Game'
   import type { TeamLineupAvailablePlayers } from '~/models/Player'
   import { useGameStore, usePlayerStore, useTeamStore } from '~/store'
@@ -31,8 +30,11 @@
       const team = {
         id: newPlayer.team_id,
       } as Team
+
       const response = await getTeamFormation(team)
       homeFormation.value = sortFormation(response)
+      homePlayers.value =
+        await usePlayerStore().getDefaultLineupAvailableTeamPlayers(team)
     } else {
       if (player.lineup_player_id) {
         await usePlayerStore().updateLineup(newPlayer, player, field_location)

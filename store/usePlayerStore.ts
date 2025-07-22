@@ -46,9 +46,6 @@ export const usePlayerStore = defineStore('playerStore', () => {
       },
     ],
   });
-  const defaultLineupAvailableTeamPlayers = ref<TeamLineupAvailablePlayers[]>(
-    [] as TeamLineupAvailablePlayers[]
-  );
 
   const getPlayer = async (id: string) => {
     const client = useSanctumClient();
@@ -176,14 +173,12 @@ export const usePlayerStore = defineStore('playerStore', () => {
     field_location: number
   ) => {
     await teamAPI.updateDefaultLineup(player, currentPlayer, field_location);
-    // await getDefaultLineupAvailableTeamPlayers({ id: player.team_id } as Team); // todo
   };
   const addDefaultLineupPlayer = async (
     player: TeamLineupAvailablePlayers,
     field_location: number
   ) => {
     await teamAPI.addDefaultLineupPlayer(player, field_location);
-    // await getDefaultLineupAvailableTeamPlayers({ id: player.team_id } as Team); todo
   };
   const updateLineup = async (
     player: TeamLineupAvailablePlayers,
@@ -191,14 +186,12 @@ export const usePlayerStore = defineStore('playerStore', () => {
     field_location: number
   ) => {
     await teamAPI.updateLineup(player, currentPlayer, field_location);
-    // await getDefaultLineupAvailableTeamPlayers({ id: player.team_id } as Team); // todo
   };
   const addLineupPlayer = async (
     player: TeamLineupAvailablePlayers,
     field_location: number
   ) => {
     await teamAPI.addLineupPlayer(player, field_location);
-    // await getDefaultLineupAvailableTeamPlayers({ id: player.team_id } as Team); todo
   };
 
   return {
@@ -216,7 +209,6 @@ export const usePlayerStore = defineStore('playerStore', () => {
     isImporting,
     showAssignTeam,
     player,
-    defaultLineupAvailableTeamPlayers,
     updatePlayer,
     createPlayer,
     getPlayers,

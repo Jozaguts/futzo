@@ -13,12 +13,9 @@
   import type { TeamFormation } from '~/models/Game'
   import { sortFormation } from '~/utils/sort-formation'
   import type { TeamLineupAvailablePlayers } from '~/models/Player'
-  const { defaultLineupAvailableTeamPlayers } = storeToRefs(usePlayerStore())
-  const { homeTeam, nextGames, formations, homeFormation } =
+  const { homeTeam, nextGames, formations, homeFormation, homePlayers } =
     storeToRefs(useTeamStore())
-  const homePlayers = ref<TeamLineupAvailablePlayers[]>(
-    [] as TeamLineupAvailablePlayers[]
-  )
+
   watchEffect(async () => {
     homeTeam.value = (await useTeamStore().getTeam(
       useRoute().params?.equipo as string
@@ -90,10 +87,7 @@
         <div class="right-up-zone">
           <PlayersList title="Jugadores">
             <template #table-body>
-              <tr
-                v-for="player in defaultLineupAvailableTeamPlayers"
-                :key="player.id"
-              >
+              <tr v-for="player in homePlayers" :key="player.player_id">
                 <td>
                   <p>{{ player.number }} {{ player.name }}</p>
                 </td>
