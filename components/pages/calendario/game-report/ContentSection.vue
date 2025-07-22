@@ -6,8 +6,37 @@
   import type { Game } from '~/models/Game'
   import type { TeamLineupAvailablePlayers } from '~/models/Player'
   import { sortFormation } from '~/utils/sort-formation'
+  const { game, showFabBtn } = storeToRefs(useGameStore())
+  const asyncComponents = {
+    Goals: defineAsyncComponent(
+      () => import('@/components/pages/calendario/game-report/forms/goals.vue')
+    ),
+    Substitutions: defineAsyncComponent(
+      () =>
+        import(
+          '@/components/pages/calendario/game-report/forms/substitutions.vue'
+        )
+    ),
+    Cards: defineAsyncComponent(
+      () => import('@/components/pages/calendario/game-report/forms/cards.vue')
+    ),
+  }
+  const componentToRender = ref<keyof typeof asyncComponents>('Goals')
+  const currentComponent = computed(() => {
+    return asyncComponents[componentToRender.value]
+  })
+  const dialogState = ref<{
+    show?: boolean
+    title: string
+    subtitle: string
+    type: 'info' | 'success' | 'error'
+  }>({
+    show: false,
+    title: '',
+    subtitle: '',
+    type: 'info',
+  })
 
-  const { game, gamePlayers, showFabBtn } = storeToRefs(useGameStore())
   const tab = ref('lineup')
   const {
     homeTeam,
@@ -69,6 +98,31 @@
   const leaving = () => {
     console.log('Leaving Game Report')
   }
+  const dialogHandler = (type: 'goles' | 'tarjetas' | 'cambios') => {
+    if (type === 'goles') {
+      dialogState.value = {
+        title: 'Registrar Goles',
+        subtitle: 'Añade los goles del partido',
+        type: 'info',
+      }
+      componentToRender.value = 'Goals'
+    } else if (type === 'tarjetas') {
+      dialogState.value = {
+        title: 'Registrar Tarjetas',
+        subtitle: 'Añade las tarjetas del partido',
+        type: 'info',
+      }
+      componentToRender.value = 'Cards'
+    } else if (type === 'cambios') {
+      dialogState.value = {
+        title: 'Registrar Cambios',
+        subtitle: 'Añade los cambios realizados durante el partido',
+        type: 'info',
+      }
+      componentToRender.value = 'Substitutions'
+    }
+    dialogState.value.show = true
+  }
 </script>
 <template>
   <v-sheet class="futzo-rounded" position="static">
@@ -89,13 +143,31 @@
         transition="slide-y-reverse-transition"
         activator="parent"
       >
-        <v-btn key="1" color="grey-900" icon v-tooltip:top="'Goles'">
+        <v-btn
+          key="1"
+          color="grey-900"
+          @click="() => dialogHandler('goles')"
+          icon
+          v-tooltip:top="'Goles'"
+        >
           <Icon name="futzo-icon:goal" size="24" />
         </v-btn>
-        <v-btn key="2" color="grey-900" icon v-tooltip:top="'Tarjetas'">
+        <v-btn
+          key="2"
+          color="grey-900"
+          @click="() => dialogHandler('tarjetas')"
+          icon
+          v-tooltip:top="'Tarjetas'"
+        >
           <Icon name="futzo-icon:card" size="24" />
         </v-btn>
-        <v-btn key="2" color="grey-900" icon v-tooltip:top="'Cambios'">
+        <v-btn
+          key="2"
+          color="grey-900"
+          @click="() => dialogHandler('cambios')"
+          icon
+          v-tooltip:top="'Cambios'"
+        >
           <Icon name="futzo-icon:substitution" size="24" color="white" />
         </v-btn>
       </v-speed-dial>
@@ -195,6 +267,21 @@
       </v-row>
     </v-container>
   </v-sheet>
+  <Dialog
+    :model-value="dialogState.show"
+    :title="dialogState.title"
+    :loading="false"
+    :subtitle="dialogState.subtitle"
+    icon-name="uil:schedule"
+    min-height="600"
+    max-height="600"
+    @leaving="dialogState.show = false"
+    width="800"
+  >
+    <template #v-card-text>
+      <component :is="currentComponent"></component>
+    </template>
+  </Dialog>
 </template>
 <style lang="sass">
   .score-container
