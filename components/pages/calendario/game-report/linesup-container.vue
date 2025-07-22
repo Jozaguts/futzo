@@ -2,6 +2,7 @@
   import PlayerDot from '~/components/pages/calendario/game-report/player-dot.vue'
   import type { TeamFormation } from '~/models/Game'
   import type { Formation, Team } from '~/models/Team'
+  import type { TeamLineupAvailablePlayers } from '~/models/Player'
 
   const {
     showComplete,
@@ -10,6 +11,8 @@
     awayTeam,
     homeFormation,
     awayFormation,
+    homePlayers,
+    awayPlayers,
     formations,
   } = defineProps({
     showComplete: Boolean,
@@ -29,8 +32,16 @@
     formations: {
       type: Array as PropType<Formation[]>,
     },
+    homePlayers: {
+      type: Array as PropType<TeamLineupAvailablePlayers[]>,
+      default: () => [] as TeamLineupAvailablePlayers[],
+    },
+    awayPlayers: {
+      type: Array as PropType<TeamLineupAvailablePlayers[]>,
+      default: () => [] as TeamLineupAvailablePlayers[],
+    },
   })
-  const emits = defineEmits(['updateFormationType', 'leaving'])
+  const emits = defineEmits(['updateFormationType', 'leaving', 'reloadPlayers'])
   const formationDetails = computed(() => {
     return {
       home: formations?.find(
@@ -87,6 +98,8 @@
           <div class="row-lineup">
             <div class="players-row-container">
               <PlayerDot
+                :isHomeTeam="true"
+                :players="homePlayers"
                 :isReport="isReport"
                 v-for="(player, index) in homeFormation?.goalkeeper"
                 :key="index"
@@ -102,6 +115,8 @@
                 v-auto-animate
               >
                 <PlayerDot
+                  :isHomeTeam="true"
+                  :players="homePlayers"
                   :isReport="isReport"
                   v-for="(player, index) in homeFormation?.defenses"
                   :key="index"
@@ -120,6 +135,8 @@
               v-auto-animate
             >
               <PlayerDot
+                :isHomeTeam="true"
+                :players="homePlayers"
                 :isReport="isReport"
                 v-for="(player, index) in homeFormation?.midfielders"
                 :key="index"
@@ -138,6 +155,8 @@
               v-auto-animate
             >
               <PlayerDot
+                :isHomeTeam="true"
+                :players="homePlayers"
                 :isReport="isReport"
                 v-for="(player, index) in homeFormation?.forwards"
                 :key="index"
@@ -168,6 +187,8 @@
               v-auto-animate
             >
               <PlayerDot
+                :isHomeTeam="false"
+                :players="awayPlayers"
                 :isReport="isReport"
                 v-for="(player, index) in awayFormation?.forwards"
                 :key="index"
@@ -187,6 +208,8 @@
               v-auto-animate
             >
               <PlayerDot
+                :isHomeTeam="false"
+                :players="awayPlayers"
                 :isReport="isReport"
                 v-for="(player, index) in awayFormation?.midfielders"
                 :key="index"
@@ -206,6 +229,8 @@
                 v-auto-animate
               >
                 <PlayerDot
+                  :isHomeTeam="false"
+                  :players="awayPlayers"
                   :isReport="isReport"
                   v-for="(player, index) in awayFormation?.defenses"
                   :key="index"
@@ -221,6 +246,8 @@
           <div class="row-lineup">
             <div class="players-row-container">
               <PlayerDot
+                :isHomeTeam="false"
+                :players="awayPlayers"
                 :isReport="isReport"
                 v-for="(player, index) in awayFormation?.goalkeeper"
                 :key="index"
@@ -239,6 +266,7 @@
             item-title="name"
             min-width="100"
             :items="formations"
+            v-model="awayFormation.name"
             densityc="compact"
             variant="plain"
             class="lineup-formation-select"
