@@ -5,17 +5,19 @@
   import type { Team } from '~/models/Team'
   import type { Game } from '~/models/Game'
   import type { TeamLineupAvailablePlayers } from '~/models/Player'
+  import { sortFormation } from '~/utils/sort-formation'
 
   const { game, gamePlayers, showFabBtn } = storeToRefs(useGameStore())
   const tab = ref('lineup')
-  const { homeTeam, awayTeam, homeFormation, awayFormation, formations } =
-    storeToRefs(useTeamStore())
-  const homePlayers = ref<TeamLineupAvailablePlayers[]>(
-    [] as TeamLineupAvailablePlayers[]
-  )
-  const awayPlayers = ref<TeamLineupAvailablePlayers[]>(
-    [] as TeamLineupAvailablePlayers[]
-  )
+  const {
+    homeTeam,
+    awayTeam,
+    homeFormation,
+    awayFormation,
+    formations,
+    homePlayers,
+    awayPlayers,
+  } = storeToRefs(useTeamStore())
   watch(game, async (newGame) => {
     if (!newGame?.home?.id || !newGame?.away?.id) return
     const initialize = await useGameStore().initializeGameReport(newGame?.id)
@@ -27,8 +29,8 @@
     delete initialize.away.team
     delete initialize.home.players
     delete initialize.away.players
-    homeFormation.value = initialize.home
-    awayFormation.value = initialize.away
+    homeFormation.value = sortFormation(initialize.home)
+    awayFormation.value = sortFormation(initialize.away)
     console.log(homeFormation.value)
   })
   onMounted(() => {
