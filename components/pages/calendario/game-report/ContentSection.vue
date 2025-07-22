@@ -4,29 +4,50 @@
   import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
   import type { Team } from '~/models/Team'
   import type { Game } from '~/models/Game'
+  import type { TeamLineupAvailablePlayers } from '~/models/Player'
 
   const { game, gamePlayers, showFabBtn } = storeToRefs(useGameStore())
   const tab = ref('lineup')
   const { homeTeam, awayTeam, homeFormation, awayFormation, formations } =
     storeToRefs(useTeamStore())
-
+  const homePlayers = ref<TeamLineupAvailablePlayers[]>(
+    [] as TeamLineupAvailablePlayers[]
+  )
+  const awayPlayers = ref<TeamLineupAvailablePlayers[]>(
+    [] as TeamLineupAvailablePlayers[]
+  )
   watch(game, async (newGame) => {
-    console.log(newGame)
     if (!newGame?.home?.id || !newGame?.away?.id) return
-    console.log('Game Report: ', newGame?.home?.id)
     const initialize = await useGameStore().initializeGameReport(newGame?.id)
     homeTeam.value = initialize.home.team as Team
     awayTeam.value = initialize.away.team as Team
+    homePlayers.value = initialize.home.players as TeamLineupAvailablePlayers[]
+    awayPlayers.value = initialize.away.players as TeamLineupAvailablePlayers[]
     delete initialize.home.team
     delete initialize.away.team
+    delete initialize.home.players
+    delete initialize.away.players
     homeFormation.value = initialize.home
     awayFormation.value = initialize.away
+    console.log(homeFormation.value)
   })
   onMounted(() => {
     useTeamStore().getFormations()
-    game.value = {} as Game
-    console.log('Game Report Mounted: ', game.value)
   })
+  onUnmounted(() => {
+    game.value = {} as Game
+  })
+  const updateFormationType = (
+    isHome: boolean,
+    team_id: number,
+    formation_id: number
+  ) => {
+    console.log({ isHome, team_id, formation_id })
+  }
+  const reloadPlayers = () => {}
+  const leaving = () => {
+    console.log('Leaving Game Report')
+  }
 </script>
 <template>
   <v-sheet class="futzo-rounded" position="static">
@@ -132,6 +153,11 @@
                 :formations
                 :awayFormation
                 :homeFormation
+                :homePlayers
+                :awayPlayers
+                @updateFormationType="updateFormationType"
+                @reloadPlayers="reloadPlayers"
+                @leaving="leaving"
               />
             </v-tabs-window-item>
             <v-tabs-window-item
