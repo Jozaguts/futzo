@@ -2,10 +2,13 @@
   import PlayersMenu from '~/components/pages/calendario/game-report/players-menu.vue'
   import type { FormationPlayer, TeamFormation } from '~/models/Game'
   import type { TeamLineupAvailablePlayers } from '~/models/Player'
-  import { usePlayerStore } from '~/store'
+  import { useGameStore, usePlayerStore, useTeamStore } from '~/store'
   import { getTeamFormation } from '~/http/api/team'
   import type { Team } from '~/models/Team'
   import { sortFormation } from '~/utils/sort-formation'
+  const { homeFormation, awayFormation, homePlayers, awayPlayers } =
+    storeToRefs(useTeamStore())
+  const { game } = storeToRefs(useGameStore())
   const { isReport, players, isHomeTeam, field_location, player } =
     defineProps<{
       player: FormationPlayer
@@ -25,12 +28,30 @@
       } else {
         await usePlayerStore().addDefaultLineupPlayer(newPlayer, field_location)
       }
+      const team = {
+        id: newPlayer.team_id,
+      } as Team
+      const response = await getTeamFormation(team)
+      homeFormation.value = sortFormation(response)
     } else {
       if (player.lineup_player_id) {
         await usePlayerStore().updateLineup(newPlayer, player, field_location)
       } else {
         await usePlayerStore().addLineupPlayer(newPlayer, field_location)
       }
+      const initialize = await useGameStore().initializeGameReport(
+        game.value?.id
+      )
+      homePlayers.value = initialize.home
+        .players as TeamLineupAvailablePlayers[]
+      awayPlayers.value = initialize.away
+        .players as TeamLineupAvailablePlayers[]
+      delete initialize.home.team
+      delete initialize.away.team
+      delete initialize.home.players
+      delete initialize.away.players
+      homeFormation.value = sortFormation(initialize.home)
+      awayFormation.value = sortFormation(initialize.away)
     }
   }
 </script>
