@@ -31,7 +31,6 @@
     delete initialize.away.players
     homeFormation.value = sortFormation(initialize.home)
     awayFormation.value = sortFormation(initialize.away)
-    console.log(homeFormation.value)
   })
   onMounted(() => {
     useTeamStore().getFormations()
@@ -39,13 +38,33 @@
   onUnmounted(() => {
     game.value = {} as Game
   })
-  const updateFormationType = (
+  const updateDefaultFormationType = (
     isHome: boolean,
     team_id: number,
     formation_id: number
   ) => {
-    console.log({ isHome, team_id, formation_id })
+    useTeamStore()
+      .updateGameTeamFormationType(team_id, game.value.id, formation_id)
+      .then(() => {
+        useGameStore()
+          .initializeGameReport(game.value.id)
+          .then((initialize) => {
+            homeTeam.value = initialize.home.team as Team
+            awayTeam.value = initialize.away.team as Team
+            homePlayers.value = initialize.home
+              .players as TeamLineupAvailablePlayers[]
+            awayPlayers.value = initialize.away
+              .players as TeamLineupAvailablePlayers[]
+            delete initialize.home.team
+            delete initialize.away.team
+            delete initialize.home.players
+            delete initialize.away.players
+            homeFormation.value = sortFormation(initialize.home)
+            awayFormation.value = sortFormation(initialize.away)
+          })
+      })
   }
+
   const reloadPlayers = () => {}
   const leaving = () => {
     console.log('Leaving Game Report')
@@ -157,7 +176,7 @@
                 :homeFormation
                 :homePlayers
                 :awayPlayers
-                @updateFormationType="updateFormationType"
+                @updateFormationType="updateDefaultFormationType"
                 @reloadPlayers="reloadPlayers"
                 @leaving="leaving"
               />
