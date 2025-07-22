@@ -217,8 +217,22 @@ export const useTeamStore = defineStore('teamStore', () => {
     if (formations.value.length > 0) return;
     formations.value = await teamAPI.getFormations();
   };
-  const updateFormationType = async (team_id: number, formation_id: number) => {
-    return await teamAPI.updateTeamFormationType(team_id, formation_id);
+  const updateDefaultFormationType = async (
+    team_id: number,
+    formation_id: number
+  ) => {
+    return await teamAPI.updateDefaultFormationType(team_id, formation_id);
+  };
+  const updateGameTeamFormationType = async (
+    team_id: number,
+    game_id: number,
+    formation_id: number
+  ) => {
+    return await teamAPI.updateGameTeamFormationType(
+      team_id,
+      game_id,
+      formation_id
+    );
   };
 
   return {
@@ -251,6 +265,7 @@ export const useTeamStore = defineStore('teamStore', () => {
     searchTeams,
     getNextGames,
     getFormations,
-    updateFormationType,
+    updateDefaultFormationType,
+    updateGameTeamFormationType,
   };
 });
