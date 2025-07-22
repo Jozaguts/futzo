@@ -5,7 +5,6 @@
   import { getTeamFormation } from '~/http/api/team'
   import type { Team } from '~/models/Team'
   import { sortFormation } from '~/utils/sort-formation'
-  const { defaultLineupAvailableTeamPlayers } = storeToRefs(usePlayerStore())
   const { homeFormation } = storeToRefs(useTeamStore())
   const { icon, field_location, number, currentPlayer, isReport } =
     defineProps<{
@@ -15,27 +14,7 @@
       currentPlayer: FormationPlayer
       isReport: Boolean
     }>()
-  const addPlayer = async (player: TeamLineupAvailablePlayers) => {
-    console.log(player)
-    if (!isReport) {
-      if (currentPlayer.default_lineup_player_id) {
-        await usePlayerStore().updateDefaultLineup(
-          player,
-          currentPlayer,
-          field_location
-        )
-      } else {
-        await usePlayerStore().addDefaultLineupPlayer(player, field_location)
-      }
-
-      getTeamFormation({ id: player.team_id } as Team).then(
-        (response: TeamFormation) => {
-          response = sortFormation(response)
-          homeFormation.value = response
-        }
-      )
-    }
-  }
+  const emits = defineEmits(['updatePlayerList'])
 </script>
 <template>
   <v-menu max-height="250" location="start">
@@ -66,7 +45,7 @@
     </template>
     <v-list density="compact">
       <v-list-item
-        v-for="(player, index) in defaultLineupAvailableTeamPlayers"
+        v-for="(player, index) in players"
         :key="index"
         :value="player"
         @click="addPlayer(player)"
