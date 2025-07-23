@@ -70,10 +70,8 @@
       :absolute="true"
       :color="'primary'"
       location="right bottom"
-      size="large"
       icon
-      class="mr-12"
-      style="transform: translate(-2rem, -3rem); z-index: 9999"
+      style="transform: translate(-5rem, -9rem); z-index: 9999"
     >
       <v-icon>{{ showFabBtn ? 'mdi-close' : 'mdi-plus' }}</v-icon>
       <v-speed-dial
