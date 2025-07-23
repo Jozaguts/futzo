@@ -65,6 +65,7 @@ export interface TournamentStoreRequest {
 export interface BasicInfoForm {
   id?: number;
   name: string;
+  substitutions_per_team: number;
   category_id: number;
   tournament_format_id: number;
   image?: File;
@@ -247,16 +248,8 @@ export type CalendarSteps = {
   completed: boolean;
   label: CalendarLabelStep;
 };
-export type CurrentCalendarStep =
-  | 'general'
-  | 'regular'
-  | 'elimination'
-  | 'fields';
-export type CalendarLabelStep =
-  | 'General'
-  | 'Fase Regular'
-  | 'Fase de Eliminación'
-  | 'Campos de juego';
+export type CurrentCalendarStep = 'general' | 'regular' | 'elimination' | 'fields';
+export type CalendarLabelStep = 'General' | 'Fase Regular' | 'Fase de Eliminación' | 'Campos de juego';
 
 export type TournamentSteps = {
   step: CurrentStep;
@@ -269,16 +262,8 @@ export type CurrentStep = 'basic-info' | 'details-info';
 
 export interface CreateTournamentForm extends TournamentStoreRequest {}
 
-export type TournamentStatus =
-  | 'creado'
-  | 'en curso'
-  | 'completado'
-  | 'cancelado';
-export type TournamentStatusText =
-  | 'Creado'
-  | 'En curso'
-  | 'Completado'
-  | 'Cancelado';
+export type TournamentStatus = 'creado' | 'en curso' | 'completado' | 'cancelado';
+export type TournamentStatusText = 'Creado' | 'En curso' | 'Completado' | 'Cancelado';
 export type TournamentStatusItem = {
   disabled: boolean;
   text: TournamentStatusText;
