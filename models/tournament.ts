@@ -1,5 +1,6 @@
 import type { LocationAvailability } from '~/models/Location';
 import type { League } from '~/models/league';
+import type { Category, Team } from '~/models/Schedule';
 
 export type TournamentLocationStoreRequest = {
   tournamentId: number;
@@ -28,6 +29,8 @@ export interface Tournament {
   id?: number | null;
   league_id?: number | null;
   name: string;
+  start_date_to_string: string;
+  category: Category;
   start_date?: Date | null;
   end_date?: Date | null;
   prize?: string | null;
@@ -39,6 +42,13 @@ export interface Tournament {
   category_id: number;
   slug: string;
   available_places: number;
+  tournament_format_id: number;
+  football_type_id: number;
+  thumbnail: null;
+  deleted_at: null;
+  created_at: Date;
+  updated_at: Date;
+  teams: Team[];
 }
 
 export interface TournamentForm {

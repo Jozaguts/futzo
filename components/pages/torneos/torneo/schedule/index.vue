@@ -6,24 +6,12 @@
   import { useToast } from '~/composables/useToast'
   import type { RoundStatus } from '~/models/Schedule'
 
-  const { tournamentId, loading } = storeToRefs(useTournamentStore())
-  const { gameReportDialog, showReScheduleDialog, gameDetailsRequest } =
-    storeToRefs(useGameStore())
+  const { tournamentId, loading, tournament } = storeToRefs(useTournamentStore())
+  const { gameReportDialog, showReScheduleDialog, gameDetailsRequest } = storeToRefs(useGameStore())
 
-  const {
-    schedulePagination,
-    isLoadingSchedules,
-    schedules,
-    scheduleRoundStatus,
-  } = storeToRefs(useScheduleStore())
-  const load = async ({
-    done,
-  }: {
-    done: (status: 'ok' | 'empty' | 'error') => void
-  }) => {
-    if (
-      schedulePagination.value.currentPage > schedulePagination.value.lastPage
-    ) {
+  const { schedulePagination, isLoadingSchedules, schedules, scheduleRoundStatus } = storeToRefs(useScheduleStore())
+  const load = async ({ done }: { done: (status: 'ok' | 'empty' | 'error') => void }) => {
+    if (schedulePagination.value.currentPage > schedulePagination.value.lastPage) {
       done('empty')
       return
     }
@@ -39,12 +27,7 @@
       isLoadingSchedules.value = false
     }
   }
-  const updateGame = (
-    action: 'up' | 'down',
-    gameId: number,
-    type: 'home' | 'away',
-    roundId: number
-  ) => {
+  const updateGame = (action: 'up' | 'down', gameId: number, type: 'home' | 'away', roundId: number) => {
     schedules.value.rounds.forEach((round) => {
       if (roundId === round.round) {
         round.matches.forEach((game) => {
@@ -62,18 +45,14 @@
     })
   }
   const editRound = (roundId: number) => {
-    const round = schedules.value.rounds.find(
-      (round) => round.round === roundId
-    )
+    const round = schedules.value.rounds.find((round) => round.round === roundId)
     if (round) {
       round.isEditable = !round.isEditable
     }
   }
   const saveHandler = (roundId: number) => {
     loading.value = true
-    const round = schedules.value.rounds.find(
-      (round) => round.round === roundId
-    )
+    const round = schedules.value.rounds.find((round) => round.round === roundId)
     if (round) {
       const games = round?.matches.map((game) => {
         return {
@@ -89,15 +68,12 @@
         }
       })
       const client = useSanctumClient()
-      client(
-        `/api/v1/admin/tournaments/${tournamentId.value}/rounds/${roundId}`,
-        {
-          method: 'POST',
-          body: {
-            matches: games,
-          },
-        }
-      )
+      client(`/api/v1/admin/tournaments/${tournamentId.value}/rounds/${roundId}`, {
+        method: 'POST',
+        body: {
+          matches: games,
+        },
+      })
         .then(() => {
           round.isEditable = !round?.isEditable
           useToast().toast('success', 'Marcador', 'Actualizado correctamente')
@@ -123,12 +99,7 @@
   onBeforeUnmount(async () => {
     schedulePagination.value.currentPage = 1
   })
-  const openModal = (
-    type: 'GameReport' | 'ReScheduleGame',
-    _gameId: number,
-    fieldId: number,
-    date: string
-  ) => {
+  const openModal = (type: 'GameReport' | 'ReScheduleGame', _gameId: number, fieldId: number, date: string) => {
     gameDetailsRequest.value = {
       id: gameDetailsRequest.value?.id,
       game_id: _gameId,
@@ -149,15 +120,15 @@
       <div class="tournament-details">
         <div class="detail">
           <p class="text-body-1">Torneo:</p>
-          <span> {{ schedules.tournament.name }}</span>
+          <span> {{ tournament.name }}</span>
         </div>
         <div class="detail">
           <p class="text-body-1">Categoría:</p>
-          <span>{{ schedules.tournament.category.name }}</span>
+          <span>{{ tournament.category.name }}</span>
         </div>
         <div class="detail">
           <p class="text-body-1">Fecha de inicio:</p>
-          <span>{{ schedules.tournament.start_date_to_string }}</span>
+          <span>{{ tournament.start_date_to_string }}</span>
         </div>
       </div>
     </v-col>
@@ -184,41 +155,24 @@
 
                       <v-menu location="bottom" transition="slide-x-transition">
                         <template v-slot:activator="{ props }">
-                          <v-btn
-                            icon="mdi-dots-vertical"
-                            variant="text"
-                            v-bind="props"
-                          ></v-btn>
+                          <v-btn icon="mdi-dots-vertical" variant="text" v-bind="props"></v-btn>
                         </template>
                         <v-list nav>
                           <v-list-subheader>Actualizar</v-list-subheader>
-                          <v-list-item
-                            variant="flat"
-                            @click="editRound(item.round)"
-                          >
-                            <v-list-item-title class="px-3"
-                              >Resultados
-                            </v-list-item-title>
+                          <v-list-item variant="flat" @click="editRound(item.round)">
+                            <v-list-item-title class="px-3">Resultados </v-list-item-title>
                           </v-list-item>
                         </v-list>
 
-                        <v-list
-                          density="compact"
-                          nav
-                          v-model:selected="item.status"
-                        >
-                          <v-list-subheader
-                            >Marcar Jornada como:
-                          </v-list-subheader>
+                        <v-list density="compact" nav v-model:selected="item.status">
+                          <v-list-subheader>Marcar Jornada como: </v-list-subheader>
                           <v-list-item
                             :active="status.value == item.status"
                             v-for="(status, index) in scheduleRoundStatus"
                             :key="index"
                             :value="status.value"
                             active-class="text-primary"
-                            @click="
-                              () => statusHandler(status.value, item.round)
-                            "
+                            @click="() => statusHandler(status.value, item.round)"
                             v-text="status.text"
                           />
                         </v-list>
@@ -226,25 +180,11 @@
                     </div>
                   </div>
                 </v-col>
-                <v-col
-                  v-for="game in item.matches"
-                  :key="game.id"
-                  cols="12"
-                  md="2"
-                  lg="4"
-                  class="game-container"
-                >
+                <v-col v-for="game in item.matches" :key="game.id" cols="12" md="2" lg="4" class="game-container">
                   <div class="game">
                     <div class="team home">
-                      <v-avatar
-                        :image="game.home.image"
-                        size="24"
-                        class="image"
-                      />
-                      <span
-                        class="name d-inline-block text-truncate"
-                        style="max-width: 150px"
-                      >
+                      <v-avatar :image="game.home.image" size="24" class="image" />
+                      <span class="name d-inline-block text-truncate" style="max-width: 150px">
                         {{ game.home.name }}</span
                       >
                       <Score
@@ -257,16 +197,9 @@
                       />
                     </div>
                     <div class="team away">
-                      <v-avatar
-                        class="image"
-                        size="24"
-                        :image="game.away.image"
-                      />
+                      <v-avatar class="image" size="24" :image="game.away.image" />
 
-                      <span
-                        class="name d-inline-block text-truncate"
-                        style="max-width: 150px"
-                      >
+                      <span class="name d-inline-block text-truncate" style="max-width: 150px">
                         {{ game.away.name }}</span
                       >
                       <Score
@@ -286,9 +219,7 @@
                       </p>
                       <p>{{ game.details?.location.name }}</p>
                       <p>{{ game.details?.field.name }}</p>
-                      <div
-                        class="d-flex justify-space-between w-75 align-center"
-                      >
+                      <div class="d-flex justify-space-between w-75 align-center">
                         <v-btn
                           icon
                           v-tooltip:bottom="'Reprogramar'"
@@ -301,19 +232,9 @@
                             (game.status as RoundStatus) === 'completado' ||
                             (game.status as RoundStatus) === 'cancelado'
                           "
-                          @click="
-                            openModal(
-                              'ReScheduleGame',
-                              game.id,
-                              game.details.field.id,
-                              game.details.raw_date
-                            )
-                          "
+                          @click="openModal('ReScheduleGame', game.id, game.details.field.id, game.details.raw_date)"
                         >
-                          <Icon
-                            name="ant-design:schedule-twotone"
-                            size="25"
-                          ></Icon>
+                          <Icon name="ant-design:schedule-twotone" size="25"></Icon>
                         </v-btn>
                         <v-btn
                           icon
@@ -321,14 +242,7 @@
                           variant="text"
                           density="compact"
                           :ripple="true"
-                          @click="
-                            openModal(
-                              'GameReport',
-                              game.id,
-                              game.details.field.id,
-                              game.details.raw_date
-                            )
-                          "
+                          @click="openModal('GameReport', game.id, game.details.field.id, game.details.raw_date)"
                         >
                           <Icon name="carbon:result-draft" size="25"></Icon>
                         </v-btn>
