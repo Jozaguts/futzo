@@ -3,25 +3,18 @@
   import GameDetailsSection from '~/components/pages/calendario/game-report/game-details-section.vue'
   import { useGameStore, useTeamStore } from '~/store'
   import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
-  import type { ActionGameReportState, DialogHandlerActionsNames, Game } from '~/models/Game'
-  import { CARDS, CARDS_STATE, GOALS, GOALS_STATE, SUBSTITUTIONS, SUBSTITUTIONS_STATE } from '~/utils/constants'
-  import { defineAsyncComponent } from '@vue/runtime-core'
+  import type { Game } from '~/models/Game'
+  import { CARDS, GOALS, SUBSTITUTIONS } from '~/utils/constants'
+  import { useGame } from '~/composables/useGame'
   const { game, showFabBtn } = storeToRefs(useGameStore())
-  const asyncComponents: Record<DialogHandlerActionsNames, Component> = {
-    goals: defineAsyncComponent(() => import('~/components/pages/calendario/game-report/sections/goals.vue')),
-    substitutions: defineAsyncComponent(
-      () => import('~/components/pages/calendario/game-report/sections/substitutions.vue')
-    ),
-    cards: defineAsyncComponent(() => import('~/components/pages/calendario/game-report/sections/cards.vue')),
-  }
-  const componentToRender = ref<keyof typeof asyncComponents>(GOALS)
-  const currentComponent = computed(() => {
-    return asyncComponents[componentToRender.value]
-  })
-  const dialogState = ref<ActionGameReportState>({ show: false, title: '', subtitle: '', type: 'info' })
-  const tab = ref('lineup')
   const { homeTeam, awayTeam, homeFormation, awayFormation, formations, homePlayers, awayPlayers } =
     storeToRefs(useTeamStore())
+  const { dialogState, currentComponent, dialogHandler, updateDefaultFormationType } = useGame()
+  const tab = ref('lineup')
+  const leaving = () => {
+    console.log('Leaving Game Report')
+  }
+
   watch(game, async (newGame) => {
     if (!newGame?.home?.id || !newGame?.away?.id) return
     const initialize = await useGameStore().initializeGameReport(newGame?.id)
@@ -33,35 +26,6 @@
   onUnmounted(() => {
     game.value = {} as Game
   })
-  const updateDefaultFormationType = (isHome: boolean, team_id: number, formation_id: number) => {
-    useTeamStore()
-      .updateGameTeamFormationType(team_id, game.value.id, formation_id)
-      .then(() => {
-        useGameStore()
-          .initializeGameReport(game.value.id)
-          .then((initialize) => {
-            useTeamStore().initReportHandler(initialize)
-          })
-      })
-  }
-
-  const reloadPlayers = () => {}
-  const leaving = () => {
-    console.log('Leaving Game Report')
-  }
-  const dialogHandler = (type: DialogHandlerActionsNames) => {
-    if (type === GOALS) {
-      dialogState.value = GOALS_STATE
-      componentToRender.value = GOALS
-    } else if (type === CARDS) {
-      dialogState.value = CARDS_STATE
-      componentToRender.value = CARDS
-    } else if (type === SUBSTITUTIONS) {
-      dialogState.value = SUBSTITUTIONS_STATE
-      componentToRender.value = SUBSTITUTIONS
-    }
-    dialogState.value.show = true
-  }
 </script>
 <template>
   <v-sheet class="futzo-rounded" position="static">
@@ -113,7 +77,6 @@
                 :homePlayers
                 :awayPlayers
                 @updateFormationType="updateDefaultFormationType"
-                @reloadPlayers="reloadPlayers"
                 @leaving="leaving"
               />
             </v-tabs-window-item>
