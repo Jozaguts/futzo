@@ -3,54 +3,25 @@
   import GameDetailsSection from '~/components/pages/calendario/game-report/game-details-section.vue'
   import { useGameStore, useTeamStore } from '~/store'
   import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
-  import type { Team } from '~/models/Team'
-  import type { DialogHandlerActionsNames, Game } from '~/models/Game'
-  import type { TeamLineupAvailablePlayers } from '~/models/Player'
-  import { sortFormation } from '~/utils/sort-formation'
-  import { CARDS, GOALS, SUBSTITUTIONS } from '~/utils/constants'
+  import type { ActionGameReportState, DialogHandlerActionsNames, Game } from '~/models/Game'
+  import { CARDS, CARDS_STATE, GOALS, GOALS_STATE, SUBSTITUTIONS, SUBSTITUTIONS_STATE } from '~/utils/constants'
+  import { defineAsyncComponent } from '@vue/runtime-core'
   const { game, showFabBtn } = storeToRefs(useGameStore())
-  const asyncComponents = {
-    Goals: defineAsyncComponent(
-      () =>
-        import('~/components/pages/calendario/game-report/sections/goals.vue')
+  const asyncComponents: Record<DialogHandlerActionsNames, Component> = {
+    goals: defineAsyncComponent(() => import('~/components/pages/calendario/game-report/sections/goals.vue')),
+    substitutions: defineAsyncComponent(
+      () => import('~/components/pages/calendario/game-report/sections/substitutions.vue')
     ),
-    Substitutions: defineAsyncComponent(
-      () =>
-        import(
-          '~/components/pages/calendario/game-report/sections/substitutions.vue'
-        )
-    ),
-    Cards: defineAsyncComponent(
-      () =>
-        import('~/components/pages/calendario/game-report/sections/cards.vue')
-    ),
+    cards: defineAsyncComponent(() => import('~/components/pages/calendario/game-report/sections/cards.vue')),
   }
-  const componentToRender = ref<keyof typeof asyncComponents>('Goals')
+  const componentToRender = ref<keyof typeof asyncComponents>(GOALS)
   const currentComponent = computed(() => {
     return asyncComponents[componentToRender.value]
   })
-  const dialogState = ref<{
-    show?: boolean
-    title: string
-    subtitle: string
-    type: 'info' | 'success' | 'error'
-  }>({
-    show: false,
-    title: '',
-    subtitle: '',
-    type: 'info',
-  })
-
+  const dialogState = ref<ActionGameReportState>({ show: false, title: '', subtitle: '', type: 'info' })
   const tab = ref('lineup')
-  const {
-    homeTeam,
-    awayTeam,
-    homeFormation,
-    awayFormation,
-    formations,
-    homePlayers,
-    awayPlayers,
-  } = storeToRefs(useTeamStore())
+  const { homeTeam, awayTeam, homeFormation, awayFormation, formations, homePlayers, awayPlayers } =
+    storeToRefs(useTeamStore())
   watch(game, async (newGame) => {
     if (!newGame?.home?.id || !newGame?.away?.id) return
     const initialize = await useGameStore().initializeGameReport(newGame?.id)
@@ -62,11 +33,7 @@
   onUnmounted(() => {
     game.value = {} as Game
   })
-  const updateDefaultFormationType = (
-    isHome: boolean,
-    team_id: number,
-    formation_id: number
-  ) => {
+  const updateDefaultFormationType = (isHome: boolean, team_id: number, formation_id: number) => {
     useTeamStore()
       .updateGameTeamFormationType(team_id, game.value.id, formation_id)
       .then(() => {
@@ -84,26 +51,14 @@
   }
   const dialogHandler = (type: DialogHandlerActionsNames) => {
     if (type === GOALS) {
-      dialogState.value = {
-        title: 'Registrar Goles',
-        subtitle: 'Añade los goles del partido',
-        type: 'info',
-      }
-      componentToRender.value = 'Goals'
+      dialogState.value = GOALS_STATE
+      componentToRender.value = GOALS
     } else if (type === CARDS) {
-      dialogState.value = {
-        title: 'Registrar Tarjetas',
-        subtitle: 'Añade las tarjetas del partido',
-        type: 'info',
-      }
-      componentToRender.value = 'Cards'
+      dialogState.value = CARDS_STATE
+      componentToRender.value = CARDS
     } else if (type === SUBSTITUTIONS) {
-      dialogState.value = {
-        title: 'Registrar Cambios',
-        subtitle: 'Añade los cambios realizados durante el partido',
-        type: 'info',
-      }
-      componentToRender.value = 'Substitutions'
+      dialogState.value = SUBSTITUTIONS_STATE
+      componentToRender.value = SUBSTITUTIONS
     }
     dialogState.value.show = true
   }
@@ -127,31 +82,13 @@
         transition="slide-y-reverse-transition"
         activator="parent"
       >
-        <v-btn
-          key="1"
-          color="grey-900"
-          @click="() => dialogHandler(GOALS)"
-          icon
-          v-tooltip:top="'Goles'"
-        >
+        <v-btn key="1" color="grey-900" @click="() => dialogHandler(GOALS)" icon v-tooltip:top="'Goles'">
           <Icon name="futzo-icon:goal" size="24" />
         </v-btn>
-        <v-btn
-          key="2"
-          color="grey-900"
-          @click="() => dialogHandler(CARDS)"
-          icon
-          v-tooltip:top="'Tarjetas'"
-        >
+        <v-btn key="2" color="grey-900" @click="() => dialogHandler(CARDS)" icon v-tooltip:top="'Tarjetas'">
           <Icon name="futzo-icon:card" size="24" />
         </v-btn>
-        <v-btn
-          key="2"
-          color="grey-900"
-          @click="() => dialogHandler(SUBSTITUTIONS)"
-          icon
-          v-tooltip:top="'Cambios'"
-        >
+        <v-btn key="2" color="grey-900" @click="() => dialogHandler(SUBSTITUTIONS)" icon v-tooltip:top="'Cambios'">
           <Icon name="futzo-icon:substitution" size="24" color="white" />
         </v-btn>
       </v-speed-dial>
@@ -161,21 +98,12 @@
         <GameDetailsSection :game="game" />
         <v-divider />
         <v-col cols="12">
-          <v-tabs
-            align-tabs="center"
-            v-model="tab"
-            fixed-tabs
-            class="bg-background"
-          >
+          <v-tabs align-tabs="center" v-model="tab" fixed-tabs class="bg-background">
             <v-tab class="text-uppercase" value="home">Cronología</v-tab>
             <v-tab class="text-uppercase" value="lineup">Alineaciones</v-tab>
           </v-tabs>
           <v-tabs-window v-model="tab" class="mt-4">
-            <v-tabs-window-item
-              value="lineup"
-              transition="fade-transition"
-              reverse-transition="fade-transition"
-            >
+            <v-tabs-window-item value="lineup" transition="fade-transition" reverse-transition="fade-transition">
               <linesupContainer
                 show-complete
                 is-report
@@ -191,11 +119,7 @@
                 @leaving="leaving"
               />
             </v-tabs-window-item>
-            <v-tabs-window-item
-              value="away"
-              transition="fade-transition"
-              reverse-transition="fade-transition"
-            >
+            <v-tabs-window-item value="away" transition="fade-transition" reverse-transition="fade-transition">
               <info-header-section :text="game?.away?.name" label="Visitante" />
             </v-tabs-window-item>
           </v-tabs-window>
