@@ -10,16 +10,18 @@
   const { game, showFabBtn } = storeToRefs(useGameStore())
   const asyncComponents = {
     Goals: defineAsyncComponent(
-      () => import('@/components/pages/calendario/game-report/forms/goals.vue')
+      () =>
+        import('~/components/pages/calendario/game-report/sections/goals.vue')
     ),
     Substitutions: defineAsyncComponent(
       () =>
         import(
-          '@/components/pages/calendario/game-report/forms/substitutions.vue'
+          '~/components/pages/calendario/game-report/sections/substitutions.vue'
         )
     ),
     Cards: defineAsyncComponent(
-      () => import('@/components/pages/calendario/game-report/forms/cards.vue')
+      () =>
+        import('~/components/pages/calendario/game-report/sections/cards.vue')
     ),
   }
   const componentToRender = ref<keyof typeof asyncComponents>('Goals')
@@ -228,8 +230,8 @@
     :loading="false"
     :subtitle="dialogState.subtitle"
     icon-name="uil:schedule"
-    min-height="600"
-    max-height="600"
+    min-height="700"
+    max-height="700"
     @leaving="dialogState.show = false"
     width="800"
   >
