@@ -1,5 +1,10 @@
 import type { AvailableIntervals } from '~/models/Schedule';
-
+import type { TeamLineupAvailablePlayers } from '~/models/Player';
+export type DialogHandlerActionsNames = 'cards' | 'goals' | 'substitutions';
+export type Initialize = Record<
+  TeamType,
+  TeamFormation & { team?: Team; players?: TeamLineupAvailablePlayers[] }
+>;
 export type TeamFormation = {
   name: string;
   team_id: number;

@@ -9,8 +9,9 @@ import type {
 import type { IPagination } from '~/interfaces';
 import * as teamAPI from '~/http/api/team';
 import prepareForm from '~/utils/prepareFormData';
-import type { TeamFormation, NextGames } from '~/models/Game';
+import type { TeamFormation, NextGames, Initialize } from '~/models/Game';
 import type { TeamLineupAvailablePlayers } from '~/models/Player';
+import { sortFormation } from '~/utils/sort-formation';
 
 export const useTeamStore = defineStore('teamStore', () => {
   const { toast } = useToast();
@@ -234,6 +235,19 @@ export const useTeamStore = defineStore('teamStore', () => {
       formation_id
     );
   };
+  const initReportHandler = (initialize: Initialize) => {
+    homeTeam.value = initialize.home.team as Team;
+    awayTeam.value = initialize.away.team as Team;
+    homePlayers.value = initialize.home.players as TeamLineupAvailablePlayers[];
+    awayPlayers.value = initialize.away.players as TeamLineupAvailablePlayers[];
+    delete initialize.home.team;
+    delete initialize.away.team;
+    delete initialize.home.players;
+    delete initialize.away.players;
+    homeFormation.value = sortFormation(initialize.home);
+    awayFormation.value = sortFormation(initialize.away);
+    return initialize;
+  };
 
   return {
     teams,
@@ -267,5 +281,6 @@ export const useTeamStore = defineStore('teamStore', () => {
     getFormations,
     updateDefaultFormationType,
     updateGameTeamFormationType,
+    initReportHandler,
   };
 });
