@@ -1,5 +1,5 @@
 import type { Interval, LocationAvailability } from '~/models/Location';
-import type { DialogHandlerActionsNames } from '~/models/Game';
+import type { ActionGameReportState, DialogHandlerActionsNames } from '~/models/Game';
 export const MAIN_PADDING_TOP = 48;
 export const MAIN_PADDING_BOTTOM = 64;
 export const FUTBOL_11_ID = 1;
@@ -66,3 +66,18 @@ export const phoneRegex = /^\d{10}$/;
 export const GOALS: DialogHandlerActionsNames = 'goals';
 export const CARDS: DialogHandlerActionsNames = 'cards';
 export const SUBSTITUTIONS: DialogHandlerActionsNames = 'substitutions';
+export const GOALS_STATE: ActionGameReportState = {
+  title: 'Registrar Goles',
+  subtitle: 'Añade los goles del partido',
+  type: 'info',
+};
+export const CARDS_STATE: ActionGameReportState = {
+  title: 'Registrar Tarjetas',
+  subtitle: 'Añade las tarjetas del partido',
+  type: 'info',
+};
+export const SUBSTITUTIONS_STATE: ActionGameReportState = {
+  title: 'Registrar Cambios',
+  subtitle: 'Añade los cambios realizados durante el partido',
+  type: 'info',
+};
