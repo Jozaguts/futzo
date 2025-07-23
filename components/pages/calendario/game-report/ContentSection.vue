@@ -4,9 +4,10 @@
   import { useGameStore, useTeamStore } from '~/store'
   import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
   import type { Team } from '~/models/Team'
-  import type { Game } from '~/models/Game'
+  import type { DialogHandlerActionsNames, Game } from '~/models/Game'
   import type { TeamLineupAvailablePlayers } from '~/models/Player'
   import { sortFormation } from '~/utils/sort-formation'
+  import { CARDS, GOALS, SUBSTITUTIONS } from '~/utils/constants'
   const { game, showFabBtn } = storeToRefs(useGameStore())
   const asyncComponents = {
     Goals: defineAsyncComponent(
@@ -53,16 +54,7 @@
   watch(game, async (newGame) => {
     if (!newGame?.home?.id || !newGame?.away?.id) return
     const initialize = await useGameStore().initializeGameReport(newGame?.id)
-    homeTeam.value = initialize.home.team as Team
-    awayTeam.value = initialize.away.team as Team
-    homePlayers.value = initialize.home.players as TeamLineupAvailablePlayers[]
-    awayPlayers.value = initialize.away.players as TeamLineupAvailablePlayers[]
-    delete initialize.home.team
-    delete initialize.away.team
-    delete initialize.home.players
-    delete initialize.away.players
-    homeFormation.value = sortFormation(initialize.home)
-    awayFormation.value = sortFormation(initialize.away)
+    useTeamStore().initReportHandler(initialize)
   })
   onMounted(() => {
     useTeamStore().getFormations()
@@ -81,18 +73,7 @@
         useGameStore()
           .initializeGameReport(game.value.id)
           .then((initialize) => {
-            homeTeam.value = initialize.home.team as Team
-            awayTeam.value = initialize.away.team as Team
-            homePlayers.value = initialize.home
-              .players as TeamLineupAvailablePlayers[]
-            awayPlayers.value = initialize.away
-              .players as TeamLineupAvailablePlayers[]
-            delete initialize.home.team
-            delete initialize.away.team
-            delete initialize.home.players
-            delete initialize.away.players
-            homeFormation.value = sortFormation(initialize.home)
-            awayFormation.value = sortFormation(initialize.away)
+            useTeamStore().initReportHandler(initialize)
           })
       })
   }
@@ -101,22 +82,22 @@
   const leaving = () => {
     console.log('Leaving Game Report')
   }
-  const dialogHandler = (type: 'goles' | 'tarjetas' | 'cambios') => {
-    if (type === 'goles') {
+  const dialogHandler = (type: DialogHandlerActionsNames) => {
+    if (type === GOALS) {
       dialogState.value = {
         title: 'Registrar Goles',
         subtitle: 'Añade los goles del partido',
         type: 'info',
       }
       componentToRender.value = 'Goals'
-    } else if (type === 'tarjetas') {
+    } else if (type === CARDS) {
       dialogState.value = {
         title: 'Registrar Tarjetas',
         subtitle: 'Añade las tarjetas del partido',
         type: 'info',
       }
       componentToRender.value = 'Cards'
-    } else if (type === 'cambios') {
+    } else if (type === SUBSTITUTIONS) {
       dialogState.value = {
         title: 'Registrar Cambios',
         subtitle: 'Añade los cambios realizados durante el partido',
@@ -149,7 +130,7 @@
         <v-btn
           key="1"
           color="grey-900"
-          @click="() => dialogHandler('goles')"
+          @click="() => dialogHandler(GOALS)"
           icon
           v-tooltip:top="'Goles'"
         >
@@ -158,7 +139,7 @@
         <v-btn
           key="2"
           color="grey-900"
-          @click="() => dialogHandler('tarjetas')"
+          @click="() => dialogHandler(CARDS)"
           icon
           v-tooltip:top="'Tarjetas'"
         >
@@ -167,7 +148,7 @@
         <v-btn
           key="2"
           color="grey-900"
-          @click="() => dialogHandler('cambios')"
+          @click="() => dialogHandler(SUBSTITUTIONS)"
           icon
           v-tooltip:top="'Cambios'"
         >
