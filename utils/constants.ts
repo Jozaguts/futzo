@@ -1,7 +1,5 @@
 import type { Interval, LocationAvailability } from '~/models/Location';
-import type { ScheduleLocationAvailability } from '~/models/Schedule';
-import type { TeamFormation } from '~/models/Game';
-
+import type { DialogHandlerActionsNames } from '~/models/Game';
 export const MAIN_PADDING_TOP = 48;
 export const MAIN_PADDING_BOTTOM = 64;
 export const FUTBOL_11_ID = 1;
@@ -9,56 +7,6 @@ export const MAX_SIZE = 2.0;
 export const MIN_TEAMS = 8;
 export const MAX_TEAMS = 32;
 export const DEFAULT_POSITION = { lat: 16.8639515, lng: -99.8822807 };
-
-export const DEFAULT_AVAILABILITY_HOURS: ScheduleLocationAvailability[] = [
-  {
-    id: 1,
-    name: 'Campo 1',
-    isCompleted: false,
-    monday: {
-      enabled: false,
-      available_range: '00:00-23:59',
-      intervals: [{ value: '*', text: 'Todo el dia', selected: false }],
-      label: 'Lunes',
-    },
-    tuesday: {
-      enabled: false,
-      available_range: '00:00-23:59',
-      intervals: [{ value: '*', text: 'Todo el dia', selected: false }],
-      label: 'Martes',
-    },
-    wednesday: {
-      enabled: false,
-      available_range: '00:00-23:59',
-      intervals: [{ value: '*', text: 'Todo el dia', selected: false }],
-      label: 'Miércoles',
-    },
-    thursday: {
-      enabled: false,
-      available_range: '00:00-23:59',
-      intervals: [{ value: '*', text: 'Todo el dia', selected: false }],
-      label: 'Jueves',
-    },
-    friday: {
-      enabled: false,
-      available_range: '00:00-23:59',
-      intervals: [{ value: '*', text: 'Todo el dia', selected: false }],
-      label: 'Viernes',
-    },
-    saturday: {
-      enabled: false,
-      available_range: '00:00-23:59',
-      intervals: [{ value: '*', text: 'Todo el dia', selected: false }],
-      label: 'Sábado',
-    },
-    sunday: {
-      enabled: false,
-      available_range: '00:00-23:59',
-      intervals: [{ value: '*', text: 'Todo el dia', selected: false }],
-      label: 'Domingo',
-    },
-  },
-];
 export const DEFAULT_LOCATION_AVAILABILITY: LocationAvailability = {
   id: 1,
   name: 'Campo 1',
@@ -115,3 +63,6 @@ export const DEFAULT_LOCATION_AVAILABILITY: LocationAvailability = {
 };
 export const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 export const phoneRegex = /^\d{10}$/;
+export const GOALS: DialogHandlerActionsNames = 'goals';
+export const CARDS: DialogHandlerActionsNames = 'cards';
+export const SUBSTITUTIONS: DialogHandlerActionsNames = 'substitutions';
