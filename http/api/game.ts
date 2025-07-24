@@ -8,11 +8,7 @@ export const getGamePlayers = async (gameId: number) => {
     return [];
   }
 };
-export const getGame = async (
-  game_id: number,
-  date: string,
-  field_id: number
-) => {
+export const getGame = async (game_id: number, date: string, field_id: number) => {
   const client = useSanctumClient();
   return await client(`/api/v1/admin/games/${game_id}/details`, {
     query: { date, field_id },
@@ -22,4 +18,8 @@ export const getGame = async (
 export const initializeGameReport = async (gameId: number) => {
   const client = useSanctumClient();
   return await client(`/api/v1/admin/games/${gameId}/report/initialize`);
+};
+export const getHeadAndSubsGamePlayers = async (gameId: number) => {
+  const client = useSanctumClient();
+  return await client(`api/v1/admin/games/${gameId}/players`);
 };

@@ -1,7 +1,18 @@
 import type { AvailableIntervals } from '~/models/Schedule';
-import type { TeamLineupAvailablePlayers } from '~/models/Player';
+import type { Player, TeamLineupAvailablePlayers } from '~/models/Player';
+import type { User } from '~/models/user';
 export type DialogHandlerActionsNames = 'cards' | 'goals' | 'substitutions';
-
+export type HeadAndSubsGamePlayers = {
+  home: {
+    substitutes: HeadAndSubsGamePlayer[];
+    headlines: HeadAndSubsGamePlayer[];
+  };
+  away: {
+    substitutes: HeadAndSubsGamePlayer[];
+    headlines: HeadAndSubsGamePlayer[];
+  };
+};
+export type HeadAndSubsGamePlayer = Player & { user: Pick<User, 'name' | 'id' | 'last_name'> };
 export type ActionGameReportState = {
   show?: boolean;
   title: string;

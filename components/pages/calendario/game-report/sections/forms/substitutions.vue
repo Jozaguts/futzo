@@ -1,49 +1,56 @@
 <script setup lang="ts">
-  import type { TeamLineupAvailablePlayers } from '~/models/Player'
-  const { players } = defineProps<{ players: TeamLineupAvailablePlayers[] }>()
+  import { useTournamentStore } from '~/store'
+  import type { HeadAndSubsGamePlayer } from '~/models/Game'
+  const { headlines = [], substitutes = [] } = defineProps<{
+    headlines: HeadAndSubsGamePlayer[]
+    substitutes: HeadAndSubsGamePlayer[]
+  }>()
+  const { tournament } = toRefs(useTournamentStore())
   const changes = ref([
     {
       in: null,
       out: null,
       minute: null,
     },
-    {
-      in: null,
-      out: null,
-      minute: null,
-    },
-    {
-      in: null,
-      out: null,
-      minute: null,
-    },
   ])
+  const addChange = () => {
+    if (!disabled.value) {
+      changes.value.push({ in: null, out: null, minute: null })
+    } else {
+    }
+  }
+  const disabled = computed(() => {
+    return (
+      changes.value.length >= tournament.value.substitutions_per_team ||
+      changes.value.some((change) => !change.in || !change.out || !change.minute)
+    )
+  })
 </script>
 <template>
   <v-container class="positon-relative" v-auto-animate>
     <v-row v-for="(change, index) in changes" :key="index">
       <v-col cols="12" md="4" lg="4">
         <v-autocomplete
-          label="Entra"
+          label="Entró"
           min-width="100%"
           placeholder="Selecciona un jugador"
           return-object
           density="compact"
-          item-title="name"
+          item-title="user.name"
           v-model="change.in"
-          :items="players"
+          :items="substitutes"
         ></v-autocomplete>
       </v-col>
       <v-col cols="12" md="4" lg="4">
         <v-autocomplete
           min-width="100%"
           return-object
-          label="Sale"
+          label="Salió"
           placeholder="Selecciona un jugador"
           density="compact"
-          item-title="name"
+          item-title="user.name"
           v-model="change.out"
-          :items="players"
+          :items="headlines"
         ></v-autocomplete>
       </v-col>
       <v-col cols="12" md="4" lg="4">
@@ -62,9 +69,10 @@
             v-if="index === changes.length - 1"
             icon="mdi-plus"
             variant="text"
+            :disabled="disabled"
             density="compact"
             class="ml-2"
-            @click="changes.push({ in: null, out: null, minute: null })"
+            @click="addChange"
           ></v-btn>
           <v-btn
             v-if="index !== changes.length - 1"

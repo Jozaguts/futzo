@@ -5,6 +5,7 @@ import type {
   GameDetailsRequest,
   GameTeam,
   GameTeamFormRequest,
+  HeadAndSubsGamePlayers,
   TeamType,
 } from '~/models/Game';
 import { useScheduleStore } from '~/store/useScheduleStore';
@@ -43,6 +44,8 @@ export const useGameStore = defineStore('gameStore', () => {
       players: [],
     },
   });
+  const headAndSubsGamePlayers = ref<HeadAndSubsGamePlayers>({} as HeadAndSubsGamePlayers);
+  // headAndSubsGamePlayers.value?.away.players.
   const getGameTeamsPlayers = async () => {
     if (gameDetailsRequest.value?.game_id) {
       return await gameAPI.getGamePlayers(gameDetailsRequest.value?.game_id);
@@ -54,21 +57,14 @@ export const useGameStore = defineStore('gameStore', () => {
   };
   const getGameDetails = async () => {
     if (dayjs(gameDetailsRequest.value?.date).isValid()) {
-      gameDetailsRequest.value.date = dayjs(
-        gameDetailsRequest.value?.date
-      ).format('YYYY-MM-DD');
+      gameDetailsRequest.value.date = dayjs(gameDetailsRequest.value?.date).format('YYYY-MM-DD');
     }
     await gameAPI
-      .getGame(
-        gameDetailsRequest.value?.game_id,
-        gameDetailsRequest.value?.date,
-        gameDetailsRequest.value?.field_id
-      )
+      .getGame(gameDetailsRequest.value?.game_id, gameDetailsRequest.value?.date, gameDetailsRequest.value?.field_id)
       .then((data) => {
         game.value = data as Game;
         if (game.value?.options?.length) {
-          gameDetailsRequest.value.day =
-            game.value.options[0].available_intervals.day;
+          gameDetailsRequest.value.day = game.value.options[0].available_intervals.day;
         }
       })
       .catch(() => {
@@ -81,26 +77,19 @@ export const useGameStore = defineStore('gameStore', () => {
   };
   const reScheduleGame = async () => {
     const client = useSanctumClient();
-    client(
-      `/api/v1/admin/games/${gameDetailsRequest.value?.game_id}/reschedule`,
-      {
-        method: 'PUT',
-        body: {
-          date: gameDetailsRequest.value?.date,
-          field_id: gameDetailsRequest.value?.field_id,
-          selected_time: gameDetailsRequest.value?.selected_time,
-          day: gameDetailsRequest.value?.day,
-        },
-      }
-    )
+    client(`/api/v1/admin/games/${gameDetailsRequest.value?.game_id}/reschedule`, {
+      method: 'PUT',
+      body: {
+        date: gameDetailsRequest.value?.date,
+        field_id: gameDetailsRequest.value?.field_id,
+        selected_time: gameDetailsRequest.value?.selected_time,
+        day: gameDetailsRequest.value?.day,
+      },
+    })
       .then(async () => {
         useScheduleStore().schedulePagination.currentPage = 1;
         await useScheduleStore().getTournamentSchedules();
-        useToast().toast(
-          'success',
-          'Partido reprogramado correctamente',
-          'El partido se ha reprogramado con éxito'
-        );
+        useToast().toast('success', 'Partido reprogramado correctamente', 'El partido se ha reprogramado con éxito');
         showReScheduleDialog.value = false;
       })
       .catch(() => {
@@ -114,7 +103,9 @@ export const useGameStore = defineStore('gameStore', () => {
   const initializeGameReport = async (game_id: number) => {
     return await gameAPI.initializeGameReport(game_id);
   };
-
+  const getHeadAndSubsGamePlayers = async () => {
+    headAndSubsGamePlayers.value = await gameAPI.getHeadAndSubsGamePlayers(game.value.id);
+  };
   return {
     game,
     games,
@@ -125,10 +116,12 @@ export const useGameStore = defineStore('gameStore', () => {
     gameTeamFormRequest,
     gamePlayers,
     showFabBtn,
+    headAndSubsGamePlayers,
     fetchGame,
     getGameDetails,
     getGameTeamsPlayers,
     reScheduleGame,
     initializeGameReport,
+    getHeadAndSubsGamePlayers,
   };
 });
