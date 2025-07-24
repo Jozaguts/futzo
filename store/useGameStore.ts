@@ -6,6 +6,7 @@ import type {
   GameTeam,
   GameTeamFormRequest,
   HeadAndSubsGamePlayers,
+  Substitution,
   TeamType,
 } from '~/models/Game';
 import { useScheduleStore } from '~/store/useScheduleStore';
@@ -45,6 +46,13 @@ export const useGameStore = defineStore('gameStore', () => {
     },
   });
   const headAndSubsGamePlayers = ref<HeadAndSubsGamePlayers>({} as HeadAndSubsGamePlayers);
+  const substitutions = ref<Substitution[]>([
+    {
+      in: null,
+      out: null,
+      minute: null,
+    },
+  ]);
   // headAndSubsGamePlayers.value?.away.players.
   const getGameTeamsPlayers = async () => {
     if (gameDetailsRequest.value?.game_id) {
@@ -117,6 +125,7 @@ export const useGameStore = defineStore('gameStore', () => {
     gamePlayers,
     showFabBtn,
     headAndSubsGamePlayers,
+    substitutions,
     fetchGame,
     getGameDetails,
     getGameTeamsPlayers,

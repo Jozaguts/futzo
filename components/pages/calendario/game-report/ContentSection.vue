@@ -104,6 +104,34 @@
     <template #v-card-text>
       <component :is="currentComponent"></component>
     </template>
+    <template #actions>
+      <v-row>
+        <v-col cols="6">
+          <v-btn
+            variant="outlined"
+            block
+            color="secondary"
+            density="comfortable"
+            size="large"
+            @click="dialogState.show = false"
+          >
+            Cerrar
+          </v-btn>
+        </v-col>
+        <v-col cols="6">
+          <v-btn
+            variant="elevated"
+            block
+            color="primary"
+            density="comfortable"
+            size="large"
+            @click="dialogState.show = false"
+          >
+            Guardar
+          </v-btn>
+        </v-col>
+      </v-row>
+    </template>
   </Dialog>
 </template>
 <style lang="sass">

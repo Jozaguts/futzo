@@ -1,34 +1,27 @@
 <script setup lang="ts">
-  import { useTournamentStore } from '~/store'
+  import { useGameStore, useTournamentStore } from '~/store'
   import type { HeadAndSubsGamePlayer } from '~/models/Game'
   const { headlines = [], substitutes = [] } = defineProps<{
     headlines: HeadAndSubsGamePlayer[]
     substitutes: HeadAndSubsGamePlayer[]
   }>()
   const { tournament } = toRefs(useTournamentStore())
-  const changes = ref([
-    {
-      in: null,
-      out: null,
-      minute: null,
-    },
-  ])
+  const { substitutions } = toRefs(useGameStore())
   const addChange = () => {
     if (!disabled.value) {
-      changes.value.push({ in: null, out: null, minute: null })
-    } else {
+      substitutions.value.push({ in: null, out: null, minute: null })
     }
   }
   const disabled = computed(() => {
     return (
-      changes.value.length >= tournament.value.substitutions_per_team ||
-      changes.value.some((change) => !change.in || !change.out || !change.minute)
+      substitutions.value.length >= tournament.value.substitutions_per_team ||
+      substitutions.value.some((change) => !change.in || !change.out || !change.minute)
     )
   })
 </script>
 <template>
   <v-container class="positon-relative" v-auto-animate>
-    <v-row v-for="(change, index) in changes" :key="index">
+    <v-row v-for="(change, index) in substitutions" :key="index">
       <v-col cols="12" md="4" lg="4">
         <v-autocomplete
           label="Entró"
@@ -66,7 +59,7 @@
             :max="120"
           ></v-text-field>
           <v-btn
-            v-if="index === changes.length - 1"
+            v-if="index === substitutions.length - 1"
             icon="mdi-plus"
             variant="text"
             :disabled="disabled"
@@ -75,13 +68,13 @@
             @click="addChange"
           ></v-btn>
           <v-btn
-            v-if="index !== changes.length - 1"
+            v-if="index !== substitutions.length - 1"
             icon="mdi-minus"
             color="secondary"
             variant="text"
             density="compact"
             class="ml-2"
-            @click="changes.splice(index, 1)"
+            @click="substitutions.splice(index, 1)"
           ></v-btn>
         </div>
       </v-col>

@@ -2,6 +2,11 @@ import type { AvailableIntervals } from '~/models/Schedule';
 import type { Player, TeamLineupAvailablePlayers } from '~/models/Player';
 import type { User } from '~/models/user';
 export type DialogHandlerActionsNames = 'cards' | 'goals' | 'substitutions';
+export type Substitution = {
+  in: number | null;
+  out: number | null;
+  minute: number | null;
+};
 export type HeadAndSubsGamePlayers = {
   home: {
     substitutes: HeadAndSubsGamePlayer[];
