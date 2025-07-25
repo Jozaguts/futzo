@@ -23,3 +23,11 @@ export const getHeadAndSubsGamePlayers = async (gameId: number) => {
   const client = useSanctumClient();
   return await client(`api/v1/admin/games/${gameId}/players`);
 };
+
+export const saveEventGameHandler = async (gameId: number, body: any) => {
+  const client = useSanctumClient();
+  return await client(`/api/v1/admin/games/${gameId}/substitutions`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+};

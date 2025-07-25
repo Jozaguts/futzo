@@ -1,32 +1,36 @@
 <script setup lang="ts">
   import { useGameStore, useTournamentStore } from '~/store'
-  import type { HeadAndSubsGamePlayer } from '~/models/Game'
+  import type { HeadAndSubsGamePlayer, Substitution } from '~/models/Game'
   const { headlines = [], substitutes = [] } = defineProps<{
     headlines: HeadAndSubsGamePlayer[]
     substitutes: HeadAndSubsGamePlayer[]
   }>()
+  const substitutions = defineModel<Substitution[]>('substitutions', {
+    default: () => [{ player_in_id: null, player_out_id: null, minute: null }],
+  })
   const { tournament } = toRefs(useTournamentStore())
-  const { substitutions, gameActionFormRequest } = toRefs(useGameStore())
+  const { gameActionFormRequest } = toRefs(useGameStore())
   const addChange = () => {
     if (!disabled.value) {
-      substitutions.value.push({ in: null, out: null, minute: null })
+      substitutions.value.push({ player_in_id: null, player_out_id: null, minute: null })
     }
   }
   const disabled = computed(() => {
     return (
       substitutions.value.length >= tournament.value.substitutions_per_team ||
-      substitutions.value.some((change) => !change.in || !change.out || !change.minute)
+      substitutions.value.some((change) => !change.player_in_id || !change.player_out_id || !change.minute)
     )
   })
-  watch(disabled, (newValue) => {
+  watch(disabled, () => {
     if (gameActionFormRequest.value.action === 'substitutions') {
       gameActionFormRequest.value.disabled = substitutions.value.some(
-        (change) => !change.in || !change.out || !change.minute
+        (change) => !change.player_in_id || !change.player_out_id || !change.minute
       )
     }
   })
   onUnmounted(() => {
-    substitutions.value = [{ in: null, out: null, minute: null }]
+    substitutions.value = [{ player_in_id: null, player_out_id: null, minute: null }]
+    gameActionFormRequest.value.disabled = true
   })
 </script>
 <template>
@@ -39,8 +43,9 @@
           placeholder="Selecciona un jugador"
           item-value="id"
           density="compact"
+          clearable
           item-title="user.name"
-          v-model="change.in"
+          v-model="change.player_in_id"
           :items="substitutes"
         ></v-autocomplete>
       </v-col>
@@ -52,7 +57,8 @@
           placeholder="Selecciona un jugador"
           density="compact"
           item-title="user.name"
-          v-model="change.out"
+          clearable
+          v-model="change.player_out_id"
           :items="headlines"
         ></v-autocomplete>
       </v-col>
@@ -77,7 +83,7 @@
             @click="addChange"
           ></v-btn>
           <v-btn
-            v-if="index !== substitutions.length - 1"
+            v-if="index !== 0"
             icon="mdi-minus"
             color="secondary"
             variant="text"

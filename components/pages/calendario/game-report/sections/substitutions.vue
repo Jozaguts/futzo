@@ -2,7 +2,7 @@
   import GameDetailsSection from '~/components/pages/calendario/game-report/game-details-section.vue'
   import SubstitutionsForm from '~/components/pages/calendario/game-report/sections/forms/substitutions.vue'
   import { useGameStore } from '~/store'
-  const { game, headAndSubsGamePlayers } = storeToRefs(useGameStore())
+  const { game, headAndSubsGamePlayers, substitutions } = storeToRefs(useGameStore())
   const tab = ref(game.value.home.id)
 
   onMounted(async () => {
@@ -23,12 +23,14 @@
             <SubstitutionsForm
               :headlines="headAndSubsGamePlayers?.home?.headlines"
               :substitutes="headAndSubsGamePlayers?.home?.substitutes"
+              v-model:substitutions="substitutions.home"
             />
           </v-tabs-window-item>
           <v-tabs-window-item :value="game.away.id" transition="fade-transition" reverse-transition="fade-transition">
             <SubstitutionsForm
               :headlines="headAndSubsGamePlayers?.away?.headlines"
               :substitutes="headAndSubsGamePlayers?.away?.substitutes"
+              v-model:substitutions="substitutions.away"
             />
           </v-tabs-window-item>
         </v-tabs-window>

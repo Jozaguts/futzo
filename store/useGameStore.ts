@@ -8,6 +8,7 @@ import type {
   GameTeamFormRequest,
   HeadAndSubsGamePlayers,
   Substitution,
+  TeamSubstitutions,
   TeamType,
 } from '~/models/Game';
 import { useScheduleStore } from '~/store/useScheduleStore';
@@ -47,13 +48,22 @@ export const useGameStore = defineStore('gameStore', () => {
     },
   });
   const headAndSubsGamePlayers = ref<HeadAndSubsGamePlayers>({} as HeadAndSubsGamePlayers);
-  const substitutions = ref<Substitution[]>([
-    {
-      in: null,
-      out: null,
-      minute: null,
-    },
-  ]);
+  const substitutions = ref<TeamSubstitutions>({
+    home: [
+      {
+        player_in_id: null,
+        player_out_id: null,
+        minute: null,
+      },
+    ],
+    away: [
+      {
+        player_in_id: null,
+        player_out_id: null,
+        minute: null,
+      },
+    ],
+  });
   type GameActionFormRequest = {
     action: DialogHandlerActionsNames;
     body: any | null;
@@ -127,7 +137,16 @@ export const useGameStore = defineStore('gameStore', () => {
   const getHeadAndSubsGamePlayers = async () => {
     headAndSubsGamePlayers.value = await gameAPI.getHeadAndSubsGamePlayers(game.value.id);
   };
-  const saveEventGameHandler = () => {};
+  const saveEventGameHandler = () => {
+    let body: any = null;
+    if (gameActionFormRequest.value.action === 'substitutions') {
+      body = {
+        home: substitutions.value.home.filter((sub) => sub.player_in_id && sub.player_out_id && sub.minute),
+        away: substitutions.value.away.filter((sub) => sub.player_in_id && sub.player_out_id && sub.minute),
+      };
+    }
+    const response = gameAPI.saveEventGameHandler(game.value.id, body);
+  };
   return {
     game,
     games,
