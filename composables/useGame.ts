@@ -3,11 +3,12 @@ import { useGameStore, useTeamStore } from '~/store';
 import { defineAsyncComponent } from '@vue/runtime-core';
 import { CARDS, CARDS_STATE, GOALS, GOALS_STATE, SUBSTITUTIONS, SUBSTITUTIONS_STATE } from '~/utils/constants';
 import { useToast } from '~/composables/useToast';
+import { storeToRefs } from 'pinia';
 
 export const useGame = () => {
   const { homeFormation, awayFormation } = storeToRefs(useTeamStore());
-  const { game, gameActionFormRequest } = storeToRefs(useGameStore());
-  const dialogState = ref<ActionGameReportState>({ show: false, title: '', subtitle: '', type: 'info' });
+  const { game, gameActionFormRequest, dialogState } = storeToRefs(useGameStore());
+
   const asyncComponents: Record<DialogHandlerActionsNames, Component> = {
     goals: defineAsyncComponent(() => import('~/components/pages/calendario/game-report/sections/goals.vue')),
     substitutions: defineAsyncComponent(

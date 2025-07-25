@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 
 import type {
+  ActionGameReportState,
   DialogHandlerActionsNames,
   Game,
   GameDetailsRequest,
@@ -14,6 +15,8 @@ import type {
 import { useScheduleStore } from '~/store/useScheduleStore';
 import * as gameAPI from '~/http/api/game';
 import dayjs from 'dayjs';
+import { useTeamStore } from '~/store/useTeamStore';
+import { useToast } from '~/composables/useToast';
 
 export const useGameStore = defineStore('gameStore', () => {
   const game = ref<Game>(null as unknown as Game);
@@ -76,6 +79,7 @@ export const useGameStore = defineStore('gameStore', () => {
     disabled: true,
     loading: false,
   });
+  const dialogState = ref<ActionGameReportState>({ show: false, title: '', subtitle: '', type: 'info' });
   // headAndSubsGamePlayers.value?.away.players.
   const getGameTeamsPlayers = async () => {
     if (gameDetailsRequest.value?.game_id) {
@@ -139,13 +143,33 @@ export const useGameStore = defineStore('gameStore', () => {
   };
   const saveEventGameHandler = () => {
     let body: any = null;
+    gameActionFormRequest.value.loading = true;
     if (gameActionFormRequest.value.action === 'substitutions') {
       body = {
         home: substitutions.value.home.filter((sub) => sub.player_in_id && sub.player_out_id && sub.minute),
         away: substitutions.value.away.filter((sub) => sub.player_in_id && sub.player_out_id && sub.minute),
       };
     }
-    const response = gameAPI.saveEventGameHandler(game.value.id, body);
+    try {
+      gameAPI.saveEventGameHandler(game.value.id, body).then(() => {
+        useToast().toast('success', 'Evento guardado correctamente', 'El evento del partido se ha guardado con éxito');
+        gameActionFormRequest.value.loading = false;
+        gameActionFormRequest.value.disabled = true;
+        gameActionFormRequest.value.body = null;
+        gameActionFormRequest.value.action = 'substitutions';
+      });
+      initializeGameReport(game.value.id).then((initialize) => {
+        useTeamStore().initReportHandler(initialize);
+      });
+    } catch (error) {
+      useToast().toast(
+        'error',
+        'Error al guardar el evento',
+        'Hubo un error al intentar guardar el evento del partido. Por favor, intente nuevamente más tarde.'
+      );
+    } finally {
+      dialogState.value.show = false;
+    }
   };
   return {
     game,
@@ -160,6 +184,7 @@ export const useGameStore = defineStore('gameStore', () => {
     headAndSubsGamePlayers,
     substitutions,
     gameActionFormRequest,
+    dialogState,
     fetchGame,
     getGameDetails,
     getGameTeamsPlayers,
