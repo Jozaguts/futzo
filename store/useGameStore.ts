@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 
 import type {
+  DialogHandlerActionsNames,
   Game,
   GameDetailsRequest,
   GameTeam,
@@ -53,6 +54,18 @@ export const useGameStore = defineStore('gameStore', () => {
       minute: null,
     },
   ]);
+  type GameActionFormRequest = {
+    action: DialogHandlerActionsNames;
+    body: any | null;
+    disabled: boolean;
+    loading: boolean;
+  };
+  const gameActionFormRequest = ref<GameActionFormRequest>({
+    action: 'substitutions',
+    body: null,
+    disabled: true,
+    loading: false,
+  });
   // headAndSubsGamePlayers.value?.away.players.
   const getGameTeamsPlayers = async () => {
     if (gameDetailsRequest.value?.game_id) {
@@ -114,6 +127,7 @@ export const useGameStore = defineStore('gameStore', () => {
   const getHeadAndSubsGamePlayers = async () => {
     headAndSubsGamePlayers.value = await gameAPI.getHeadAndSubsGamePlayers(game.value.id);
   };
+  const saveEventGameHandler = () => {};
   return {
     game,
     games,
@@ -126,11 +140,13 @@ export const useGameStore = defineStore('gameStore', () => {
     showFabBtn,
     headAndSubsGamePlayers,
     substitutions,
+    gameActionFormRequest,
     fetchGame,
     getGameDetails,
     getGameTeamsPlayers,
     reScheduleGame,
     initializeGameReport,
     getHeadAndSubsGamePlayers,
+    saveEventGameHandler,
   };
 });

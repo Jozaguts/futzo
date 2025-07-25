@@ -6,7 +6,7 @@ import { useToast } from '~/composables/useToast';
 
 export const useGame = () => {
   const { homeFormation, awayFormation } = storeToRefs(useTeamStore());
-  const { game } = storeToRefs(useGameStore());
+  const { game, gameActionFormRequest } = storeToRefs(useGameStore());
   const dialogState = ref<ActionGameReportState>({ show: false, title: '', subtitle: '', type: 'info' });
   const asyncComponents: Record<DialogHandlerActionsNames, Component> = {
     goals: defineAsyncComponent(() => import('~/components/pages/calendario/game-report/sections/goals.vue')),
@@ -42,6 +42,7 @@ export const useGame = () => {
     }, 0);
   };
   const dialogHandler = (type: DialogHandlerActionsNames) => {
+    gameActionFormRequest.value.action = type;
     if (type === GOALS) {
       dialogState.value = GOALS_STATE;
       componentToRender.value = GOALS;

@@ -6,7 +6,7 @@
     substitutes: HeadAndSubsGamePlayer[]
   }>()
   const { tournament } = toRefs(useTournamentStore())
-  const { substitutions } = toRefs(useGameStore())
+  const { substitutions, gameActionFormRequest } = toRefs(useGameStore())
   const addChange = () => {
     if (!disabled.value) {
       substitutions.value.push({ in: null, out: null, minute: null })
@@ -18,6 +18,16 @@
       substitutions.value.some((change) => !change.in || !change.out || !change.minute)
     )
   })
+  watch(disabled, (newValue) => {
+    if (gameActionFormRequest.value.action === 'substitutions') {
+      gameActionFormRequest.value.disabled = substitutions.value.some(
+        (change) => !change.in || !change.out || !change.minute
+      )
+    }
+  })
+  onUnmounted(() => {
+    substitutions.value = [{ in: null, out: null, minute: null }]
+  })
 </script>
 <template>
   <v-container class="positon-relative" v-auto-animate>
@@ -27,7 +37,7 @@
           label="Entró"
           min-width="100%"
           placeholder="Selecciona un jugador"
-          return-object
+          item-value="id"
           density="compact"
           item-title="user.name"
           v-model="change.in"
@@ -37,7 +47,7 @@
       <v-col cols="12" md="4" lg="4">
         <v-autocomplete
           min-width="100%"
-          return-object
+          item-value="id"
           label="Salió"
           placeholder="Selecciona un jugador"
           density="compact"
@@ -53,7 +63,6 @@
             v-model="change.minute"
             placeholder="Minuto"
             type="number"
-            step="5"
             min="1"
             density="compact"
             :max="120"

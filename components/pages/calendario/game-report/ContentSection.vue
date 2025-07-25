@@ -6,7 +6,7 @@
   import type { Game } from '~/models/Game'
   import { CARDS, GOALS, SUBSTITUTIONS } from '~/utils/constants'
   import { useGame } from '~/composables/useGame'
-  const { game, showFabBtn } = storeToRefs(useGameStore())
+  const { game, showFabBtn, gameActionFormRequest } = storeToRefs(useGameStore())
   const { homeTeam, awayTeam, homeFormation, awayFormation, formations, homePlayers, awayPlayers } =
     storeToRefs(useTeamStore())
   const { dialogState, currentComponent, dialogHandler, updateDefaultFormationType } = useGame()
@@ -125,7 +125,9 @@
             color="primary"
             density="comfortable"
             size="large"
-            @click="dialogState.show = false"
+            :disabled="gameActionFormRequest.disabled"
+            :loading="gameActionFormRequest.loading"
+            @click="useGameStore().saveEventGameHandler"
           >
             Guardar
           </v-btn>
