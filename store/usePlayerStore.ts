@@ -1,10 +1,5 @@
 import { defineStore } from 'pinia';
-import type {
-  FormSteps,
-  Player,
-  PlayerStoreRequest,
-  TeamLineupAvailablePlayers,
-} from '~/models/Player';
+import type { FormSteps, Player, PlayerStoreRequest, TeamLineupAvailablePlayers } from '~/models/Player';
 import prepareForm from '~/utils/prepareFormData';
 import type { IPagination } from '~/interfaces';
 import type { Team } from '~/models/Team';
@@ -59,8 +54,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
         toast(
           'error',
           'Error al obtener el jugador',
-          error.data?.message ??
-            'No se pudo obtener la información del jugador. Inténtalo de nuevo.'
+          error.data?.message ?? 'No se pudo obtener la información del jugador. Inténtalo de nuevo.'
         );
       });
   };
@@ -82,8 +76,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
         toast(
           'error',
           'Error al descargar la plantilla',
-          error.data?.message ??
-            'No se pudo descargar la plantilla. Inténtalo de nuevo.'
+          error.data?.message ?? 'No se pudo descargar la plantilla. Inténtalo de nuevo.'
         );
       })
       .finally(() => {
@@ -101,11 +94,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
       body: form,
     })
       .then(async () => {
-        toast(
-          'success',
-          'Jugador creado',
-          'El nuevo jugador se ha agregado exitosamente.'
-        );
+        toast('success', 'Jugador creado', 'El nuevo jugador se ha agregado exitosamente.');
         dialog.value = false;
         await getPlayers();
       })
@@ -115,8 +104,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
         toast(
           'error',
           'Error al crear al jugador',
-          error.data?.message ??
-            'No se pudo crear al jugador. Verifica tu información e inténtalo de nuevo.'
+          error.data?.message ?? 'No se pudo crear al jugador. Verifica tu información e inténtalo de nuevo.'
         );
       });
   };
@@ -144,11 +132,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
       body: formData,
     })
       .then(async () => {
-        toast(
-          'success',
-          'Jugadores importados',
-          'Los jugadores han sido importados y registrados exitosamente.'
-        );
+        toast('success', 'Jugadores importados', 'Los jugadores han sido importados y registrados exitosamente.');
         importModal.value = false;
         await getPlayers();
       })
@@ -157,8 +141,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
         toast(
           'error',
           'Error importar',
-          error.data?.message ??
-            'No se pudo importar el documento. Verifica su información e inténtalo de nuevo.'
+          error.data?.message ?? 'No se pudo importar el documento. Verifica su información e inténtalo de nuevo.'
         );
       })
       .finally(() => (isImporting.value = false));
@@ -173,10 +156,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
   ) => {
     await teamAPI.updateDefaultLineup(player, currentPlayer, field_location);
   };
-  const addDefaultLineupPlayer = async (
-    player: TeamLineupAvailablePlayers,
-    field_location: number
-  ) => {
+  const addDefaultLineupPlayer = async (player: TeamLineupAvailablePlayers, field_location: number) => {
     await teamAPI.addDefaultLineupPlayer(player, field_location);
   };
   const updateLineup = async (
@@ -188,10 +168,11 @@ export const usePlayerStore = defineStore('playerStore', () => {
   };
   const addLineupPlayer = async (
     player: TeamLineupAvailablePlayers,
+    currentPlayer: FormationPlayer,
     field_location: number,
     game_id: number
   ) => {
-    await teamAPI.addLineupPlayer(player, field_location, game_id);
+    await teamAPI.addLineupPlayer(player, currentPlayer, field_location, game_id);
   };
 
   return {
