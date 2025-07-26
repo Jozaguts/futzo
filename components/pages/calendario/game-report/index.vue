@@ -26,8 +26,8 @@
     :model-value="gameReportDialog"
     @leaving="onLeaving"
     icon-name="uil:schedule"
-    min-height="910"
-    max-height="910"
+    min-height="95vh"
+    max-height="95vh"
     width="800"
   >
     <template #v-card-text>

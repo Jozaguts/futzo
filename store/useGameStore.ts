@@ -17,6 +17,7 @@ import * as gameAPI from '~/http/api/game';
 import dayjs from 'dayjs';
 import { useTeamStore } from '~/store/useTeamStore';
 import { useToast } from '~/composables/useToast';
+import { useSanctumClient } from '#imports';
 
 export const useGameStore = defineStore('gameStore', () => {
   const game = ref<Game>(null as unknown as Game);

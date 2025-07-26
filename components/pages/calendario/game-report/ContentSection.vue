@@ -6,6 +6,7 @@
   import type { Game } from '~/models/Game'
   import { CARDS, GOALS, SUBSTITUTIONS } from '~/utils/constants'
   import { useGame } from '~/composables/useGame'
+  import { storeToRefs } from 'pinia'
   const { game, showFabBtn, gameActionFormRequest } = storeToRefs(useGameStore())
   const { homeTeam, awayTeam, homeFormation, awayFormation, formations, homePlayers, awayPlayers } =
     storeToRefs(useTeamStore())

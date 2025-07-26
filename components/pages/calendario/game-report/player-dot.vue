@@ -5,6 +5,7 @@
   import { getTeamFormation } from '~/http/api/team'
   import type { Team } from '~/models/Team'
   import { sortFormation } from '~/utils/sort-formation'
+  import { storeToRefs } from 'pinia'
   const { homeFormation, homePlayers } = storeToRefs(useTeamStore())
   const { game } = storeToRefs(useGameStore())
   const { isReport, players, field_location, player } = defineProps<{
