@@ -8,7 +8,6 @@ import type {
   GameTeam,
   GameTeamFormRequest,
   HeadAndSubsGamePlayers,
-  Substitution,
   TeamSubstitutions,
   TeamType,
 } from '~/models/Game';

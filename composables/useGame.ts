@@ -1,4 +1,4 @@
-import type { ActionGameReportState, DialogHandlerActionsNames, FormationPlayer, TeamFormation } from '~/models/Game';
+import type { DialogHandlerActionsNames, FormationPlayer, TeamFormation } from '~/models/Game';
 import { useGameStore, useTeamStore } from '~/store';
 import { defineAsyncComponent } from '@vue/runtime-core';
 import { CARDS, CARDS_STATE, GOALS, GOALS_STATE, SUBSTITUTIONS, SUBSTITUTIONS_STATE } from '~/utils/constants';

@@ -39,6 +39,10 @@
       useTeamStore().initReportHandler(initialize)
     }
   }
+
+  const modelValue = computed(() => {
+    return !!player.name && game.value.status !== 'completado'
+  })
 </script>
 <template>
   <div class="dot-container">
@@ -60,7 +64,7 @@
               offset-y="-10"
               location="top end"
               color="info"
-              :model-value="!!player.name"
+              :model-value="modelValue"
             >
               <template #badge>
                 <Icon name="tabler:switch-vertical"></Icon>
