@@ -38,6 +38,7 @@ export type TeamFormation = {
 export type FormationPlayer = {
   name: string;
   abbr: string;
+  color: string;
   default_lineup_player_id: number;
   lineup_player_id: number;
   field_location: number;

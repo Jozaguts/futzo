@@ -55,7 +55,7 @@
             icon
             size="40"
             border="lg"
-            :color="!!player.name ? 'primary' : 'secondary'"
+            :color="player.color ?? 'secondary'"
             :readonly="!!player.name"
           >
             <v-badge
