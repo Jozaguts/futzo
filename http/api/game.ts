@@ -31,3 +31,9 @@ export const saveEventGameHandler = async (gameId: number, body: any) => {
     body: JSON.stringify(body),
   });
 };
+export const removeSubstitution = async (gameId: number, substitutionId: number) => {
+  const client = useSanctumClient();
+  return await client(`/api/v1/admin/games/${gameId}/substitutions/${substitutionId}`, {
+    method: 'DELETE',
+  });
+};
