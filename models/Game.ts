@@ -4,6 +4,7 @@ import type { User } from '~/models/user';
 export type DialogHandlerActionsNames = 'cards' | 'goals' | 'substitutions';
 export type TeamSubstitutions = Record<TeamType, Substitution[]>;
 export type Substitution = {
+  id?: number;
   player_in_id: number | null;
   player_out_id: number | null;
   minute: number | null;
@@ -12,10 +13,12 @@ export type HeadAndSubsGamePlayers = {
   home: {
     substitutes: HeadAndSubsGamePlayer[];
     headlines: HeadAndSubsGamePlayer[];
+    substitutions: Substitution[];
   };
   away: {
     substitutes: HeadAndSubsGamePlayer[];
     headlines: HeadAndSubsGamePlayer[];
+    substitutions: Substitution[];
   };
 };
 export type HeadAndSubsGamePlayer = Player & { user: Pick<User, 'name' | 'id' | 'last_name'> };
