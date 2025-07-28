@@ -140,6 +140,38 @@ export const useGameStore = defineStore('gameStore', () => {
   };
   const getHeadAndSubsGamePlayers = async () => {
     headAndSubsGamePlayers.value = await gameAPI.getHeadAndSubsGamePlayers(game.value.id);
+    if (headAndSubsGamePlayers.value.home.substitutions.length) {
+      substitutions.value.home = [];
+      headAndSubsGamePlayers.value.home.substitutions.map((substitution) => {
+        const alreadyExists = substitutions.value.home.some(
+          (sub) => sub.player_in_id === substitution.player_in_id && sub.player_out_id === substitution.player_out_id
+        );
+        if (!alreadyExists) {
+          substitutions.value.home.push({
+            id: substitution.id,
+            player_in_id: substitution.player_in_id,
+            player_out_id: substitution.player_out_id,
+            minute: substitution.minute,
+          });
+        }
+      });
+    }
+    if (headAndSubsGamePlayers.value.away.substitutions.length) {
+      substitutions.value.away = [];
+      headAndSubsGamePlayers.value.away.substitutions.map((substitution) => {
+        const alreadyExists = substitutions.value.away.some(
+          (sub) => sub.player_in_id === substitution.player_in_id && sub.player_out_id === substitution.player_out_id
+        );
+        if (!alreadyExists) {
+          substitutions.value.away.push({
+            id: substitution.id,
+            player_in_id: substitution.player_in_id,
+            player_out_id: substitution.player_out_id,
+            minute: substitution.minute,
+          });
+        }
+      });
+    }
   };
   const saveEventGameHandler = () => {
     let body: any = null;
@@ -171,6 +203,11 @@ export const useGameStore = defineStore('gameStore', () => {
       dialogState.value.show = false;
     }
   };
+  const removeSubstitution = async (substitution_id: number) => {
+    return gameAPI.removeSubstitution(game.value.id, substitution_id).finally(() => {
+      useToast().toast('success', 'Sustitución eliminada correctamente', 'La sustitución se ha eliminado con éxito');
+    });
+  };
   return {
     game,
     games,
@@ -192,5 +229,6 @@ export const useGameStore = defineStore('gameStore', () => {
     initializeGameReport,
     getHeadAndSubsGamePlayers,
     saveEventGameHandler,
+    removeSubstitution,
   };
 });
