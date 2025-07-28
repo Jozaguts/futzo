@@ -17,11 +17,12 @@
   }
   const disabled = computed(() => {
     return (
-      substitutions.value.length >= tournament.value.substitutions_per_team ||
+      substitutions.value.length > tournament.value.substitutions_per_team ||
       substitutions.value.some((change) => !change.player_in_id || !change.player_out_id || !change.minute)
     )
   })
-  watch(disabled, () => {
+  watch(disabled, (newValue) => {
+    console.log(newValue)
     if (gameActionFormRequest.value.action === 'substitutions') {
       gameActionFormRequest.value.disabled = substitutions.value.some(
         (change) => !change.player_in_id || !change.player_out_id || !change.minute
@@ -32,6 +33,16 @@
     substitutions.value = [{ player_in_id: null, player_out_id: null, minute: null }]
     gameActionFormRequest.value.disabled = true
   })
+  const removeChange = (index: number) => {
+    const change = substitutions.value[index]
+    if (change?.id) {
+      useGameStore()
+        .removeSubstitution(change.id)
+        .then(() => {
+          substitutions.value.splice(index, 1)
+        })
+    }
+  }
 </script>
 <template>
   <v-container class="positon-relative" v-auto-animate>
@@ -44,8 +55,15 @@
           item-value="id"
           density="compact"
           clearable
+          hide-selected
           item-title="user.name"
           v-model="change.player_in_id"
+          :rules="[
+            (v) => !!v || 'Jugador requerido',
+            (v) => v !== change.player_out_id || !!v || 'No puede ser el mismo jugador',
+            (v) => substitutions.every((c, i) => i === index || c.player_in_id !== v) || 'Jugador ya seleccionado',
+            (v) => substitutions.every((c, i) => i === index || c.player_out_id !== v) || 'Jugador ya seleccionado',
+          ]"
           :items="substitutes"
         ></v-autocomplete>
       </v-col>
@@ -54,6 +72,13 @@
           min-width="100%"
           item-value="id"
           label="Salió"
+          hide-selected
+          :rules="[
+            (v) => !!v || 'Jugador requerido',
+            (v) => v !== change.player_out_id || !!v || 'No puede ser el mismo jugador',
+            (v) => substitutions.every((c, i) => i === index || c.player_in_id !== v) || 'Jugador ya seleccionado',
+            (v) => substitutions.every((c, i) => i === index || c.player_out_id !== v) || 'Jugador ya seleccionado',
+          ]"
           placeholder="Selecciona un jugador"
           density="compact"
           item-title="user.name"
@@ -77,7 +102,7 @@
             v-if="index === substitutions.length - 1"
             icon="mdi-plus"
             variant="text"
-            :disabled="disabled"
+            :disabled="tournament.substitutions_per_team <= substitutions.length"
             density="compact"
             class="ml-2"
             @click="addChange"
@@ -89,7 +114,7 @@
             variant="text"
             density="compact"
             class="ml-2"
-            @click="substitutions.splice(index, 1)"
+            @click="() => removeChange(index)"
           ></v-btn>
         </div>
       </v-col>
