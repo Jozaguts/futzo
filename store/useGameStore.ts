@@ -5,6 +5,7 @@ import type {
   DialogHandlerActionsNames,
   Game,
   GameDetailsRequest,
+  GameEvent,
   GameTeam,
   GameTeamFormRequest,
   HeadAndSubsGamePlayers,
@@ -17,6 +18,7 @@ import dayjs from 'dayjs';
 import { useTeamStore } from '~/store/useTeamStore';
 import { useToast } from '~/composables/useToast';
 import { useSanctumClient } from '#imports';
+import { saveSubstitutionHandler } from '~/http/api/game';
 
 export const useGameStore = defineStore('gameStore', () => {
   const game = ref<Game>(null as unknown as Game);
@@ -43,11 +45,13 @@ export const useGameStore = defineStore('gameStore', () => {
       team_id: 0,
       name: '',
       players: [],
+      cards: [],
     },
     away: {
       team_id: 0,
       name: '',
       players: [],
+      cards: [],
     },
   });
   const headAndSubsGamePlayers = ref<HeadAndSubsGamePlayers>({} as HeadAndSubsGamePlayers);
@@ -80,10 +84,30 @@ export const useGameStore = defineStore('gameStore', () => {
     loading: false,
   });
   const dialogState = ref<ActionGameReportState>({ show: false, title: '', subtitle: '', type: 'info' });
+  const gameEvents = ref<Record<TeamType, GameEvent[]>>({
+    home: [
+      {
+        id: null,
+        player_id: null,
+        type: null,
+        minute: null,
+        assist_id: null,
+      },
+    ],
+    away: [
+      {
+        id: null,
+        player_id: null,
+        type: null,
+        minute: null,
+        assist_id: null,
+      },
+    ],
+  });
   // headAndSubsGamePlayers.value?.away.players.
   const getGameTeamsPlayers = async () => {
-    if (gameDetailsRequest.value?.game_id) {
-      return await gameAPI.getGamePlayers(gameDetailsRequest.value?.game_id);
+    if (gameDetailsRequest.value?.game_id || game.value?.id) {
+      return await gameAPI.getGamePlayers(gameDetailsRequest.value?.game_id || game.value?.id);
     }
   };
   const fetchGame = async (id: number) => {
@@ -176,23 +200,35 @@ export const useGameStore = defineStore('gameStore', () => {
   const saveEventGameHandler = () => {
     let body: any = null;
     gameActionFormRequest.value.loading = true;
-    if (gameActionFormRequest.value.action === 'substitutions') {
-      body = {
-        home: substitutions.value.home.filter((sub) => sub.player_in_id && sub.player_out_id && sub.minute),
-        away: substitutions.value.away.filter((sub) => sub.player_in_id && sub.player_out_id && sub.minute),
-      };
-    }
     try {
-      gameAPI.saveEventGameHandler(game.value.id, body).then(() => {
-        useToast().toast('success', 'Evento guardado correctamente', 'El evento del partido se ha guardado con éxito');
-        gameActionFormRequest.value.loading = false;
-        gameActionFormRequest.value.disabled = true;
-        gameActionFormRequest.value.body = null;
-        gameActionFormRequest.value.action = 'substitutions';
-      });
+      if (gameActionFormRequest.value.action === 'cards') {
+        body = {
+          home: gameEvents.value.home.filter((event) => event.type && event.player_id && event.minute),
+          away: gameEvents.value.away.filter((event) => event.type && event.player_id && event.minute),
+        };
+        gameAPI.saveCardsHandler(game.value.id, body).then(() => {
+          gameActionFormRequest.value.loading = false;
+          gameActionFormRequest.value.disabled = true;
+          gameActionFormRequest.value.body = null;
+          gameActionFormRequest.value.action = 'substitutions';
+        });
+      }
+      if (gameActionFormRequest.value.action === 'substitutions') {
+        body = {
+          home: substitutions.value.home.filter((sub) => sub.player_in_id && sub.player_out_id && sub.minute),
+          away: substitutions.value.away.filter((sub) => sub.player_in_id && sub.player_out_id && sub.minute),
+        };
+        gameAPI.saveSubstitutionHandler(game.value.id, body).then(() => {
+          gameActionFormRequest.value.loading = false;
+          gameActionFormRequest.value.disabled = true;
+          gameActionFormRequest.value.body = null;
+          gameActionFormRequest.value.action = 'substitutions';
+        });
+      }
       initializeGameReport(game.value.id).then((initialize) => {
         useTeamStore().initReportHandler(initialize);
       });
+      useToast().toast('success', 'Evento guardado correctamente', 'El evento del partido se ha guardado con éxito');
     } catch (error) {
       useToast().toast(
         'error',
@@ -206,6 +242,11 @@ export const useGameStore = defineStore('gameStore', () => {
   const removeSubstitution = async (substitution_id: number) => {
     return gameAPI.removeSubstitution(game.value.id, substitution_id).finally(() => {
       useToast().toast('success', 'Sustitución eliminada correctamente', 'La sustitución se ha eliminado con éxito');
+    });
+  };
+  const removeCardEvent = async (gameEventId: number) => {
+    return await gameAPI.removeCardEvent(game.value.id, gameEventId).finally(() => {
+      useToast().toast('success', 'Tarjeta eliminada correctamente', 'La tarjeta se ha eliminado con éxito');
     });
   };
   return {
@@ -222,6 +263,7 @@ export const useGameStore = defineStore('gameStore', () => {
     substitutions,
     gameActionFormRequest,
     dialogState,
+    gameEvents,
     fetchGame,
     getGameDetails,
     getGameTeamsPlayers,
@@ -230,5 +272,6 @@ export const useGameStore = defineStore('gameStore', () => {
     getHeadAndSubsGamePlayers,
     saveEventGameHandler,
     removeSubstitution,
+    removeCardEvent,
   };
 });
