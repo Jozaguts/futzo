@@ -24,7 +24,7 @@ export const getHeadAndSubsGamePlayers = async (gameId: number) => {
   return await client(`api/v1/admin/games/${gameId}/players`);
 };
 
-export const saveEventGameHandler = async (gameId: number, body: any) => {
+export const saveSubstitutionHandler = async (gameId: number, body: any) => {
   const client = useSanctumClient();
   return await client(`/api/v1/admin/games/${gameId}/substitutions`, {
     method: 'POST',
@@ -34,6 +34,19 @@ export const saveEventGameHandler = async (gameId: number, body: any) => {
 export const removeSubstitution = async (gameId: number, substitutionId: number) => {
   const client = useSanctumClient();
   return await client(`/api/v1/admin/games/${gameId}/substitutions/${substitutionId}`, {
+    method: 'DELETE',
+  });
+};
+export const saveCardsHandler = async (gameId: number, body: any) => {
+  const client = useSanctumClient();
+  return await client(`/api/v1/admin/games/${gameId}/cards`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+};
+export const removeCardEvent = async (gameId: number, gameEventId: number) => {
+  const client = useSanctumClient();
+  return await client(`/api/v1/admin/games/${gameId}/game-event/${gameEventId}/card`, {
     method: 'DELETE',
   });
 };
