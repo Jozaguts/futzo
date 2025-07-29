@@ -21,8 +21,7 @@
       substitutions.value.some((change) => !change.player_in_id || !change.player_out_id || !change.minute)
     )
   })
-  watch(disabled, (newValue) => {
-    console.log(newValue)
+  watch(disabled, () => {
     if (gameActionFormRequest.value.action === 'substitutions') {
       gameActionFormRequest.value.disabled = substitutions.value.some(
         (change) => !change.player_in_id || !change.player_out_id || !change.minute
@@ -32,6 +31,7 @@
   onUnmounted(() => {
     substitutions.value = [{ player_in_id: null, player_out_id: null, minute: null }]
     gameActionFormRequest.value.disabled = true
+    gameActionFormRequest.value.loading = false
   })
   const removeChange = (index: number) => {
     const change = substitutions.value[index]
