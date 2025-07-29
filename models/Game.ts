@@ -3,6 +3,25 @@ import type { Player, TeamLineupAvailablePlayers } from '~/models/Player';
 import type { User } from '~/models/user';
 export type DialogHandlerActionsNames = 'cards' | 'goals' | 'substitutions';
 export type TeamSubstitutions = Record<TeamType, Substitution[]>;
+export type GameEventName =
+  | 'goal'
+  | 'yellow_card'
+  | 'red_card'
+  | 'assist'
+  | 'substitution'
+  | 'penalty_kick'
+  | 'own_goal'
+  | 'foul';
+export type GameEvent = {
+  id?: number | null;
+  player_id: number | null;
+  type: GameEventName | null;
+  minute: number | null;
+  assist_id?: number | null;
+  own_goal?: boolean;
+  penalty_kick?: boolean;
+  foul?: boolean;
+};
 export type Substitution = {
   id?: number;
   player_in_id: number | null;
@@ -68,6 +87,7 @@ export type GameTeam = {
   team_id: number;
   name: string;
   players: GameTeamPlayer[];
+  cards: GameEvent[];
 };
 
 export type GameTeamPlayer = {
