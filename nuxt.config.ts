@@ -19,7 +19,7 @@ export default defineNuxtConfig({
         },
         {
           property: 'og:image',
-          content: 'https://futzo.io/futzo/logos/circular/logo-22.png',
+          content: 'https://futzo.io/og-futzo.png',
         },
       ],
       script: [
