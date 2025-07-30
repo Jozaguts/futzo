@@ -35,12 +35,22 @@
   })
   const removeChange = (index: number) => {
     const change = substitutions.value[index]
-    if (change?.id) {
-      useGameStore()
-        .removeSubstitution(change.id)
-        .then(() => {
-          substitutions.value.splice(index, 1)
-        })
+    try {
+      if (change?.id) {
+        useGameStore()
+          .removeSubstitution(change.id)
+          .then(async () => {
+            await useGameStore().getGameDetails()
+          })
+      }
+    } catch (error) {
+      console.error('Error removing change:', error)
+    } finally {
+      if (index === 0) {
+        substitutions.value = [{ player_in_id: null, player_out_id: null, minute: null }]
+      } else {
+        substitutions.value.splice(index, 1)
+      }
     }
   }
 </script>
@@ -108,7 +118,6 @@
             @click="addChange"
           ></v-btn>
           <v-btn
-            v-if="index !== 0"
             icon="mdi-minus"
             color="secondary"
             variant="text"
