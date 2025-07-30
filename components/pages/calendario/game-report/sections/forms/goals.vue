@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import type { GameEvent, GameTeamPlayer } from '~/models/Game'
-  import { useGameStore, useTeamStore } from '~/store'
+  import { useGameStore } from '~/store'
   const { players = [] } = defineProps<{
     players: GameTeamPlayer[]
   }>()
