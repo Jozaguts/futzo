@@ -13,6 +13,14 @@ export default defineNuxtConfig({
           name: 'facebook-domain-verification',
           content: '0qihdsq3uqi5n4uaim0ao378p6e5xv',
         },
+        {
+          property: 'og:title',
+          content: process.env.NUXT_PUBLIC_APP_NAME || 'Futzo',
+        },
+        {
+          property: 'og:image',
+          content: `${process.env.NUXT_PUBLIC_URL}/futzo/logos/circular/logo-22.png`,
+        },
       ],
       script: [
         {
