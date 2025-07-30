@@ -22,8 +22,11 @@
     }
   })
   onMounted(() => {
-    useDashboardStore().byRange()
-    useDashboardStore().getNextGames()
+    console.log(useAuth().isSignUp.value)
+    if (useAuth().isSignUp.value) {
+      useDashboardStore().byRange()
+      useDashboardStore().getNextGames()
+    }
   })
   const { mobile } = useDisplay()
 </script>
@@ -81,12 +84,7 @@
             <div v-if="nextGames.length === 0" class="text-center">
               <NoGames />
             </div>
-            <dashboard-next-games
-              v-else
-              v-for="game in nextGames"
-              :key="game.id"
-              :game="game"
-            />
+            <dashboard-next-games v-else v-for="game in nextGames" :key="game.id" :game="game" />
           </v-col>
         </v-row>
       </v-container>
