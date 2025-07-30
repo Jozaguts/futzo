@@ -41,7 +41,7 @@
   }
 
   const modelValue = computed(() => {
-    return !!player.name && game.value.status !== 'completado'
+    return !!player.name && game.value?.status !== 'completado'
   })
 </script>
 <template>
