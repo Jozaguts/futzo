@@ -6,6 +6,7 @@
     },
     sanctum: {
       excluded: true,
+      guestOnly: true,
     },
   })
   useHead({
