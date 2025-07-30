@@ -22,7 +22,6 @@
   import { useGlobalStore } from '~/store'
   import { storeToRefs } from 'pinia'
   import { Toaster } from 'vue-sonner'
-
   const show = ref(false)
   const { rail, isMobile } = storeToRefs(useGlobalStore())
   onMounted(() => {

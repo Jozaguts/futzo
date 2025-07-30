@@ -26,10 +26,6 @@ export default defineNuxtConfig({
           content: 'Futzo es una plataforma para gestionar partidos de fútbol, equipos y torneos.',
         },
         {
-          property: 'og:url',
-          content: 'https://futzo.io',
-        },
-        {
           property: 'og:type',
           content: 'website',
         },
