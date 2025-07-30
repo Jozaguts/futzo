@@ -18,7 +18,6 @@ import dayjs from 'dayjs';
 import { useTeamStore } from '~/store/useTeamStore';
 import { useToast } from '~/composables/useToast';
 import { useSanctumClient } from '#imports';
-import { saveSubstitutionHandler } from '~/http/api/game';
 
 export const useGameStore = defineStore('gameStore', () => {
   const game = ref<Game>(null as unknown as Game);
@@ -46,12 +45,14 @@ export const useGameStore = defineStore('gameStore', () => {
       name: '',
       players: [],
       cards: [],
+      goals: [],
     },
     away: {
       team_id: 0,
       name: '',
       players: [],
       cards: [],
+      goals: [],
     },
   });
   const headAndSubsGamePlayers = ref<HeadAndSubsGamePlayers>({} as HeadAndSubsGamePlayers);
@@ -91,7 +92,7 @@ export const useGameStore = defineStore('gameStore', () => {
         player_id: null,
         type: null,
         minute: null,
-        assist_id: null,
+        related_player_id: null,
       },
     ],
     away: [
@@ -100,7 +101,7 @@ export const useGameStore = defineStore('gameStore', () => {
         player_id: null,
         type: null,
         minute: null,
-        assist_id: null,
+        related_player_id: null,
       },
     ],
   });
@@ -109,10 +110,6 @@ export const useGameStore = defineStore('gameStore', () => {
     if (gameDetailsRequest.value?.game_id || game.value?.id) {
       return await gameAPI.getGamePlayers(gameDetailsRequest.value?.game_id || game.value?.id);
     }
-  };
-  const fetchGame = async (id: number) => {
-    const client = useSanctumClient();
-    game.value = await client(`/api/v1/admin/games/${id}`);
   };
   const getGameDetails = async () => {
     if (dayjs(gameDetailsRequest.value?.date).isValid()) {
@@ -201,6 +198,23 @@ export const useGameStore = defineStore('gameStore', () => {
     let body: any = null;
     gameActionFormRequest.value.loading = true;
     try {
+      if (gameActionFormRequest.value.action === 'goals') {
+        body = {
+          home: gameEvents.value.home.filter((event) => event.type && event.player_id && event.minute),
+          away: gameEvents.value.away.filter((event) => event.type && event.player_id && event.minute),
+        };
+        gameAPI
+          .saveGoalsHandler(game.value.id, body)
+          .then(() => {
+            gameActionFormRequest.value.loading = false;
+            gameActionFormRequest.value.disabled = true;
+            gameActionFormRequest.value.body = null;
+            gameActionFormRequest.value.action = 'cards';
+          })
+          .then(async () => {
+            await getGameDetails();
+          });
+      }
       if (gameActionFormRequest.value.action === 'cards') {
         body = {
           home: gameEvents.value.home.filter((event) => event.type && event.player_id && event.minute),
@@ -249,6 +263,11 @@ export const useGameStore = defineStore('gameStore', () => {
       useToast().toast('success', 'Tarjeta eliminada correctamente', 'La tarjeta se ha eliminado con éxito');
     });
   };
+  const removeGoalEvent = async (gameEventId: number) => {
+    return await gameAPI.removeGoalEvent(game.value.id, gameEventId).finally(() => {
+      useToast().toast('success', 'Gol eliminado correctamente', 'El gol se ha eliminado con éxito');
+    });
+  };
   return {
     game,
     games,
@@ -264,7 +283,6 @@ export const useGameStore = defineStore('gameStore', () => {
     gameActionFormRequest,
     dialogState,
     gameEvents,
-    fetchGame,
     getGameDetails,
     getGameTeamsPlayers,
     reScheduleGame,
@@ -273,5 +291,6 @@ export const useGameStore = defineStore('gameStore', () => {
     saveEventGameHandler,
     removeSubstitution,
     removeCardEvent,
+    removeGoalEvent,
   };
 });
