@@ -50,3 +50,16 @@ export const removeCardEvent = async (gameId: number, gameEventId: number) => {
     method: 'DELETE',
   });
 };
+export const saveGoalsHandler = async (gameId: number, body: any) => {
+  const client = useSanctumClient();
+  return await client(`/api/v1/admin/games/${gameId}/goals`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+};
+export const removeGoalEvent = async (gameId: number, gameEventId: number) => {
+  const client = useSanctumClient();
+  return await client(`/api/v1/admin/games/${gameId}/game-event/${gameEventId}/goal`, {
+    method: 'DELETE',
+  });
+};
