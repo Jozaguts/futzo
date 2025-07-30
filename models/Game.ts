@@ -17,7 +17,7 @@ export type GameEvent = {
   player_id: number | null;
   type: GameEventName | null;
   minute: number | null;
-  assist_id?: number | null;
+  related_player_id?: number | null;
   own_goal?: boolean;
   penalty_kick?: boolean;
   foul?: boolean;
@@ -88,6 +88,7 @@ export type GameTeam = {
   name: string;
   players: GameTeamPlayer[];
   cards: GameEvent[];
+  goals: GameEvent[];
 };
 
 export type GameTeamPlayer = {
