@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import { usePlayerStore } from "~/store";
+  import { usePlayerStore } from '~/store'
 
-const { dialog, isEdition } = storeToRefs(usePlayerStore());
-const title = isEdition.value ? "Editar jugador" : "Crear un jugador";
-const subtitle = isEdition.value
-  ? "Modifica los detalles del jugador."
-  : "Completa los detalles del jugador.";
+  const { dialog, isEdition } = storeToRefs(usePlayerStore())
+  const title = isEdition.value ? 'Editar jugador' : 'Crear un jugador'
+  const subtitle = isEdition.value ? 'Modifica los detalles del jugador.' : 'Completa los detalles del jugador.'
 </script>
 <template>
   <v-card-item>
@@ -24,7 +22,7 @@ const subtitle = isEdition.value
     >
     <template #subtitle>{{ subtitle }}</template>
     <template #append>
-      <Icon name="futzo-icon:x-dialog" @click="dialog = false" />
+      <Icon name="futzo-icon:x-dialog" class="cursor-pointer" @click="dialog = false" />
     </template>
   </v-card-item>
   <v-divider></v-divider>

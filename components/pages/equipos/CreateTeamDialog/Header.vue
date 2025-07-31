@@ -3,9 +3,7 @@
 
   const { dialog, steps, isEdition } = storeToRefs(useTeamStore())
   const page = useRoute()
-  const isInscriptionPage = computed(
-    () => page.name === 'torneos-torneo-inscripcion'
-  )
+  const isInscriptionPage = computed(() => page.name === 'torneos-torneo-inscripcion')
   const title = computed(() => {
     switch (steps.value.current) {
       case 'createTeam':
@@ -25,17 +23,11 @@
   const subtitle = computed(() => {
     switch (steps.value.current) {
       case 'createTeam':
-        return isEdition.value
-          ? 'Modifica los detalles del equipo.'
-          : 'Completa los detalles del equipo.'
+        return isEdition.value ? 'Modifica los detalles del equipo.' : 'Completa los detalles del equipo.'
       case 'createDt':
-        return isEdition.value
-          ? 'Modifica los detalles del DT.'
-          : 'Completa los detalles del DT.'
+        return isEdition.value ? 'Modifica los detalles del DT.' : 'Completa los detalles del DT.'
       case 'createOwner':
-        return isEdition.value
-          ? 'Modifica los detalles del dueño.'
-          : 'Completa los detalles del dueño.'
+        return isEdition.value ? 'Modifica los detalles del dueño.' : 'Completa los detalles del dueño.'
     }
   })
 </script>
@@ -56,7 +48,7 @@
     >
     <template #subtitle>{{ subtitle }}</template>
     <template #append>
-      <Icon name="futzo-icon:x-dialog" @click="dialog = false" />
+      <Icon name="futzo-icon:x-dialog" class="cursor-pointer" @click="dialog = false" />
     </template>
   </v-card-item>
   <v-divider></v-divider>
