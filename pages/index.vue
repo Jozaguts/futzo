@@ -8,7 +8,9 @@
   import NoGames from '~/components/shared/empty-states/NoGames.vue'
 
   const { teamStats, nextGames } = storeToRefs(useDashboardStore())
-
+  definePageMeta({
+    middleware: ['sanctum:auth'],
+  })
   watchEffect(() => {
     const route = useRoute()
     const router = useRouter()

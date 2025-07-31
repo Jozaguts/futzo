@@ -8,6 +8,7 @@
     bodyAttrs: {
       class: 'd-none',
     },
+    middleware: ['sanctum:auth'],
   })
   const currentComponent = ref('CreateLeague')
   useHead({

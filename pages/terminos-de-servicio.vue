@@ -4,9 +4,6 @@
     bodyAttrs: {
       class: 'd-none',
     },
-    sanctum: {
-      excluded: true,
-    },
   })
   useHead({
     meta: [

@@ -125,7 +125,7 @@ export default defineNuxtConfig({
       onGuestOnly: '/', // Redirect to this page if user is authenticated
     },
     globalMiddleware: {
-      enabled: true,
+      enabled: false,
       allow404WithoutAuth: false,
     },
     endpoints: {

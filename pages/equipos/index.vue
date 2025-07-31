@@ -11,6 +11,9 @@
   onMounted(() => {
     teamStore.getTeams()
   })
+  definePageMeta({
+    middleware: ['sanctum:auth'],
+  })
 </script>
 <template>
   <PageLayout>
