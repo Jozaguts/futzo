@@ -32,34 +32,25 @@ jobs:
           NUXT_GOOGLE_MAP_ID: ${{ secrets.NUXT_GOOGLE_MAP_ID }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            set -e
-            cd "$DEPLOY_PATH"
-
-            # Reescribimos el .env.prod
-            cat <<EOT > .env.prod
-              NUXT_PUBLIC_URL_BACKEND=${NUXT_PUBLIC_URL_BACKEND}
-              NUXT_PUBLIC_BACKEND_PREFIX=${NUXT_PUBLIC_BACKEND_PREFIX}
-              FACEBOOK_APP_ID=${FACEBOOK_APP_ID}
-              NUXT_HOST=${NUXT_HOST}
-              NUXT_PUBLIC_APP_NAME=${NUXT_PUBLIC_APP_NAME}
-              NODE_ENV=${NODE_ENV}
-              NUXT_GOOGLE_MAPS_API_KEY=${NUXT_GOOGLE_MAPS_API_KEY}
-              NUXT_GOOGLE_MAP_ID=${NUXT_GOOGLE_MAP_ID}
-              EOT
-  
-              echo "Limpiando posibles conflictos de git"
-              git reset --hard
-              git clean -fd
-              git fetch --all
-              git pull origin main
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+            cd $DEPLOY_PATH
+          
+            echo "NUXT_PUBLIC_URL_BACKEND=$NUXT_PUBLIC_URL_BACKEND" > .env.prod
+            echo "NUXT_PUBLIC_BACKEND_PREFIX=$NUXT_PUBLIC_BACKEND_PREFIX" >> .env.prod
+            echo "FACEBOOK_APP_ID=$FACEBOOK_APP_ID" >> .env.prod
+            echo "NUXT_HOST=$NUXT_HOST" >> .env.prod
+            echo "NUXT_PUBLIC_APP_NAME=$NUXT_PUBLIC_APP_NAME" >> .env.prod
+            echo "NODE_ENV=$NODE_ENV" >> .env.prod
+            echo "NUXT_GOOGLE_MAPS_API_KEY=$NUXT_GOOGLE_MAPS_API_KEY" >> .env.prod
+            echo "NUXT_GOOGLE_MAP_ID=$NUXT_GOOGLE_MAP_ID" >> .env.prod
+   
+            git reset --hard
+            git clean -fd
+            git fetch --all
+            git pull origin main
+            
+            npm ci
+            node --max-old-space-size=4096 node_modules/.bin/nuxt build --dotenv .env.prod
               
-              echo "Instalando dependencias"
-              npm ci
-              
-              echo "Compilando proyecto Nuxt"
-              node --max-old-space-size=4096 node_modules/.bin/nuxt build --dotenv .env.prod
-              
-              echo "Reiniciando PM2"
-              pm2 restart ecosystem.config.cjs
-            EOF
+            pm2 restart ecosystem.config.cjs
+          EOF
