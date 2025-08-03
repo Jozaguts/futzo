@@ -31,6 +31,7 @@
 <template>
   <v-sheet class="futzo-rounded" position="static">
     <v-fab
+      v-if="tab === 'lineup'"
       :layout="true"
       :absolute="true"
       :color="'primary'"
