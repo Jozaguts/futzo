@@ -29,11 +29,11 @@
               {{ event?.player.user.name }} {{ event.player?.user?.last_name }}
             </div>
             <div class="event-details-container__details__player__player-details">
-              {{ event?.player?.team?.name }}· {{ event?.player?.position?.name }} #{{ event?.player?.number }}
+              {{ event?.team?.name }}· {{ event?.player?.position?.name }} #{{ event?.player?.number }}
             </div>
           </div>
           <div class="event-details-container__details__team-image">
-            <v-img :src="event?.player?.team?.image" width="48" height="47" contain rounded="lg" border="lg"> </v-img>
+            <v-img :src="event?.team?.image" width="48" height="47" contain rounded="lg" border="lg"> </v-img>
           </div>
         </div>
       </div>

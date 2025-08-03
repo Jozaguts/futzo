@@ -13,6 +13,7 @@ export type GameEvents = {
   created_at: Date;
   updated_at: Date;
   player: Player;
+  team: Team;
   related_player: Player | null;
 };
 export type Position = {
@@ -210,11 +211,22 @@ export type Datum = {
 };
 
 export type Team = {
+  colors: Colors;
   id: number;
   name: string;
   image: string;
+  rgba_color: number[];
 };
-
+export type Colors = {
+  home: {
+    primary: string;
+    secondary: string;
+  };
+  away: {
+    primary: string;
+    secondary: string;
+  };
+};
 export type Tournament = {
   id: number;
   league_id: number;
