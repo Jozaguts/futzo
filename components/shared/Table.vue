@@ -108,7 +108,14 @@
       </v-tooltip>
     </template>
     <template v-slot:item.team.name="{ item }">
-      <v-btn :disabled="!enableAssignTeam" density="compact" v-if="!item?.team?.name" @click="() => assignTeam(item)"
+      <v-btn
+        size="small"
+        rounded="md"
+        variant="outlined"
+        class="table-action-btn"
+        :disabled="!enableAssignTeam"
+        v-if="!item?.team?.name"
+        @click="() => assignTeam(item)"
         >Asignar equipo
       </v-btn>
       <span v-else>{{ item.team.name }}</span>

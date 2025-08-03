@@ -32,7 +32,13 @@
     :enable-assign-team="areThereTeams"
   >
     <template #actions="{ item }">
-      <v-btn size="small" rounded="md" disabled @click="showPlayerHandler(item as unknown as PlayerResponse)"
+      <v-btn
+        size="small"
+        rounded="md"
+        variant="outlined"
+        class="table-action-btn"
+        disabled
+        @click="showPlayerHandler(item as unknown as PlayerResponse)"
         >Ver Jugador
       </v-btn>
     </template>
