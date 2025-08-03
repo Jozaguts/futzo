@@ -143,6 +143,7 @@
         v-model="pagination.currentPage"
         :length="pagination.lastPage"
         start="1"
+        :total-visible="10"
         @update:modelValue="() => paginate()"
       >
         <template #prev="props">
