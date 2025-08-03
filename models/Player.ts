@@ -1,3 +1,7 @@
+import type { User } from '~/models/user';
+import type { Team } from '~/models/Team';
+import type { Position } from '~/models/Position';
+
 export type TeamLineupAvailablePlayers = {
   player_id: number;
   team_id: number;
@@ -11,9 +15,12 @@ export interface Player {
   email: string;
   phone: string;
   position_id: number;
-  team: string;
+  team: Team;
+  number: number;
   league_id: number;
   league?: string;
+  user: User;
+  position: Position;
 }
 
 export interface FormSteps {
@@ -27,10 +34,7 @@ export interface PlayerSteps {
   label: FormLabelStep;
 }
 
-export type FormLabelStep =
-  | 'Información básica'
-  | 'Detalles del jugador'
-  | 'Información de contacto';
+export type FormLabelStep = 'Información básica' | 'Detalles del jugador' | 'Información de contacto';
 
 export type CurrentStep = 'basic-info' | 'details-info' | 'contact-info';
 

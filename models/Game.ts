@@ -1,6 +1,25 @@
 import type { AvailableIntervals } from '~/models/Schedule';
 import type { Player, TeamLineupAvailablePlayers } from '~/models/Player';
 import type { User } from '~/models/user';
+
+export type GameEvents = {
+  id: number;
+  type: string;
+  minute: number;
+  game_id: number;
+  player_id: number;
+  related_player_id: number | null;
+  team_id: number;
+  created_at: Date;
+  updated_at: Date;
+  player: Player;
+  related_player: Player | null;
+};
+export type Position = {
+  id: number;
+  name: string;
+};
+
 export type DialogHandlerActionsNames = 'cards' | 'goals' | 'substitutions';
 export type TeamSubstitutions = Record<TeamType, Substitution[]>;
 export type GameEventName =
