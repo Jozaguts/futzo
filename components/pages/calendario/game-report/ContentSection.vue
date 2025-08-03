@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import InfoHeaderSection from '~/components/pages/calendario/game-report/info-header-section.vue'
   import GameDetailsSection from '~/components/pages/calendario/game-report/game-details-section.vue'
+  import GameEvents from '~/components/pages/calendario/game-report/game-events.vue'
   import { useGameStore, useTeamStore } from '~/store'
   import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
   import type { Game } from '~/models/Game'
@@ -62,7 +62,7 @@
         <v-divider />
         <v-col cols="12">
           <v-tabs align-tabs="center" v-model="tab" fixed-tabs class="bg-background">
-            <v-tab class="text-uppercase" value="home">Cronología</v-tab>
+            <v-tab class="text-uppercase" value="timeline">Cronología</v-tab>
             <v-tab class="text-uppercase" value="lineup">Alineaciones</v-tab>
           </v-tabs>
           <v-tabs-window v-model="tab" class="mt-4">
@@ -81,8 +81,9 @@
                 @leaving="leaving"
               />
             </v-tabs-window-item>
-            <v-tabs-window-item value="away" transition="fade-transition" reverse-transition="fade-transition">
-              <info-header-section :text="game?.away?.name" label="Visitante" />
+            <v-tabs-window-item value="timeline" transition="fade-transition" reverse-transition="fade-transition">
+              <v-divider />
+              <GameEvents />
             </v-tabs-window-item>
           </v-tabs-window>
         </v-col>
