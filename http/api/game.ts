@@ -63,3 +63,13 @@ export const removeGoalEvent = async (gameId: number, gameEventId: number) => {
     method: 'DELETE',
   });
 };
+
+export const getGameEvents = async (gameId: number) => {
+  const client = useSanctumClient();
+  try {
+    return await client(`/api/v1/admin/games/${gameId}/events`);
+  } catch (error) {
+    console.error('Error fetching game events:', error);
+    return [];
+  }
+};
