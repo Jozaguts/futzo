@@ -3,6 +3,7 @@
   import StartGame from '~/components/pages/calendario/game-report/events/start-game.vue'
   import CardEvent from '~/components/pages/calendario/game-report/events/card-event.vue'
   import GoalEvent from '~/components/pages/calendario/game-report/events/goal-event.vue'
+  import SubstitutionEvent from '~/components/pages/calendario/game-report/events/substitution-event.vue'
   import { getGameEvents } from '~/http/api/game'
   import { useGameStore } from '~/store'
   const { game } = storeToRefs(useGameStore())
@@ -23,6 +24,7 @@
   <v-row v-else>
     <v-col cols="12" v-for="(event, index) in events" :key="index">
       <CardEvent :event="event" v-if="event.type === 'yellow_card' || event.type == 'red_card'" />
+      <SubstitutionEvent :event="event" v-if="event.type === 'substitution'" />
       <GoalEvent
         :event="event"
         v-if="event.type === 'goal' || event.type === 'penalty_kick' || event.type === 'own_goal'"
