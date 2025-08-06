@@ -73,3 +73,9 @@ export const getGameEvents = async (gameId: number) => {
     return [];
   }
 };
+export const markAsComplete = async (gameId: number) => {
+  const client = useSanctumClient();
+  return await client(`/api/v1/admin/games/${gameId}/complete`, {
+    method: 'PATCH',
+  });
+};

@@ -268,6 +268,16 @@ export const useGameStore = defineStore('gameStore', () => {
       useToast().toast('success', 'Gol eliminado correctamente', 'El gol se ha eliminado con éxito');
     });
   };
+  const markAsComplete = async () => {
+    return await gameAPI
+      .markAsComplete(game.value.id)
+      .then(async () => {
+        await getGameDetails();
+      })
+      .finally(() => {
+        useToast().toast('success', 'Status del partido', 'El partido ha sido marcado completado éxito');
+      });
+  };
   return {
     game,
     games,
@@ -292,5 +302,6 @@ export const useGameStore = defineStore('gameStore', () => {
     removeSubstitution,
     removeCardEvent,
     removeGoalEvent,
+    markAsComplete,
   };
 });

@@ -3,7 +3,7 @@
   import ContentSection from '~/components/pages/calendario/game-report/ContentSection.vue'
   import type { GameDetailsRequest } from '~/models/Game'
 
-  const { gameReportDialog, gameDetailsRequest } = storeToRefs(useGameStore())
+  const { gameReportDialog, gameDetailsRequest, game } = storeToRefs(useGameStore())
   const onLeaving = () => {
     gameReportDialog.value = false
     gameDetailsRequest.value = null as unknown as GameDetailsRequest
@@ -32,6 +32,21 @@
   >
     <template #v-card-text>
       <ContentSection />
+    </template>
+    <template #actions>
+      <v-container class="py-0">
+        <v-row>
+          <v-col cols="12">
+            <v-btn
+              :disabled="game?.status === 'completado'"
+              text="Marcar como finalizado"
+              variant="outlined"
+              block
+              @click="useGameStore().markAsComplete"
+            />
+          </v-col>
+        </v-row>
+      </v-container>
     </template>
   </Dialog>
 </template>
