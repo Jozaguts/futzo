@@ -15,7 +15,9 @@
             {{ game?.homeTeam?.name }}</span
           >
         </td>
+
         <td class="data">
+          <small>{{ game.date }}</small>
           <div
             class="result"
             :class="{
@@ -26,6 +28,7 @@
           >
             <div class="text">{{ game.home_goals }} : {{ game.away_goals }}</div>
           </div>
+          <small>Jornada: {{ game?.round }}</small>
         </td>
         <td class="team">
           <img :src="game.awayTeam.image" alt="team logo" class="logo" />

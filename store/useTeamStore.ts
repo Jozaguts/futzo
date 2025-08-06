@@ -51,7 +51,7 @@ export const useTeamStore = defineStore('teamStore', () => {
   const homeFormation = ref<TeamFormation>({} as TeamFormation);
   const awayFormation = ref<TeamFormation>({} as TeamFormation);
   const nextGames = ref<NextGames>({} as NextGames);
-  const lastGames = ref<LastGames>({} as LastGames);
+  const lastGames = ref<LastGames[]>([] as LastGames[]);
   const formations = ref<Formation[]>([] as Formation[]);
   const homePlayers = ref<TeamLineupAvailablePlayers[]>([] as TeamLineupAvailablePlayers[]);
   const awayPlayers = ref<TeamLineupAvailablePlayers[]>([] as TeamLineupAvailablePlayers[]);

@@ -44,7 +44,7 @@ export const nextGames = async (teamId: number, limit: number = 3, order = 'asc'
 };
 export const lastGames = async (teamId: number, limit: number = 3, order = 'asc') => {
   const client = useSanctumClient();
-  return await client<Promise<LastGames>>(`/api/v1/admin/teams/${teamId}/last-games?limit=${limit}&order=${order}`);
+  return await client<Promise<LastGames[]>>(`/api/v1/admin/teams/${teamId}/last-games?limit=${limit}&order=${order}`);
 };
 export const getFormations = async () => {
   const client = useSanctumClient();

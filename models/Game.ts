@@ -217,7 +217,8 @@ export type LastGames = {
   time: string;
   location: Location;
   field: Field;
-  winner_team_id: null;
+  winner_team_id: number | null;
+  round: number;
 };
 export type NextGames = {
   data: Datum[];
