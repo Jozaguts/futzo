@@ -1,11 +1,5 @@
 import { defineStore } from 'pinia';
-import type {
-  Formation,
-  FormSteps,
-  Team,
-  TeamResponse,
-  TeamStoreRequest,
-} from '~/models/Team';
+import type { Formation, FormSteps, Team, TeamResponse, TeamStoreRequest } from '~/models/Team';
 import type { IPagination } from '~/interfaces';
 import * as teamAPI from '~/http/api/team';
 import prepareForm from '~/utils/prepareFormData';
@@ -28,9 +22,7 @@ export const useTeamStore = defineStore('teamStore', () => {
     total: 0,
     sort: 'asc',
   });
-  const teamStoreRequest = ref<Partial<TeamStoreRequest>>(
-    {} as TeamStoreRequest
-  );
+  const teamStoreRequest = ref<Partial<TeamStoreRequest>>({} as TeamStoreRequest);
   const client = useSanctumClient();
   const steps = ref<FormSteps>({
     current: 'createTeam',
@@ -59,13 +51,10 @@ export const useTeamStore = defineStore('teamStore', () => {
   const homeFormation = ref<TeamFormation>({} as TeamFormation);
   const awayFormation = ref<TeamFormation>({} as TeamFormation);
   const nextGames = ref<NextGames>({} as NextGames);
+  const lastGames = ref<NextGames>({} as NextGames);
   const formations = ref<Formation[]>([] as Formation[]);
-  const homePlayers = ref<TeamLineupAvailablePlayers[]>(
-    [] as TeamLineupAvailablePlayers[]
-  );
-  const awayPlayers = ref<TeamLineupAvailablePlayers[]>(
-    [] as TeamLineupAvailablePlayers[]
-  );
+  const homePlayers = ref<TeamLineupAvailablePlayers[]>([] as TeamLineupAvailablePlayers[]);
+  const awayPlayers = ref<TeamLineupAvailablePlayers[]>([] as TeamLineupAvailablePlayers[]);
   const downloadTemplate = async () => {
     loading.value = true;
     await client('/api/v1/admin/teams/template', {
@@ -84,8 +73,7 @@ export const useTeamStore = defineStore('teamStore', () => {
         toast(
           'error',
           'Error al descargar la plantilla',
-          error.data?.message ??
-            'No se pudo descargar la plantilla. Inténtalo de nuevo.'
+          error.data?.message ?? 'No se pudo descargar la plantilla. Inténtalo de nuevo.'
         );
       })
       .finally(() => {
@@ -103,11 +91,7 @@ export const useTeamStore = defineStore('teamStore', () => {
       body: formData,
     })
       .then(async () => {
-        toast(
-          'success',
-          'Equipos Importados',
-          'Los equipos se han importado exitosamente.'
-        );
+        toast('success', 'Equipos Importados', 'Los equipos se han importado exitosamente.');
         importModal.value = false;
         await getTeams();
       })
@@ -115,8 +99,7 @@ export const useTeamStore = defineStore('teamStore', () => {
         toast(
           'error',
           'Error al importar equipos',
-          error.data?.message ??
-            'No se pudieron importar los equipos. Verifica tu archivo e inténtalo de nuevo.'
+          error.data?.message ?? 'No se pudieron importar los equipos. Verifica tu archivo e inténtalo de nuevo.'
         );
       });
   }
@@ -130,11 +113,7 @@ export const useTeamStore = defineStore('teamStore', () => {
     })
       .then(async () => {
         await getTeams();
-        toast(
-          'success',
-          'Equipo Creado',
-          'El nuevo equipo se ha creado exitosamente.'
-        );
+        toast('success', 'Equipo Creado', 'El nuevo equipo se ha creado exitosamente.');
 
         dialog.value = false;
       })
@@ -142,8 +121,7 @@ export const useTeamStore = defineStore('teamStore', () => {
         toast(
           'error',
           'Error al crear el equipo',
-          error.data?.message ??
-            'No se pudo crear el equipo. Verifica tu información e inténtalo de nuevo.'
+          error.data?.message ?? 'No se pudo crear el equipo. Verifica tu información e inténtalo de nuevo.'
         );
       });
   };
@@ -155,19 +133,14 @@ export const useTeamStore = defineStore('teamStore', () => {
     })
       .then(async () => {
         await getTeams();
-        toast(
-          'success',
-          'Equipo actualizado',
-          'El equipo se ha actualizado exitosamente'
-        );
+        toast('success', 'Equipo actualizado', 'El equipo se ha actualizado exitosamente');
         dialog.value = false;
       })
       .catch((error) => {
         toast(
           'error',
           'Error al actualizar el equipo',
-          error.data?.message ??
-            'No se pudo actualizar el equipo. Verifica tu información e inténtalo de nuevo.'
+          error.data?.message ?? 'No se pudo actualizar el equipo. Verifica tu información e inténtalo de nuevo.'
         );
       });
   };
@@ -185,12 +158,10 @@ export const useTeamStore = defineStore('teamStore', () => {
   };
   const searchTeams = (value: string = '') => {
     const client = useSanctumClient();
-    client(`/api/v1/admin/teams/search?value=${value}`).then(
-      ({ data, pagination: _pagination }) => {
-        teams.value = data || [];
-        pagination.value = { ...pagination.value, ..._pagination };
-      }
-    );
+    client(`/api/v1/admin/teams/search?value=${value}`).then(({ data, pagination: _pagination }) => {
+      teams.value = data || [];
+      pagination.value = { ...pagination.value, ..._pagination };
+    });
   };
   const list = async () => {
     try {
@@ -214,30 +185,27 @@ export const useTeamStore = defineStore('teamStore', () => {
       console.log(error);
     }
   };
+  const getLastGames = async (teamId: number, limit = 3, order = 'desc') => {
+    try {
+      lastGames.value = await teamAPI.lastGames(teamId, limit, order);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const getFormations = async () => {
     if (formations.value.length > 0) return;
     formations.value = await teamAPI.getFormations();
   };
-  const updateDefaultFormationType = async (
-    team_id: number,
-    formation_id: number
-  ) => {
+  const updateDefaultFormationType = async (team_id: number, formation_id: number) => {
     return await teamAPI.updateDefaultFormationType(team_id, formation_id);
   };
-  const updateGameTeamFormationType = async (
-    team_id: number,
-    game_id: number,
-    formation_id: number
-  ) => {
-    return await teamAPI.updateGameTeamFormationType(
-      team_id,
-      game_id,
-      formation_id
-    );
+  const updateGameTeamFormationType = async (team_id: number, game_id: number, formation_id: number) => {
+    return await teamAPI.updateGameTeamFormationType(team_id, game_id, formation_id);
   };
+
   const initReportHandler = (initialize: Initialize) => {
-    homeTeam.value = initialize.home.team as Team;
-    awayTeam.value = initialize.away.team as Team;
+    homeTeam.value = initialize.home.team as unknown as Team;
+    awayTeam.value = initialize.away.team as unknown as Team;
     homePlayers.value = initialize.home.players as TeamLineupAvailablePlayers[];
     awayPlayers.value = initialize.away.players as TeamLineupAvailablePlayers[];
     delete initialize.home.team;
@@ -269,6 +237,7 @@ export const useTeamStore = defineStore('teamStore', () => {
     nextGames,
     homePlayers,
     awayPlayers,
+    lastGames,
     createTeam,
     getTeams,
     getTeam,
@@ -282,5 +251,6 @@ export const useTeamStore = defineStore('teamStore', () => {
     updateDefaultFormationType,
     updateGameTeamFormationType,
     initReportHandler,
+    getLastGames,
   };
 });

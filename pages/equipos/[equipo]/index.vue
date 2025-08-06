@@ -7,50 +7,37 @@
   import AppBarBtn from '~/components/pages/equipos/equipo/app-bar-btn.vue'
   import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
   import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
+  import LastGames from '~/components/pages/equipos/equipo/last-games.vue'
   import { usePlayerStore, useTeamStore } from '~/store'
   import { getTeamFormation } from '~/http/api/team'
   import type { Team } from '~/models/Team'
   import type { TeamFormation } from '~/models/Game'
   import { sortFormation } from '~/utils/sort-formation'
-  import type { TeamLineupAvailablePlayers } from '~/models/Player'
-  const { homeTeam, nextGames, formations, homeFormation, homePlayers } =
-    storeToRefs(useTeamStore())
+  const { homeTeam, nextGames, lastGames, formations, homeFormation, homePlayers } = storeToRefs(useTeamStore())
 
   watchEffect(async () => {
-    homeTeam.value = (await useTeamStore().getTeam(
-      useRoute().params?.equipo as string
-    )) as Team
+    homeTeam.value = (await useTeamStore().getTeam(useRoute().params?.equipo as string)) as Team
     if (homeTeam.value?.id) {
-      homePlayers.value =
-        await usePlayerStore().getDefaultLineupAvailableTeamPlayers(
-          homeTeam.value
-        )
+      homePlayers.value = await usePlayerStore().getDefaultLineupAvailableTeamPlayers(homeTeam.value)
       await useTeamStore().getNextGames(homeTeam.value.id)
-      await getTeamFormation(homeTeam.value as Team).then(
-        (response: TeamFormation) => {
-          response = sortFormation(response)
-          homeFormation.value = response
-        }
-      )
+      await useTeamStore().getLastGames(homeTeam.value.id)
+      await getTeamFormation(homeTeam.value as Team).then((response: TeamFormation) => {
+        response = sortFormation(response)
+        homeFormation.value = response
+      })
       await useTeamStore().getFormations()
     }
   })
-  const updateFormationType = (
-    isHome: boolean,
-    team_id: number,
-    formation_id: number
-  ) => {
+  const updateFormationType = (isHome: boolean, team_id: number, formation_id: number) => {
     useTeamStore()
       .updateDefaultFormationType(team_id, formation_id)
       .then(() => {
-        getTeamFormation({ id: team_id } as Team).then(
-          (response: TeamFormation) => {
-            response = sortFormation(response)
-            if (isHome) {
-              homeFormation.value = response
-            }
+        getTeamFormation({ id: team_id } as Team).then((response: TeamFormation) => {
+          response = sortFormation(response)
+          if (isHome) {
+            homeFormation.value = response
           }
-        )
+        })
       })
   }
   const leaving = () => {
@@ -96,7 +83,11 @@
           </PlayersList>
         </div>
         <div class="right-down-zone">
-          <NextGamesToday title="Últimos resultados" />
+          <NextGamesToday title="Últimos resultados">
+            <template #content>
+              <LastGames :lastGames="lastGames" />
+            </template>
+          </NextGamesToday>
         </div>
         <CreateTeamDialog />
       </div>
@@ -104,5 +95,5 @@
   </PageLayout>
 </template>
 <style lang="sass">
-  @use "~/assets/scss/pages/teams-team.sass"
+  @use "assets/scss/pages/teams-team.sass"
 </style>

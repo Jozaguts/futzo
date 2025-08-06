@@ -38,9 +38,13 @@ export const addDefaultLineupPlayer = async (player: TeamLineupAvailablePlayers,
     }
   );
 };
-export const nextGames = async (teamId: number, limit: number = 3) => {
+export const nextGames = async (teamId: number, limit: number = 3, order = 'asc') => {
   const client = useSanctumClient();
-  return await client<Promise<NextGames>>(`/api/v1/admin/teams/${teamId}/next-games?limit=${limit}`);
+  return await client<Promise<NextGames>>(`/api/v1/admin/teams/${teamId}/next-games?limit=${limit}&order=${order}`);
+};
+export const lastGames = async (teamId: number, limit: number = 3, order = 'asc') => {
+  const client = useSanctumClient();
+  return await client<Promise<NextGames>>(`/api/v1/admin/teams/${teamId}/last-games?limit=${limit}&order=${order}`);
 };
 export const getFormations = async () => {
   const client = useSanctumClient();
