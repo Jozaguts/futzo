@@ -31,7 +31,7 @@
     schedules.value.rounds.forEach((round) => {
       if (roundId === round.round) {
         round.matches.forEach((game) => {
-          if (game.id === gameDetailsRequest.value?.game_id) {
+          if (game.id === gameId) {
             if (action === 'up') {
               game[type].goals += 1
             } else {
