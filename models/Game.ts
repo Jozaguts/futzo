@@ -15,6 +15,9 @@ export type GameEvents = {
   player: Player;
   team: Team;
   related_player: Player | null;
+  home_goals_at: number;
+  away_goals_at: number;
+  away_team: Pick<Team, 'id' | 'name'>;
 };
 export type Position = {
   id: number;

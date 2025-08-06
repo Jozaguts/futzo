@@ -3,21 +3,22 @@
 
   const { event } = defineProps<{ event: GameEvents }>()
   const eventType = computed(() => {
-    return event.type === 'goal'
-      ? '¡GOOOOL!'
-      : event.type === 'own_goal'
-        ? 'Autogol'
-        : event.type === 'penalty_kick'
-          ? 'Penal'
-          : 'Gol'
+    switch (event.type) {
+      case 'goal':
+        return '¡GOOOOL!'
+      case 'own_goal':
+        return '¡AUTOGOL!'
+      case 'penalty_kick':
+        return 'Penal'
+    }
   })
   const textColor = computed(() => {
     const [r, g, b] = event.team?.rgba_color
     const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
-    return luminance > 128 ? 'black' : 'white'
+    return luminance > 128 && eventType.value !== '¡AUTOGOL!' ? 'black' : 'white'
   })
   const itemContainerColor = computed(() => {
-    return event.team?.colors.home.primary
+    return eventType.value !== '¡AUTOGOL!' ? event.team?.colors.home.primary : '#DD8603'
   })
 </script>
 <template>
@@ -36,13 +37,13 @@
       </div>
       <div class="event-score-container">
         <div class="home-score-container">
-          <div class="home">Cruz Azul</div>
-          <div class="score">0</div>
+          <div class="home">{{ event.team.name }}</div>
+          <div class="score">{{ event?.home_goals_at }}</div>
         </div>
         <div class="separator">-</div>
         <div class="away-score-container">
-          <div class="score">7</div>
-          <div class="away">Seattle Sounders</div>
+          <div class="score">{{ event?.away_goals_at }}</div>
+          <div class="away">{{ event?.away_team?.name }}</div>
         </div>
       </div>
     </div>
