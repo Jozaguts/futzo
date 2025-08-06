@@ -1,4 +1,4 @@
-import type { AvailableIntervals } from '~/models/Schedule';
+import type { Availability, AvailableIntervals } from '~/models/Schedule';
 import type { Player, TeamLineupAvailablePlayers } from '~/models/Player';
 import type { User } from '~/models/user';
 
@@ -186,8 +186,17 @@ export type Details = {
 export type Field = {
   id: number;
   name: string;
+  leagues_fields: LeaguesField[];
 };
-
+export type LeaguesField = {
+  id: number;
+  league_id: number;
+  field_id: number;
+  availability: Availability;
+  created_at: Date;
+  updated_at: Date;
+  deleted_at: null;
+};
 export type Time = {
   hours: number;
   minutes: number;
@@ -197,7 +206,19 @@ export type Option = {
   field_id: number;
   available_intervals: AvailableIntervals;
 };
-
+export type LastGames = {
+  id: number;
+  homeTeam: Team;
+  awayTeam: Team;
+  home_goals: number;
+  away_goals: number;
+  status: string;
+  date: string;
+  time: string;
+  location: Location;
+  field: Field;
+  winner_team_id: null;
+};
 export type NextGames = {
   data: Datum[];
 };

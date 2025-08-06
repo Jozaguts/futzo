@@ -1,6 +1,6 @@
 import type { Formation, Team } from '~/models/Team';
 import type { TeamLineupAvailablePlayers } from '~/models/Player';
-import type { FormationPlayer, NextGames, TeamFormation } from '~/models/Game';
+import type { FormationPlayer, LastGames, NextGames, TeamFormation } from '~/models/Game';
 
 export const getTeamBy = async (term: number | string) => {
   const client = useSanctumClient();
@@ -44,7 +44,7 @@ export const nextGames = async (teamId: number, limit: number = 3, order = 'asc'
 };
 export const lastGames = async (teamId: number, limit: number = 3, order = 'asc') => {
   const client = useSanctumClient();
-  return await client<Promise<NextGames>>(`/api/v1/admin/teams/${teamId}/last-games?limit=${limit}&order=${order}`);
+  return await client<Promise<LastGames>>(`/api/v1/admin/teams/${teamId}/last-games?limit=${limit}&order=${order}`);
 };
 export const getFormations = async () => {
   const client = useSanctumClient();

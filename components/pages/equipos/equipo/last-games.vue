@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-  import type { NextGames } from '~/models/Game'
+  import type { LastGames } from '~/models/Game'
 
   const { lastGames } = defineProps({
-    lastGames: Object as PropType<NextGames>,
+    lastGames: Array as PropType<LastGames[]>,
   })
 </script>
 <template>

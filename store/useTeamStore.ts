@@ -3,7 +3,7 @@ import type { Formation, FormSteps, Team, TeamResponse, TeamStoreRequest } from 
 import type { IPagination } from '~/interfaces';
 import * as teamAPI from '~/http/api/team';
 import prepareForm from '~/utils/prepareFormData';
-import type { TeamFormation, NextGames, Initialize } from '~/models/Game';
+import type { TeamFormation, NextGames, Initialize, LastGames } from '~/models/Game';
 import type { TeamLineupAvailablePlayers } from '~/models/Player';
 import { sortFormation } from '~/utils/sort-formation';
 
@@ -51,7 +51,7 @@ export const useTeamStore = defineStore('teamStore', () => {
   const homeFormation = ref<TeamFormation>({} as TeamFormation);
   const awayFormation = ref<TeamFormation>({} as TeamFormation);
   const nextGames = ref<NextGames>({} as NextGames);
-  const lastGames = ref<NextGames>({} as NextGames);
+  const lastGames = ref<LastGames>({} as LastGames);
   const formations = ref<Formation[]>([] as Formation[]);
   const homePlayers = ref<TeamLineupAvailablePlayers[]>([] as TeamLineupAvailablePlayers[]);
   const awayPlayers = ref<TeamLineupAvailablePlayers[]>([] as TeamLineupAvailablePlayers[]);
