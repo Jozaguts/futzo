@@ -18,6 +18,7 @@ import type { Ref } from 'vue';
 import type { IPagination } from '~/interfaces';
 import type { CalendarStepsForm } from '~/models/tournament';
 import { fetchRoundByStatus } from '~/http/api/schedule';
+import * as tournamentAPI from '~/http/api/tournament';
 
 export const useScheduleStore = defineStore('scheduleStore', () => {
   const tournamentStore = useTournamentStore();
@@ -269,6 +270,9 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     );
     schedules.value.rounds = response.rounds ?? [];
   };
+  const exportTournamentRoundScheduleAs = async (type: 'excel' | 'img', round: number) => {
+    return tournamentAPI.exportTournamentRoundScheduleAs(type, tournamentStore.tournamentId as number, round);
+  };
 
   return {
     scheduleDialog,
@@ -291,5 +295,6 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     settingsSchedule,
     $resetScheduleStore,
     fetchScheduleRoundsByStatus,
+    exportTournamentRoundScheduleAs,
   };
 });

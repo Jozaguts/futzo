@@ -157,14 +157,28 @@
                         <template v-slot:activator="{ props }">
                           <v-btn icon="mdi-dots-vertical" variant="text" v-bind="props"></v-btn>
                         </template>
-                        <v-list nav>
-                          <v-list-subheader>Actualizar</v-list-subheader>
-                          <v-list-item variant="flat" @click="editRound(item.round)">
-                            <v-list-item-title class="px-3">Resultados </v-list-item-title>
-                          </v-list-item>
-                        </v-list>
-
                         <v-list density="compact" nav v-model:selected="item.status">
+                          <v-list-subheader>Exportar</v-list-subheader>
+                          <v-list-item
+                            @click="() => useScheduleStore().exportTournamentRoundScheduleAs('excel', item.round)"
+                          >
+                            <template #prepend>
+                              <Icon name="futzo-icon:file-type-excel" class="mr-2"></Icon>
+                            </template>
+                            <v-list-item-title>Excel </v-list-item-title>
+                          </v-list-item>
+                          <v-list-item
+                            @click="() => useScheduleStore().exportTournamentRoundScheduleAs('img', item.round)"
+                          >
+                            <template #prepend>
+                              <Icon name="futzo-icon:file-type-img-primary" class="mr-2"></Icon>
+                            </template>
+                            <v-list-item-title>Imagen </v-list-item-title>
+                          </v-list-item>
+                          <v-list-subheader>Actualizar</v-list-subheader>
+                          <v-list-item @click="editRound(item.round)">
+                            <v-list-item-title>Resultados </v-list-item-title>
+                          </v-list-item>
                           <v-list-subheader>Marcar Jornada como: </v-list-subheader>
                           <v-list-item
                             :active="status.value == item.status"
@@ -173,8 +187,9 @@
                             :value="status.value"
                             active-class="text-primary"
                             @click="() => statusHandler(status.value, item.round)"
-                            v-text="status.text"
-                          />
+                          >
+                            <v-list-item-title>{{ status.text }} </v-list-item-title>
+                          </v-list-item>
                         </v-list>
                       </v-menu>
                     </div>
@@ -215,7 +230,7 @@
                     <div class="details">
                       <p>
                         {{ game.details.date }}
-                        <span>{{ game.details.raw_time }}</span>
+                        <span>{{ game.details?.raw_time }}</span>
                       </p>
                       <p>{{ game.details?.location.name }}</p>
                       <p>{{ game.details?.field.name }}</p>
