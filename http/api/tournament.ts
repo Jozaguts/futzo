@@ -12,11 +12,11 @@ export const exportTournamentRoundScheduleAs = async (type: 'excel' | 'img', tou
       responseType: 'blob' as 'json',
     }
   );
-  if (blob.type.includes('image/')) {
+  if (blob instanceof Blob) {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `jornada-${round}-torneo-${tournamentId}.jpg`; // nombre del archivo
+    link.download = `jornada-${round}-torneo-${tournamentId}.${type === 'img' ? 'jpg' : 'xls'}`; // nombre del archivo
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

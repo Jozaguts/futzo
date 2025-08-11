@@ -157,7 +157,7 @@
                         <template v-slot:activator="{ props }">
                           <v-btn icon="mdi-dots-vertical" variant="text" v-bind="props"></v-btn>
                         </template>
-                        <v-list density="compact" nav v-model:selected="item.status">
+                        <v-list density="compact" nav v-model:selected="item.status" v-auto-animate>
                           <v-list-subheader>Exportar</v-list-subheader>
                           <v-list-item
                             @click="() => useScheduleStore().exportTournamentRoundScheduleAs('excel', item.round)"
@@ -166,14 +166,6 @@
                               <Icon name="futzo-icon:file-type-excel" class="mr-2"></Icon>
                             </template>
                             <v-list-item-title>Excel </v-list-item-title>
-                            <template #append>
-                              <v-progress-circular
-                                v-if="isExporting"
-                                color="primary"
-                                indeterminate
-                                size="30"
-                              ></v-progress-circular>
-                            </template>
                           </v-list-item>
                           <v-list-item
                             @click="() => useScheduleStore().exportTournamentRoundScheduleAs('img', item.round)"
@@ -183,6 +175,7 @@
                             </template>
                             <v-list-item-title>Imagen </v-list-item-title>
                           </v-list-item>
+                          <v-progress-linear indeterminate v-show="isExporting" height="2" />
                           <v-list-subheader>Actualizar</v-list-subheader>
                           <v-list-item @click="editRound(item.round)">
                             <v-list-item-title>Resultados </v-list-item-title>
