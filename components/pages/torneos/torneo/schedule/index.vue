@@ -180,13 +180,21 @@
                           <v-list-item @click="editRound(item.round)">
                             <v-list-item-title>Resultados </v-list-item-title>
                           </v-list-item>
-                          <v-list-subheader>Marcar Jornada como: </v-list-subheader>
+                          <v-list-subheader>Marcar Jornada como </v-list-subheader>
+                          <v-list-item
+                            :active="true"
+                            :value="item.status"
+                            active-class="text-primary"
+                            :disabled="true"
+                            >{{ item.status }}</v-list-item
+                          >
                           <v-list-item
                             :active="status.value == item.status"
-                            v-for="(status, index) in scheduleRoundStatus"
+                            v-for="(status, index) in scheduleRoundStatus.filter((s) => s.value !== item.status)"
                             :key="index"
                             :value="status.value"
                             active-class="text-primary"
+                            :disabled="item.status === 'completado'"
                             @click="() => statusHandler(status.value, item.round)"
                           >
                             <v-list-item-title>{{ status.text }} </v-list-item-title>
