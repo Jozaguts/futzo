@@ -9,7 +9,8 @@
   const { tournamentId, loading, tournament } = storeToRefs(useTournamentStore())
   const { gameReportDialog, showReScheduleDialog, gameDetailsRequest } = storeToRefs(useGameStore())
 
-  const { schedulePagination, isLoadingSchedules, schedules, scheduleRoundStatus } = storeToRefs(useScheduleStore())
+  const { schedulePagination, isLoadingSchedules, schedules, scheduleRoundStatus, isExporting } =
+    storeToRefs(useScheduleStore())
   const load = async ({ done }: { done: (status: 'ok' | 'empty' | 'error') => void }) => {
     if (schedulePagination.value.currentPage > schedulePagination.value.lastPage) {
       done('empty')
@@ -152,8 +153,7 @@
                         @click="() => saveHandler(item.round)"
                         >Guardar cambios
                       </v-btn>
-
-                      <v-menu location="bottom" transition="slide-x-transition">
+                      <v-menu location="bottom" transition="slide-x-transition" :close-on-content-click="false">
                         <template v-slot:activator="{ props }">
                           <v-btn icon="mdi-dots-vertical" variant="text" v-bind="props"></v-btn>
                         </template>
@@ -166,6 +166,14 @@
                               <Icon name="futzo-icon:file-type-excel" class="mr-2"></Icon>
                             </template>
                             <v-list-item-title>Excel </v-list-item-title>
+                            <template #append>
+                              <v-progress-circular
+                                v-if="isExporting"
+                                color="primary"
+                                indeterminate
+                                size="30"
+                              ></v-progress-circular>
+                            </template>
                           </v-list-item>
                           <v-list-item
                             @click="() => useScheduleStore().exportTournamentRoundScheduleAs('img', item.round)"

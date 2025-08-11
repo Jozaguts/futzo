@@ -19,6 +19,7 @@ import type { IPagination } from '~/interfaces';
 import type { CalendarStepsForm } from '~/models/tournament';
 import { fetchRoundByStatus } from '~/http/api/schedule';
 import * as tournamentAPI from '~/http/api/tournament';
+import { useToast } from '~/composables/useToast';
 
 export const useScheduleStore = defineStore('scheduleStore', () => {
   const tournamentStore = useTournamentStore();
@@ -102,6 +103,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       },
     ],
   });
+  const isExporting = ref(false);
 
   const scheduleRoundStatus = ref<ScheduleRoundStatus[]>([
     { value: 'programado', text: 'Programada' },
@@ -271,7 +273,15 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     schedules.value.rounds = response.rounds ?? [];
   };
   const exportTournamentRoundScheduleAs = async (type: 'excel' | 'img', round: number) => {
-    return tournamentAPI.exportTournamentRoundScheduleAs(type, tournamentStore.tournamentId as number, round);
+    isExporting.value = true;
+    return tournamentAPI
+      .exportTournamentRoundScheduleAs(type, tournamentStore.tournamentId as number, round)
+      .then(() => {
+        useToast().toast('success', 'Calendario', 'El rol de juegos se ha generado correctamente');
+      })
+      .finally(() => {
+        isExporting.value = false;
+      });
   };
 
   return {
@@ -288,6 +298,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     scheduleRoundStatus,
     calendarSteps,
     scheduleStoreRequest,
+    isExporting,
     updateStatusGame,
     getTournamentSchedules,
     fetchSchedule,
