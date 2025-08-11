@@ -128,7 +128,7 @@
       ></v-checkbox-btn>
     </template>
     <template v-slot:item.status="{ item }">
-      <v-chip :color="statusHandler(item)" border="lg" class="text-capitalize">
+      <v-chip :color="statusHandler(item)" border="md" class="text-capitalize">
         {{ item.status }}
       </v-chip>
     </template>
