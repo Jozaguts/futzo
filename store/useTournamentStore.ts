@@ -13,6 +13,7 @@ import type { Game } from '~/models/Game';
 import type { User } from '~/models/user';
 import prepareForm from '~/utils/prepareFormData';
 import type { IPagination } from '~/interfaces';
+import * as TournamentAPI from '~/http/api/tournament';
 
 export const useTournamentStore = defineStore('tournamentStore', () => {
   const tournament = ref<Tournament>({} as Tournament);
@@ -318,17 +319,14 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   });
 
   const tournamentsInCreatedState = computed(() => {
-    return tournaments.value.filter(
-      (tournament) => tournament.status === 'creado'
-    );
+    return tournaments.value.filter((tournament) => tournament.status === 'creado');
   });
 
-  const tournamentLocations = ref<TournamentLocation[]>(
-    [] as TournamentLocation[]
-  );
+  const tournamentLocations = ref<TournamentLocation[]>([] as TournamentLocation[]);
   const tournamentLocationStoreRequest = ref<TournamentLocationStoreRequest>();
   const selectedLocations = ref<TournamentLocation[]>([]);
   const selectedLocationsHasError = ref(false);
+  const standings = ref();
 
   function $reset() {
     tournamentStoreRequest.value = {} as TournamentStoreRequest;
@@ -340,18 +338,14 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
 
   async function tournamentFields($tournamentId: number) {
     const client = useSanctumClient();
-    const { data } = await client(
-      `api/v1/admin/tournaments/${$tournamentId}/fields`
-    );
+    const { data } = await client(`api/v1/admin/tournaments/${$tournamentId}/fields`);
     return data;
   }
 
   async function loadTournaments() {
     loading.value = true;
     const client = useSanctumClient();
-    await client(
-      `/api/v1/admin/tournaments?per_page=${pagination.value.perPage}&page=${pagination.value.currentPage}`
-    )
+    await client(`/api/v1/admin/tournaments?per_page=${pagination.value.perPage}&page=${pagination.value.currentPage}`)
       .then(({ data, pagination: _pagination }) => {
         tournaments.value = data || [];
         pagination.value = { ...pagination.value, ..._pagination };
@@ -367,11 +361,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     })
       .then(async (response) => {
         await loadTournaments();
-        useToast().toast(
-          'success',
-          'Torneo Creado',
-          'El nuevo torneo se ha creado exitosamente.'
-        );
+        useToast().toast('success', 'Torneo Creado', 'El nuevo torneo se ha creado exitosamente.');
         dialog.value = false;
         $reset();
         return response;
@@ -387,13 +377,10 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
 
   async function updateTournament() {
     const form = prepareForm(tournamentStoreRequest);
-    return await useSanctumClient()(
-      `api/v1/admin/tournaments/${tournamentId}`,
-      {
-        method: 'PUT',
-        body: form,
-      }
-    )
+    return await useSanctumClient()(`api/v1/admin/tournaments/${tournamentId}`, {
+      method: 'PUT',
+      body: form,
+    })
       .then(async (response) => {
         return response;
       })
@@ -408,9 +395,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     if (!leagueId) {
       leagueId = user.value?.league?.id;
     }
-    const { data } = await client(
-      `api/v1/admin/leagues/${leagueId}/tournaments`
-    );
+    const { data } = await client(`api/v1/admin/leagues/${leagueId}/tournaments`);
     tournaments.value = data || [];
   }
 
@@ -427,22 +412,17 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   async function markAsCompleted() {
     const client = useSanctumClient();
 
-    return await client(
-      `api/v1/admin/tournaments/${tournamentId.value}/mark-as-completed`,
-      {
-        method: 'PUT',
-        body: { tournament_id: tournamentId.value },
-      }
-    );
+    return await client(`api/v1/admin/tournaments/${tournamentId.value}/mark-as-completed`, {
+      method: 'PUT',
+      body: { tournament_id: tournamentId.value },
+    });
   }
 
   const getTournamentLocations = async () => {
     const client = useSanctumClient();
-    client(`/api/v1/admin/tournaments/${tournamentId.value}/locations`).then(
-      (data) => {
-        tournamentLocations.value = data;
-      }
-    );
+    client(`/api/v1/admin/tournaments/${tournamentId.value}/locations`).then((data) => {
+      tournamentLocations.value = data;
+    });
   };
   const storeTournamentLocation = async () => {
     const client = useSanctumClient();
@@ -450,13 +430,17 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
       method: 'POST',
       body: tournamentLocationStoreRequest.value,
     }).then(async () => {
-      useToast().toast(
-        'success',
-        'Ubicación del torneo',
-        'La Ubicación del torneo ha sido agregada correctamente.'
-      );
+      useToast().toast('success', 'Ubicación del torneo', 'La Ubicación del torneo ha sido agregada correctamente.');
       await getTournamentLocations();
     });
+  };
+  const getStandings = async () => {
+    standings.value = await TournamentAPI.getStandings(tournamentId.value as number);
+  };
+  const getTournamentBySlug = async (slug: string) => {
+    const data = await TournamentAPI.getBySlug(slug);
+    tournament.value = data;
+    tournamentId.value = data.id;
   };
 
   return {
@@ -489,6 +473,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     selectedLocations,
     selectedLocationsHasError,
     tournamentsInCreatedState,
+    standings,
     getTournamentLocations,
     loadTournaments,
     storeTournament,
@@ -498,5 +483,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     storeTournamentLocation,
     updateTournamentStatus,
     tournamentFields,
+    getStandings,
+    getTournamentBySlug,
   };
 });

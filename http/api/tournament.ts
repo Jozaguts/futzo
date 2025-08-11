@@ -23,3 +23,11 @@ export const exportTournamentRoundScheduleAs = async (type: 'excel' | 'img', tou
     window.URL.revokeObjectURL(url);
   }
 };
+export const getStandings = async (tournamentId: number) => {
+  const client = useSanctumClient();
+  return await client(`/api/v1/admin/tournaments/${tournamentId}/standings`);
+};
+export const getBySlug = async (slug: string) => {
+  const client = useSanctumClient();
+  return await client(`/api/v1/admin/tournaments/${slug}`);
+};

@@ -7,13 +7,19 @@
   import PageLayout from '~/components/shared/PageLayout.vue'
   import AppBar from '~/components/layout/AppBar.vue'
   import AppBarBtn from '~/components/pages/torneos/torneo/app-bar-btn.vue'
-
-  definePageMeta({
-    middleware: () => {
-      // if (!useTournamentStore().tournamentId) {
-      //   useRouter().push({ name: "torneos" });
-      // }
-    },
+  import { useTournamentStore } from '~/store'
+  const { standings, tournamentId } = storeToRefs(useTournamentStore())
+  const route = useRoute()
+  onMounted(() => {
+    if (tournamentId.value) {
+      useTournamentStore().getStandings()
+    } else {
+      useTournamentStore()
+        .getTournamentBySlug(route?.params?.torneo as string)
+        .then(() => {
+          useTournamentStore().getStandings()
+        })
+    }
   })
 </script>
 <template>
@@ -28,7 +34,7 @@
     <template #default>
       <div class="teams-team-container">
         <div class="primary-zone">
-          <PositionsTable />
+          <PositionsTable :standings="standings" />
         </div>
         <div class="secondary-zone">
           <NextGames />
@@ -44,3 +50,6 @@
     </template>
   </PageLayout>
 </template>
+<style lang="sass">
+  @use 'assets/scss/pages/teams-team.sass'
+</style>

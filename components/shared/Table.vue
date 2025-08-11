@@ -7,6 +7,11 @@
       type: Array as PropType<Header[]>,
       required: true,
     },
+    selectable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     items: {
       type: Array,
       required: true,
@@ -33,7 +38,7 @@
     },
     paginate: {
       type: Function,
-      required: true,
+      required: false,
     },
     showLink: {
       type: Boolean,
@@ -53,7 +58,7 @@
     type: String,
     required: false,
   })
-  const pagination = defineModel<IPagination>('pagination', { required: true })
+  const pagination = defineModel<IPagination>('pagination', { required: false })
 </script>
 <template>
   <v-data-table
@@ -63,7 +68,7 @@
     :search="search"
     :item-key="itemKey"
     items-per-page="10"
-    show-select
+    :show-select="selectable"
     :cell-props="{ class: 'text-capitalize' }"
     height="100%"
   >

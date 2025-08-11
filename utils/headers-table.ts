@@ -106,7 +106,20 @@ export default function getHeaders(tableName: string): Header[] {
         { title: 'Peso', value: 'weight', sortable: true },
         { title: '', value: 'actions', sortable: false }, // todo add ver jugador
       ];
-
+    case 'standings':
+      return [
+        { title: 'Posición', value: 'rank', align: 'center' },
+        { title: 'Equipo', value: 'team.name' },
+        { title: 'PJ', value: 'matches_played' },
+        { title: 'PG', value: 'wins' },
+        { title: 'PE', value: 'draws' },
+        { title: 'PP', value: 'losses' },
+        { title: 'GF', value: 'goals_for' },
+        { title: 'GC', value: 'goals_against' },
+        { title: 'DG', value: 'goal_difference' },
+        { title: 'Pts', value: 'points' },
+        { title: 'últimos 5', value: 'last_5' },
+      ];
     default:
       throw new Error('Table not found');
   }
