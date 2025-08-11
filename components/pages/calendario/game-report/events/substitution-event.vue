@@ -44,7 +44,7 @@
             </div>
           </div>
           <div class="event-details-container__details__team-image">
-            <v-img :src="event?.team?.image" width="48" height="47" contain rounded="lg" border="lg"> </v-img>
+            <v-img :src="event?.team?.image" width="48" height="47" contain rounded="lg" border="sm"> </v-img>
           </div>
         </div>
       </div>

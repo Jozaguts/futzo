@@ -58,7 +58,7 @@
         <p class="details">Asistió: {{ event?.related_player?.user?.name }}</p>
       </div>
       <div class="team-details">
-        <v-img :src="event?.team?.image" width="48" height="47" contain rounded="lg" border="lg"> </v-img>
+        <v-img :src="event?.team?.image" width="48" height="47" contain rounded="lg" border="sm"> </v-img>
       </div>
     </div>
   </v-card>
