@@ -11,93 +11,71 @@
     </template>
     <template #wrapper>
       <div class="v-table__wrapper content">
-        <table>
-          <tbody>
-            <slot name="table-body">
-              <tr class="live-games-table__cell">
-                <td class="team">
-                  <img
-                    src="https://placehold.co/50x50"
-                    alt="team logo"
-                    class="logo"
-                  />
-                  <span class="team_name">Equipo 1</span>
-                </td>
-                <td class="data">
-                  <div class="live">
-                    <Icon name="futzo-icon:ellipse-red"></Icon>
-                    <span>Live</span>
-                  </div>
-                  <div class="result">
-                    <div class="text">1:3</div>
-                  </div>
-                </td>
-                <td class="team">
-                  <img
-                    src="https://placehold.co/50x50"
-                    alt="team logo"
-                    class="logo"
-                  />
-                  <span class="team_name">Equipo 1</span>
-                </td>
-              </tr>
-              <tr class="live-games-table__cell">
-                <td class="team">
-                  <img
-                    src="https://placehold.co/50x50"
-                    alt="team logo"
-                    class="logo"
-                  />
-                  <span class="team_name">Equipo 1</span>
-                </td>
-                <td class="data">
-                  <div class="live">
-                    <Icon name="futzo-icon:ellipse-red"></Icon>
-                    <span>Live</span>
-                  </div>
-                  <div class="result">
-                    <div class="text">1:3</div>
-                  </div>
-                </td>
-                <td class="team">
-                  <img
-                    src="https://placehold.co/50x50"
-                    alt="team logo"
-                    class="logo"
-                  />
-                  <span class="team_name">Equipo 1</span>
-                </td>
-              </tr>
-              <tr class="live-games-table__cell">
-                <td class="team">
-                  <img
-                    src="https://placehold.co/50x50"
-                    alt="team logo"
-                    class="logo"
-                  />
-                  <span class="team_name">Equipo 1</span>
-                </td>
-                <td class="data">
-                  <div class="live">
-                    <Icon name="futzo-icon:ellipse-red"></Icon>
-                    <span>Live</span>
-                  </div>
-                  <div class="result">
-                    <div class="text">1:3</div>
-                  </div>
-                </td>
-                <td class="team">
-                  <img
-                    src="https://placehold.co/50x50"
-                    alt="team logo"
-                    class="logo"
-                  />
-                  <span class="team_name">Equipo 1</span>
-                </td>
-              </tr>
-            </slot>
-          </tbody>
-        </table>
+        <slot name="content">
+          <table>
+            <tbody>
+              <slot name="table-body">
+                <tr class="live-games-table__cell">
+                  <td class="team">
+                    <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
+                    <span class="team_name">Equipo 1</span>
+                  </td>
+                  <td class="data">
+                    <div class="live">
+                      <Icon name="futzo-icon:ellipse-red"></Icon>
+                      <span>Live</span>
+                    </div>
+                    <div class="result">
+                      <div class="text">1:3</div>
+                    </div>
+                  </td>
+                  <td class="team">
+                    <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
+                    <span class="team_name">Equipo 1</span>
+                  </td>
+                </tr>
+                <tr class="live-games-table__cell">
+                  <td class="team">
+                    <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
+                    <span class="team_name">Equipo 1</span>
+                  </td>
+                  <td class="data">
+                    <div class="live">
+                      <Icon name="futzo-icon:ellipse-red"></Icon>
+                      <span>Live</span>
+                    </div>
+                    <div class="result">
+                      <div class="text">1:3</div>
+                    </div>
+                  </td>
+                  <td class="team">
+                    <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
+                    <span class="team_name">Equipo 1</span>
+                  </td>
+                </tr>
+                <tr class="live-games-table__cell">
+                  <td class="team">
+                    <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
+                    <span class="team_name">Equipo 1</span>
+                  </td>
+                  <td class="data">
+                    <div class="live">
+                      <Icon name="futzo-icon:ellipse-red"></Icon>
+                      <span>Live</span>
+                    </div>
+                    <div class="result">
+                      <div class="text">1:3</div>
+                    </div>
+                  </td>
+                  <td class="team">
+                    <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
+                    <span class="team_name">Equipo 1</span>
+                  </td>
+                </tr>
+              </slot>
+            </tbody>
+          </table>
+        </slot>
       </div>
     </template>
   </v-table>

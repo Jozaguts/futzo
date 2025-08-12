@@ -3,7 +3,6 @@
   const { standings } = defineProps<{
     standings: any
   }>()
-  console.log(standings)
   const headers = getHeaders('standings')
   const items = [
     { value: 'excel', text: 'Excel', icon: 'futzo-icon:file-type-excel' },
@@ -35,7 +34,7 @@
     </template>
     <template #wrapper>
       <div class="v-table__wrapper">
-        <Table :headers="headers" :items="standings" itemKey="name" :showFooter="false"> </Table>
+        <Table :headers="headers" :items="standings" itemKey="name" :showFooter="false" />
       </div>
     </template>
   </v-table>

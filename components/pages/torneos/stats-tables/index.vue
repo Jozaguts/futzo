@@ -1,0 +1,44 @@
+<script setup lang="ts">
+  import Goals from '~/components/pages/torneos/stats-tables/goals.vue'
+  import Assistance from '~/components/pages/torneos/stats-tables/assistance.vue'
+  import YellowCards from '~/components/pages/torneos/stats-tables/yellow-cards.vue'
+  import RedCards from '~/components/pages/torneos/stats-tables/red-cards.vue'
+
+  const tab = ref('goals')
+</script>
+
+<template>
+  <v-container fluid class="pa-0">
+    <v-row no-gutters>
+      <v-col cols="12">
+        <v-tabs density="compact" v-model="tab">
+          <v-tab value="goals">Goles</v-tab>
+          <v-tab value="assistance">Asistencias</v-tab>
+          <v-tab value="yellow_cards">Tarjetas amarillas</v-tab>
+          <v-tab value="red_cards">Tarjetas roja</v-tab>
+        </v-tabs>
+        <v-divider />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-tabs-window v-model="tab">
+          <v-tabs-window-item value="goals">
+            <Goals />
+          </v-tabs-window-item>
+          <v-tabs-window-item value="assistance">
+            <Assistance />
+          </v-tabs-window-item>
+          <v-tabs-window-item value="yellow_cards">
+            <YellowCards />
+          </v-tabs-window-item>
+          <v-tabs-window-item value="red_cards">
+            <RedCards />
+          </v-tabs-window-item>
+        </v-tabs-window>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<style scoped lang="sass"></style>

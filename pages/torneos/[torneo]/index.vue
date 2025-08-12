@@ -1,12 +1,13 @@
 <script lang="ts" setup>
   import PositionsTable from '~/components/pages/equipos/positions-table.vue'
-  import LiveGames from '~/components/pages/equipos/live-games.vue'
+  import StatsTableContainer from '~/components/pages/equipos/live-games.vue'
   import NextGamesToday from '~/components/pages/equipos/next-games-today.vue'
   import NextGames from '~/components/pages/equipos/next-games.vue'
   import CreateTournamentDialog from '~/components/pages/torneos/dialog/index.vue'
   import PageLayout from '~/components/shared/PageLayout.vue'
   import AppBar from '~/components/layout/AppBar.vue'
   import AppBarBtn from '~/components/pages/torneos/torneo/app-bar-btn.vue'
+  import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
   import { useTournamentStore } from '~/store'
   const { standings, tournamentId } = storeToRefs(useTournamentStore())
   const route = useRoute()
@@ -40,7 +41,11 @@
           <NextGames />
         </div>
         <div class="right-up-zone">
-          <LiveGames />
+          <StatsTableContainer title="Líderes de estadísticas">
+            <template #content>
+              <StatsTable />
+            </template>
+          </StatsTableContainer>
         </div>
         <div class="right-down-zone">
           <NextGamesToday />
