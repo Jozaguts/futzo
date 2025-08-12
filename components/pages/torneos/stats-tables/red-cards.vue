@@ -6,5 +6,13 @@
   }>()
 </script>
 <template>
-  <DefaultTemplate type="Tarjetas rojas" :data="playerStats" />
+  <DefaultTemplate
+    type="Tarjetas rojas"
+    :data="playerStats"
+    :content="{
+      title: 'Ranking de jugadores',
+      text: 'No hay tarjetas rojas registradas en este torneo.',
+      actioText: 'Actualizar datos',
+    }"
+  />
 </template>

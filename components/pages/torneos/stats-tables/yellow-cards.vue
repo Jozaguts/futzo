@@ -6,5 +6,13 @@
   }>()
 </script>
 <template>
-  <DefaultTemplate type="Tarjetas amarillas" :data="playerStats" />
+  <DefaultTemplate
+    type="Tarjetas amarillas"
+    :data="playerStats"
+    :content="{
+      title: 'Ranking de jugadores',
+      text: 'No hay tarjetas amarillas registradas en este torneo.',
+      actioText: 'Actualizar datos',
+    }"
+  />
 </template>

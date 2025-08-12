@@ -6,5 +6,13 @@
   }>()
 </script>
 <template>
-  <DefaultTemplate type="Goles" :data="playerStats" />
+  <DefaultTemplate
+    type="Goles"
+    :data="playerStats"
+    :content="{
+      title: 'Ranking de jugadores',
+      text: 'No hay goles registrados en este torneo.',
+      actioText: 'Actualizar datos',
+    }"
+  />
 </template>

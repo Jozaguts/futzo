@@ -1,10 +1,13 @@
 <script lang="ts" setup>
   import type { PlayerStats } from '~/models/tournament'
-
-  const { type, data } = defineProps<{ type: String; data: PlayerStats[] }>()
+  const { type, data, content } = defineProps<{
+    type: String
+    data: PlayerStats[]
+    content: { title: string; text: string; actioText: string }
+  }>()
 </script>
 <template>
-  <section>
+  <section v-if="data.length">
     <header class="mx-6">
       <div class="d-flex justify-space-between px-2">
         <p class="text-body-2 text-medium-emphasis">Jugador</p>
@@ -33,4 +36,13 @@
       </v-container>
     </main>
   </section>
+  <v-empty-state
+    v-else
+    size="200"
+    :title="content.title"
+    :text="content.text"
+    :action-text="content.actionText"
+    image="/junior-soccer.svg"
+  >
+  </v-empty-state>
 </template>

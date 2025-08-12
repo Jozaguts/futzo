@@ -6,5 +6,13 @@
   }>()
 </script>
 <template>
-  <DefaultTemplate type="Asistencias" :data="playerStats" />
+  <DefaultTemplate
+    type="Asistencias"
+    :data="playerStats"
+    :content="{
+      title: 'Ranking de jugadores',
+      text: 'No hay asistencias registradas en este torneo.',
+      actioText: 'Actualizar datos',
+    }"
+  />
 </template>
