@@ -34,7 +34,7 @@
     </template>
     <template #wrapper>
       <div class="v-table__wrapper">
-        <Table :headers="headers" :items="standings" itemKey="name" :showFooter="false" />
+        <Table :headers="headers" :items="standings" itemKey="name" :showFooter="false" show-complete />
       </div>
     </template>
   </v-table>

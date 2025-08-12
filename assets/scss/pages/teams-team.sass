@@ -12,10 +12,13 @@
   border-radius: var(--radius-2xl, 16px)
   background: var(--Colors-Base-White, #fff)
   align-self: stretch
+  overflow: scroll
+  scrollbar-width: thin
 .right-up-zone
   grid-area: right-up-zone
   margin-left: 1rem
   max-height: 100%
+  scrollbar-width: thin
 .right-down-zone
   grid-area: right-down-zone
   display: flex
@@ -23,6 +26,7 @@
   justify-content: space-between
   align-items: center
   align-self: stretch
+  scrollbar-width: thin
 
 .secondary-zone
   grid-area: secondary-zone
@@ -32,6 +36,7 @@
   gap: var(--spacing-md, 8px)
   align-self: stretch
   width: 100%
+  scrollbar-width: thin
 @media screen and (width <=  768px)
   .teams-team-container
     grid-template-columns: 1fr

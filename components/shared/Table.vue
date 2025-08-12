@@ -2,7 +2,7 @@
   import type { Header, IPagination } from '~/interfaces'
   import CopyLink from '~/components/shared/copy-link.vue'
 
-  defineProps({
+  const props = defineProps({
     headers: {
       type: Array as PropType<Header[]>,
       required: true,
@@ -53,6 +53,14 @@
       default: false,
       required: false,
     },
+    showComplete: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  })
+  const itemPerPage = computed(() => {
+    return props.showComplete ? props.items?.length : 10
   })
   const search = defineModel('search', {
     type: String,
@@ -81,7 +89,7 @@
     :items="items"
     :search="search"
     :item-key="itemKey"
-    items-per-page="10"
+    :items-per-page="itemPerPage"
     :show-select="selectable"
     :cell-props="{ class: 'text-capitalize' }"
     height="100%"
