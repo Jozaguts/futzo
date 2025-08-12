@@ -8,12 +8,13 @@ import type {
   TournamentLocationStoreRequest,
   TournamentStoreRequest,
   TournamentStatus,
+  TournamentStats,
 } from '~/models/tournament';
 import type { Game } from '~/models/Game';
 import type { User } from '~/models/user';
 import prepareForm from '~/utils/prepareFormData';
 import type { IPagination } from '~/interfaces';
-import * as TournamentAPI from '~/http/api/tournament';
+import * as tournamentAPI from '~/http/api/tournament';
 
 export const useTournamentStore = defineStore('tournamentStore', () => {
   const tournament = ref<Tournament>({} as Tournament);
@@ -327,6 +328,12 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   const selectedLocations = ref<TournamentLocation[]>([]);
   const selectedLocationsHasError = ref(false);
   const standings = ref();
+  const tournamentStats = ref<TournamentStats>({
+    goals: [],
+    assistance: [],
+    yellow_cards: [],
+    red_cards: [],
+  });
 
   function $reset() {
     tournamentStoreRequest.value = {} as TournamentStoreRequest;
@@ -435,12 +442,15 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     });
   };
   const getStandings = async () => {
-    standings.value = await TournamentAPI.getStandings(tournamentId.value as number);
+    standings.value = await tournamentAPI.getStandings(tournamentId.value as number);
   };
   const getTournamentBySlug = async (slug: string) => {
-    const data = await TournamentAPI.getBySlug(slug);
+    const data = await tournamentAPI.getBySlug(slug);
     tournament.value = data;
     tournamentId.value = data.id;
+  };
+  const getTournamentStats = async () => {
+    tournamentStats.value = await tournamentAPI.getTournamentStats(tournamentId.value as number);
   };
 
   return {
@@ -474,6 +484,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     selectedLocationsHasError,
     tournamentsInCreatedState,
     standings,
+    tournamentStats,
     getTournamentLocations,
     loadTournaments,
     storeTournament,
@@ -485,5 +496,6 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     tournamentFields,
     getStandings,
     getTournamentBySlug,
+    getTournamentStats,
   };
 });

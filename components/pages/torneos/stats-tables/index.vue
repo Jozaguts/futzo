@@ -3,8 +3,21 @@
   import Assistance from '~/components/pages/torneos/stats-tables/assistance.vue'
   import YellowCards from '~/components/pages/torneos/stats-tables/yellow-cards.vue'
   import RedCards from '~/components/pages/torneos/stats-tables/red-cards.vue'
-
+  import { useTournamentStore } from '~/store'
+  const route = useRoute()
   const tab = ref('goals')
+  const { tournamentStats, tournamentId } = storeToRefs(useTournamentStore())
+  onMounted(() => {
+    if (tournamentId.value) {
+      useTournamentStore().getTournamentStats()
+    } else {
+      useTournamentStore()
+        .getTournamentBySlug(route?.params?.torneo as string)
+        .then(() => {
+          useTournamentStore().getTournamentStats()
+        })
+    }
+  })
 </script>
 
 <template>
@@ -24,16 +37,16 @@
       <v-col cols="12">
         <v-tabs-window v-model="tab">
           <v-tabs-window-item value="goals">
-            <Goals />
+            <Goals :player-stats="tournamentStats.goals" />
           </v-tabs-window-item>
           <v-tabs-window-item value="assistance">
-            <Assistance />
+            <Assistance :player-stats="tournamentStats.assistance" />
           </v-tabs-window-item>
           <v-tabs-window-item value="yellow_cards">
-            <YellowCards />
+            <YellowCards :player-stats="tournamentStats.yellow_cards" />
           </v-tabs-window-item>
           <v-tabs-window-item value="red_cards">
-            <RedCards />
+            <RedCards :player-stats="tournamentStats.red_cards" />
           </v-tabs-window-item>
         </v-tabs-window>
       </v-col>

@@ -7,7 +7,20 @@ export type TournamentLocationStoreRequest = {
   location: Location;
   tags: string[];
 };
-
+export type TournamentStats = {
+  goals: PlayerStats[];
+  assistance: PlayerStats[];
+  yellow_cards: PlayerStats[];
+  red_cards: PlayerStats[];
+};
+export type PlayerStats = {
+  player_id: number;
+  player_name: string;
+  team_image: string;
+  team_name: string;
+  user_image: string;
+  total: number;
+};
 export interface TournamentLocation extends Location {
   pivot: {
     tournament_id: number;

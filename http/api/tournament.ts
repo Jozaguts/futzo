@@ -31,3 +31,7 @@ export const getBySlug = async (slug: string) => {
   const client = useSanctumClient();
   return await client(`/api/v1/admin/tournaments/${slug}`);
 };
+export const getTournamentStats = async (tournamentId: number) => {
+  const client = useSanctumClient();
+  return await client(`/api/v1/admin/tournaments/${tournamentId}/stats`);
+};
