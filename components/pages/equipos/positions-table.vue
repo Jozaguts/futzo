@@ -38,26 +38,6 @@
       </div>
     </template>
   </v-table>
-
-  <div class="d-flex mt-2 ml-1 pa-1">
-    <p>Últimos 5 partidos:</p>
-    <div class="d-flex align-center">
-      <span class="text-center ml-2 mr-1">Ganó:</span>
-      <Icon name="mdi:checkbox-marked-circle" class="text-green" />
-    </div>
-    <div class="d-flex align-center">
-      <span class="text-center ml-2 mr-1">Empate:</span>
-      <Icon name="ic:outline-remove-circle" class="text-gray" />
-    </div>
-    <div class="d-flex align-center">
-      <span class="text-center ml-2 mr-1">Perdió:</span>
-      <Icon name="mdi:close-circle" class="text-red" />
-    </div>
-    <div class="d-flex align-center">
-      <span class="text-center ml-2 mr-1">No jugó:</span>
-      <Icon name="mdi:checkbox-blank-circle-outline" class="text-gray" />
-    </div>
-  </div>
 </template>
 <style lang="scss" scoped>
   .positions-table {

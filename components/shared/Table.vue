@@ -63,13 +63,13 @@
     return last_5.split('').map((value: string) => {
       switch (value) {
         case '-':
-          return { icon: 'mdi:checkbox-blank-circle-outline', color: 'gray' }
+          return { icon: 'mdi:checkbox-blank-circle-outline', color: 'gray', label: 'No jugó' }
         case 'W':
-          return { icon: 'mdi:checkbox-marked-circle', color: 'green' }
+          return { icon: 'mdi:checkbox-marked-circle', color: 'green', label: 'Ganó' }
         case 'L':
-          return { icon: 'mdi:close-circle', color: 'red' }
+          return { icon: 'mdi:close-circle', color: 'red', label: 'Perdió' }
         case 'D':
-          return { icon: 'ic:outline-remove-circle', color: 'gray' }
+          return { icon: 'ic:outline-remove-circle', color: 'gray', label: 'Empate' }
       }
     })
   }
@@ -158,7 +158,11 @@
     </template>
     <template #item.last_5="{ item }">
       <span v-for="color in last5Handler(item.last_5)" :key="item.id + color.color" class="text-lowercase">
-        <Icon :name="color.icon" :class="`text-${color.color}`" size="16"></Icon>
+        <v-tooltip :text="color?.label" location="bottom">
+          <template v-slot:activator="{ props }">
+            <Icon v-bind="props" :name="color?.icon" :class="`text-${color?.color}`" size="20" class="cursor-pointer" />
+          </template>
+        </v-tooltip>
       </span>
     </template>
     <!--    link }}-->
