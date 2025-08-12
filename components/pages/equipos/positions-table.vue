@@ -5,11 +5,33 @@
   }>()
   console.log(standings)
   const headers = getHeaders('standings')
+  const items = [
+    { value: 'excel', text: 'Excel', icon: 'futzo-icon:file-type-excel' },
+    { value: 'image', text: 'Imagen', icon: 'futzo-icon:file-type-img-primary' },
+  ]
 </script>
 <template>
   <v-table class="positions-table futzo-table">
     <template #top>
-      <h2 class="positions-table-title mt-0">Tabla de posiciones</h2>
+      <div class="d-flex">
+        <h2 class="positions-table-title mt-0">Tabla de posiciones</h2>
+        <v-spacer />
+        <v-menu location="start" transition="slide-x-transition" :close-on-content-click="false">
+          <template v-slot:activator="{ props }">
+            <v-btn icon="mdi-dots-horizontal" variant="plain" v-bind="props" :ripple="false" />
+          </template>
+          <v-list density="compact" nav>
+            <v-list-subheader> Exportar </v-list-subheader>
+            <v-list-item v-for="(item, i) in items" :key="i" :value="i">
+              <template #prepend>
+                <Icon :name="item.icon" class="mr-2"></Icon>
+              </template>
+              <v-list-item-title>{{ item.text }} </v-list-item-title>
+            </v-list-item>
+            <v-progress-linear indeterminate height="2" />
+          </v-list>
+        </v-menu>
+      </div>
     </template>
     <template #wrapper>
       <div class="v-table__wrapper">
@@ -17,6 +39,26 @@
       </div>
     </template>
   </v-table>
+
+  <div class="d-flex mt-2 ml-1 pa-1">
+    <p>Últimos 5 partidos:</p>
+    <div class="d-flex align-center">
+      <span class="text-center ml-2 mr-1">Ganó:</span>
+      <Icon name="mdi:checkbox-marked-circle" class="text-green" />
+    </div>
+    <div class="d-flex align-center">
+      <span class="text-center ml-2 mr-1">Empate:</span>
+      <Icon name="ic:outline-remove-circle" class="text-gray" />
+    </div>
+    <div class="d-flex align-center">
+      <span class="text-center ml-2 mr-1">Perdió:</span>
+      <Icon name="mdi:close-circle" class="text-red" />
+    </div>
+    <div class="d-flex align-center">
+      <span class="text-center ml-2 mr-1">No jugó:</span>
+      <Icon name="mdi:checkbox-blank-circle-outline" class="text-gray" />
+    </div>
+  </div>
 </template>
 <style lang="scss" scoped>
   .positions-table {

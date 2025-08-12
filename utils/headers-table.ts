@@ -118,7 +118,7 @@ export default function getHeaders(tableName: string): Header[] {
         { title: 'GC', value: 'goals_against' },
         { title: 'DG', value: 'goal_difference' },
         { title: 'Pts', value: 'points' },
-        { title: 'últimos 5', value: 'last_5' },
+        { title: 'últimos 5', value: 'last_5', align: 'center' },
       ];
     default:
       throw new Error('Table not found');

@@ -59,6 +59,20 @@
     required: false,
   })
   const pagination = defineModel<IPagination>('pagination', { required: false })
+  const last5Handler = (last_5: string) => {
+    return last_5.split('').map((value: string) => {
+      switch (value) {
+        case '-':
+          return { icon: 'mdi:checkbox-blank-circle-outline', color: 'gray' }
+        case 'W':
+          return { icon: 'mdi:checkbox-marked-circle', color: 'green' }
+        case 'L':
+          return { icon: 'mdi:close-circle', color: 'red' }
+        case 'D':
+          return { icon: 'ic:outline-remove-circle', color: 'gray' }
+      }
+    })
+  }
 </script>
 <template>
   <v-data-table
@@ -141,6 +155,11 @@
       <div>
         <slot name="actions" :item="item"></slot>
       </div>
+    </template>
+    <template #item.last_5="{ item }">
+      <span v-for="color in last5Handler(item.last_5)" :key="item.id + color.color" class="text-lowercase">
+        <Icon :name="color.icon" :class="`text-${color.color}`" size="16"></Icon>
+      </span>
     </template>
     <!--    link }}-->
     <template v-if="showLink" #[`item.link`]="{ item }">
