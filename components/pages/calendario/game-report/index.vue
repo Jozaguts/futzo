@@ -18,6 +18,11 @@
     },
     { immediate: true }
   )
+  const markAsCompletedHandler = () => {
+    useGameStore()
+      .markAsComplete()
+      .then(() => (gameReportDialog.value = false))
+  }
 </script>
 <template>
   <Dialog
@@ -42,7 +47,7 @@
               text="Marcar como finalizado"
               variant="outlined"
               block
-              @click="useGameStore().markAsComplete"
+              @click="markAsCompletedHandler"
             />
           </v-col>
         </v-row>
