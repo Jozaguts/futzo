@@ -10,7 +10,7 @@ import { sortFormation } from '~/utils/sort-formation';
 export const useTeamStore = defineStore('teamStore', () => {
   const { toast } = useToast();
   const dialog = ref(false);
-  const teams = ref<TeamResponse[]>();
+  const teams = ref<TeamResponse[]>([] as TeamResponse[]);
   const team = ref<Team>();
   const teamId = ref(0);
   const search = ref('');

@@ -4,6 +4,7 @@ import prepareForm from '~/utils/prepareFormData';
 import type { IPagination } from '~/interfaces';
 import type { Team } from '~/models/Team';
 import * as teamAPI from '~/http/api/team';
+import * as playerAPI from '~/http/api/players';
 import type { FormationPlayer } from '~/models/Game';
 
 export const usePlayerStore = defineStore('playerStore', () => {
@@ -14,7 +15,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
   const isEdition = ref<boolean>(false);
   const noPlayers = computed(() => players.value.length === 0);
   const playerStoreRequest = ref({} as PlayerStoreRequest);
-  const playerId = ref(null);
+  const playerId = ref<number>();
   const availableTeams = ref<Team[]>([]);
   const pagination = ref<IPagination>({
     currentPage: 1,
@@ -108,12 +109,14 @@ export const usePlayerStore = defineStore('playerStore', () => {
         );
       });
   };
-  const getPlayers = async () => {
+  const getPlayers = async (search?: string) => {
     try {
       const client = useSanctumClient();
-      await client(
-        `/api/v1/admin/players?per_page=${pagination.value.perPage}&page=${pagination.value.currentPage}&sort=${pagination.value.sort}`
-      ).then(({ data, pagination: _pagination }) => {
+      let url = `/api/v1/admin/players?per_page=${pagination.value.perPage}&page=${pagination.value.currentPage}&sort=${pagination.value.sort}`;
+      if (search) {
+        url += '&search=' + search;
+      }
+      await client(url).then(({ data, pagination: _pagination }) => {
         pagination.value = { ...pagination.value, ..._pagination };
         players.value = data;
       });
@@ -174,6 +177,9 @@ export const usePlayerStore = defineStore('playerStore', () => {
   ) => {
     await teamAPI.addLineupPlayer(player, currentPlayer, field_location, game_id);
   };
+  const searchPlayer = async (search: string) => {
+    players.value = await playerAPI.search(search);
+  };
 
   return {
     players,
@@ -201,5 +207,6 @@ export const usePlayerStore = defineStore('playerStore', () => {
     addDefaultLineupPlayer,
     updateLineup,
     addLineupPlayer,
+    searchPlayer,
   };
 });

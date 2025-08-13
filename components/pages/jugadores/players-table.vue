@@ -4,18 +4,17 @@
   import type { Player, PlayerResponse } from '~/models/Player'
   import type { Team } from '~/models/Team'
 
-  const { players, playerId, isEdition, pagination, dialog, playerStoreRequest, search, showAssignTeam } =
-    storeToRefs(usePlayerStore())
+  const { players, playerId, pagination, search, showAssignTeam } = storeToRefs(usePlayerStore())
   const headers = getHeaders('players')
   const showPlayerHandler = (player: PlayerResponse) => {
     console.log({ player: player })
   }
   const assignTeam = (item: Player) => {
-    playerId.value = item.id as number
+    playerId.value = item.id
     showAssignTeam.value = !showAssignTeam.value
   }
   const { teams } = storeToRefs(useTeamStore())
-  const areThereTeams = computed(() => teams.value.length > 0)
+  const areThereTeams = computed(() => teams.value?.length > 0)
 </script>
 <template>
   <Table
