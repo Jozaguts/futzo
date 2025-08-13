@@ -10,18 +10,20 @@
   import AppBarBtn from '~/components/pages/torneos/torneo/app-bar-btn.vue'
   import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
   import { useTournamentStore } from '~/store'
-  const { standings, tournamentId, lastResults } = storeToRefs(useTournamentStore())
+  const { standings, tournamentId, lastResults, nextGames } = storeToRefs(useTournamentStore())
   const route = useRoute()
   onMounted(() => {
     if (tournamentId.value) {
       useTournamentStore().getStandings()
       useTournamentStore().getLastResults()
+      useTournamentStore().getNextGames()
     } else {
       useTournamentStore()
         .getTournamentBySlug(route?.params?.torneo as string)
         .then(() => {
           useTournamentStore().getStandings()
           useTournamentStore().getLastResults()
+          useTournamentStore().getNextGames()
         })
     }
   })
@@ -41,7 +43,7 @@
           <PositionsTable :standings="standings" />
         </div>
         <div class="secondary-zone">
-          <NextGames />
+          <NextGames :nextGames="nextGames" />
         </div>
         <div class="right-up-zone">
           <StatsTableContainer title="Líderes de estadísticas">

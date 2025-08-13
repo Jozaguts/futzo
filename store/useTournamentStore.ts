@@ -456,6 +456,9 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   const getLastResults = async () => {
     lastResults.value = await tournamentAPI.getLastResults(tournamentId.value as number);
   };
+  const getNextGames = async () => {
+    nextGames.value = await tournamentAPI.getNextGames(tournamentId.value as number);
+  };
 
   return {
     tournaments,
@@ -490,6 +493,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     standings,
     tournamentStats,
     lastResults,
+    nextGames,
     getTournamentLocations,
     loadTournaments,
     storeTournament,
@@ -503,5 +507,6 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     getTournamentBySlug,
     getTournamentStats,
     getLastResults,
+    getNextGames,
   };
 });

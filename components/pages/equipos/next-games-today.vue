@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-  import { Record } from 'immutable'
-
   const { title, data } = defineProps({
     title: {
       type: String,

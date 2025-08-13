@@ -18,13 +18,7 @@
     <template #top>
       <div class="next-games-table__header">
         <h2 class="next-games-table-title">{{ title }}</h2>
-        <v-btn
-          variant="text"
-          :disabled="disabled"
-          to="/"
-          class="next-games-table-link"
-          >Ver todos</v-btn
-        >
+        <v-btn variant="text" :disabled="disabled" to="/" class="next-games-table-link">Ver todos</v-btn>
       </div>
     </template>
     <template #wrapper>
@@ -36,31 +30,15 @@
                 <div class="game-container">
                   <div class="teams">
                     <div class="team-local">
-                      <img
-                        :src="game.home_team.image"
-                        alt="team logo"
-                        class="logo"
-                      />
-                      <span
-                        class="team_name text-truncate"
-                        style="max-width: 130px"
-                        >{{ game.home_team.name }}</span
-                      >
+                      <img :src="game.home_team.image" alt="team logo" class="logo" />
+                      <span class="team_name text-truncate" style="max-width: 130px">{{ game.home_team.name }}</span>
                     </div>
                     <div class="vs-container">
                       <div class="vs">vs</div>
                     </div>
                     <div class="team-away">
-                      <img
-                        :src="game.away_team.image"
-                        alt="team logo"
-                        class="logo"
-                      />
-                      <span
-                        class="team_name text-truncate"
-                        style="max-width: 130px"
-                        >{{ game.away_team.name }}</span
-                      >
+                      <img :src="game.away_team.image" alt="team logo" class="logo" />
+                      <span class="team_name text-truncate" style="max-width: 130px">{{ game.away_team.name }}</span>
                     </div>
                   </div>
                   <div class="data">
@@ -69,9 +47,9 @@
                     <span class="field">{{ game.field.name }}</span>
                   </div>
                   <div class="btn-container">
-                    <nuxt-link class="d-flex align-center">
-                      <span class="btn-text"> Ver detalles</span>
-                      <Icon name="futzo-icon:arrow-right" />
+                    <nuxt-link class="d-flex align-center text-disabled" disabled>
+                      <span class="btn-text text-disabled" disabled> Ver detalles</span>
+                      <Icon name="futzo-icon:arrow-right text-disabled" />
                     </nuxt-link>
                   </div>
                 </div>
