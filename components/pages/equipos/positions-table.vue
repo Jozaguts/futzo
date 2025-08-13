@@ -1,19 +1,26 @@
 <script setup lang="ts">
   import getHeaders from '~/utils/headers-table'
+  import { useTournamentStore } from '~/store'
   const { standings } = defineProps<{
     standings: any
   }>()
   const headers = getHeaders('standings')
   type exportListItem = {
-    value: string
+    value: 'excel' | 'img'
     text: string
     icon: string
   }
   const items: exportListItem[] = [
     { value: 'excel', text: 'Excel', icon: 'futzo-icon:file-type-excel' },
-    { value: 'image', text: 'Imagen', icon: 'futzo-icon:file-type-img-primary' },
+    { value: 'img', text: 'Imagen', icon: 'futzo-icon:file-type-img-primary' },
   ]
-  const exportAsHandler = (item: exportListItem) => {}
+  const loading = ref(false)
+  const exportAsHandler = (item: exportListItem) => {
+    loading.value = true
+    useTournamentStore()
+      .exportStandingTournament(item.value)
+      .finally(() => (loading.value = false))
+  }
 </script>
 <template>
   <v-table class="positions-table futzo-table">
@@ -23,9 +30,9 @@
         <v-spacer />
         <v-menu location="start" transition="slide-x-transition" :close-on-content-click="false">
           <template v-slot:activator="{ props }">
-            <v-btn icon="mdi-dots-horizontal" variant="plain" v-bind="props" :ripple="false" />
+            <v-btn icon="mdi-dots-vertical" variant="plain" v-bind="props" :ripple="false" />
           </template>
-          <v-list density="compact" nav>
+          <v-list density="compact" nav :disabled="loading">
             <v-list-subheader> Exportar </v-list-subheader>
             <v-list-item v-for="(item, i) in items" :key="i" :value="i" @click="exportAsHandler(item)">
               <template #prepend>
@@ -33,7 +40,7 @@
               </template>
               <v-list-item-title>{{ item.text }} </v-list-item-title>
             </v-list-item>
-            <v-progress-linear indeterminate height="2" />
+            <v-progress-linear indeterminate height="2" v-show="loading" />
           </v-list>
         </v-menu>
       </div>

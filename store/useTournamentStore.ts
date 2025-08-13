@@ -15,6 +15,7 @@ import type { User } from '~/models/user';
 import prepareForm from '~/utils/prepareFormData';
 import type { IPagination } from '~/interfaces';
 import * as tournamentAPI from '~/http/api/tournament';
+import { exportStandingTournament } from '~/http/api/tournament';
 
 export const useTournamentStore = defineStore('tournamentStore', () => {
   const tournament = ref<Tournament>({} as Tournament);
@@ -39,266 +40,8 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
       },
     ],
   });
-  const nextGames = ref<Game[]>([
-    {
-      id: 1,
-      away: {
-        name: 'Cruz azul',
-        img: 'https://ui-avatars.com/api/?name=Cruz azul',
-      },
-      home: {
-        name: 'Santos',
-        img: 'https://ui-avatars.com/api/?name=Santos',
-      },
-      result: null,
-      schedule: {
-        day: 'Sab. 9/3',
-        hour: '19:00',
-      },
-    },
-    {
-      id: 2,
-      away: {
-        name: 'Cruz azul',
-        img: 'https://ui-avatars.com/api/?name=Cruz azul',
-      },
-      home: {
-        name: 'Santos',
-        img: 'https://ui-avatars.com/api/?name=Santos',
-      },
-      result: '1-0',
-      schedule: {
-        day: 'Sab. 9/3',
-        hour: '19:00',
-      },
-    },
-    {
-      id: 3,
-      away: {
-        name: 'Cruz azul',
-        img: 'https://ui-avatars.com/api/?name=Cruz azul',
-      },
-      home: {
-        name: 'Santos',
-        img: 'https://ui-avatars.com/api/?name=Santos',
-      },
-      result: '1-0',
-      schedule: {
-        day: 'Sab. 9/3',
-        hour: '19:00',
-      },
-    },
-    {
-      id: 4,
-      away: {
-        name: 'Cruz azul',
-        img: 'https://ui-avatars.com/api/?name=Cruz azul',
-      },
-      home: {
-        name: 'Santos',
-        img: 'https://ui-avatars.com/api/?name=Santos',
-      },
-      result: '1-0',
-      schedule: {
-        day: 'Sab. 9/3',
-        hour: '19:00',
-      },
-    },
-    {
-      id: 5,
-      away: {
-        name: 'Cruz azul',
-        img: 'https://ui-avatars.com/api/?name=Cruz azul',
-      },
-      home: {
-        name: 'Santos',
-        img: 'https://ui-avatars.com/api/?name=Santos',
-      },
-      result: '1-0',
-      schedule: {
-        day: 'Sab. 9/3',
-        hour: '19:00',
-      },
-    },
-    {
-      id: 6,
-      away: {
-        name: 'Cruz azul',
-        img: 'https://ui-avatars.com/api/?name=Cruz azul',
-      },
-      home: {
-        name: 'Santos',
-        img: 'https://ui-avatars.com/api/?name=Santos',
-      },
-      result: '1-0',
-      schedule: {
-        day: 'Sab. 9/3',
-        hour: '19:00',
-      },
-    },
-    {
-      id: 7,
-      away: {
-        name: 'Cruz azul',
-        img: 'https://ui-avatars.com/api/?name=Cruz azul',
-      },
-      home: {
-        name: 'Santos',
-        img: 'https://ui-avatars.com/api/?name=Santos',
-      },
-      result: '1-0',
-      schedule: {
-        day: 'Sab. 9/3',
-        hour: '19:00',
-      },
-    },
-    {
-      id: 8,
-      away: {
-        name: 'Cruz azul',
-        img: 'https://ui-avatars.com/api/?name=Cruz azul',
-      },
-      home: {
-        name: 'Santos',
-        img: 'https://ui-avatars.com/api/?name=Santos',
-      },
-      result: '1-0',
-      schedule: {
-        day: 'Sab. 9/3',
-        hour: '19:00',
-      },
-    },
-    {
-      id: 9,
-      away: {
-        name: 'Cruz azul',
-        img: 'https://ui-avatars.com/api/?name=Cruz azul',
-      },
-      home: {
-        name: 'Santos',
-        img: 'https://ui-avatars.com/api/?name=Santos',
-      },
-      result: '1-0',
-      schedule: {
-        day: 'Sab. 9/3',
-        hour: '19:00',
-      },
-    },
-    {
-      id: 10,
-      away: {
-        name: 'Cruz azul',
-        img: 'https://ui-avatars.com/api/?name=Cruz azul',
-      },
-      home: {
-        name: 'Santos',
-        img: 'https://ui-avatars.com/api/?name=Santos',
-      },
-      result: '1-0',
-      schedule: {
-        day: 'Sab. 9/3',
-        hour: '19:00',
-      },
-    },
-  ]);
-  const currentGames = ref<Game[]>([
-    {
-      id: 1,
-      away: {
-        name: 'Chivas',
-        img: 'https://ui-avatars.com/api/?name=Cruz azul',
-      },
-      home: {
-        name: 'Monterrey',
-        img: 'https://ui-avatars.com/api/?name=Santos',
-      },
-      result: null,
-      schedule: {
-        day: 'Sab. 9/3',
-        hour: '19:00',
-      },
-    },
-    {
-      id: 2,
-      away: {
-        name: 'Pachuca',
-        img: 'https://ui-avatars.com/api/?name=Cruz azul',
-      },
-      home: {
-        name: 'Tigres',
-        img: 'https://ui-avatars.com/api/?name=Santos',
-      },
-      result: '1-0',
-      schedule: {
-        day: 'Sab. 9/3',
-        hour: '19:00',
-      },
-    },
-    {
-      id: 3,
-      away: {
-        name: 'Santos',
-        img: 'https://ui-avatars.com/api/?name=Cruz azul',
-      },
-      home: {
-        name: 'America',
-        img: 'https://ui-avatars.com/api/?name=Santos',
-      },
-      result: '1-0',
-      schedule: {
-        day: 'Sab. 9/3',
-        hour: '19:00',
-      },
-    },
-    {
-      id: 4,
-      away: {
-        name: 'Santos',
-        img: 'https://ui-avatars.com/api/?name=Cruz azul',
-      },
-      home: {
-        name: 'America',
-        img: 'https://ui-avatars.com/api/?name=Santos',
-      },
-      result: '1-0',
-      schedule: {
-        day: 'Sab. 9/3',
-        hour: '19:00',
-      },
-    },
-    {
-      id: 5,
-      away: {
-        name: 'Santos',
-        img: 'https://ui-avatars.com/api/?name=Cruz azul',
-      },
-      home: {
-        name: 'America',
-        img: 'https://ui-avatars.com/api/?name=Santos',
-      },
-      result: '1-0',
-      schedule: {
-        day: 'Sab. 9/3',
-        hour: '19:00',
-      },
-    },
-    {
-      id: 6,
-      away: {
-        name: 'Santos',
-        img: 'https://ui-avatars.com/api/?name=Cruz azul',
-      },
-      home: {
-        name: 'America',
-        img: 'https://ui-avatars.com/api/?name=Santos',
-      },
-      result: '1-0',
-      schedule: {
-        day: 'Sab. 9/3',
-        hour: '19:00',
-      },
-    },
-  ]);
+  const nextGames = ref<Game[]>([] as Game[]);
+  const currentGames = ref<Game[]>([] as Game[]);
   const categories = ref([]);
   const teamsCount = ref(0);
   const roundsCount = ref(0);
@@ -459,6 +202,9 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   const getNextGames = async () => {
     nextGames.value = await tournamentAPI.getNextGames(tournamentId.value as number);
   };
+  const exportStandingTournament = async (type: 'excel' | 'img') => {
+    await tournamentAPI.exportStandingTournament(type, tournament.value);
+  };
 
   return {
     tournaments,
@@ -493,7 +239,6 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     standings,
     tournamentStats,
     lastResults,
-    nextGames,
     getTournamentLocations,
     loadTournaments,
     storeTournament,
@@ -508,5 +253,6 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     getTournamentStats,
     getLastResults,
     getNextGames,
+    exportStandingTournament,
   };
 });
