@@ -45,40 +45,36 @@
       </AppBar>
     </template>
     <template #default>
-      <v-container fluid class="pa-0 mx-0 mt-4 mt-md-0 mt-lg-0">
-        <v-row>
-          <v-col>
-            <StatsCard
-              title="Equipos totales"
-              :values="teamStats.registeredTeams"
-              :isPositive="teamStats.registeredTeams.current > 0"
-            ></StatsCard>
-          </v-col>
-          <v-col>
-            <StatsCard
-              title="jugadores activos"
-              :values="teamStats.activePlayers"
-              :isPositive="teamStats.activePlayers.current > 0"
-            ></StatsCard>
-          </v-col>
-          <v-col>
-            <StatsCard
-              title="juegos finalizados"
-              :values="teamStats.completedGames"
-              :isPositive="teamStats.completedGames.current > 0"
-            ></StatsCard>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12">
+      <div class="dashboard-container">
+        <div class="card-1">
+          <StatsCard
+            title="Equipos totales"
+            :values="teamStats.registeredTeams"
+            :isPositive="teamStats.registeredTeams.current > 0"
+          ></StatsCard>
+        </div>
+        <div class="card-2">
+          <StatsCard
+            title="jugadores activos"
+            :values="teamStats.activePlayers"
+            :isPositive="teamStats.activePlayers.current > 0"
+          ></StatsCard>
+        </div>
+        <div class="card-3">
+          <StatsCard
+            title="juegos finalizados"
+            :values="teamStats.completedGames"
+            :isPositive="teamStats.completedGames.current > 0"
+          ></StatsCard>
+        </div>
+        <div class="table">
+          <div class="table-wrapper">
             <h2 class="dashboard subtitle">Últimos equipos inscritos</h2>
-          </v-col>
-          <v-col cols="12">
             <LastTeamsTable />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12">
+          </div>
+        </div>
+        <div class="next-games">
+          <div class="next-game-wrapper">
             <div class="dashboard subtitle-container">
               <h2 class="dashboard subtitle">Próximos partidos</h2>
               <v-btn variant="text" to="/torneos">Ver todos</v-btn>
@@ -86,10 +82,16 @@
             <div v-if="nextGames.length === 0" class="text-center">
               <NoGames />
             </div>
-            <dashboard-next-games v-else v-for="game in nextGames" :key="game.id" :game="game" />
-          </v-col>
-        </v-row>
-      </v-container>
+            <dashboard-next-games
+              :class="[index === 0 ? 'mt-0' : '']"
+              v-else
+              v-for="(game, index) in nextGames"
+              :key="game.id"
+              :game="game"
+            />
+          </div>
+        </div>
+      </div>
     </template>
   </PageLayout>
 </template>

@@ -19,7 +19,6 @@
     &-game-container {
       flex-wrap: wrap;
     }
-
     &-teams {
       flex: 0 1 50%;
     }
@@ -33,8 +32,6 @@
     }
   }
 }
-
-
 .dashboard-stats-card {
   min-width: 320px;
   border-width: 1px;
@@ -93,6 +90,7 @@
     line-height: 28px;
     font-size: 18px;
     font-weight: 600;
+    margin-bottom: 1rem;
   }
 
   &.subtitle-container {
@@ -244,3 +242,52 @@
     margin-right: 0.5rem;
   }
 }
+
+.dashboard-container {
+  display: grid;
+  grid-template-columns: repeat(6, auto);
+  grid-template-rows: repeat(6, auto);
+  gap: 1em 1em;
+  grid-template-areas:
+    "card-1 card-1 card-2 card-2 card-3 card-3"
+    "card-1 card-1 card-2 card-2 card-3 card-3"
+    "table table table table table table"
+    "table table table table table table"
+    "table table table table table table"
+    "table table table table table table"
+    "next-games next-games next-games next-games next-games next-games";
+}
+.card-1 {
+  grid-area: card-1;
+  margin-bottom: 1rem;
+}
+.card-2 {
+  grid-area: card-2;
+  margin-bottom: 1rem;
+}
+.card-3 {
+  grid-area: card-3;
+  margin-bottom: 1rem;
+}
+.table {
+  grid-area: table;
+  background-color: white;
+  padding: 0 1rem;
+  border-radius: 12px;
+  border-width: 1px;
+}
+.table-wrapper {
+  padding: 1rem .5rem;
+}
+.next-games {
+  grid-area: next-games;
+}
+.next-game-wrapper{
+  background-color: white;
+  padding: 1rem;
+  border-radius: 12px;
+  border-width: 1px;
+}
+div.dashboard-game-container:first-child {
+   background: red;
+ }
