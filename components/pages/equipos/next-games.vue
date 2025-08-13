@@ -65,14 +65,12 @@
 <style lang="scss" scoped>
   .v-table__wrapper > table {
     width: 100%;
-    padding: 0 1rem 1rem 1rem;
   }
 
-  .v-table__wrapper > table > tbody > tr > td {
-    padding-left: 0;
-    padding-right: 0;
+  .v-table .v-table__wrapper > table > tbody > tr:not(:last-child) > td,
+  .v-table .v-table__wrapper > table > tbody > tr:not(:last-child) > th {
+    border-bottom: none !important;
   }
-
   .game-container {
     display: flex;
     justify-content: space-between;
@@ -87,6 +85,7 @@
 
   .next-games-table {
     width: 100%;
+    padding: 0 1rem 2rem 1rem;
   }
 
   .next-games-table__header {
@@ -94,7 +93,7 @@
     justify-content: space-between;
     align-items: center;
     align-self: stretch;
-    padding: 1rem;
+    padding: 1rem 1rem 0 1rem;
   }
 
   .next-games-table-title {

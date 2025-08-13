@@ -4,15 +4,21 @@
     standings: any
   }>()
   const headers = getHeaders('standings')
-  const items = [
+  type exportListItem = {
+    value: string
+    text: string
+    icon: string
+  }
+  const items: exportListItem[] = [
     { value: 'excel', text: 'Excel', icon: 'futzo-icon:file-type-excel' },
     { value: 'image', text: 'Imagen', icon: 'futzo-icon:file-type-img-primary' },
   ]
+  const exportAsHandler = (item: exportListItem) => {}
 </script>
 <template>
   <v-table class="positions-table futzo-table">
     <template #top>
-      <div class="d-flex">
+      <div class="d-flex align-center">
         <h2 class="positions-table-title mt-0">Tabla de posiciones</h2>
         <v-spacer />
         <v-menu location="start" transition="slide-x-transition" :close-on-content-click="false">
@@ -21,7 +27,7 @@
           </template>
           <v-list density="compact" nav>
             <v-list-subheader> Exportar </v-list-subheader>
-            <v-list-item v-for="(item, i) in items" :key="i" :value="i">
+            <v-list-item v-for="(item, i) in items" :key="i" :value="i" @click="exportAsHandler(item)">
               <template #prepend>
                 <Icon :name="item.icon" class="mr-2"></Icon>
               </template>
@@ -56,7 +62,7 @@
     font-style: normal;
     font-weight: 500;
     line-height: 24px; /* 150% */
-    margin: 1rem;
+    margin: 0;
   }
 
   .positions-table > .v-table__wrapper > table {
