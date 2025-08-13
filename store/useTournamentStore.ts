@@ -334,6 +334,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     yellow_cards: [],
     red_cards: [],
   });
+  const lastResults = ref();
 
   function $reset() {
     tournamentStoreRequest.value = {} as TournamentStoreRequest;
@@ -452,6 +453,9 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   const getTournamentStats = async () => {
     tournamentStats.value = await tournamentAPI.getTournamentStats(tournamentId.value as number);
   };
+  const getLastResults = async () => {
+    lastResults.value = await tournamentAPI.getLastResults(tournamentId.value as number);
+  };
 
   return {
     tournaments,
@@ -485,6 +489,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     tournamentsInCreatedState,
     standings,
     tournamentStats,
+    lastResults,
     getTournamentLocations,
     loadTournaments,
     storeTournament,
@@ -497,5 +502,6 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     getStandings,
     getTournamentBySlug,
     getTournamentStats,
+    getLastResults,
   };
 });

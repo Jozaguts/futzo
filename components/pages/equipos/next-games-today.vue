@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-  const { title } = defineProps({
+  import { Record } from 'immutable'
+
+  const { title, data } = defineProps({
     title: {
       type: String,
       default: 'Próximos partidos hoy',
     },
+    data: Array,
   })
 </script>
 <template>

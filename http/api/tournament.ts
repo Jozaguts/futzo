@@ -35,3 +35,11 @@ export const getTournamentStats = async (tournamentId: number) => {
   const client = useSanctumClient();
   return await client(`/api/v1/admin/tournaments/${tournamentId}/stats`);
 };
+export const getLastResults = async (tournamentId: number, limit = 3) => {
+  const client = useSanctumClient();
+  return await client(`/api/v1/admin/tournaments/${tournamentId}/last-results`, {
+    query: {
+      limit,
+    },
+  });
+};
