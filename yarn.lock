@@ -724,6 +724,13 @@
     fast-equals "^5.2.2"
     supercluster "^8.0.1"
 
+"@iconify-json/game-icons@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@iconify-json/game-icons/-/game-icons-1.2.3.tgz#b715c278bf6c17fad794c609efe40d570c3c4419"
+  integrity sha512-JnrHQjNI/2nJxlnEAPlU4ta6S44XTX7RJnBUyBV27GbVhJhfwpY9kqzkTqmPs4nyAJaGUjZwOcnBUQ9Dc21nlA==
+  dependencies:
+    "@iconify/types" "*"
+
 "@iconify-json/line-md@^1.2.5":
   version "1.2.11"
   resolved "https://registry.yarnpkg.com/@iconify-json/line-md/-/line-md-1.2.11.tgz#96b604126aa9bb0b68effc339445d60de86461b1"

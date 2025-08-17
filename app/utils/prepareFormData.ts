@@ -1,4 +1,4 @@
-import { isProxy } from "@vue/reactivity";
+import { isProxy } from '@vue/reactivity';
 
 const prepareForm = (requestData: Ref): FormData => {
   const form = new FormData();
@@ -7,7 +7,7 @@ const prepareForm = (requestData: Ref): FormData => {
       if (data[key] instanceof File && data[key]) {
         form.append(`${prefix}[${key}]`, data[key]);
       } else if (data[key] instanceof Date && data[key]) {
-        const date = data[key].toISOString().split("T")[0];
+        const date = data[key].toISOString().split('T')[0];
         form.append(`${prefix}[${key}]`, date);
       } else if (isProxy(data[key])) {
         form.append(`${prefix}[${key}]`, JSON.stringify(data[key]));
@@ -24,8 +24,6 @@ const prepareForm = (requestData: Ref): FormData => {
         delete data[idx];
       }
     }
-    console.log(key)
-    console.log(data)
     appendData(key, data);
   }
 

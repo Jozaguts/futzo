@@ -41,13 +41,14 @@
     "yup": "^1.7.0"
   },
   "devDependencies": {
+    "@iconify-json/game-icons": "^1.2.3",
     "@iconify-json/line-md": "^1.2.5",
     "@iconify-json/logos": "^1.2.9",
     "@iconify-json/mdi": "^1.2.3",
     "@nuxt/icon": "^2.0.0",
+    "@types/google.maps": "^3.58.1",
     "@types/node": "^22.14.0",
-    "sass-embedded": "^1.86.3",
-    "@types/google.maps": "^3.58.1"
+    "sass-embedded": "^1.86.3"
   },
   "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447",
   "web-types": "./web-types.json"
