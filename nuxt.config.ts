@@ -66,7 +66,7 @@ export default defineNuxtConfig({
     customCollections: [
       {
         prefix: 'futzo-icon',
-        dir: './assets/icons',
+        dir: './app/assets/icons',
       },
     ],
     clientBundle: {
