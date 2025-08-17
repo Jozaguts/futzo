@@ -90,22 +90,24 @@ export const usePlayerStore = defineStore('playerStore', () => {
   const createPlayer = async () => {
     const form = prepareForm(playerStoreRequest);
     const client = useSanctumClient();
-    const url =
-      useRoute().name === 'equipos-equipo-jugadores-inscripcion'
-        ? '/api/v1/public/pre-register-player'
-        : '/api/v1/admin/players';
-    await client('/api/v1/admin/players', {
+    const isPreRegister = useRoute().name === 'equipos-equipo-jugadores-inscripcion';
+    const url = isPreRegister
+      ? `/api/v1/public/teams/${playerStoreRequest.value.basic.team_id}/pre-register-player`
+      : '/api/v1/admin/players';
+    await client(url, {
       method: 'POST',
       body: form,
     })
       .then(async () => {
         toast('success', 'Jugador creado', 'El nuevo jugadores se ha agregado exitosamente.');
         dialog.value = false;
-        await getPlayers();
+        if (!isPreRegister) {
+          await getPlayers();
+        }
       })
       .catch((error) => {
+        console.log({ error });
         console.error(error.data?.errors);
-
         toast(
           'error',
           'Error al crear al jugadores',

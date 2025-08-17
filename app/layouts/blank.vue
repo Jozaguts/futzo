@@ -1,11 +1,11 @@
 <template>
   <v-app app>
     <ClientOnly>
-      <VSonner position="top-right" />
+      <Toaster position="top-right" offset="80px" :duration="3000" />
     </ClientOnly>
     <slot />
   </v-app>
 </template>
 <script setup lang="ts">
-  import { VSonner } from 'vuetify-sonner'
+  import { Toaster } from 'vue-sonner'
 </script>

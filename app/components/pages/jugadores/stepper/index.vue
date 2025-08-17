@@ -19,7 +19,7 @@
     }
     const stepsOrder: CurrentStep[] = ['basic-info', 'details-info', 'contact-info']
     const currentStepIndex = stepsOrder.indexOf(steps.value.current)
-    steps.value.current = stepsOrder[currentStepIndex - 1]
+    steps.value.current = stepsOrder[currentStepIndex - 1] as CurrentStep
   }
   const nextHandler = async () => {
     const statusForm = await stepRef.value.validate()
@@ -46,7 +46,7 @@
       }
       const stepsOrder: CurrentStep[] = ['basic-info', 'details-info', 'contact-info']
       const currentStepIndex = stepsOrder.indexOf(steps.value.current)
-      if (!steps.value.steps[currentStepIndex].completed) {
+      if (!steps.value?.steps[currentStepIndex]?.completed) {
         steps.value.steps[currentStepIndex].completed = true
       }
       if (currentStepIndex === stepsOrder.length - 1) {
@@ -59,7 +59,7 @@
             .createPlayer()
             .then(() => {
               const route = useRoute()
-              if (route.name === 'equipos-equipo-inscripcion') {
+              if (route.name === 'equipos-equipo-jugadores-inscripcion') {
                 emits('registered-player', playerStoreRequest.value)
               }
             })
