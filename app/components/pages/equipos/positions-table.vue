@@ -1,20 +1,16 @@
 <script setup lang="ts">
   import getHeaders from '~/utils/headers-table'
+  import type { ExportListItem } from '~/models/tournament'
   const { standings } = defineProps<{
     standings: any
   }>()
   const headers = getHeaders('standings')
-  type exportListItem = {
-    value: 'excel' | 'img'
-    text: string
-    icon: string
-  }
-  const items: exportListItem[] = [
+  const items: ExportListItem[] = [
     { value: 'excel', text: 'Excel', icon: 'futzo-icon:file-type-excel' },
     { value: 'img', text: 'Imagen', icon: 'futzo-icon:file-type-img-primary' },
   ]
   const loading = ref(false)
-  const exportAsHandler = (item: exportListItem) => {
+  const exportAsHandler = (item: ExportListItem) => {
     loading.value = true
     useTournamentStore()
       .exportStandingTournament(item.value)

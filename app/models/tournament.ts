@@ -1,6 +1,11 @@
 import type { LocationAvailability } from '~/models/Location';
 import type { League } from '~/models/league';
 import type { Category, Team } from '~/models/Schedule';
+export type ExportListItem = {
+  value: 'excel' | 'img';
+  text: string;
+  icon: string;
+};
 
 export type TournamentLocationStoreRequest = {
   tournamentId: number;
