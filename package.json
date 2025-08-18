@@ -41,10 +41,14 @@
     "yup": "^1.7.0"
   },
   "devDependencies": {
+    "@iconify-json/ant-design": "^1.2.5",
+    "@iconify-json/carbon": "^1.2.13",
     "@iconify-json/game-icons": "^1.2.3",
     "@iconify-json/line-md": "^1.2.5",
     "@iconify-json/logos": "^1.2.9",
     "@iconify-json/mdi": "^1.2.3",
+    "@iconify-json/tabler": "^1.2.22",
+    "@iconify-json/uil": "^1.2.3",
     "@nuxt/icon": "^2.0.0",
     "@types/google.maps": "^3.58.1",
     "@types/node": "^22.14.0",

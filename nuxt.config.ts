@@ -34,11 +34,6 @@ export default defineNuxtConfig({
           content: '624608699554291',
         },
       ],
-      script: [
-        {
-          src: `https://maps.googleapis.com/maps/api/js?key=${process.env.NUXT_GOOGLE_MAPS_API_KEY}&libraries=places&loading=async`,
-        },
-      ],
     },
   },
   components: [
@@ -56,6 +51,7 @@ export default defineNuxtConfig({
   vuetify: {
     moduleOptions: {
       styles: { configFile: 'assets/scss/components.scss' },
+      prefixComposables: true,
     },
     vuetifyOptions: './vuetify.config.ts',
   },

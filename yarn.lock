@@ -724,6 +724,20 @@
     fast-equals "^5.2.2"
     supercluster "^8.0.1"
 
+"@iconify-json/ant-design@^1.2.5":
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/@iconify-json/ant-design/-/ant-design-1.2.5.tgz#ae6d59a36eb19e19299eaa3f8377a8f3854c38c2"
+  integrity sha512-SYxhrx1AFq2MBcXk77AERYz2mPhLQes1F0vtvG64+dJZWyge9studXo7MiR8PPeLjRjZdWRrReRbxiwdRMf70Q==
+  dependencies:
+    "@iconify/types" "*"
+
+"@iconify-json/carbon@^1.2.13":
+  version "1.2.13"
+  resolved "https://registry.yarnpkg.com/@iconify-json/carbon/-/carbon-1.2.13.tgz#59cef754208fd5a87f6badd6dabdb6f3c6826f63"
+  integrity sha512-vXrFFKkfYaZSwf4WfnRQJQMnpEzxlPlupwZZlS1WvOAuNnWahsUudHycaMpoBzDqBfniH4KQ2b5qnw0VMKoJug==
+  dependencies:
+    "@iconify/types" "*"
+
 "@iconify-json/game-icons@^1.2.3":
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/@iconify-json/game-icons/-/game-icons-1.2.3.tgz#b715c278bf6c17fad794c609efe40d570c3c4419"
@@ -749,6 +763,20 @@
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/@iconify-json/mdi/-/mdi-1.2.3.tgz#5e4ee9d8c8aaad04381c8cc6c6edbe3327f031b5"
   integrity sha512-O3cLwbDOK7NNDf2ihaQOH5F9JglnulNDFV7WprU2dSoZu3h3cWH//h74uQAB87brHmvFVxIOkuBX2sZSzYhScg==
+  dependencies:
+    "@iconify/types" "*"
+
+"@iconify-json/tabler@^1.2.22":
+  version "1.2.22"
+  resolved "https://registry.yarnpkg.com/@iconify-json/tabler/-/tabler-1.2.22.tgz#81a77eb7e14d60832d3425c9e986b0634734c33a"
+  integrity sha512-KmCtTzZyz7dtszdQGJ5wbWqko6exhI38e4aCQqWZE1Z2wGUqBsMXrRWawXkAp6/XNBebt54h0lcxFCaTYBwFJg==
+  dependencies:
+    "@iconify/types" "*"
+
+"@iconify-json/uil@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@iconify-json/uil/-/uil-1.2.3.tgz#d455746fe32491fa46a884b6d47e4b7a3cc9c76f"
+  integrity sha512-if91+UBhDQc6glPsIaXecGIcXnbQZfEO4Gdv89TV2xQ+V5e9GWbY5rNl2fsKZd8COsRQ5lRQAKimVQVL0CZZVg==
   dependencies:
     "@iconify/types" "*"
 
