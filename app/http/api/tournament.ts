@@ -1,7 +1,7 @@
-import type { Tournament, TournamentStats } from '~/models/tournament';
+import type { ExportType, Tournament, TournamentStats } from '~/models/tournament';
 import type { Game } from '~/models/Game';
 
-export const exportTournamentRoundScheduleAs = async (type: 'excel' | 'img', tournamentId: number, round: any) => {
+export const exportTournamentRoundScheduleAs = async (type: ExportType, tournamentId: number, round: any) => {
   const client = useSanctumClient();
   const blob = await client<Promise<Blob>>(
     `/api/v1/admin/tournaments/${tournamentId}/schedule/rounds/${round}/export`,
@@ -13,16 +13,7 @@ export const exportTournamentRoundScheduleAs = async (type: 'excel' | 'img', tou
       responseType: 'blob' as 'json',
     }
   );
-  if (blob instanceof Blob) {
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `jornada-${round}-torneo-${tournamentId}.${type === 'img' ? 'jpg' : 'xls'}`; // nombre del archivo
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-  }
+  parseBlobResponse(blob, `jornada-${round}-torneo-${tournamentId}`, type);
 };
 export const getStandings = async (tournamentId: number) => {
   const client = useSanctumClient();
@@ -52,7 +43,7 @@ export const getNextGames = async (tournamentId: number, limit = 3) => {
     },
   });
 };
-export const exportStandingTournament = async (type: 'excel' | 'img', tournament: Tournament) => {
+export const exportStandingTournament = async (type: ExportType, tournament: Tournament) => {
   const client = useSanctumClient();
   const blob = await client<Promise<Blob>>(`/api/v1/admin/tournaments/${tournament.id}/standing/export`, {
     method: 'GET',
@@ -61,11 +52,25 @@ export const exportStandingTournament = async (type: 'excel' | 'img', tournament
     },
     responseType: 'blob' as 'json',
   });
+  parseBlobResponse(blob, `${tournament.name}-tabla-de-posiciones`, type);
+};
+export const exportTournamentStatsTables = async (type: ExportType, tournament: Tournament) => {
+  const client = useSanctumClient();
+  const blob = await client<Promise<Blob>>(`/api/v1/admin/tournaments/${tournament.id}/stats/export`, {
+    method: 'GET',
+    query: {
+      type,
+    },
+    responseType: 'blob' as 'json',
+  });
+  parseBlobResponse(blob, `${tournament.name}-estadísticas`, type);
+};
+const parseBlobResponse = (blob: Blob, filename: string, type: ExportType) => {
   if (blob instanceof Blob) {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${tournament.name}-tabla-de-posiciones.${type === 'img' ? 'jpg' : 'xls'}`; // nombre del archivo
+    link.download = `${filename}.${type === 'img' ? 'jpg' : 'xls'}`; // nombre del archivo
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

@@ -1,13 +1,48 @@
 <script lang="ts" setup>
+  import type { ExportListItem } from '~/models/tournament'
+
   type Props = {
     title?: string
   }
   const { title = 'Tabla de posiciones' } = defineProps<Props>()
+  const loading = ref(false)
+  const items: ExportListItem[] = [
+    { value: 'excel', text: 'Excel', icon: 'futzo-icon:file-type-excel' },
+    { value: 'img', text: 'Imagen', icon: 'futzo-icon:file-type-img-primary' },
+  ]
+  const exportAsHandler = (item: ExportListItem) => {
+    loading.value = true
+    useTournamentStore()
+      .exportTournamentStatsTables(item.value)
+      .finally(() => (loading.value = false))
+  }
 </script>
 <template>
   <v-table class="live-games-table futzo-rounded" density="comfortable">
     <template #top>
-      <h2 class="live-games-table__title">{{ title }}</h2>
+      <div class="d-flex justify-center align-center w-100">
+        <h2 class="live-games-table__title mr-auto">{{ title }}</h2>
+        <v-menu
+          v-if="title === 'Líderes de estadísticas'"
+          location="start"
+          transition="slide-x-transition"
+          :close-on-content-click="false"
+        >
+          <template v-slot:activator="{ props }">
+            <v-btn icon="mdi-dots-vertical" variant="plain" v-bind="props" :ripple="false" />
+          </template>
+          <v-list density="compact" nav :disabled="loading">
+            <v-list-subheader> Exportar </v-list-subheader>
+            <v-list-item v-for="(item, i) in items" :key="i" :value="i" @click="exportAsHandler(item)">
+              <template #prepend>
+                <Icon :name="item.icon" class="mr-2"></Icon>
+              </template>
+              <v-list-item-title>{{ item.text }} </v-list-item-title>
+            </v-list-item>
+            <v-progress-linear indeterminate height="2" v-show="loading" />
+          </v-list>
+        </v-menu>
+      </div>
     </template>
     <template #wrapper>
       <div class="v-table__wrapper content">

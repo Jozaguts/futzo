@@ -9,6 +9,7 @@ import type {
   TournamentStoreRequest,
   TournamentStatus,
   TournamentStats,
+  ExportType,
 } from '~/models/tournament';
 import type { Game } from '~/models/Game';
 import type { User } from '~/models/user';
@@ -201,8 +202,11 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   const getNextGames = async () => {
     nextGames.value = await tournamentAPI.getNextGames(tournamentId.value as number);
   };
-  const exportStandingTournament = async (type: 'excel' | 'img') => {
+  const exportStandingTournament = async (type: ExportType) => {
     await tournamentAPI.exportStandingTournament(type, tournament.value);
+  };
+  const exportTournamentStatsTables = async (type: ExportType) => {
+    await tournamentAPI.exportTournamentStatsTables(type, tournament.value);
   };
 
   return {
@@ -252,5 +256,6 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     getLastResults,
     getNextGames,
     exportStandingTournament,
+    exportTournamentStatsTables,
   };
 });
