@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   const { dialog, isEdition } = storeToRefs(usePlayerStore())
-  const title = isEdition.value ? 'Editar jugadores' : 'Crear un jugadores'
-  const subtitle = isEdition.value ? 'Modifica los detalles del jugadores.' : 'Completa los detalles del jugadores.'
+  const title = isEdition.value ? 'Editar jugadores' : 'Registrar jugador'
+  const subtitle = isEdition.value ? 'Modifica los detalles del jugador.' : 'Completa los detalles del jugador.'
 </script>
 <template>
   <v-card-item>
