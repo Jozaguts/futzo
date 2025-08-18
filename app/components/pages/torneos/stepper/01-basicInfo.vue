@@ -12,6 +12,8 @@
   )
   const minMax = ref<number[]>()
   onMounted(() => {
+    useCategoryStore().fetchCategories()
+    useCategoryStore().fetchFormats()
     minMax.value = [MIN_TEAMS, MAX_TEAMS]
     if (tournamentStoreRequest.value?.basic) {
       setValues({ ...tournamentStoreRequest.value.basic })
@@ -128,11 +130,12 @@
       <template #input>
         <v-text-field
           v-model="fields.substitutions_per_team.fieldValue"
-          :errors="fields.substitutions_per_team.fieldPropsValue"
+          v-bind="fields.substitutions_per_team.fieldPropsValue"
           step="1"
           type="number"
           :min="-1"
           hint="-1 para ilimitados"
+          persistent-hint
           density="compact"
         >
         </v-text-field>

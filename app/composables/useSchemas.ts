@@ -326,7 +326,7 @@ function getSchemaByName(name: string) {
 
       break;
     case 'create-tournament-basic-info':
-      schemaFields.substitutions_per_team = yup.number().required(t('forms.required')).default(3);
+      schemaFields.substitutions_per_team = yup.number().required(t('forms.required'));
       schemaFields.id = yup.number().nullable();
       schemaFields.name = yupString().required(t('forms.required'));
       schemaFields.image = yup
@@ -350,7 +350,7 @@ function getSchemaByName(name: string) {
         });
       break;
     case 'edit-tournament-basic-info':
-      schemaFields.substitutions_per_team = yup.number().required(t('forms.required')).default(3);
+      schemaFields.substitutions_per_team = yup.number().required(t('forms.required'));
       schemaFields.id = yup.number().nullable();
       schemaFields.name = yupString().required(t('forms.required'));
       schemaFields.image = yup
