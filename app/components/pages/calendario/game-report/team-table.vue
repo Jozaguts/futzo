@@ -16,7 +16,7 @@
   })
   const { gamePlayers, game } = storeToRefs(useGameStore())
   const minWidth = computed(() => {
-    return useDisplay().mobile ? '230' : '130'
+    return useVDisplay().mobile ? '230' : '130'
   })
   const updateHandler = (type: 'goals' | 'cards', item: GameTeamPlayer, value: number | string) => {
     game.value[props.teamType].goals = gamePlayers.value[props.teamType].players.reduce(
@@ -41,14 +41,23 @@
     :items="gamePlayers[props.teamType].players"
   >
     <template #item.goles="{ item }">
-      <v-number-input
+      <v-text-field
+        type="number"
         min-width="100"
         :min="0"
         v-model="item.goals"
         control-variant="stacked"
         density="compact"
         @update:model-value="updateHandler('goals', item, $event)"
-      />
+      ></v-text-field>
+      <!--      <v-number-input-->
+      <!--        min-width="100"-->
+      <!--        :min="0"-->
+      <!--        v-model="item.goals"-->
+      <!--        control-variant="stacked"-->
+      <!--        density="compact"-->
+      <!--        @update:model-value="updateHandler('goals', item, $event)"-->
+      <!--      />-->
     </template>
 
     <template #item.tarjetas="{ item }">

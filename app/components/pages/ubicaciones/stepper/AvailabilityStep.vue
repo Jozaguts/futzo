@@ -1,6 +1,6 @@
 <script lang="ts" setup>
   import AvailabilityFormStep from '~/components/pages/ubicaciones/stepper/AvailabilityFormStep.vue'
-  import { DEFAULT_LOCATION_AVAILABILITY } from '~//utils/constants'
+  import { DEFAULT_LOCATION_AVAILABILITY } from '~/utils/constants'
 
   const { locationStoreRequest, isEdition } = storeToRefs(useLocationStore())
   const fillAvailability = () => {

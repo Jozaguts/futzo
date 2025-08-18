@@ -110,7 +110,7 @@
         ]
     }
   })
-  const { mobile } = useDisplay()
+  const { mobile } = useVDisplay()
 </script>
 <template>
   <v-breadcrumbs :items="breadcrumbs" active-class="active">

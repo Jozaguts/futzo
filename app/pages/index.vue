@@ -29,7 +29,7 @@
       useDashboardStore().getNextGames()
     }
   })
-  const { mobile } = useDisplay()
+  const { mobile } = useVDisplay()
 </script>
 <template>
   <PageLayout>

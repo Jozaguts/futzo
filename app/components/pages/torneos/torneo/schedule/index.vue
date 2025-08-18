@@ -112,7 +112,7 @@
       showReScheduleDialog.value = true
     }
   }
-  const { mobile } = useDisplay()
+  const { mobile } = useVDisplay()
 </script>
 <template>
   <v-row v-if="schedules.rounds.length" :no-gutters="mobile">

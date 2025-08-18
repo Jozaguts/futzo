@@ -11,7 +11,7 @@
   import { getTeamFormation } from '~/http/api/team'
   import type { Team } from '~/models/Team'
   import type { TeamFormation } from '~/models/Game'
-  import { sortFormation } from '~//utils/sort-formation'
+  import { sortFormation } from '~/utils/sort-formation'
   const { homeTeam, nextGames, lastGames, formations, homeFormation, homePlayers } = storeToRefs(useTeamStore())
 
   watchEffect(async () => {

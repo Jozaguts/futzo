@@ -58,7 +58,7 @@
       console.error('Error during logout:', error)
     }
   }
-  const { mobile } = useDisplay()
+  const { mobile } = useVDisplay()
 </script>
 
 <template>

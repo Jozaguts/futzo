@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import getHeaders from '~//utils/headers-table'
+  import getHeaders from '~/utils/headers-table'
   const { standings } = defineProps<{
     standings: any
   }>()

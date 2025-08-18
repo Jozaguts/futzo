@@ -27,7 +27,7 @@
     useLocationStore().pagination.currentPage = 1
     useLocationStore().getLocations(place)
   }, 600)
-  const { mobile } = useDisplay()
+  const { mobile } = useVDisplay()
   onMounted(async () => {
     if (!locations.value) {
       await useLocationStore().getLocations()

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import getHeaders from '~//utils/headers-table'
+  import getHeaders from '~/utils/headers-table'
   import type { Tournament } from '~/models/tournament'
   import { useRouter } from '#app'
 

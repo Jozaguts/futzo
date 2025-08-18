@@ -6,7 +6,7 @@
   import useSchemas from '~/composables/useSchemas'
   import { VPhoneInput } from 'v-phone-input'
   import { dragDropImageRef, imageForm, removeImage, saveImage } from '~/composables/useImage'
-  import { usePlaceSearch } from '~//utils/googleSearch'
+  import { usePlaceSearch } from '~/utils/googleSearch'
 
   let locationsFind = ref([])
   const { tournaments, tournament } = storeToRefs(useTournamentStore())

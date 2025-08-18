@@ -2,7 +2,7 @@
   import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
   import useSchemas from '~/composables/useSchemas'
   import CategorySelectComponent from '~/components/inputs/CategoriesSelect.vue'
-  import { FUTBOL_11_ID, MAX_TEAMS, MIN_TEAMS } from '~//utils/constants'
+  import { FUTBOL_11_ID, MAX_TEAMS, MIN_TEAMS } from '~/utils/constants'
 
   const { footballTypes } = storeToRefs(useLeaguesStore())
   const { formats } = storeToRefs(useCategoryStore())

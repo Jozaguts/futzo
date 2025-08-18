@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import getHeaders from '~//utils/headers-table'
+  import getHeaders from '~/utils/headers-table'
   import type { Player, PlayerResponse } from '~/models/Player'
   import type { Team } from '~/models/Team'
 

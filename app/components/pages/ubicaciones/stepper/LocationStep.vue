@@ -3,9 +3,8 @@
   import type { LocationStoreRequest } from '~/models/Location'
   import { array, object, string, number } from 'yup'
   import type { Prediction } from '~/interfaces'
-  import { usePlaceSearch, getPlaceDetails } from '~//utils/googleSearch'
+  import { usePlaceSearch, getPlaceDetails } from '~/utils/googleSearch'
   import type { AutocompletePrediction } from '~/models/Schedule'
-  import { storeToRefs } from 'pinia'
   import { useForm } from 'vee-validate'
   import { toTypedSchema } from '@vee-validate/yup'
   import { GoogleMap, AdvancedMarker } from 'vue3-google-map'
@@ -41,6 +40,9 @@
   const [autocomplete_prediction] = reactive(defineField('autocomplete_prediction'))
   const [position] = reactive(defineField('position'))
   let foundedLocations = ref([] as AutocompletePrediction[])
+  const { decimalSeparator } = useVLocale()
+  console.log(useVLocale())
+  console.log(decimalSeparator?.value)
   const tag = ref<string>('')
   const tagHandler = () => {
     setFieldError('tags', 'La etiqueta ya existe o está vacía')
@@ -185,18 +187,15 @@
     <v-row>
       <v-col cols="12" lg="4" md="4"> Campos de juego</v-col>
       <v-col cols="12" lg="8" md="8">
-        <v-number-input
+        <v-text-field
+          type="number"
           v-model="fields_count"
           :error-messages="errors.fields_count"
           density="compact"
-          :reverse="false"
-          controlVariant="stacked"
           label="Campos en la misma locación"
-          :hideInput="false"
-          inset
           :min="1"
-          variant="solo"
-        ></v-number-input>
+          variant="outlined"
+        ></v-text-field>
       </v-col>
     </v-row>
     <v-row>

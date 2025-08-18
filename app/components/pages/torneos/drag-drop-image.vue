@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import type { DragAndDrop } from '~/interfaces'
-  import { MAX_SIZE } from '~//utils/constants'
+  import { MAX_SIZE } from '~/utils/constants'
 
   const image = defineModel<File | null>({ default: null })
   const state = reactive<DragAndDrop>({
