@@ -1,12 +1,11 @@
 <script lang="ts" setup>
   import type { IStatStage } from '~/interfaces'
   const { range } = storeToRefs(useDashboardStore())
-  const { mobile } = useDisplay()
   const ranges: { value: IStatStage; name: string }[] = [
     { value: 'lastYear', name: `12 Meses` },
     { value: 'lastMonth', name: `30 días` },
     { value: 'lastWeek', name: `7 Días` },
-    { value: 'last24Hrs', name: '7 Horas' },
+    { value: 'last24Hrs', name: '24 Horas' },
   ]
   watch(range, (value, oldValue) => {
     if (value !== oldValue) {
