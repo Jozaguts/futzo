@@ -6,6 +6,7 @@ import type { Team } from '~/models/Team';
 import * as teamAPI from '~/http/api/team';
 import * as playerAPI from '~/http/api/players';
 import type { FormationPlayer } from '~/models/Game';
+import { useToast } from '~/composables/useToast';
 
 export const usePlayerStore = defineStore('playerStore', () => {
   const { toast } = useToast();
@@ -69,7 +70,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
         const url = window.URL.createObjectURL(new Blob([response]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'template.xlsx');
+        link.setAttribute('download', 'jugadores_template.xlsx');
         document.body.appendChild(link);
         link.click();
       })

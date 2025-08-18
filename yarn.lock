@@ -5358,10 +5358,10 @@ nth-check@^2.0.1:
   dependencies:
     boolbase "^1.0.0"
 
-nuxt-auth-sanctum@^0.6.3:
-  version "0.6.7"
-  resolved "https://registry.yarnpkg.com/nuxt-auth-sanctum/-/nuxt-auth-sanctum-0.6.7.tgz#bf133b57de7427c614bf43e768527f0e145b3df5"
-  integrity sha512-LLhgTW/ITqliyxMxCxFvH1+1Y2U0Cs+uk1X55pM73i8a83VeW8yaZM1jLBvj35ugz+cN6YRwpSYsMu8VqRUXCA==
+nuxt-auth-sanctum@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/nuxt-auth-sanctum/-/nuxt-auth-sanctum-1.1.2.tgz#270db4c2da84a530d11155bd2238a70092559078"
+  integrity sha512-OlMAdfBMXRKmLnIs9hUjn4ovS2ebNF3QjtTO2BGomYHG11HpnuIKfnr/+AQPbNTvXG4vAo574ODJ7mt+30ooFg==
   dependencies:
     defu "^6.1.4"
     ofetch "^1.4.1"

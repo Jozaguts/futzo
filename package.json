@@ -25,7 +25,7 @@
     "@vueuse/nuxt": "^13.6.0",
     "dayjs": "^1.11.13",
     "nuxt": "^4.0.3",
-    "nuxt-auth-sanctum": "^0.6.3",
+    "nuxt-auth-sanctum": "^1.1.2",
     "nuxt-svgo": "4.2.6",
     "nuxt-typed-router": "^4.0.2",
     "pinia": "^3.0.1",
