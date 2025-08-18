@@ -1,5 +1,5 @@
-import type { Team } from '~/models/Team';
-import type { Tournament } from '~/models/tournament';
+import type { Tournament, TournamentStats } from '~/models/tournament';
+import type { Game } from '~/models/Game';
 
 export const exportTournamentRoundScheduleAs = async (type: 'excel' | 'img', tournamentId: number, round: any) => {
   const client = useSanctumClient();
@@ -30,11 +30,11 @@ export const getStandings = async (tournamentId: number) => {
 };
 export const getBySlug = async (slug: string) => {
   const client = useSanctumClient();
-  return await client(`/api/v1/admin/tournaments/${slug}`);
+  return await client<Promise<Tournament>>(`/api/v1/admin/tournaments/${slug}`);
 };
 export const getTournamentStats = async (tournamentId: number) => {
   const client = useSanctumClient();
-  return await client(`/api/v1/admin/tournaments/${tournamentId}/stats`);
+  return await client<Promise<TournamentStats>>(`/api/v1/admin/tournaments/${tournamentId}/stats`);
 };
 export const getLastResults = async (tournamentId: number, limit = 3) => {
   const client = useSanctumClient();
@@ -46,7 +46,7 @@ export const getLastResults = async (tournamentId: number, limit = 3) => {
 };
 export const getNextGames = async (tournamentId: number, limit = 3) => {
   const client = useSanctumClient();
-  return await client(`/api/v1/admin/tournaments/${tournamentId}/next-games`, {
+  return await client<Promise<Game[]>>(`/api/v1/admin/tournaments/${tournamentId}/next-games`, {
     query: {
       limit,
     },
