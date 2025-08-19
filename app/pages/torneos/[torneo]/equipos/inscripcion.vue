@@ -14,7 +14,8 @@
   const { steps } = storeToRefs(useTeamStore())
   const registeredTeam = ref(false)
   const teamRequest = ref<TeamStoreRequest>()
-  const tournamentId = useRoute().query.id as unknown as number
+  const tournamentId = useRoute().params.torneo as unknown as number
+
   useSanctumClient()('/api/v1/admin/tournaments/' + tournamentId, {
     method: 'GET',
   }).then(async (data) => {
@@ -47,13 +48,13 @@
             <div>
               <Logo max-width="140" />
               <div>
-                <span class="text-body-2 font-weight-bold"> Pre inscripción de equipos </span>
-                |
-                <span class="text-body-2 font-weight-bold">
+                <span class="text-body-2 font-weight-bold mr-1"> Pre inscripción de equipos </span>
+                <span>&#8231;</span>
+                <span class="text-body-2 font-weight-bold mx-1">
                   {{ tournament?.league?.name }}
                 </span>
-                |
-                <span class="text-body-2 font-weight-bold">
+                <span>&#8231;</span>
+                <span class="text-body-2 font-weight-bold mx-1">
                   {{ tournament?.name }}
                 </span>
               </div>
