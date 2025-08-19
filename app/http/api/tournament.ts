@@ -1,5 +1,6 @@
 import type { ExportType, Tournament, TournamentStats } from '~/models/tournament';
 import type { Game } from '~/models/Game';
+import { parseBlobResponse } from '~/utils/prepareFormData';
 
 export const exportTournamentRoundScheduleAs = async (type: ExportType, tournamentId: number, round: any) => {
   const client = useSanctumClient();
@@ -64,16 +65,4 @@ export const exportTournamentStatsTables = async (type: ExportType, tournament: 
     responseType: 'blob' as 'json',
   });
   parseBlobResponse(blob, `${tournament.name}-estadísticas`, type);
-};
-const parseBlobResponse = (blob: Blob, filename: string, type: ExportType) => {
-  if (blob instanceof Blob) {
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${filename}.${type === 'img' ? 'jpg' : 'xls'}`; // nombre del archivo
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-  }
 };

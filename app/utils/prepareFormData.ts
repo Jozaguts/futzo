@@ -1,4 +1,5 @@
 import { isProxy } from '@vue/reactivity';
+import type { ExportType } from '~/models/tournament';
 
 const prepareForm = (requestData: Ref): FormData => {
   const form = new FormData();
@@ -8,7 +9,7 @@ const prepareForm = (requestData: Ref): FormData => {
         form.append(`${prefix}[${key}]`, data[key]);
       } else if (data[key] instanceof Date && data[key]) {
         const date = data[key].toISOString().split('T')[0];
-        form.append(`${prefix}[${key}]`, date);
+        form.append(`${prefix}[${key}]`, date as string);
       } else if (isProxy(data[key])) {
         form.append(`${prefix}[${key}]`, JSON.stringify(data[key]));
       } else {
@@ -30,3 +31,15 @@ const prepareForm = (requestData: Ref): FormData => {
   return form;
 };
 export default prepareForm;
+export const parseBlobResponse = (blob: Blob, filename: string, type: ExportType) => {
+  if (blob instanceof Blob) {
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${filename}.${type === 'img' ? 'jpg' : 'xls'}`; // nombre del archivo
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
+};
