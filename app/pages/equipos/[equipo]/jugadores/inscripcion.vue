@@ -10,24 +10,10 @@
     },
     middleware: ['verify-team-can-register-player'],
   })
-  const { steps, playerStoreRequest } = storeToRefs(usePlayerStore())
-  const { team, teams } = storeToRefs(useTeamStore())
-  const { categories } = storeToRefs(useCategoryStore())
-  const { positions } = storeToRefs(usePositionsStore())
+  const { steps } = storeToRefs(usePlayerStore())
+  const { team } = storeToRefs(useTeamStore())
   const showPreRegisterSuccessModal = ref(false)
-  const slug = useRoute().params.equipo as unknown as string
-  useSanctumClient()(`/api/v1/public/teams/${slug}/registrations/catalogs`, {
-    method: 'GET',
-  }).then(async (data) => {
-    team.value = data.team
-    categories.value = data.categories
-    teams.value = [data.team]
-    playerStoreRequest.value.basic = {
-      team_id: data.team.id as number,
-      category_id: data.team.categories[0].id as number,
-    }
-    positions.value = data.positions
-  })
+
   const finisHandler = () => {
     useRouter().push({ name: 'login' })
   }
@@ -37,6 +23,10 @@
   const registeredHandler = async (value: TeamStoreRequest) => {
     showPreRegisterSuccessModal.value = true
   }
+  onBeforeMount(() => {
+    const slug = useRoute().params.equipo as unknown as string
+    useTeamStore().initPreRegister(slug)
+  })
 </script>
 <template>
   <v-container>
@@ -47,9 +37,9 @@
             <div>
               <Logo max-width="140" />
               <div>
-                <span class="text-body-2 font-weight-bold"> Pre inscripción de jugador </span>
-                |
-                <span class="text-body-2 font-weight-bold">
+                <span class="text-body-2 font-weight-bold mr-1"> Pre inscripción de jugador </span>
+                <span>&#8231;</span>
+                <span class="text-body-2 font-weight-bold mx-1">
                   {{ team?.name }}
                 </span>
               </div>

@@ -194,6 +194,21 @@ export const useTeamStore = defineStore('teamStore', () => {
     awayFormation.value = sortFormation(initialize.away);
     return initialize;
   };
+  const initPreRegister = async (slug: string) => {
+    const { categories } = storeToRefs(useCategoryStore());
+    const { playerStoreRequest } = storeToRefs(usePlayerStore());
+    const { positions } = storeToRefs(usePositionsStore());
+    await teamAPI.initPreRegister(slug).then((data) => {
+      team.value = data.team as Team;
+      categories.value = data.categories;
+      teams.value = [data.team as Team];
+      playerStoreRequest.value.basic = {
+        team_id: data.team.id as number,
+        category_id: data.team?.categories[0]?.id,
+      };
+      positions.value = data.positions;
+    });
+  };
 
   return {
     teams,
