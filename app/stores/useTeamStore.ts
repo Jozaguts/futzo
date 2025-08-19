@@ -1,17 +1,18 @@
 import { defineStore } from 'pinia';
-import type { Formation, FormSteps, Team, TeamResponse, TeamStoreRequest } from '~/models/Team';
+import type { Formation, FormSteps, Team, TeamStoreRequest } from '~/models/Team';
 import type { IPagination } from '~/interfaces';
 import * as teamAPI from '~/http/api/team';
-import prepareForm from '~/utils/prepareFormData';
+import prepareForm, { parseBlobResponse } from '~/utils/prepareFormData';
 import type { TeamFormation, NextGames, Initialize, LastGames } from '~/models/Game';
 import type { TeamLineupAvailablePlayers } from '~/models/Player';
 import { sortFormation } from '~/utils/sort-formation';
+import { useToast } from '~/composables/useToast';
 
 export const useTeamStore = defineStore('teamStore', () => {
   const { toast } = useToast();
   const dialog = ref(false);
-  const teams = ref<TeamResponse[]>([] as TeamResponse[]);
-  const team = ref<Team>();
+  const teams = ref<Team[]>([] as Team[]);
+  const team = ref<Team>({} as Team);
   const teamId = ref(0);
   const search = ref('');
   const importModal = ref(false);
@@ -56,29 +57,15 @@ export const useTeamStore = defineStore('teamStore', () => {
   const homePlayers = ref<TeamLineupAvailablePlayers[]>([] as TeamLineupAvailablePlayers[]);
   const awayPlayers = ref<TeamLineupAvailablePlayers[]>([] as TeamLineupAvailablePlayers[]);
   const downloadTemplate = async () => {
-    loading.value = true;
-    await client('/api/v1/admin/teams/template', {
-      method: 'GET',
-      // responseType: "blob",
-    })
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'template.xlsx');
-        document.body.appendChild(link);
-        link.click();
-      })
-      .catch((error) => {
-        toast(
-          'error',
-          'Error al descargar la plantilla',
-          error.data?.message ?? 'No se pudo descargar la plantilla. Inténtalo de nuevo.'
-        );
-      })
-      .finally(() => {
-        loading.value = false;
-      });
+    try {
+      loading.value = true;
+      const blob = await client<Promise<Blob>>('/api/v1/admin/teams/template');
+      parseBlobResponse(blob, 'plantilla de equipos', 'excel');
+    } catch (error) {
+      toast('error', 'Error al descargar la plantilla', 'No se pudo descargar la plantilla. Inténtalo de nuevo.');
+    } finally {
+      loading.value = false;
+    }
   };
 
   async function importTeamsHandler(file: File, tournamentId: number) {
@@ -145,23 +132,14 @@ export const useTeamStore = defineStore('teamStore', () => {
       });
   };
   const getTeams = async () => {
-    try {
-      await client(
-        `/api/v1/admin/teams?per_page=${pagination.value.perPage}&page=${pagination.value.currentPage}&sort=${pagination.value.sort}`
-      ).then(({ data, pagination: _pagination }) => {
-        teams.value = data || [];
-        pagination.value = { ...pagination.value, ..._pagination };
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    const response = await teamAPI.getTeams(pagination.value);
+    teams.value = response.data;
+    pagination.value = { ...pagination.value, ...response.pagination };
   };
-  const searchTeams = (value: string = '') => {
-    const client = useSanctumClient();
-    client(`/api/v1/admin/teams/search?value=${value}`).then(({ data, pagination: _pagination }) => {
-      teams.value = data || [];
-      pagination.value = { ...pagination.value, ..._pagination };
-    });
+  const searchTeams = async (value: string = '') => {
+    const response = await teamAPI.searchTeams(value);
+    teams.value = response.data || [];
+    pagination.value = { ...pagination.value, ...response.pagination };
   };
   const list = async () => {
     try {
@@ -252,5 +230,6 @@ export const useTeamStore = defineStore('teamStore', () => {
     updateGameTeamFormationType,
     initReportHandler,
     getLastGames,
+    initPreRegister,
   };
 });

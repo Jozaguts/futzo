@@ -1,6 +1,7 @@
-import type { Formation, Team } from '~/models/Team';
+import type { Formation, PreRegisterTeamResponse, Team, TeamsPaginatedResponse } from '~/models/Team';
 import type { TeamLineupAvailablePlayers } from '~/models/Player';
 import type { FormationPlayer, LastGames, NextGames, TeamFormation } from '~/models/Game';
+import type { IPagination } from '~/interfaces';
 
 export const getTeamBy = async (term: number | string) => {
   const client = useSanctumClient();
@@ -92,4 +93,18 @@ export const updateGameTeamFormationType = async (team_id: number, game_id: numb
     method: 'PUT',
     body: JSON.stringify({ formation_id }),
   });
+};
+export const initPreRegister = async (slug: string) => {
+  const client = useSanctumClient();
+  return await client<Promise<PreRegisterTeamResponse>>(`/api/v1/public/teams/${slug}/registrations/catalogs`);
+};
+export const getTeams = async (pagination: IPagination) => {
+  const client = useSanctumClient();
+  return await client<Promise<TeamsPaginatedResponse>>(
+    `/api/v1/admin/teams?per_page=${pagination.perPage}&page=${pagination.currentPage}&sort=${pagination.sort}`
+  );
+};
+export const searchTeams = async (value: string = '') => {
+  const client = useSanctumClient();
+  return await client<Promise<TeamsPaginatedResponse>>(`/api/v1/admin/teams/search?value=${value}`);
 };
