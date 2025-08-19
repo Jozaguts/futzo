@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia';
+import type { Category } from '~/models/Team';
 
 export const useCategoryStore = defineStore('categoryStore', () => {
-  const categories = ref([]);
+  const categories = ref<Category[]>([] as Category[]);
   const formats = ref([]);
   const fetchCategories = async () => {
     const client = useSanctumClient();
