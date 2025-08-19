@@ -1,3 +1,18 @@
+import type { Position } from '~/models/Position';
+import type { IPagination } from '~/interfaces';
+
+export type TeamsPaginatedResponse = {
+  data: Team[];
+  pagination: IPagination;
+};
+
+export type PreRegisterTeamResponse = {
+  categories: Category[];
+  positions: Position[];
+  team: Team & { categories: Category[] };
+  tournaments: Tournament[];
+};
+
 export type Formation = {
   id: number;
   name: string;
@@ -17,10 +32,7 @@ export type TeamSteps = {
   label: FormLabelStep;
 };
 export type CurrentStep = 'createTeam' | 'createDt' | 'createOwner';
-export type FormLabelStep =
-  | 'Crea un equipo'
-  | 'Crea el DT'
-  | 'Crea el presidente';
+export type FormLabelStep = 'Crea un equipo' | 'Crea el DT' | 'Crea el presidente';
 
 export type CreateTeamForm = {
   id?: number;
@@ -69,52 +81,16 @@ export type Team = {
   name: string;
   phone: string;
   email: string;
-  address: object;
-  slug: string;
-  category_id: number;
-  tournament_id: number;
-  image: string;
-  colors: {
-    home: {
-      primary: string;
-      secondary: string;
-    };
-    away: {
-      primary: string;
-      secondary: string;
-    };
-  };
-  description: string;
-  president: {
-    name: string;
-    email: string;
-    phone: string;
-    image: string;
-  };
-  coach: {
-    name: string;
-    email: string;
-    phone: string;
-    image: string;
-  };
-};
-
-export interface TeamResponse {
-  id: number;
-  name: string;
   address: Address;
   slug: string;
-  email: string;
-  phone: string;
-  description: string;
-  image: string;
-  president: User;
-  coach: User;
   category: Category;
   tournament: Tournament;
+  image: string;
   colors: Colors;
-}
-
+  description: string;
+  president: User;
+  coach: User;
+};
 export interface Address {
   terms: Term[];
   types: string[];

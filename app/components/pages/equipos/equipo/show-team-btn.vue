@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import type { TeamResponse } from '~/models/Team'
+  import type { Team } from '~/models/Team'
 
   const route = useRoute()
   const { teamId, isEdition, dialog, teamStoreRequest } = storeToRefs(useTeamStore())
@@ -10,7 +10,7 @@
     if (slug) {
       useTeamStore()
         .getTeam(slug)
-        .then((data: TeamResponse) => {
+        .then((data: Team) => {
           const { president, coach, ...team } = data
           teamId.value = data.id
           isEdition.value = true
