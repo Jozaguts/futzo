@@ -1,4 +1,4 @@
-import type { ExportType, Tournament, TournamentStats } from '~/models/tournament';
+import type { ExportType, PreRegisterTournamentResponse, Tournament, TournamentStats } from '~/models/tournament';
 import type { Game } from '~/models/Game';
 import { parseBlobResponse } from '~/utils/prepareFormData';
 
@@ -65,4 +65,8 @@ export const exportTournamentStatsTables = async (type: ExportType, tournament: 
     responseType: 'blob' as 'json',
   });
   parseBlobResponse(blob, `${tournament.name}-estadísticas`, type);
+};
+export const initPreRegister = async (slug: string) => {
+  const client = useSanctumClient();
+  return await client<Promise<PreRegisterTournamentResponse>>(`/api/v1/public/tournaments/${slug}/registrations/catalogs`);
 };

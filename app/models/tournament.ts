@@ -1,6 +1,11 @@
 import type { LocationAvailability } from '~/models/Location';
 import type { League } from '~/models/league';
-import type { Category, Team } from '~/models/Schedule';
+import type { Team } from '~/models/Schedule';
+import type { Category } from '~/models/Team';
+export type PreRegisterTournamentResponse = {
+  category: Category;
+  tournament: Tournament;
+};
 export type ExportListItem = {
   value: ExportType;
   text: string;

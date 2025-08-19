@@ -1,21 +1,21 @@
 export default defineNuxtRouteMiddleware(async (to) => {
   // Only apply to specific route
 
-  if (to.name === 'equipos-equipo-jugadores-inscripcion') {
-    const slug = to.params.equipo as string;
+  if (to.name === 'torneos-torneo-equipos-inscripcion') {
+    const slug = to.params.torneo as string;
 
     try {
       // Call backend API
       const { canRegister } = await useSanctumClient()<Promise<{ canRegister: boolean }>>(
-        `/api/v1/public/teams/${slug}/can-register`
+        `/api/v1/public/tournaments/${slug}/can-register`
       );
 
       if (!canRegister) {
-        return navigateTo(`/equipos/${slug}/inscripcion-cerrada`);
+        return navigateTo(`/torneos/${slug}/inscripcion-cerrada`);
       }
     } catch (error) {
       console.error('Error checking team registration', error);
-      return navigateTo(`/equipos/${slug}/inscripcion-cerrada?status=error`);
+      return navigateTo(`/torneos/${slug}/inscripcion-cerrada?status=error`);
     }
   }
 });

@@ -35,9 +35,6 @@
       return
     }
     const tournament = tournaments.value.find((tournament) => tournament.id === value)
-    if (!tournament) {
-      return
-    }
     fields.category_id.fieldValue = tournament?.category_id
   }
   onMounted(() => {
@@ -63,6 +60,9 @@
   })
   const isInscription = computed(() => {
     return useRoute().name === 'torneos-torneo-inscripcion'
+  })
+  const isPreInscription = computed(() => {
+    return useRoute().name === 'torneos-torneo-equipos-inscripcion'
   })
 </script>
 <template>
@@ -93,7 +93,7 @@
           :items="tournaments"
           placeholder="p.ej. Clausura "
           outlined
-          :disabled="isEdition || isInscription"
+          :disabled="isEdition || isInscription || isPreInscription"
           v-model="fields.tournament_id.fieldValue"
           v-bind="fields.tournament_id.fieldPropsValue"
           density="compact"

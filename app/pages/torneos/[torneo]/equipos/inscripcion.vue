@@ -9,23 +9,15 @@
     sanctum: {
       excluded: true,
     },
+    middleware: ['verify-tournament-can-register-team'],
   })
   const { tournament } = storeToRefs(useTournamentStore())
   const { steps } = storeToRefs(useTeamStore())
   const registeredTeam = ref(false)
   const teamRequest = ref<TeamStoreRequest>()
-  const tournamentId = useRoute().params.torneo as unknown as number
-
-  useSanctumClient()('/api/v1/admin/tournaments/' + tournamentId, {
-    method: 'GET',
-  }).then(async (data) => {
-    const leagueId = data?.league?.id
-    if (leagueId) {
-      await useTournamentStore().fetchTournamentsByLeagueId(leagueId)
-      tournament.value = data as Tournament
-    } else {
-      console.error('League ID is not available in the tournament data.')
-    }
+  onBeforeMount(() => {
+    const slug = useRoute().params.torneo as unknown as string
+    useTournamentStore().initPreRegister(slug)
   })
   const registeredTeamHandler = async (value: TeamStoreRequest) => {
     registeredTeam.value = true

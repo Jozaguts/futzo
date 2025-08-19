@@ -59,7 +59,7 @@
         } else {
           await teamStore.createTeam().then(() => {
             const route = useRoute()
-            if (route.name === 'torneos-torneo-inscripcion') {
+            if (route.name === 'torneos-torneo-equipos-inscripcion') {
               emits('registered-team', teamStoreRequest.value)
             }
           })

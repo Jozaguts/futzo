@@ -1,5 +1,4 @@
 import type { LocationAvailability } from '~/models/Location';
-import type { Tournament } from '~/models/tournament';
 
 export type ScheduleStoreRequest = {
   general: FormGeneralScheduleRequest;
@@ -159,10 +158,7 @@ export type Schedule = {
 };
 
 export type Status = 'scheduled' | 'completed' | 'canceled'; //| "postponed" | "in_progress" | "not_started" | "finished"
-export type Category = {
-  id: number;
-  name: string;
-};
+
 export type Team = {
   id: number;
   name: string;

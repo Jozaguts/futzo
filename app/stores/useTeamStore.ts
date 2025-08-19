@@ -93,15 +93,19 @@ export const useTeamStore = defineStore('teamStore', () => {
 
   const createTeam = async () => {
     let form = prepareForm(teamStoreRequest);
-
-    await client('/api/v1/admin/teams', {
+    const isPreRegister = useRoute().name === 'torneos-torneo-equipos-inscripcion';
+    const url = isPreRegister
+      ? `/api/v1/public/tournaments/${teamStoreRequest.value.team?.tournament_id}/pre-register-team`
+      : '/api/v1/admin/teams';
+    await client(url, {
       method: 'POST',
       body: form,
     })
       .then(async () => {
-        await getTeams();
+        if (!isPreRegister) {
+          await getTeams();
+        }
         toast('success', 'Equipo Creado', 'El nuevo equipo se ha creado exitosamente.');
-
         dialog.value = false;
       })
       .catch((error) => {

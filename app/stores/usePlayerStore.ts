@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import type { FormSteps, Player, PlayerStoreRequest, TeamLineupAvailablePlayers } from '~/models/Player';
-import prepareForm from '~/utils/prepareFormData';
+import prepareForm, { parseBlobResponse } from '~/utils/prepareFormData';
 import type { IPagination } from '~/interfaces';
 import type { Team } from '~/models/Team';
 import * as teamAPI from '~/http/api/team';
@@ -44,46 +44,31 @@ export const usePlayerStore = defineStore('playerStore', () => {
   });
 
   const getPlayer = async (id: string) => {
-    const client = useSanctumClient();
-    return await client(`/api/v1/admin/players/${id}`, {
-      method: 'GET',
-    })
-      .then((response) => {
-        player.value = response.data;
-      })
-      .catch((error) => {
-        console.error(error);
-        toast(
-          'error',
-          'Error al obtener el jugadores',
-          error.data?.message ?? 'No se pudo obtener la información del jugadores. Inténtalo de nuevo.'
-        );
-      });
+    try {
+      const client = useSanctumClient();
+      const response = await client<Promise<{ data: Player }>>(`/api/v1/admin/players/${id}`);
+      player.value = response.data;
+    } catch (error) {
+      console.error(error);
+      toast(
+        'error',
+        'Error al obtener el jugadores',
+        error?.data?.message ?? 'No se pudo obtener la información del jugadores. Inténtalo de nuevo.'
+      );
+    } finally {
+    }
   };
   const downloadTemplate = async () => {
-    const client = useSanctumClient();
-    loading.value = true;
-    await client('/api/v1/admin/players/template', {
-      method: 'GET',
-    })
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'jugadores_template.xlsx');
-        document.body.appendChild(link);
-        link.click();
-      })
-      .catch((error) => {
-        toast(
-          'error',
-          'Error al descargar la plantilla',
-          error.data?.message ?? 'No se pudo descargar la plantilla. Inténtalo de nuevo.'
-        );
-      })
-      .finally(() => {
-        loading.value = false;
-      });
+    try {
+      const client = useSanctumClient();
+      loading.value = true;
+      const blob = await client<Promise<Blob>>('/api/v1/admin/players/template');
+      parseBlobResponse(blob, 'plantilla de jugadores', 'excel');
+    } catch (error) {
+      toast('error', 'Error al descargar la plantilla', 'No se pudo descargar la plantilla. Inténtalo de nuevo.');
+    } finally {
+      loading.value = false;
+    }
   };
   const updatePlayer = async (id: number) => {
     console.log(id);

@@ -17,6 +17,7 @@ import prepareForm from '~/utils/prepareFormData';
 import type { IPagination } from '~/interfaces';
 import * as tournamentAPI from '~/http/api/tournament';
 import type { Field } from '~/models/Schedule';
+import type { CreateTeamForm } from '~/models/Team';
 
 export const useTournamentStore = defineStore('tournamentStore', () => {
   const tournament = ref<Tournament>({} as Tournament);
@@ -208,6 +209,18 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   const exportTournamentStatsTables = async (type: ExportType) => {
     await tournamentAPI.exportTournamentStatsTables(type, tournament.value);
   };
+  const initPreRegister = async (slug: string) => {
+    const { teamStoreRequest } = storeToRefs(useTeamStore());
+    const { categories } = storeToRefs(useCategoryStore());
+    const response = await tournamentAPI.initPreRegister(slug);
+    tournament.value = response.tournament;
+    tournaments.value = [response.tournament];
+    categories.value = [response.category];
+    teamStoreRequest.value.team = {
+      category_id: response.category.id,
+      tournament_id: response.tournament.id,
+    } as CreateTeamForm;
+  };
 
   return {
     tournaments,
@@ -257,5 +270,6 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     getNextGames,
     exportStandingTournament,
     exportTournamentStatsTables,
+    initPreRegister,
   };
 });
