@@ -49,7 +49,7 @@ jobs:
             git fetch --all
             git pull origin main
             
-            npm ci
+            yarn install --frozen-lockfile
             node --max-old-space-size=4096 node_modules/.bin/nuxt build --dotenv .env.prod
               
             pm2 restart ecosystem.config.cjs
