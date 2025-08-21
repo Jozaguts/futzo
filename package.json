@@ -30,6 +30,7 @@
     "nuxt-typed-router": "^4.0.2",
     "pinia": "^3.0.1",
     "pinia-plugin-persistedstate": "^4.5.0",
+    "three-dots": "^0.3.2",
     "v-phone-input": "^5.1.0",
     "vue": "latest",
     "vue-router": "latest",
