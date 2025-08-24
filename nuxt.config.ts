@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
@@ -49,14 +50,6 @@ export default defineNuxtConfig({
       optimizeTranslationDirective: false,
     },
   },
-  vuetify: {
-    moduleOptions: {
-      disableVuetifyStyles: true,
-      styles: { configFile: 'assets/scss/components.scss' },
-      prefixComposables: true,
-    },
-    vuetifyOptions: './vuetify.config.ts',
-  },
   features: {
     inlineStyles: false,
   },
@@ -74,17 +67,23 @@ export default defineNuxtConfig({
     },
   },
   // end these 3 are necessary
-  css: ['~/assets/scss/main.scss', '~/assets/scss/globals.scss'],
+  css: ['vuetify/styles', '~/assets/scss/main.scss'],
   build: {
-    transpile: [
-      // "vuetify",
-      '@vuepic/vue-datepicker',
-      'vue-sonner',
-      'v-phone-input',
-    ],
+    transpile: ['vuetify', '@vuepic/vue-datepicker', 'vue-sonner', 'v-phone-input'],
   },
   modules: [
-    'vuetify-nuxt-module',
+    async (options, nuxt) => {
+      nuxt.hooks.hook('vite:extendConfig', (config) =>
+        // @ts-expect-error
+        config.plugins.push(
+          vuetify({
+            styles: {
+              configFile: 'assets/scss/settings.scss',
+            },
+          })
+        )
+      );
+    },
     '@formkit/auto-animate/nuxt',
     '@nuxtjs/i18n',
     '@vee-validate/nuxt',
@@ -101,6 +100,19 @@ export default defineNuxtConfig({
     'nuxt-svgo',
     '@nuxt/image',
   ],
+  vite: {
+    vue: {
+      template: {
+        transformAssetUrls,
+      },
+    },
+    css: {
+      preprocessorOptions: {
+        // Use modern Sass compiler API (mejor rendimiento y menos edge-cases con PNPM)
+        sass: { api: 'modern-compiler' },
+      },
+    },
+  },
   sanctum: {
     baseUrl: process.env.NUXT_PUBLIC_URL_BACKEND, // Laravel API
     // origin: 'http://futzo.test', // Nuxt app, by default will be used 'useRequestURL().origin'

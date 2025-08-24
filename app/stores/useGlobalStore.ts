@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia';
+import { useDisplay } from 'vuetify/framework';
 
 export const useGlobalStore = defineStore('global', () => {
-  const { mobile } = useVDisplay();
+  const { mobile } = useDisplay();
 
   const isMobile = computed(() => mobile.value);
   const isLoading = ref(true);

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
   import Breadcrumbs from '~/components/breadcrumbs.vue'
+  import { useDisplay } from 'vuetify/framework'
 
-  const { mobile } = useVDisplay()
+  const { mobile } = useDisplay()
   const pros = defineProps({
     extended: {
       type: Boolean,

@@ -4,6 +4,7 @@
   import Score from './score.vue'
   import { useToast } from '~/composables/useToast'
   import type { RoundStatus } from '~/models/Schedule'
+  import { useDisplay } from 'vuetify/framework'
 
   const { tournamentId, loading, tournament } = storeToRefs(useTournamentStore())
   const { gameReportDialog, showReScheduleDialog, gameDetailsRequest } = storeToRefs(useGameStore())
@@ -112,7 +113,7 @@
       showReScheduleDialog.value = true
     }
   }
-  const { mobile } = useVDisplay()
+  const { mobile } = useDisplay()
 </script>
 <template>
   <v-row v-if="schedules.rounds.length" :no-gutters="mobile">

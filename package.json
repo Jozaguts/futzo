@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.8.2",
+    "@mdi/font": "^7.4.47",
     "@morev/vue-transitions": "^3.0.5",
     "@nuxt/image": "1.11.0",
     "@nuxtjs/google-fonts": "^3.2.0",
@@ -37,7 +38,6 @@
     "vue-sonner": "^2.0.2",
     "vue3-google-map": "^0.23.1",
     "vue3-perfect-scrollbar": "^2.0.0",
-    "vuetify-nuxt-module": "^0.18.7",
     "vuetify-sonner": "^0.3.21",
     "yup": "^1.7.0"
   },
@@ -53,7 +53,9 @@
     "@nuxt/icon": "^2.0.0",
     "@types/google.maps": "^3.58.1",
     "@types/node": "^22.14.0",
-    "sass-embedded": "^1.86.3"
+    "sass-embedded": "^1.86.3",
+    "vite-plugin-vuetify": "^2.1.2",
+    "vuetify": "^3.9.5"
   },
   "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447",
   "web-types": "./web-types.json"

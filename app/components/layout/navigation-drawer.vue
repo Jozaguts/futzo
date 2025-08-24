@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import { useResizeObserver } from '@vueuse/core'
+  import { useDisplay } from 'vuetify/framework'
 
   const { drawer, drawerWidth, isMobile, rail } = storeToRefs(useGlobalStore())
   const drawerRef = ref()
@@ -58,7 +59,7 @@
       console.error('Error during logout:', error)
     }
   }
-  const { mobile } = useVDisplay()
+  const { mobile } = useDisplay()
 </script>
 
 <template>

@@ -40,8 +40,8 @@
   const [autocomplete_prediction] = reactive(defineField('autocomplete_prediction'))
   const [position] = reactive(defineField('position'))
   let foundedLocations = ref([] as AutocompletePrediction[])
-  const { decimalSeparator } = useVLocale()
-  console.log(useVLocale())
+  const { decimalSeparator } = useLocale()
+  console.log(useLocale())
   console.log(decimalSeparator?.value)
   const tag = ref<string>('')
   const tagHandler = () => {

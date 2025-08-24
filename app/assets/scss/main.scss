@@ -1,5 +1,17 @@
-//@use './settings';
+@use 'vuetify' with (
+  $utilities: false,
+  $color-pack: false
+);
+@layer base, vuetify, overrides;
 
+@layer overrides {
+  /* Example: pulir algún detalle extra del skeleton */
+  .v-skeleton-loader {
+    /* NOTE: Preferir variables SASS. Este es un ajuste puntual si te hace falta. */
+    /* background will venir ya desde $skeleton-loader-background */
+    background: transparent !important;
+  }
+}
 .v-list-item__prepend > .v-badge .v-icon, .v-list-item__prepend > .v-icon, .v-list-item__append > .v-badge .v-icon, .v-list-item__append > .v-icon {
   opacity: 1 !important;
 }

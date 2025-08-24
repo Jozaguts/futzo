@@ -5,6 +5,7 @@
   import LastTeamsTable from '~/components/pages/dashboard/last-teams.vue'
   import DashboardNextGames from '~/components/pages/dashboard/dashboard-next-games.vue'
   import NoGames from '~/components/shared/empty-states/NoGames.vue'
+  import { useDisplay } from 'vuetify/framework'
 
   const { teamStats, nextGames } = storeToRefs(useDashboardStore())
   definePageMeta({
@@ -29,7 +30,7 @@
       useDashboardStore().getNextGames()
     }
   })
-  const { mobile } = useVDisplay()
+  const { mobile } = useDisplay()
 </script>
 <template>
   <PageLayout>

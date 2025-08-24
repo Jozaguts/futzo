@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+  import { useDisplay } from 'vuetify/framework'
+
   const routeName = computed(() => useRoute().name)
   type Breadcrumbs = {
     title: string
@@ -110,7 +112,7 @@
         ]
     }
   })
-  const { mobile } = useVDisplay()
+  const { mobile } = useDisplay()
 </script>
 <template>
   <v-breadcrumbs :items="breadcrumbs" active-class="active">

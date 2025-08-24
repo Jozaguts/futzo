@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import type { Header } from '~/interfaces'
   import type { GameTeamPlayer, TeamType } from '~/models/Game'
+  import { useDisplay } from 'vuetify/framework'
 
   type Props = {
     teamType: TeamType
@@ -16,7 +17,7 @@
   })
   const { gamePlayers, game } = storeToRefs(useGameStore())
   const minWidth = computed(() => {
-    return useVDisplay().mobile ? '230' : '130'
+    return useDisplay().mobile ? '230' : '130'
   })
   const updateHandler = (type: 'goals' | 'cards', item: GameTeamPlayer, value: number | string) => {
     game.value[props.teamType].goals = gamePlayers.value[props.teamType].players.reduce(

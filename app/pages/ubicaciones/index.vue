@@ -4,6 +4,7 @@
   import DialogLocation from '~/components/pages/ubicaciones/dialog/index.vue'
   import LocationCardContainer from '~/components/pages/ubicaciones/LocationCardContainer.vue'
   import ConfirmDialog from '~/components/shared/confirm-dialog.vue'
+  import { useDisplay } from 'vuetify/framework'
   definePageMeta({
     middleware: ['sanctum:auth'],
   })
@@ -27,7 +28,7 @@
     useLocationStore().pagination.currentPage = 1
     useLocationStore().getLocations(place)
   }, 600)
-  const { mobile } = useVDisplay()
+  const { mobile } = useDisplay()
   onMounted(async () => {
     if (!locations.value) {
       await useLocationStore().getLocations()
