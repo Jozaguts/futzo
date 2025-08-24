@@ -2,6 +2,7 @@
   import { useTheme } from 'vuetify'
 
   const logo = ref('/futzo/logos/horizontal/logo-12.png')
+  const hydrated = ref(true)
 
   export interface Props {
     maxWidth?: string | number
@@ -24,12 +25,11 @@
       useRouter().push({ name: 'index' })
     }
   }
+  onMounted(() => {
+    hydrated.value = false
+  })
 </script>
 <template>
-  <v-img
-    :max-width="props.maxWidth"
-    :src="logo"
-    class="cursor-pointer"
-    @click="goToHome"
-  ></v-img>
+  <v-img v-if="hydrated" :max-width="props.maxWidth" :src="logo" class="cursor-pointer" @click="goToHome"></v-img>
+  <VSkeletonLoader :max-width="props.maxWidth" v-else type="heading"></VSkeletonLoader>
 </template>
