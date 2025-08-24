@@ -1,6 +1,26 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  const isHydrated = ref(true)
+  onMounted(() => (isHydrated.value = false))
+</script>
 <template>
-  <v-card width="100%" max-width="540" max-height="550" class="verify-card">
+  <div
+    v-if="isHydrated"
+    style="
+      max-height: 550px;
+      max-width: 540px;
+      width: 100%;
+      padding: 40px;
+      border-radius: 24px;
+      background-color: white;
+    "
+  >
+    <v-skeleton-loader width="56" height="56" type="avatar" style="margin: 0 auto" />
+    <v-skeleton-loader width="300" type="heading" style="margin: 0 auto" />
+    <v-skeleton-loader type="sentences" />
+    <v-skeleton-loader type="button" style="margin: 0 auto" />
+    <v-skeleton-loader type="text" />
+  </div>
+  <v-card v-else width="100%" max-width="540" max-height="550" class="verify-card">
     <div class="d-flex justify-center align-center"></div>
     <v-card-item class="d-flex justify-center align-center">
       <v-card-title class="d-flex justify-center align-center">
