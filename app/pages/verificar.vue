@@ -22,6 +22,8 @@
   const disabled = ref<boolean>(false)
   const verify = (code?: string) => {
     const client = useSanctumClient()
+    const { refreshIdentity } = useSanctumAuth()
+    // si da problemas verificar que la peticion del CSR  token se haga antes de hacer la peticion a /verify
     loading.value = true
     disabled.value = true
     client(`/verify`, {
@@ -30,10 +32,12 @@
         code: code,
         [param.value.type]: param.value.value,
       },
+      credentials: 'include',
     })
       .then(() => {
         toast('success', 'Cuenta Verificada', 'Tu cuenta ha sido verificado exitosamente.')
         currentComponent.value = 'VerifiedCard'
+        refreshIdentity()
       })
       .catch((error) => {
         const errorMessage =

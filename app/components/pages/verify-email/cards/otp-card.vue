@@ -104,5 +104,5 @@
     $dot-height: 6px,
     $dot-color: #8c57ff,
     $dot-bg-color: #8c57ff,
-  );
+  )
 </style>
