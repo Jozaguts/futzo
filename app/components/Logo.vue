@@ -30,6 +30,6 @@
   })
 </script>
 <template>
-  <v-img v-if="hydrated" :max-width="props.maxWidth" :src="logo" class="cursor-pointer" @click="goToHome"></v-img>
-  <VSkeletonLoader :max-width="props.maxWidth" v-else type="heading"></VSkeletonLoader>
+  <VSkeletonLoader v-if="hydrated" :max-width="props.maxWidth" type="avatar, heading" />
+  <v-img v-else :max-width="props.maxWidth" :src="logo" class="cursor-pointer" @click="goToHome"></v-img>
 </template>
