@@ -7,8 +7,9 @@
       value: Object.values(queryParams)[0],
     }
   })
+  const { resendingVerificationCode } = storeToRefs(useAuthStore())
   const resendCode = () => {
-    const { type, value } = param.value
+    const { type = '', value } = param.value
     if (value) {
       useAuthStore().reSendCode(type === 'phone' ? `+${value.toString().trim()}` : value.toString().trim(), type)
     }
@@ -24,6 +25,7 @@
   const type = computed(() => {
     return param.value.type === 'email' ? 'correo' : 'teléfono'
   })
+  const { loading, disabled } = defineProps<{ loading: boolean; disabled: boolean }>()
 </script>
 <template>
   <v-card width="100%" max-width="540" max-height="550" class="verify-card">
@@ -48,15 +50,19 @@
         <v-btn
           class="my-5"
           rounded="lg"
-          :disabled="code.length < 4"
+          :disabled="code.length < 4 || disabled"
           size="large"
           block
+          :loading="loading"
           @click="$emit('event', { action: 'verificar', code })"
-          >Verificar {{ type }}
+          >Verificar
         </v-btn>
         <div class="verify-card-options-container">
           <p class="verify-card-didnt-get-email">¿No recibiste el {{ type ?? 'mensaje' }}?</p>
-          <v-btn variant="text" class="mx-0 px-0" @click="resendCode">Reenviar </v-btn>
+          <v-btn variant="text" class="mx-0 px-0" @click="resendCode" :ripple="false">
+            <span v-if="!resendingVerificationCode" class="ml-1">Reenviar</span>
+            <span v-else class="dot-typing"></span>
+          </v-btn>
         </div>
         <div class="d-flex justify-center align-center my-5 cursor-pointer" @click="$router.push('/login')">
           <Icon name="futzo-icon:arrow-left" class="arrow-left mx-1"></Icon>
@@ -66,3 +72,11 @@
     </v-card-text>
   </v-card>
 </template>
+<style lang="sass">
+  @use 'three-dots' with (
+    $dot-width: 6px,
+    $dot-height: 6px,
+    $dot-color: #8c57ff,
+    $dot-bg-color: #8c57ff,
+  );
+</style>

@@ -1,10 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
-  experimental: {
-    typedPages: false,
-    appManifest: true,
-  },
   devtools: { enabled: true },
   app: {
     head: {
@@ -55,6 +51,7 @@ export default defineNuxtConfig({
   },
   vuetify: {
     moduleOptions: {
+      disableVuetifyStyles: true,
       styles: { configFile: 'assets/scss/components.scss' },
       prefixComposables: true,
     },
@@ -134,22 +131,6 @@ export default defineNuxtConfig({
       login: '/auth/login', // Endpoint that accepts user credentials
       logout: '/auth/logout', // Endpoint to destroy the current session
       user: '/api/v1/me', // Endpoint that return current user information
-    },
-  },
-  vite: {
-    // server: {
-    //   hmr: {
-    //     protocol: "ws",
-    //     host: "0.0.0.0",
-    //   },
-    // },
-    css: {
-      preprocessorOptions: {
-        scss: {
-          quietDeps: true,
-          api: 'modern-compiler',
-        },
-      },
     },
   },
   runtimeConfig: {

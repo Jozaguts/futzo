@@ -1,15 +1,14 @@
 <script lang="ts" setup>
   import OtpCard from '~/components/pages/verify-email/cards/otp-card.vue'
   import VerifiedCard from '~/components/pages/verify-email/cards/verified-card.vue'
-
-  const { toast } = useToast()
-
+  type ComponentNames = 'OtpCard' | 'VerifiedCard'
   definePageMeta({
     layout: 'blank',
     bodyAttrs: {
       class: 'd-none',
     },
   })
+  const { toast } = useToast()
   const queryParams = useRoute().query
   const param = computed(() => {
     return {
@@ -17,12 +16,14 @@
       value: Object.values(queryParams)[0],
     }
   })
-  type ComponentNames = 'OtpCard' | 'VerifiedCard'
   const currentComponent = ref<ComponentNames>('OtpCard')
   let setTimeoutId: any = null
+  const loading = ref<boolean>(false)
+  const disabled = ref<boolean>(false)
   const verify = (code?: string) => {
     const client = useSanctumClient()
-
+    loading.value = true
+    disabled.value = true
     client(`/verify`, {
       method: 'POST',
       body: {
@@ -46,6 +47,10 @@
           toast('error', 'Cuenta No Verificada', errorMessage)
         }
       })
+      .finally(() => {
+        loading.value = false
+        disabled.value = false
+      })
   }
   onUnmounted(() => {
     if (setTimeoutId) {
@@ -61,7 +66,7 @@
       verify(event?.code)
     }
     if (event.action === 'email-verified') {
-      useRouter().push(`/login?username=${param.value.value}`)
+      useRouter().push({ name: 'bienvenido' })
     }
   }
 </script>
@@ -69,7 +74,13 @@
   <div class="verify-email-main-container">
     <Logo width="200" class="mx-auto"></Logo>
     <div class="verify-email-container">
-      <component :is="components[currentComponent]" :type="param.type" @event="eventHandler"></component>
+      <component
+        :is="components[currentComponent]"
+        :loading="loading"
+        :disabled="disabled"
+        :type="param.type"
+        @event="eventHandler"
+      ></component>
     </div>
   </div>
 </template>

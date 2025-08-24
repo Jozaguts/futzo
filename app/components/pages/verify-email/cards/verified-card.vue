@@ -5,34 +5,23 @@
     <v-card-item class="d-flex justify-center align-center">
       <v-card-title class="d-flex justify-center align-center">
         <div class="icon-container">
-          <Icon
-              name="futzo-icon:check-circle"
-              class="mx-auto envelop-icon" size="32"
-          ></Icon>
+          <Icon name="futzo-icon:check-circle" class="mx-auto envelop-icon" size="32"></Icon>
         </div>
       </v-card-title>
-      <v-card-title class="text-center verify-card-title">
-        Correo verificado
-      </v-card-title>
+      <v-card-title class="text-center verify-card-title"> Correo verificado </v-card-title>
       <v-card-subtitle class="text-center verify-card-subtitle">
-        Gracias por confirmar tu correo, ahora puedes <br/>
+        Gracias por confirmar tu correo, ahora puedes <br />
         iniciar sesión con tu correo y contraseña.
       </v-card-subtitle>
     </v-card-item>
     <v-card-text class="my-5">
       <div class="w-75 mx-auto my-5">
-        <v-btn
-            class="my-5"
-            rounded="lg"
-            size="large"
-            block
-            @click="$emit('event', { action: 'email-verified' })"
-        >
-          Iniciar sesión
+        <v-btn class="my-5" rounded="lg" size="large" block @click="$emit('event', { action: 'email-verified' })">
+          Crea tu liga
         </v-btn>
         <div
-            class="d-flex justify-center align-center my-5 cursor-pointer"
-            @click="$router.push('/login')"
+          class="d-flex justify-center align-center my-5 cursor-pointer"
+          @click="$router.push({ name: 'bienvenido' })"
         >
           <Icon name="futzo-icon:arrow-left" class="arrow-left mx-1"></Icon>
           <p class="text-body-1 font-weight-bold">Regresar</p>
