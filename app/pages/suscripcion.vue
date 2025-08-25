@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import checkout from '~/http/api/checkout'
   const hydrated = ref(false)
   const loading = ref(true)
   definePageMeta({
@@ -10,12 +11,15 @@
   onMounted(() => {
     hydrated.value = true
   })
-  onMounted(() => {
+  onMounted(async () => {
     const identifier = useRoute()?.query?.identifier
     const plan = useRoute()?.query?.plan
-    console.log({ identifier, plan })
-    if (!identifier || !plan) {
-      const { $toast } = useNuxtApp()
+    const period = useRoute()?.query?.period
+    console.log({ identifier, plan, period })
+    if (identifier || plan || period) {
+      await checkout(identifier, plan, period).then((response) => {
+        window.location.href = response.url
+      })
     }
   })
 </script>
