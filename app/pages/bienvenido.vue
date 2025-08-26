@@ -27,7 +27,7 @@
         name,
       },
     })
-      .then((response) => {
+      .then(() => {
         useToast().toast('success', 'Liga Registrada', 'Tu liga ha sido registrada con éxito. ¡Comienza a jugar!')
         currentComponent.value = 'CreatedLeague'
       })
@@ -71,7 +71,7 @@
     </div>
   </div>
   <ClientOnly>
-    <Toaster position="top-right" offset="80px" :duration="3000" />
+    <Toaster position="top-right" offset="80px" :duration="5000" />
   </ClientOnly>
 </template>
 <style lang="scss">

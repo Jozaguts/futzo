@@ -1,5 +1,8 @@
 <script setup lang="ts">
   import checkout from '~/http/api/checkout'
+  import { useToast } from '~/composables/useToast'
+  import { FetchError } from 'ofetch'
+  const { toast } = useToast()
   const hydrated = ref(false)
   const loading = ref(true)
   definePageMeta({
@@ -15,11 +18,22 @@
     const identifier = useRoute()?.query?.identifier
     const plan = useRoute()?.query?.plan
     const period = useRoute()?.query?.period
-    console.log({ identifier, plan, period })
     if (identifier || plan || period) {
-      await checkout(identifier, plan, period).then((response) => {
-        window.location.href = response.url
-      })
+      await checkout(identifier, plan, period)
+        .then((response) => {
+          console.log(response)
+          window.location.href = response.url
+        })
+        .catch((error: FetchError) => {
+          const { message } = useApiError(error)
+          if (error?.data?.error === 'already_has_account') {
+            useAuthStore().errorMessage = message
+            useRouter().push({ name: 'login', query: { email: error?.data?.identifier } })
+            return
+          }
+          // fallback
+          toast('error', 'No se pudo iniciar el checkout.')
+        })
     }
   })
 </script>

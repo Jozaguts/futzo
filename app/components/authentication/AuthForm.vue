@@ -57,6 +57,10 @@
       forgotPasswordState.value.username = query.email as string
       forgotPasswordState.value.token = query.token as string
     }
+    if (query?.email) {
+      username.value = query?.email as string
+      showRegisterForm.value = false
+    }
   })
 </script>
 

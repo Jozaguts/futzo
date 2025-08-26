@@ -4,7 +4,7 @@
     <v-layout>
       <v-app app>
         <ClientOnly>
-          <Toaster position="top-right" offset="80px" :duration="3000" />
+          <Toaster position="top-right" offset="80px" :duration="5000" />
         </ClientOnly>
         <ClientOnly>
           <Navigation />

@@ -20,6 +20,7 @@ export const useAuthStore = defineStore(
       code: '',
       token: '',
     });
+    const errorMessage = ref<string>('');
     const resetForgotPasswordState = () => {
       forgotPasswordState.value = {
         step: 'reset-password',
@@ -105,6 +106,7 @@ export const useAuthStore = defineStore(
       image,
       forgotPasswordState,
       resendingVerificationCode,
+      errorMessage,
       updateUser,
       updateImage,
       updatePassword,
@@ -114,7 +116,7 @@ export const useAuthStore = defineStore(
   },
   {
     persist: {
-      pick: ['user', 'role', 'isSuperAdmin', 'image'],
+      pick: ['user', 'role', 'isSuperAdmin', 'image', 'errorMessage'],
     },
   }
 );

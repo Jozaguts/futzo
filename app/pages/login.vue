@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import AuthForm from '~/components/authentication/AuthForm.vue'
-
+  const { errorMessage } = storeToRefs(useAuthStore())
+  const { toast } = useToast()
   const loadingPage = ref(true)
   definePageMeta({
     layout: 'blank',
@@ -9,7 +10,13 @@
     },
   })
   onMounted(() => {
+    if (errorMessage) {
+      toast('info', 'Suscripción activa', errorMessage.value)
+    }
     loadingPage.value = false
+  })
+  onUnmounted(() => {
+    errorMessage.value = ''
   })
   useHead({
     meta: [
