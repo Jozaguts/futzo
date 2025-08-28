@@ -8,7 +8,7 @@
     bodyAttrs: {
       class: 'd-none',
     },
-    middleware: ['sanctum:auth'],
+    middleware: ['post-checkout-login'],
   })
   const currentComponent = ref('CreateLeague')
   useHead({
