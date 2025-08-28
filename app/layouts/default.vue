@@ -1,27 +1,8 @@
-<template>
-  <NuxtLoadingIndicator color="#9155FD" :height="6" />
-  <div>
-    <v-layout>
-      <v-app app>
-        <ClientOnly>
-          <Toaster position="top-right" offset="80px" :duration="5000" />
-        </ClientOnly>
-        <ClientOnly>
-          <Navigation />
-          <v-main v-show="show" class="v-main" app>
-            <slot></slot>
-          </v-main>
-        </ClientOnly>
-      </v-app>
-    </v-layout>
-  </div>
-</template>
-
 <script setup lang="ts">
   import Navigation from '~/components/layout/navigation-drawer.vue'
   import { Toaster } from 'vue-sonner'
   const show = ref(false)
-  const { rail, isMobile } = storeToRefs(useGlobalStore())
+  const { rail, isMobile, toastDuration } = storeToRefs(useGlobalStore())
   onMounted(() => {
     show.value = true
   })
@@ -35,6 +16,24 @@
     return useRoute().name !== 'configuracion'
   })
 </script>
+<template>
+  <NuxtLoadingIndicator color="#9155FD" :height="6" />
+  <div>
+    <v-layout>
+      <v-app app>
+        <ClientOnly>
+          <Toaster position="top-right" offset="80px" :duration="toastDuration" />
+        </ClientOnly>
+        <ClientOnly>
+          <Navigation />
+          <v-main v-show="show" class="v-main" app>
+            <slot></slot>
+          </v-main>
+        </ClientOnly>
+      </v-app>
+    </v-layout>
+  </div>
+</template>
 <style>
   .v-main {
     padding-left: v-bind(paddingLeft);

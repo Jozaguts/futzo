@@ -1,27 +1,28 @@
-import Notification from "@/components/notifications/index.vue";
-
+import Notification from '@/components/notifications/index.vue';
+import type { ToastOptions } from '@/interfaces';
 const colors = {
   success: {
-    color: "#4CA30D",
-    background: "#F3FEE7",
+    color: '#4CA30D',
+    background: '#F3FEE7',
   },
   warning: {
-    color: "#DC6803",
-    background: "#FFF8E6",
+    color: '#DC6803',
+    background: '#FFF8E6',
   },
   error: {
-    color: "#F04438",
-    background: "#FFEDEE",
+    color: '#F04438',
+    background: '#FFEDEE',
   },
   info: {
-    color: "#155EEF",
-    background: "#EFF4FF",
+    color: '#155EEF',
+    background: '#EFF4FF',
   },
 };
-type toastTypes = "success" | "warning" | "error" | "info";
+
 export const useToast = () => {
   const { $toast } = useNuxtApp();
-  const toast = (type: toastTypes, msg: string, description?: string) => {
+  const toast = ({ type, msg, description, action, duration = 5000 }: ToastOptions) => {
+    useGlobalStore().toastDuration = duration;
     return $toast.custom(markRaw(Notification), {
       componentProps: {
         msg,
@@ -31,6 +32,7 @@ export const useToast = () => {
         color: colors[type].color,
         backgroundColor: colors[type].background,
         type,
+        action,
       },
     });
   };

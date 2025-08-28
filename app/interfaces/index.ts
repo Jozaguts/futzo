@@ -1,5 +1,13 @@
 import type { ImageForm } from '~/models/tournament';
-
+export type toastTypes = 'success' | 'warning' | 'error' | 'info';
+export type Action = 'login';
+export type ToastOptions = {
+  type: toastTypes;
+  msg: string;
+  description?: string;
+  action?: Action;
+  duration?: number;
+};
 export interface Header {
   title: string;
   value: string;

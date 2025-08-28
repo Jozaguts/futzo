@@ -62,7 +62,11 @@ export const useTeamStore = defineStore('teamStore', () => {
       const blob = await client<Promise<Blob>>('/api/v1/admin/teams/template');
       parseBlobResponse(blob, 'plantilla de equipos', 'excel');
     } catch (error) {
-      toast('error', 'Error al descargar la plantilla', 'No se pudo descargar la plantilla. Inténtalo de nuevo.');
+      toast({
+        type: 'error',
+        msg: 'Error al descargar la plantilla',
+        description: 'No se pudo descargar la plantilla. Inténtalo de nuevo.',
+      });
     } finally {
       loading.value = false;
     }
@@ -78,7 +82,11 @@ export const useTeamStore = defineStore('teamStore', () => {
       body: formData,
     })
       .then(async () => {
-        toast('success', 'Equipos Importados', 'Los equipos se han importado exitosamente.');
+        toast({
+          type: 'success',
+          msg: 'Equipos Importados',
+          description: 'Los equipos se han importado exitosamente.',
+        });
         importModal.value = false;
         await getTeams();
       })
@@ -105,7 +113,7 @@ export const useTeamStore = defineStore('teamStore', () => {
         if (!isPreRegister) {
           await getTeams();
         }
-        toast('success', 'Equipo Creado', 'El nuevo equipo se ha creado exitosamente.');
+        toast({ type: 'success', msg: 'Equipo Creado', description: 'El nuevo equipo se ha creado exitosamente.' });
         dialog.value = false;
       })
       .catch((error) => {
@@ -124,15 +132,16 @@ export const useTeamStore = defineStore('teamStore', () => {
     })
       .then(async () => {
         await getTeams();
-        toast('success', 'Equipo actualizado', 'El equipo se ha actualizado exitosamente');
+        toast({ type: 'success', msg: 'Equipo actualizado', description: 'El equipo se ha actualizado exitosamente' });
         dialog.value = false;
       })
       .catch((error) => {
-        toast(
-          'error',
-          'Error al actualizar el equipo',
-          error.data?.message ?? 'No se pudo actualizar el equipo. Verifica tu información e inténtalo de nuevo.'
-        );
+        toast({
+          type: 'error',
+          msg: 'Error al actualizar el equipo',
+          description:
+            error.data?.message ?? 'No se pudo actualizar el equipo. Verifica tu información e inténtalo de nuevo.',
+        });
       });
   };
   const getTeams = async () => {

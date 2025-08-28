@@ -77,7 +77,11 @@
       })
         .then(() => {
           round.isEditable = !round?.isEditable
-          useToast().toast('success', 'Marcador', 'Actualizado correctamente')
+          useToast().toast({
+            type: 'success',
+            msg: 'Marcador',
+            description: 'Actualizado correctamente',
+          })
         })
         .catch((error) => {
           console.error(error)
@@ -90,7 +94,11 @@
     useScheduleStore()
       .updateStatusGame(roundId, status, tournamentId.value as number)
       .then(() => {
-        useToast().toast('success', 'Jornada', 'Actualizada correctamente')
+        useToast().toast({
+          type: 'success',
+          msg: 'Jornada',
+          description: 'Actualizada correctamente',
+        })
       })
       .finally(() => (loading.value = false))
   }

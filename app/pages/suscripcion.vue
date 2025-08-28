@@ -32,7 +32,10 @@
             return
           }
           // fallback
-          toast('error', 'No se pudo iniciar el checkout.')
+          toast({
+            type: 'error',
+            msg: 'No se pudo iniciar el checkout.',
+          })
         })
     }
   })

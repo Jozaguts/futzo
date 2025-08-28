@@ -4,7 +4,7 @@
   import { Toaster } from 'vue-sonner'
 
   definePageMeta({
-    layout: false,
+    layout: 'blank',
     bodyAttrs: {
       class: 'd-none',
     },
@@ -28,15 +28,19 @@
       },
     })
       .then(() => {
-        useToast().toast('success', 'Liga Registrada', 'Tu liga ha sido registrada con éxito. ¡Comienza a jugar!')
+        useToast().toast({
+          type: 'success',
+          msg: 'Liga Registrada',
+          description: 'Tu liga ha sido registrada con éxito. ¡Comienza a jugar!',
+        })
         currentComponent.value = 'CreatedLeague'
       })
       .catch((error) => {
-        useToast().toast(
-          'error',
-          'Error al Registrar Liga',
-          error?.data?.message ?? 'No se pudo registrar la liga. Por favor, intenta nuevamente.'
-        )
+        useToast().toast({
+          type: 'error',
+          msg: 'Error al Registrar Liga',
+          description: error?.data?.message ?? 'No se pudo registrar la liga. Por favor, intenta nuevamente.',
+        })
       })
       .finally(() => {})
   }
@@ -70,9 +74,6 @@
       <component :is="components[currentComponent]" @event="eventHandler"></component>
     </div>
   </div>
-  <ClientOnly>
-    <Toaster position="top-right" offset="80px" :duration="5000" />
-  </ClientOnly>
 </template>
 <style lang="scss">
   @use '~/assets/scss/pages/welcome.scss';

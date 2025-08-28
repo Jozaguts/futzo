@@ -81,3 +81,5 @@ export const SUBSTITUTIONS_STATE: ActionGameReportState = {
   subtitle: 'Añade los cambios realizados durante el partido',
   type: 'info',
 };
+export const POST_CHECKOUT_LOGIN_SUCCESS_STATUS_CODE = 200;
+export const POST_CHECKOUT_LOGIN_ERROR_STATUS_CODE = 400;

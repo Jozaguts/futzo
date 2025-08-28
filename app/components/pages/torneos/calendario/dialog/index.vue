@@ -58,18 +58,22 @@
               isFetching.value = false
               scheduleDialog.value = false
               schedulePagination.value.currentPage = 1
-              useToast().toast('success', 'Calendario creado', 'El calendario se ha creado correctamente')
+              useToast().toast({
+                type: 'success',
+                msg: 'Calendario creado',
+                description: 'El calendario se ha creado correctamente',
+              })
             })
         })
         .finally(() => (isFetching.value = false))
         .catch((error) => {
           isFetching.value = false
           const { message } = useApiError(error)
-          useToast().toast(
-            'error',
-            'Error al crear el calendario',
-            message || 'Ha ocurrido un error al crear el calendario'
-          )
+          useToast().toast({
+            type: 'error',
+            msg: 'Error al crear el calendario',
+            description: message || 'Ha ocurrido un error al crear el calendario',
+          })
         })
     }
   }

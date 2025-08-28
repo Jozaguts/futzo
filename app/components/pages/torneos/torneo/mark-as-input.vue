@@ -13,7 +13,11 @@
     useTournamentStore()
       .updateTournamentStatus(value)
       .then(() => {
-        useToast().toast('success', 'Torneo', 'Estado del torneo actualizado correctamente')
+        useToast().toast({
+          type: 'success',
+          msg: 'Torneo',
+          description: 'Estado del torneo actualizado correctamente',
+        })
       })
   }
 </script>

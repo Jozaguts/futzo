@@ -53,7 +53,11 @@
         }
       })
       .catch((error) => {
-        useToast().toast('error', 'Error', error?.data?.message ?? 'El correo o número de teléfono no es válido')
+        useToast().toast({
+          type: 'error',
+          msg: 'Error',
+          description: error?.data?.message ?? 'El correo o número de teléfono no es válido',
+        })
       })
       .finally(() => (forgotPasswordState.value.isFetching = false))
   })

@@ -56,7 +56,11 @@ export const useGame = () => {
     if (canMakeChanges.value) {
       dialogState.value.show = true;
     } else {
-      useToast().toast('error', 'No puedes hacer cambios', 'Debes tener minino 7 titulares por equipo');
+      useToast().toast({
+        type: 'error',
+        msg: 'No puedes hacer cambios',
+        description: 'Debes tener minino 7 titulares por equipo',
+      });
     }
   };
   const updateDefaultFormationType = (isHome: boolean, team_id: number, formation_id: number) => {

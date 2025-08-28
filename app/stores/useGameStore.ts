@@ -122,11 +122,12 @@ export const useGameStore = defineStore('gameStore', () => {
         }
       })
       .catch(() => {
-        useToast().toast(
-          'error',
-          'Error al obtener el partido',
-          'Hubo un error al intentar obtener los detalles del partido. Por favor, intente nuevamente más tarde.'
-        );
+        useToast().toast({
+          type: 'error',
+          msg: 'Error al obtener el partido',
+          description:
+            'Hubo un error al intentar obtener los detalles del partido. Por favor, intente nuevamente más tarde.',
+        });
       });
   };
   const reScheduleGame = async () => {
@@ -143,15 +144,19 @@ export const useGameStore = defineStore('gameStore', () => {
       .then(async () => {
         useScheduleStore().schedulePagination.currentPage = 1;
         await useScheduleStore().getTournamentSchedules();
-        useToast().toast('success', 'Partido reprogramado correctamente', 'El partido se ha reprogramado con éxito');
+        useToast().toast({
+          type: 'success',
+          msg: 'Partido reprogramado correctamente',
+          description: 'El partido se ha reprogramado con éxito',
+        });
         showReScheduleDialog.value = false;
       })
       .catch(() => {
-        useToast().toast(
-          'error',
-          'Error al reprogramar partido',
-          'Hubo un error al intentar reprogramar el partido. Por favor, intente nuevamente más tarde.'
-        );
+        useToast().toast({
+          type: 'error',
+          msg: 'Error al reprogramar partido',
+          description: 'Hubo un error al intentar reprogramar el partido. Por favor, intente nuevamente más tarde.',
+        });
       });
   };
   const initializeGameReport = async (game_id: number) => {
@@ -240,30 +245,47 @@ export const useGameStore = defineStore('gameStore', () => {
       initializeGameReport(game.value.id).then((initialize) => {
         useTeamStore().initReportHandler(initialize);
       });
-      useToast().toast('success', 'Evento guardado correctamente', 'El evento del partido se ha guardado con éxito');
+      useToast().toast({
+        type: 'success',
+        msg: 'Evento guardado correctamente',
+        description: 'El evento del partido se ha guardado con éxito',
+      });
     } catch (error) {
-      useToast().toast(
-        'error',
-        'Error al guardar el evento',
-        'Hubo un error al intentar guardar el evento del partido. Por favor, intente nuevamente más tarde.'
-      );
+      useToast().toast({
+        type: 'error',
+        msg: 'Error al guardar el evento',
+        description:
+          'Hubo un error al intentar guardar el evento del partido. Por favor, intente nuevamente más tarde.',
+      });
     } finally {
       dialogState.value.show = false;
     }
   };
   const removeSubstitution = async (substitution_id: number) => {
     return gameAPI.removeSubstitution(game.value.id, substitution_id).finally(() => {
-      useToast().toast('success', 'Sustitución eliminada correctamente', 'La sustitución se ha eliminado con éxito');
+      useToast().toast({
+        type: 'success',
+        msg: 'Sustitución eliminada correctamente',
+        description: 'La sustitución se ha eliminado con éxito',
+      });
     });
   };
   const removeCardEvent = async (gameEventId: number) => {
     return await gameAPI.removeCardEvent(game.value.id, gameEventId).finally(() => {
-      useToast().toast('success', 'Tarjeta eliminada correctamente', 'La tarjeta se ha eliminado con éxito');
+      useToast().toast({
+        type: 'success',
+        msg: 'Tarjeta eliminada correctamente',
+        description: 'La tarjeta se ha eliminado con éxito',
+      });
     });
   };
   const removeGoalEvent = async (gameEventId: number) => {
     return await gameAPI.removeGoalEvent(game.value.id, gameEventId).finally(() => {
-      useToast().toast('success', 'Gol eliminado correctamente', 'El gol se ha eliminado con éxito');
+      useToast().toast({
+        type: 'success',
+        msg: 'Gol eliminado correctamente',
+        description: 'El gol se ha eliminado con éxito',
+      });
     });
   };
   const markAsComplete = async () => {
@@ -273,7 +295,11 @@ export const useGameStore = defineStore('gameStore', () => {
         await getGameDetails();
       })
       .finally(() => {
-        useToast().toast('success', 'Status del partido', 'El partido ha sido marcado completado éxito');
+        useToast().toast({
+          type: 'success',
+          msg: 'Status del partido',
+          description: 'El partido ha sido marcado completado éxito',
+        });
       });
   };
   return {

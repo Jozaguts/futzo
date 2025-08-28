@@ -15,11 +15,11 @@
     const route = useRoute()
     const router = useRouter()
     if (route.query?.code === 'USER_NOT_VERIFIED') {
-      useToast().toast(
-        'error',
-        'Correo No Verificado',
-        'Tu correo electrónico no ha sido verificado. Por favor, revisa tu bandeja de entrada.'
-      )
+      useToast().toast({
+        type: 'error',
+        msg: 'Correo No Verificado',
+        description: 'Tu correo electrónico no ha sido verificado. Por favor, revisa tu bandeja de entrada.',
+      })
       router.replace('/')
     }
   })

@@ -10,6 +10,7 @@ export const useGlobalStore = defineStore('global', () => {
   const rail = ref(false);
   const drawerWidth = ref<number>(0);
   const showFooter = ref(true);
+  const toastDuration = ref(5000);
 
   const drawer = ref(true);
 
@@ -21,5 +22,6 @@ export const useGlobalStore = defineStore('global', () => {
     rail,
     drawerWidth,
     showFooter,
+    toastDuration,
   };
 });

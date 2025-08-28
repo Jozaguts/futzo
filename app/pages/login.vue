@@ -11,7 +11,11 @@
   })
   onMounted(() => {
     if (errorMessage) {
-      toast('info', 'Suscripción activa', errorMessage.value)
+      toast({
+        type: 'info',
+        msg: 'Suscripción activa',
+        description: errorMessage.value,
+      })
     }
     loadingPage.value = false
   })

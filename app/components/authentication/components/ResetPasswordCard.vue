@@ -32,7 +32,11 @@
     })
       .then((response) => {
         if (response.code === 200) {
-          useToast().toast('success', 'Éxito', 'Contraseña restablecida correctamente')
+          useToast().toast({
+            type: 'success',
+            msg: 'Éxito',
+            description: 'Contraseña restablecida correctamente',
+          })
           authStore.resetForgotPasswordState()
 
           useRouter().push({
@@ -42,7 +46,11 @@
         }
       })
       .catch((error) => {
-        useToast().toast('error', 'Error', error?.data?.message ?? 'Error al restablecer la contraseña')
+        useToast().toast({
+          type: 'error',
+          msg: 'Error',
+          description: error?.data?.message ?? 'Error al restablecer la contraseña',
+        })
       })
       .finally(() => (forgotPasswordState.value.isFetching = false))
   })

@@ -128,13 +128,21 @@ export const useLocationStore = defineStore('locationStore', () => {
         locations.value?.splice(0, 0, location);
         await reloadLocations();
         const { toast } = useToast();
-        toast('success', 'Ubicación creada', 'La  nueva ubicación se ha agregado exitosamente.');
+        toast({
+          type: 'success',
+          msg: 'Ubicación creada',
+          description: 'La  nueva ubicación se ha agregado exitosamente.',
+        });
         locationDialog.value = false;
       })
       .catch((error) => {
         const { message } = useApiError(error);
         const { toast } = useToast();
-        toast('error', 'Error al crear la ubicación', message ?? 'Ocurrió un error al intentar crear la ubicación.');
+        toast({
+          type: 'error',
+          msg: 'Error al crear la ubicación',
+          description: message ?? 'Ocurrió un error al intentar crear la ubicación.',
+        });
       });
   }
 
@@ -146,7 +154,11 @@ export const useLocationStore = defineStore('locationStore', () => {
     }).then(async () => {
       await reloadLocations();
       const { toast } = useToast();
-      toast('success', 'Ubicación actualizada', 'La ubicación se ha actualizado exitosamente.');
+      toast({
+        type: 'success',
+        msg: 'Ubicación actualizada',
+        description: 'La ubicación se ha actualizado exitosamente.',
+      });
       locationDialog.value = false;
     });
   }
@@ -158,7 +170,7 @@ export const useLocationStore = defineStore('locationStore', () => {
     }).then(async () => {
       await getLocations();
       const { toast } = useToast();
-      toast('success', 'Ubicación eliminada', 'La ubicación se ha eliminado exitosamente.');
+      toast({ type: 'success', msg: 'Ubicación eliminada', description: 'La ubicación se ha eliminado exitosamente.' });
       locations.value = locations.value?.filter((location) => location.id !== locationToDelete.value.id);
       locationToDelete.value.show = false;
       locationToDelete.value.id = null;

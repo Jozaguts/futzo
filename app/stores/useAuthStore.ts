@@ -40,7 +40,11 @@ export const useAuthStore = defineStore(
       }).then(async () => {
         const { refreshIdentity } = useSanctumAuth();
         await refreshIdentity();
-        toast('success', 'Perfil Actualizado', 'Tu perfil se ha actualizado exitosamente.');
+        toast({
+          type: 'success',
+          msg: 'Perfil Actualizado',
+          description: 'Tu perfil se ha actualizado exitosamente.',
+        });
       });
     };
     const updatePassword = (updateUserPasswordForm: UpdateUserPasswordForm) => {
@@ -53,13 +57,17 @@ export const useAuthStore = defineStore(
         },
       })
         .then(() => {
-          toast('success', 'Contraseña actualizada', 'Tu contraseña se ha actualizado exitosamente.');
+          toast({
+            type: 'success',
+            msg: 'Contraseña actualizada',
+            description: 'Tu contraseña se ha actualizado exitosamente.',
+          });
         })
         .catch((error) => {
           const message =
             error?.data?.message ||
             'No se pudo actualizar la contraseña. Verifica tu información e inténtalo de nuevo.';
-          toast('error', 'Error al Actualizar Contraseña', message);
+          toast({ type: 'error', msg: 'Error al Actualizar Contraseña', description: message });
         });
     };
     const updateImage = async (image: File) => {
@@ -73,12 +81,16 @@ export const useAuthStore = defineStore(
         .then(async () => {
           const { refreshIdentity } = useSanctumAuth();
           await refreshIdentity();
-          toast('success', 'Imagen actualizada', 'Tu imagen se ha actualizado exitosamente.');
+          toast({
+            type: 'success',
+            msg: 'Imagen actualizada',
+            description: 'Tu imagen se ha actualizado exitosamente.',
+          });
         })
         .catch((error) => {
           const message =
             error?.data?.message || 'No se pudo actualizar tu imagen. Verifica tu información e inténtalo de nuevo.';
-          toast('error', 'Error al actualizar tu imagen', message);
+          toast({ type: 'error', msg: 'Error al actualizar tu imagen', description: message });
         });
     };
     const reSendCode = async (param: string, type: string) => {
@@ -86,15 +98,20 @@ export const useAuthStore = defineStore(
       const client = useSanctumClient();
       client(`api/v1/verify-code/resend?${type}=${param}`)
         .then(() => {
-          useToast().toast('success', 'Código reenviado', 'Tu código de verificación ha sido reenviado exitosamente.');
+          useToast().toast({
+            type: 'success',
+            msg: 'Código reenviado',
+            description: 'Tu código de verificación ha sido reenviado exitosamente.',
+          });
         })
         .catch((error) => {
-          toast(
-            'error',
-            'Error al reenviar el código',
-            error?.data?.message ??
-              'Ha ocurrido un error al intentar reenviar tu código de verificación. Por favor, intenta nuevamente más tarde.'
-          );
+          toast({
+            type: 'error',
+            msg: 'Error al reenviar el código',
+            description:
+              error?.data?.message ??
+              'Ha ocurrido un error al intentar reenviar tu código de verificación. Por favor, intenta nuevamente más tarde.',
+          });
         })
         .finally(() => (resendingVerificationCode.value = false));
     };

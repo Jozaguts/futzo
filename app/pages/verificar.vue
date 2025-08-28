@@ -35,7 +35,11 @@
       credentials: 'include',
     })
       .then(() => {
-        toast('success', 'Cuenta Verificada', 'Tu cuenta ha sido verificado exitosamente.')
+        toast({
+          type: 'success',
+          msg: 'Cuenta Verificada',
+          description: 'Tu cuenta ha sido verificado exitosamente.',
+        })
         currentComponent.value = 'VerifiedCard'
         refreshIdentity()
       })
@@ -43,12 +47,20 @@
         const errorMessage =
           error?.data?.message ?? 'La verificación de tu cuenta ha fallado. Por favor, vuelve a intentarlo.'
         if (error.response.status === 401) {
-          toast('info', 'Redirigiendo...', 'Por favor, espera mientras te llevamos a la siguiente página.')
+          toast({
+            type: 'info',
+            msg: 'Redirigiendo...',
+            description: 'Por favor, espera mientras te llevamos a la siguiente página.',
+          })
           setTimeoutId = setTimeout(() => {
             useRouter().push({ name: 'login', params: { username: param.value.value as string } })
           }, 3000)
         } else {
-          toast('error', 'Cuenta No Verificada', errorMessage)
+          toast({
+            type: 'error',
+            msg: 'Cuenta No Verificada',
+            description: errorMessage,
+          })
         }
       })
       .finally(() => {

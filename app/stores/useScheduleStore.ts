@@ -276,7 +276,11 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     return tournamentAPI
       .exportTournamentRoundScheduleAs(type, tournamentStore.tournamentId as number, round)
       .then(() => {
-        useToast().toast('success', 'Calendario', 'El rol de juegos se ha generado correctamente');
+        useToast().toast({
+          type: 'success',
+          msg: 'Calendario',
+          description: 'El rol de juegos se ha generado correctamente',
+        });
       })
       .finally(() => {
         isExporting.value = false;
