@@ -6,6 +6,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const token = to.query.token as string;
     try {
       const client = useSanctumClient();
+      await client('/sanctum/csrf-cookie');
       await client('/api/v1/public/post-checkout-login', {
         method: 'POST',
         body: { token },

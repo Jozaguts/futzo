@@ -1,31 +1,31 @@
 <script setup lang="ts">
-  import { POST_CHECKOUT_LOGIN_SUCCESS_STATUS_CODE } from '~/utils/constants'
+  import { POST_CHECKOUT_LOGIN_ERROR_STATUS_CODE, POST_CHECKOUT_LOGIN_SUCCESS_STATUS_CODE } from '~/utils/constants'
   import { useToast } from '~/composables/useToast'
   const { toast } = useToast()
   const leagueName = ref('')
   const { user } = useSanctumAuth()
   const isHydrated = ref(true)
-
+  const status_code = Number(useRoute().query?.status as string)
   onMounted(async () => {
     if (user.value?.has_league) {
       await useRouter().push({ name: 'index' })
       return
     }
-    if (Number(useRoute().query.success as string) === POST_CHECKOUT_LOGIN_SUCCESS_STATUS_CODE) {
+    if (status_code === POST_CHECKOUT_LOGIN_SUCCESS_STATUS_CODE) {
       isHydrated.value = false
       return
     }
-
-    isHydrated.value = true
-
     await nextTick()
-    useGlobalStore().toastId = toast({
-      type: 'error',
-      msg: 'Tu enlace ha caducado.',
-      description: 'Inicia sesión para comenzar a crear tu liga.',
-      action: 'login',
-      duration: 1000 * 60,
-    })
+    if (status_code === POST_CHECKOUT_LOGIN_ERROR_STATUS_CODE) {
+      isHydrated.value = true
+      useGlobalStore().toastId = toast({
+        type: 'error',
+        msg: 'Tu enlace ha caducado.',
+        description: 'Inicia sesión para comenzar a crear tu liga.',
+        action: 'login',
+        duration: 1000 * 60,
+      })
+    }
   })
 </script>
 <template>
