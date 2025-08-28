@@ -4,7 +4,7 @@
   const counterId = ref()
   const subtitle = computed(() => {
     return forgotPasswordState.value.isPhone
-      ? `Enviamos un código via <br/> <b>Whatsapp</b> al número: ${forgotPasswordState.value.areaCode}${forgotPasswordState.value.username}`
+      ? `Enviamos un código via <br/> <b>SMS</b> al número: ${forgotPasswordState.value.areaCode}${forgotPasswordState.value.username}`
       : `Enviamos un código via Correo electrónico ${forgotPasswordState.value.username}`
   })
   const verifyCode = () => {
@@ -32,7 +32,9 @@
       })
       .finally(() => (forgotPasswordState.value.isFetching = false))
   }
-  const resendCode = () => {}
+  const resendCode = () => {
+    // todo
+  }
   const initCounter = () => {
     counterId.value = setInterval(() => {
       if (counter.value > 0) {
@@ -84,7 +86,6 @@
         </div>
       </div>
       <div class="d-flex justify-center align-center my-5 cursor-pointer" @click="$router.push('/login')">
-        <Icon name="futzo-icon:arrow-left" class="arrow-left mx-1"></Icon>
         <v-btn class="my-2" variant="text" color="secondary" prepend-icon="mdi-arrow-left" @click="$router.go(0)"
           >Regresar al login.</v-btn
         >
