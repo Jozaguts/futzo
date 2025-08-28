@@ -13,6 +13,13 @@
   const actionName = computed(() => {
     return action === 'login' ? 'Iniciar sesión' : null
   })
+  const clickHandler = () => {
+    if (action === 'login') {
+      const { $toast } = useNuxtApp()
+      $toast.dismiss(useGlobalStore().toastId)
+      useRouter().push({ name: 'login' })
+    }
+  }
 </script>
 
 <template>
@@ -24,7 +31,15 @@
     </button>
     <p class="headlessDescription">
       <span>{{ description }}</span>
-      <v-btn class="mr-auto" size="small" density="comfortable" v-if="actionName" to="login">{{ actionName }}</v-btn>
+      <v-btn
+        class="mr-auto"
+        size="small"
+        variant="outlined"
+        density="comfortable"
+        v-if="actionName"
+        @click="clickHandler"
+        >{{ actionName }}</v-btn
+      >
     </p>
   </div>
 </template>
