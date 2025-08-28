@@ -70,7 +70,7 @@
       <v-card
         :key="1"
         v-if="!showForgotPassword"
-        class="pa-2 pb-5 futzo-rounded"
+        class="futzo-rounded login-card"
         max-width="448"
         min-height="80%"
         elevation="0"
