@@ -14,7 +14,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
         return navigateTo(`/torneos/${slug}/inscripcion-cerrada`);
       }
     } catch (error) {
-      console.error('Error checking team registration', error);
+      console.error('Error checking team registration');
       return navigateTo(`/torneos/${slug}/inscripcion-cerrada?status=error`);
     }
   }

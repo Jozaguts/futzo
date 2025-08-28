@@ -8,6 +8,9 @@ import { specialCharacters, phoneRegex } from '~/utils/constants';
 export default function useAuth() {
   const isPhone = ref(false);
   const { handleSubmit, defineField, errors, meta, resetForm } = useForm({
+    initialValues: {
+      isSignUp: true,
+    },
     validationSchema: toTypedSchema(
       object({
         isSignUp: boolean().nullable().default(true),
@@ -51,6 +54,7 @@ export default function useAuth() {
 
   async function signIn(form: Partial<AuthForm>) {
     errorMessage.value = '';
+    isLoading.value = true;
     const { login } = useSanctumAuth();
     await login({ ...form })
       .then(async () => {
@@ -59,7 +63,8 @@ export default function useAuth() {
       .catch((error: FetchError) => {
         const { message } = useApiError(error);
         errorMessage.value = message;
-      });
+      })
+      .finally(() => (isLoading.value = false));
   }
 
   async function signUp(form: Partial<AuthForm>) {
@@ -75,11 +80,12 @@ export default function useAuth() {
     isLoading.value = true;
     signUp(form)
       .then(async () => {
-        useToast().toast(
-          'info',
-          'Verificación de Cuenta',
-          'Por favor, revisa tu correo y sigue las instrucciones para completar la verificación de tu cuenta.'
-        );
+        useToast().toast({
+          type: 'info',
+          msg: 'Verificación de Cuenta',
+          description:
+            'Por favor, revisa tu correo y sigue las instrucciones para completar la verificación de tu cuenta.',
+        });
         const url = isPhone.value
           ? `/verificar?phone=${encodeURIComponent(`${areaCode.value}${username.value}`)}`
           : `/verificar?email=${username.value}`;
