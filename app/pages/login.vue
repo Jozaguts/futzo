@@ -10,7 +10,7 @@
     },
   })
   onMounted(() => {
-    if (errorMessage) {
+    if (errorMessage.value) {
       toast({
         type: 'info',
         msg: 'Suscripción activa',

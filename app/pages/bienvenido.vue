@@ -1,7 +1,6 @@
 <script lang="ts" setup>
   import CreateLeague from '~/components/pages/bienvenido/cards/create-league.vue'
   import CreatedLeague from '~/components/pages/bienvenido/cards/created-league.vue'
-  import { Toaster } from 'vue-sonner'
 
   definePageMeta({
     layout: 'blank',

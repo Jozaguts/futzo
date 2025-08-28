@@ -50,11 +50,11 @@ export const usePlayerStore = defineStore('playerStore', () => {
       player.value = response.data;
     } catch (error) {
       console.error(error);
-      toast(
-        'error',
-        'Error al obtener el jugadores',
-        error?.data?.message ?? 'No se pudo obtener la información del jugadores. Inténtalo de nuevo.'
-      );
+      toast({
+        type: 'error',
+        msg: 'Error al obtener el jugadores',
+        description: error?.data?.message ?? 'No se pudo obtener la información del jugadores. Inténtalo de nuevo.',
+      });
     } finally {
     }
   };
@@ -65,7 +65,11 @@ export const usePlayerStore = defineStore('playerStore', () => {
       const blob = await client<Promise<Blob>>('/api/v1/admin/players/template');
       parseBlobResponse(blob, 'plantilla de jugadores', 'excel');
     } catch (error) {
-      toast('error', 'Error al descargar la plantilla', 'No se pudo descargar la plantilla. Inténtalo de nuevo.');
+      toast({
+        type: 'error',
+        msg: 'Error al descargar la plantilla',
+        description: 'No se pudo descargar la plantilla. Inténtalo de nuevo.',
+      });
     } finally {
       loading.value = false;
     }
@@ -85,20 +89,23 @@ export const usePlayerStore = defineStore('playerStore', () => {
       body: form,
     })
       .then(async () => {
-        toast('success', 'Jugador creado', 'El nuevo jugadores se ha agregado exitosamente.');
+        toast({
+          type: 'success',
+          msg: 'Jugador creado',
+          description: 'El nuevo jugadores se ha agregado exitosamente.',
+        });
         dialog.value = false;
         if (!isPreRegister) {
           await getPlayers();
         }
       })
       .catch((error) => {
-        console.log({ error });
-        console.error(error.data?.errors);
-        toast(
-          'error',
-          'Error al crear al jugadores',
-          error.data?.message ?? 'No se pudo crear al jugadores. Verifica tu información e inténtalo de nuevo.'
-        );
+        toast({
+          type: 'error',
+          msg: 'Error al crear al jugadores',
+          description:
+            error.data?.message ?? 'No se pudo crear al jugadores. Verifica tu información e inténtalo de nuevo.',
+        });
       });
   };
   const getPlayers = async (search?: string) => {
@@ -127,17 +134,22 @@ export const usePlayerStore = defineStore('playerStore', () => {
       body: formData,
     })
       .then(async () => {
-        toast('success', 'Jugadores importados', 'Los jugadores han sido importados y registrados exitosamente.');
+        toast({
+          type: 'success',
+          msg: 'Jugadores importados',
+          description: 'Los jugadores han sido importados y registrados exitosamente.',
+        });
         importModal.value = false;
         await getPlayers();
       })
       .catch((error) => {
         console.error(error.data?.errors);
-        toast(
-          'error',
-          'Error importar',
-          error.data?.message ?? 'No se pudo importar el documento. Verifica su información e inténtalo de nuevo.'
-        );
+        toast({
+          type: 'error',
+          msg: 'Error importar',
+          description:
+            error.data?.message ?? 'No se pudo importar el documento. Verifica su información e inténtalo de nuevo.',
+        });
       })
       .finally(() => (isImporting.value = false));
   };

@@ -113,17 +113,21 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     })
       .then(async (response) => {
         await loadTournaments();
-        useToast().toast('success', 'Torneo Creado', 'El nuevo torneo se ha creado exitosamente.');
+        useToast().toast({
+          type: 'success',
+          msg: 'Torneo Creado',
+          description: 'El nuevo torneo se ha creado exitosamente.',
+        });
         dialog.value = false;
         $reset();
         return response;
       })
       .catch(() => {
-        useToast().toast(
-          'error',
-          'Error al Crear Torneo',
-          'No se pudo crear el torneo. Por favor, intenta nuevamente.'
-        );
+        useToast().toast({
+          type: 'error',
+          msg: 'Error al Crear Torneo',
+          description: 'No se pudo crear el torneo. Por favor, intenta nuevamente.',
+        });
       });
   }
 
@@ -182,7 +186,11 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
       method: 'POST',
       body: tournamentLocationStoreRequest.value,
     }).then(async () => {
-      useToast().toast('success', 'Ubicación del torneo', 'La Ubicación del torneo ha sido agregada correctamente.');
+      useToast().toast({
+        type: 'success',
+        msg: 'Ubicación del torneo',
+        description: 'La Ubicación del torneo ha sido agregada correctamente.',
+      });
       await getTournamentLocations();
     });
   };
