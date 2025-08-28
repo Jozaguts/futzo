@@ -1,14 +1,53 @@
 <script setup lang="ts">
+  import { POST_CHECKOUT_LOGIN_SUCCESS_STATUS_CODE } from '~/utils/constants'
+  import { useToast } from '~/composables/useToast'
+  const { toast } = useToast()
   const leagueName = ref('')
   const { user } = useSanctumAuth()
-  onMounted(() => {
+  const isHydrated = ref(true)
+
+  onMounted(async () => {
     if (user.value?.has_league) {
-      useRouter().push({ name: 'index' })
+      await useRouter().push({ name: 'index' })
+      return
     }
+    if (Number(useRoute().query.success as string) === POST_CHECKOUT_LOGIN_SUCCESS_STATUS_CODE) {
+      isHydrated.value = false
+      return
+    }
+
+    isHydrated.value = true
+
+    await nextTick()
+    useGlobalStore().toastId = toast({
+      type: 'error',
+      msg: 'Tu enlace ha caducado.',
+      description: 'Inicia sesión para comenzar a crear tu liga.',
+      action: 'login',
+      duration: 1000 * 60,
+    })
   })
 </script>
 <template>
-  <v-card class="welcome-card">
+  <div
+    v-if="isHydrated"
+    style="
+      max-height: 400px;
+      max-width: 540px;
+      width: 100%;
+      height: 100%;
+      padding: 40px;
+      border-radius: 24px;
+      background-color: white;
+    "
+  >
+    <v-skeleton-loader width="56" height="56" type="avatar" style="margin: 0 auto" />
+    <v-skeleton-loader width="100%" type="heading" style="margin: 0 auto 40px auto" />
+    <v-skeleton-loader width="200px" type="text" />
+    <v-skeleton-loader width="100%" type="heading" style="margin: 0 auto" />
+    <v-skeleton-loader type="button" style="margin: 0 auto" />
+  </div>
+  <v-card v-else class="welcome-card">
     <v-card-item class="d-flex align-center justify-center pt-0">
       <v-card-title class="d-flex justify-center">
         <div class="icon-container">
