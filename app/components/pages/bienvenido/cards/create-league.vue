@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { POST_CHECKOUT_LOGIN_ERROR_STATUS_CODE, POST_CHECKOUT_LOGIN_SUCCESS_STATUS_CODE } from '~/utils/constants'
-import { useToast } from '~/composables/useToast'
+  import { POST_CHECKOUT_LOGIN_ERROR_STATUS_CODE, POST_CHECKOUT_LOGIN_SUCCESS_STATUS_CODE } from '~/utils/constants'
+  import { useToast } from '~/composables/useToast'
 
-const { toast } = useToast()
+  const { toast } = useToast()
   const leagueName = ref('')
   const { user } = useSanctumAuth()
   const isHydrated = ref(true)
