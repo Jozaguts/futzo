@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-  import SearchCountry from '~/components/authentication/components/SearchCountry.vue'
-  import { object, string } from 'yup'
-  import { useForm } from 'vee-validate'
-  import { phoneRegex } from '~/utils/constants'
+import SearchCountry from '~/components/authentication/components/SearchCountry.vue'
+import { object, string } from 'yup'
+import { useForm } from 'vee-validate'
+import { phoneRegex } from '~/utils/constants'
+import { sendVerificationCode } from '~/http/api/auth'
 
-  const { forgotPasswordState } = storeToRefs(useAuthStore())
+const { forgotPasswordState } = storeToRefs(useAuthStore())
   const emits = defineEmits(['backToLogin'])
 
   const { handleSubmit, defineField, errors, meta } = useForm({
@@ -34,17 +35,13 @@
     forgotPasswordState.value.areaCode = code
   }
   const isValid = computed(() => meta.value.valid)
-  const resetHandler = handleSubmit(() => {
+  const resetHandler = handleSubmit(async () => {
     forgotPasswordState.value.isFetching = true
-    const client = useSanctumClient()
-    client('/forgot-password', {
-      method: 'POST',
-      body: {
-        [forgotPasswordState.value.isPhone ? 'phone' : 'email']: forgotPasswordState.value.isPhone
-          ? `${forgotPasswordState.value.areaCode}${username.value}`
-          : username.value,
-      },
-    })
+    await sendVerificationCode(
+      username.value as string,
+      forgotPasswordState.value.areaCode,
+      forgotPasswordState.value.isPhone ? 'phone' : 'email'
+    )
       .then((response) => {
         if (response.code === 200) {
           forgotPasswordState.value.isPhone
@@ -66,7 +63,7 @@
   <div>
     <v-card-item class="justify-center text-center mb-2">
       <Logo width="165" class="mx-auto" />
-      <v-card-title class="text-black text-h5">Olvidaste tu contraseña?</v-card-title>
+      <v-card-title class="text-black text-h5">¿Olvidaste tu contraseña?</v-card-title>
       <v-card-subtitle>No te preocupes, te enviaremos instrucciones para restablecerla</v-card-subtitle>
     </v-card-item>
     <v-card-text class="d-flex flex-column">

@@ -5,7 +5,7 @@
   const resendCode = () => {
     forgotPasswordState.value.isFetching = true
     const client = useSanctumClient()
-    client('/forgot-password', {
+    client('/verification-code/send', {
       method: 'POST',
       body: {
         [forgotPasswordState.value.isPhone ? 'phone' : 'email']: forgotPasswordState.value.isPhone
