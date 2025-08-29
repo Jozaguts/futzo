@@ -1,14 +1,10 @@
 <script lang="ts" setup>
   import Breadcrumbs from '~/components/breadcrumbs.vue'
   import { useDisplay } from 'vuetify/framework'
+  import { boolean } from 'yup'
 
   const { mobile } = useDisplay()
-  const pros = defineProps({
-    extended: {
-      type: Boolean,
-      default: false,
-    },
-  })
+  const { extended = true } = defineProps<{ extended: boolean }>()
 </script>
 <template>
   <v-app-bar
@@ -17,8 +13,8 @@
     elevation="0"
     app
     height="90"
-    :extension-height="mobile && pros.extended ? 55 : 0"
-    :extended="pros.extended"
+    :extension-height="mobile && extended ? 55 : 0"
+    :extended="extended"
   >
     <template #title>
       <breadcrumbs />
