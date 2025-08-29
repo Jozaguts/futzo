@@ -3,7 +3,7 @@
   import { useDisplay } from 'vuetify/framework'
 
   const { mobile } = useDisplay()
-  const { extended = true } = defineProps<{ extended: boolean }>()
+  const { extended = true } = defineProps<{ extended?: boolean }>()
 </script>
 <template>
   <v-app-bar
