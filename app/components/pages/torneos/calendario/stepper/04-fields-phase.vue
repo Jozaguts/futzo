@@ -68,36 +68,46 @@
   <v-container>
     <v-row>
       <v-col>
-        <v-stepper-vertical
-          class="pa-0 ma-0"
-          flat
-          v-model="currentStep"
-          item-value="step"
-          item-title="location_name"
-          item-subtitle="field_name"
-        >
-          <v-stepper-vertical-item
-            v-for="(field, index) in fields"
-            :key="index + 1"
-            :value="field.step"
-            :title="field.location_name"
-            :subtitle="field.field_name"
-            complete-icon="mdi-check-circle"
-            edit-icon="mdi-check-circle"
-            expand-icon="mdi-chevron-down"
-          >
-            <LocationFormStep
-              :field="field"
-              :isLastStep="fields.length === currentStep - 1"
-              @next="nextHandler"
-              @back="backHandler"
-              @field-disabled="fieldDisableHandler"
-            ></LocationFormStep>
-            <template #actions
-              ><small class="text-caption">* Marcar como completado para avanzar/finalizar</small></template
+        <v-stepper editable class="pa-0 ma-0" v-model="currentStep">
+          <v-stepper-header>
+            <v-stepper-item
+              v-for="(field, index) in fields"
+              :key="index + 1"
+              :value="field.step"
+              complete-icon="mdi-check-circle"
             >
-          </v-stepper-vertical-item>
-        </v-stepper-vertical>
+              <template #title>
+                {{ field.location_name }}
+              </template>
+              <template #subtitle>
+                {{ field?.field_name }}
+              </template>
+            </v-stepper-item>
+          </v-stepper-header>
+          <v-stepper-window>
+            <v-stepper-window-item
+              v-for="(field, index) in fields"
+              :key="index + 1"
+              :value="field.step"
+              :title="field.location_name"
+              :subtitle="field.field_name"
+              complete-icon="mdi-check-circle"
+              edit-icon="mdi-check-circle"
+              expand-icon="mdi-chevron-down"
+            >
+              <LocationFormStep
+                :field="field"
+                :isLastStep="fields.length === currentStep - 1"
+                @next="nextHandler"
+                @back="backHandler"
+                @field-disabled="fieldDisableHandler"
+              ></LocationFormStep>
+            </v-stepper-window-item>
+          </v-stepper-window>
+          <template #actions>
+            <small class="text-caption pl-8 mb-2 d-inline-block">* Marcar como completado para avanzar/finalizar</small>
+          </template>
+        </v-stepper>
       </v-col>
     </v-row>
   </v-container>

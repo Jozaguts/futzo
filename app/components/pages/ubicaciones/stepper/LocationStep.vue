@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-  import { ref } from 'vue'
   import type { LocationStoreRequest } from '~/models/Location'
   import { array, object, string, number } from 'yup'
   import type { Prediction } from '~/interfaces'
@@ -8,6 +7,7 @@
   import { useForm } from 'vee-validate'
   import { toTypedSchema } from '@vee-validate/yup'
   import { GoogleMap, AdvancedMarker } from 'vue3-google-map'
+  import { useLocale } from 'vuetify/framework'
 
   const { locationStoreRequest, isEdition } = storeToRefs(useLocationStore())
   const { defineField, errors, meta, controlledValues, setFieldError } = useForm<LocationStoreRequest>({
@@ -41,7 +41,6 @@
   const [position] = reactive(defineField('position'))
   let foundedLocations = ref([] as AutocompletePrediction[])
   const { decimalSeparator } = useLocale()
-  console.log(useLocale())
   console.log(decimalSeparator?.value)
   const tag = ref<string>('')
   const tagHandler = () => {

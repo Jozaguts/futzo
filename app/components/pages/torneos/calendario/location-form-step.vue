@@ -55,7 +55,7 @@
     @day-disabled="dayDisabledHandler"
   />
   <v-row>
-    <v-col>
+    <v-col class="mt-2">
       <v-btn
         color="secondary"
         variant="outlined"

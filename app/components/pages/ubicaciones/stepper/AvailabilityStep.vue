@@ -46,21 +46,25 @@
         <v-divider />
       </v-col>
     </v-row>
-    <v-stepper-vertical variant="inset" v-model="currentStep" class="pa-0 ma-0 futzo-vertical-stepper" flat eager>
-      <v-stepper-vertical-item
-        v-for="(form, index) in locationStoreRequest.availability"
-        :value="index + 1"
-        :key="index + 1"
-        :title="form.name"
-        :complete="form.isCompleted"
-        complete-icon="mdi-check-circle"
-        edit-icon="mdi-check-circle"
-        expand-icon="mdi-chevron-down"
-      >
-        <AvailabilityFormStep :step="index + 1" :init-form="form" @step-completed="markStepAsCompletedHandler" />
-        <template #actions></template>
-      </v-stepper-vertical-item>
-    </v-stepper-vertical>
+    <v-stepper editable v-model="currentStep" class="pa-0 ma-0 futzo-vertical-stepper">
+      <v-stepper-header>
+        <v-stepper-item
+          v-for="form in locationStoreRequest.availability"
+          :value="form?.id"
+          :complete="form?.isCompleted"
+          complete-icon="mdi-check-circle"
+        >
+          {{ form.name }}
+        </v-stepper-item>
+      </v-stepper-header>
+      <v-stepper-window>
+        <v-stepper-window-item v-for="form in locationStoreRequest.availability" :value="form?.id" :key="form?.id">
+          <div class="pa-1">
+            <AvailabilityFormStep :step="form?.id" :init-form="form" @step-completed="markStepAsCompletedHandler" />
+          </div>
+        </v-stepper-window-item>
+      </v-stepper-window>
+    </v-stepper>
   </v-container>
 </template>
 <style>
