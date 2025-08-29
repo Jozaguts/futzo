@@ -37,7 +37,6 @@
 <style>
   .v-main {
     padding-left: v-bind(paddingLeft);
-    padding-bottom: 64px;
     position: relative;
   }
 
