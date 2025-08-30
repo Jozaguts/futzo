@@ -1,42 +1,143 @@
-# Nuxt 3 Minimal Starter
+# Futzo
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Plataforma para gestionar partidos de fútbol, equipos y torneos, construida con Nuxt 4, Vue 3 y Vuetify.
 
-## Setup
+## Tecnologías
 
-Make sure to install the dependencies:
+- Nuxt 4 (SSR) y Vue 3
+- Vuetify 3 (UI)
+- Pinia + pinia-plugin-persistedstate
+- Autenticación con `nuxt-auth-sanctum`
+- i18n (`@nuxtjs/i18n`)
+- Google Maps (`vue3-google-map`)
+- Formularios y validación: `@vee-validate/nuxt`, `yup`
+- Utilidades: `@vueuse/nuxt`, `@nuxt/image`, `@nuxt/icon`, `nuxt-svgo`, `vue-sonner`
+
+## Requisitos
+
+- Node.js 18+
+- Yarn 1.x o npm
+- Opcional: PM2 (para producción), Docker
+
+## Configuración inicial
+
+1) Instalar dependencias
 
 ```bash
-# yarn
 yarn install
-
-# npm
+# o
 npm install
-
-# pnpm
-pnpm install
 ```
 
-## Development Server
+2) Variables de entorno
 
-Start the development server on http://localhost:3000
+Copia `.env.example` a `.env` y completa los valores necesarios:
+
+```env
+NUXT_PUBLIC_URL_BACKEND=           # URL del backend (Laravel)
+NUXT_PUBLIC_BACKEND_PREFIX=api/v1  # Prefijo API del backend
+NUXT_PUBLIC_APP_NAME=Futzo         # Nombre de la app (meta)
+NUXT_GOOGLE_MAPS_API_KEY=          # API key de Google Maps
+NUXT_GOOGLE_MAP_ID=                # Map ID (opcional)
+NUXT_HOST=0.0.0.0                  # Host de arranque
+```
+
+Para compilaciones de producción, usa `.env.prod` (ver sección de build).
+
+## Desarrollo
+
+Levanta el servidor en `http://localhost:3000`:
 
 ```bash
+yarn dev
+# o
 npm run dev
 ```
 
-## Production
+## Scripts disponibles
 
-Build the application for production:
+- `dev`: inicia el entorno de desarrollo
+- `build`: compila la app para producción usando `.env.prod`
+- `build:test`: compila usando `.env`
+- `preview`: previsualiza la build localmente
+- `generate`: genera salida estática (si aplica)
+
+## Build y producción (SSR)
+
+1) Compilar
 
 ```bash
+# usa .env.prod automáticamente
+yarn build
+# o
 npm run build
 ```
 
-Locally preview production build:
+2) Previsualizar la build
 
 ```bash
+yarn preview
+# o
 npm run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+3) Ejecutar en producción
+
+- Sin PM2:
+
+```bash
+node .output/server/index.mjs
+```
+
+- Con PM2 (recomendado):
+
+```bash
+pm2 start ecosystem.config.cjs
+pm2 status
+```
+
+El archivo `ecosystem.config.cjs` lanza `.output/server/index.mjs` en el puerto `3000`.
+
+## Despliegue con script
+
+El script `deploy.sh` realiza el build, copia `ecosystem.config.cjs` a `.output/` y hace push forzado del contenido de `.output/` al branch `web` del repositorio. Requiere `GITHUB_TOKEN` configurado y un archivo `.env.prod` válido.
+
+```bash
+export GITHUB_TOKEN=xxxx
+./deploy.sh
+```
+
+Nota: Este flujo asume una infraestructura que consuma el branch `web`. Ajusta según tu proveedor.
+
+## Docker (desarrollo)
+
+El `Dockerfile` actual ejecuta el modo desarrollo:
+
+```bash
+docker build -t futzo .
+docker run --env-file .env -p 3000:3000 futzo
+```
+
+Para producción, considera una build multi-stage que ejecute `.output/server/index.mjs`.
+
+## Notas y consejos
+
+- Google Fonts: la integración `@nuxtjs/google-fonts` necesita red durante el build. En ambientes sin acceso, desactiva el módulo o provee las fuentes localmente.
+- Íconos personalizados: ver `app/assets/icons` y la configuración de `@nuxt/icon` en `nuxt.config.ts`.
+
+## Estructura breve
+
+- `app/` Componentes, layouts y assets de la app
+- `server/` (si aplica) endpoints y middleware
+- `public/` assets públicos
+- `.output/` resultado de la build (se genera tras compilar)
+
+## Contribución
+
+1) Crea una rama desde `main`
+2) Haz cambios y valida localmente
+3) Abre un Pull Request con contexto y capturas si aplica
+
+## Licencia
+
+UNLICENSED
