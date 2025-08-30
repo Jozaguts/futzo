@@ -30,6 +30,7 @@
             <slot></slot>
           </v-main>
         </ClientOnly>
+        <AnimatedGradiendButton />
       </v-app>
     </v-layout>
   </div>
