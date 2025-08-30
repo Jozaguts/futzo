@@ -31,6 +31,52 @@
       flex: 1 1 100%;
     }
   }
+  .main {
+    padding: 16px;
+  }
+
+  .dashboard-container {
+    grid-template-rows: auto auto auto;
+    height: auto;
+    gap: 12px;
+  }
+
+  .dashboard-cards-container {
+    place-self: start stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .card-1, .card-2, .card-3 {
+    width: 100%;
+    flex: 0 0 auto;
+    min-width: 0;
+  }
+
+  .dashboard-stats-card {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .table {
+    padding: 0.5rem;
+    min-height: 0;
+  overflow: hidden;
+  }
+
+  .table-wrapper {
+    padding: 0.5rem;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .next-games {
+    overflow: visible;
+  }
 }
 .dashboard-stats-card {
   min-width: 320px;
@@ -245,48 +291,59 @@
 
 .dashboard-container {
   display: grid;
-  grid-template-columns: repeat(6, auto);
-  grid-template-rows: repeat(6, auto);
   gap: 1em 1em;
   grid-template-areas:
-    "card-1 card-1 card-2 card-2 card-3 card-3"
-    "card-1 card-1 card-2 card-2 card-3 card-3"
-    "table table table table table table"
-    "table table table table table table"
-    "table table table table table table"
-    "table table table table table table"
-    "next-games next-games next-games next-games next-games next-games";
+    "cards-container"
+    "table"
+    "next-games";
+  grid-template-rows: auto minmax(0, 4fr) minmax(0, 3fr);
+  grid-template-columns: 1fr;
+  height: calc(100dvh - var(--header-height) - 80px); /* 80px = padding top+bottom de .main */
+  min-height: 0; /* evita overflow por encogimiento */
 }
-.card-1 {
-  grid-area: card-1;
-  margin-bottom: 1rem;
+.dashboard-cards-container  {
+  grid-area: cards-container;
+  display: flex;
+  gap: 1rem;
+  min-height: 0;
+  overflow: hidden;
+
 }
-.card-2 {
-  grid-area: card-2;
-  margin-bottom: 1rem;
-}
-.card-3 {
-  grid-area: card-3;
-  margin-bottom: 1rem;
+.card-1, .card-2,.card-3 {
+  flex: 1 1 33.33%;
+  min-width: 0;
 }
 .table {
   grid-area: table;
-  background-color: white;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
   padding: 0 1rem;
   border-radius: 12px;
   border-width: 1px;
+  min-height: 0;  /* clave para que el hijo pueda scrollear */
+  overflow: hidden;
 }
 .table-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto; /* scroll interno de la tabla */
   padding: 1rem .5rem;
+  display: flex;
+    flex-direction: column;
 }
 .next-games {
   grid-area: next-games;
+  min-height: 0;
+  overflow: auto;
 }
 .next-game-wrapper{
   background-color: white;
   padding: 1rem;
   border-radius: 12px;
   border-width: 1px;
+  display: flex;
+  flex-direction: column;
 }
 div.dashboard-game-container:first-child {
    background: red;

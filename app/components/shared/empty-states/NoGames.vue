@@ -2,7 +2,7 @@
 <template>
   <v-empty-state
     image="/no-data.svg"
-    size="100"
+    size="80"
     text="No hay partidos programados"
     title="Próximos partidos"
   ></v-empty-state>

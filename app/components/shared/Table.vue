@@ -93,6 +93,8 @@
     :show-select="selectable"
     :cell-props="{ class: 'text-capitalize' }"
     height="100%"
+    fixed-header
+    sticky
   >
     <!--    header-->
     <template v-slot:header.data-table-select="{ allSelected, selectAll, someSelected }">

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import { useResizeObserver } from '@vueuse/core'
   import { useDisplay } from 'vuetify/framework'
+  import { Icon } from '#components'
 
   const { drawer, drawerWidth, isMobile, rail } = storeToRefs(useGlobalStore())
   const drawerRef = ref()
@@ -72,102 +73,122 @@
     @click="rail = false"
     app
   >
-    <v-list-item nav ref="drawerRef">
-      <Logo />
-      <template #prepend>
-        <v-btn v-if="rail" variant="text" icon="mdi-menu" @click.stop="rail = !rail"></v-btn>
-      </template>
-      <template #append>
-        <v-btn icon="mdi-chevron-left" variant="text" @click.stop="rail = !rail"></v-btn>
-      </template>
-    </v-list-item>
-
-    <v-list density="compact" nav>
-      <v-list-item
-        density="compact"
-        v-for="link in links"
-        :key="link.title"
-        link
-        :to="link.to"
-        :disabled="disabled && link.title !== 'Dashboard' && link.title !== 'Ubicaciones'"
-        :title="link.title"
-      >
-        <template #prepend="{ isActive }">
-          <Icon :name="link.icon" :class="link.class" mode="svg" />
+    <template #prepend>
+      <v-list-item nav ref="drawerRef">
+        <Logo />
+        <template #prepend>
+          <v-btn v-if="rail" variant="text" icon="mdi-menu" @click.stop="rail = !rail"></v-btn>
+        </template>
+        <template #append>
+          <v-btn icon="mdi-chevron-left" variant="text" @click.stop="rail = !rail"></v-btn>
         </template>
       </v-list-item>
-      <div class="ma-2 mt-md-16 mt-lg-16 mt-4" v-auto-animate="{ duration: 100 }" v-if="!rail">
-        <p v-if="disabled" class="text-caption font-weight-bold">Crea tu primera ubicación</p>
-        <p v-if="disabled" class="text-caption font-weight-bold">
-          Comienza registrando una sede y su campo/s desde el módulo “Ubicaciones”.
-        </p>
+    </template>
+    <template #default class="test">
+      <div class="content-container">
+        <v-list density="compact" nav height="auto">
+          <v-list-item
+            density="compact"
+            v-for="link in links"
+            :key="link.title"
+            link
+            :to="link.to"
+            :disabled="disabled && link.title !== 'Dashboard' && link.title !== 'Ubicaciones'"
+            :title="link.title"
+            :prepend-icon="() => h(Icon, { name: link.icon, class: link.class, mode: 'svg' })"
+          >
+          </v-list-item>
+          <div class="ma-2" v-auto-animate="{ duration: 100 }" v-if="!rail">
+            <p v-if="disabled" class="text-caption font-weight-bold">Crea tu primera ubicación</p>
+            <p v-if="disabled" class="text-caption font-weight-bold">
+              Comienza registrando una sede y su campo/s desde el módulo “Ubicaciones”.
+            </p>
+          </div>
+        </v-list>
+        <v-divider></v-divider>
+        <div class="d-flex pa-4 align-center" style="height: inherit">
+          <p>
+            aprovechar este espacio para poner un anuncio o algo que invite a usar alguna funcionalidad nueva y tambien
+            colocal el tipo de licencia trial, etc
+          </p>
+        </div>
       </div>
-    </v-list>
-
+    </template>
     <template #append>
-      <div v-if="!rail">
-        <v-list density="compact" nav>
-          <v-list-item
-            density="compact"
-            key="configuration"
-            link
-            to="/configuracion"
-            :disabled="false"
-            title="Configuración"
-          >
+      <div class="">
+        <div v-if="!rail">
+          <v-list density="compact" nav>
+            <v-list-item
+              density="compact"
+              key="configuration"
+              link
+              to="/configuracion"
+              :disabled="false"
+              title="Configuración"
+            >
+              <template #prepend>
+                <Icon name="futzo-icon:settings-01" class="mr-2" />
+              </template>
+            </v-list-item>
+          </v-list>
+          <v-divider></v-divider>
+          <v-card :loading="!user?.name">
+            <v-card-item>
+              <template #prepend>
+                <v-avatar>
+                  <v-img :src="user?.image"></v-img>
+                </v-avatar>
+              </template>
+              <template #title>
+                <small> {{ user?.name }}</small>
+              </template>
+              <template #subtitle> {{ user?.email }}</template>
+              <template v-slot:append>
+                <v-btn @click="logOut" variant="text" size="24">
+                  <template #prepend>
+                    <Icon name="futzo-icon:logout" />
+                  </template>
+                </v-btn>
+              </template>
+            </v-card-item>
+          </v-card>
+        </div>
+        <div v-else class="text-center">
+          <v-list density="compact" nav>
+            <v-list-item
+              density="compact"
+              key="configuration"
+              link
+              to="/configuracion"
+              :disabled="false"
+              title="Configuración"
+            >
+              <template #prepend>
+                <Icon name="futzo-icon:settings-01" class="mr-2" />
+              </template>
+            </v-list-item>
+          </v-list>
+          <v-divider></v-divider>
+          <v-btn @click="logOut" variant="text">
             <template #prepend>
-              <Icon name="futzo-icon:settings-01" class="mr-2" />
+              <Icon name="futzo-icon:logout" class="mr-2" />
             </template>
-          </v-list-item>
-        </v-list>
-        <v-divider></v-divider>
-        <v-card :loading="!user?.name">
-          <v-card-item>
-            <template #prepend>
-              <v-avatar>
-                <v-img :src="user?.image"></v-img>
-              </v-avatar>
-            </template>
-            <template #title>
-              <small> {{ user?.name }}</small>
-            </template>
-            <template #subtitle> {{ user?.email }}</template>
-            <template v-slot:append>
-              <v-btn @click="logOut" variant="text" size="24">
-                <template #prepend>
-                  <Icon name="futzo-icon:logout" />
-                </template>
-              </v-btn>
-            </template>
-          </v-card-item>
-        </v-card>
-      </div>
-      <div v-else class="text-center">
-        <v-list density="compact" nav>
-          <v-list-item
-            density="compact"
-            key="configuration"
-            link
-            to="/configuracion"
-            :disabled="false"
-            title="Configuración"
-          >
-            <template #prepend>
-              <Icon name="futzo-icon:settings-01" class="mr-2" />
-            </template>
-          </v-list-item>
-        </v-list>
-        <v-divider></v-divider>
-        <v-btn @click="logOut" variant="text">
-          <template #prepend>
-            <Icon name="futzo-icon:logout" class="mr-2" />
-          </template>
-        </v-btn>
+          </v-btn>
+        </div>
       </div>
     </template>
   </v-navigation-drawer>
 </template>
 <style>
+  .content-container {
+    display: flex;
+    flex-direction: column;
+    flex: 0 1 auto;
+    height: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
   .v-list-item--active .v-list-item__prepend svg.drawer-icon g path {
     stroke: white !important;
   }

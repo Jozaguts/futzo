@@ -46,26 +46,28 @@
     </template>
     <template #default>
       <div class="dashboard-container">
-        <div class="card-1">
-          <StatsCard
-            title="Equipos totales"
-            :values="teamStats.registeredTeams"
-            :isPositive="teamStats.registeredTeams.current > 0"
-          ></StatsCard>
-        </div>
-        <div class="card-2">
-          <StatsCard
-            title="jugadores activos"
-            :values="teamStats.activePlayers"
-            :isPositive="teamStats.activePlayers.current > 0"
-          ></StatsCard>
-        </div>
-        <div class="card-3">
-          <StatsCard
-            title="juegos finalizados"
-            :values="teamStats.completedGames"
-            :isPositive="teamStats.completedGames.current > 0"
-          ></StatsCard>
+        <div class="dashboard-cards-container">
+          <div class="card-1">
+            <StatsCard
+              title="Equipos totales"
+              :values="teamStats.registeredTeams"
+              :isPositive="teamStats.registeredTeams.current > 0"
+            ></StatsCard>
+          </div>
+          <div class="card-2">
+            <StatsCard
+              title="jugadores activos"
+              :values="teamStats.activePlayers"
+              :isPositive="teamStats.activePlayers.current > 0"
+            ></StatsCard>
+          </div>
+          <div class="card-3">
+            <StatsCard
+              title="juegos finalizados"
+              :values="teamStats.completedGames"
+              :isPositive="teamStats.completedGames.current > 0"
+            ></StatsCard>
+          </div>
         </div>
         <div class="table">
           <div class="table-wrapper">
@@ -96,5 +98,5 @@
   </PageLayout>
 </template>
 <style lang="scss">
-  @use 'assets/scss/pages/dashboard.scss';
+  @use '~/assets/scss/pages/dashboard.scss';
 </style>
