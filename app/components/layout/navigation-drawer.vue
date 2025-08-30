@@ -84,7 +84,7 @@
         </template>
       </v-list-item>
     </template>
-    <template #default class="test">
+    <template #default>
       <div class="content-container">
         <v-list density="compact" nav height="auto">
           <v-list-item
@@ -98,88 +98,111 @@
             :prepend-icon="() => h(Icon, { name: link.icon, class: link.class, mode: 'svg' })"
           >
           </v-list-item>
-          <div class="ma-2" v-auto-animate="{ duration: 100 }" v-if="!rail">
-            <p v-if="disabled" class="text-caption font-weight-bold">Crea tu primera ubicación</p>
-            <p v-if="disabled" class="text-caption font-weight-bold">
-              Comienza registrando una sede y su campo/s desde el módulo “Ubicaciones”.
-            </p>
-          </div>
         </v-list>
-        <v-divider></v-divider>
-        <div class="d-flex pa-4 align-center" style="height: inherit">
-          <p>
-            aprovechar este espacio para poner un anuncio o algo que invite a usar alguna funcionalidad nueva y tambien
-            colocal el tipo de licencia trial, etc
-          </p>
+        <div class="nav-section-title">
+          <div class="title-wrapper">
+            <div class="title-text">Notificaciones</div>
+          </div>
+        </div>
+        <div class="d-flex pa-4 align-center">
+          <v-alert variant="outlined" type="info">tesst</v-alert>
         </div>
       </div>
     </template>
     <template #append>
-      <div class="">
-        <div v-if="!rail">
-          <v-list density="compact" nav>
-            <v-list-item
-              density="compact"
-              key="configuration"
-              link
-              to="/configuracion"
-              :disabled="false"
-              title="Configuración"
-            >
-              <template #prepend>
-                <Icon name="futzo-icon:settings-01" class="mr-2" />
-              </template>
-            </v-list-item>
-          </v-list>
-          <v-divider></v-divider>
-          <v-card :loading="!user?.name">
-            <v-card-item>
-              <template #prepend>
-                <v-avatar>
-                  <v-img :src="user?.image"></v-img>
-                </v-avatar>
-              </template>
-              <template #title>
-                <small> {{ user?.name }}</small>
-              </template>
-              <template #subtitle> {{ user?.email }}</template>
-              <template v-slot:append>
-                <v-btn @click="logOut" variant="text" size="24">
-                  <template #prepend>
-                    <Icon name="futzo-icon:logout" />
-                  </template>
-                </v-btn>
-              </template>
-            </v-card-item>
-          </v-card>
-        </div>
-        <div v-else class="text-center">
-          <v-list density="compact" nav>
-            <v-list-item
-              density="compact"
-              key="configuration"
-              link
-              to="/configuracion"
-              :disabled="false"
-              title="Configuración"
-            >
-              <template #prepend>
-                <Icon name="futzo-icon:settings-01" class="mr-2" />
-              </template>
-            </v-list-item>
-          </v-list>
-          <v-divider></v-divider>
-          <v-btn @click="logOut" variant="text">
-            <template #prepend>
-              <Icon name="futzo-icon:logout" class="mr-2" />
+      <div>
+        <v-list density="compact" nav>
+          <v-list-item
+            nav
+            density="compact"
+            key="configuration"
+            link
+            to="/configuracion"
+            :disabled="false"
+            title="Configuración"
+            :prepend-icon="() => h(Icon, { name: 'futzo-icon:settings-01', class: 'mr-2 config-icon', mode: 'svg' })"
+          >
+          </v-list-item>
+        </v-list>
+        <v-divider />
+        <v-card :loading="!user?.name">
+          <v-card-item class="logout-card-item">
+            <template v-if="!rail" #prepend>
+              <v-avatar>
+                <v-img :src="user?.image"></v-img>
+              </v-avatar>
             </template>
-          </v-btn>
-        </div>
+            <template v-if="!rail" #title>
+              <small> {{ user?.name }}</small>
+            </template>
+            <template v-if="!rail" #subtitle>
+              <span>
+                {{ user?.email }}
+              </span>
+            </template>
+            <template v-slot:append>
+              <v-btn
+                v-tooltip:end="'Cerrar sesión'"
+                @click="logOut"
+                variant="text"
+                size="24"
+                :prepend-icon="() => h(Icon, { name: 'futzo-icon:logout', size: 80 })"
+              ></v-btn>
+            </template>
+          </v-card-item>
+        </v-card>
       </div>
     </template>
   </v-navigation-drawer>
 </template>
 <style>
+  .logout-card-item .v-card-item__append {
+    padding-inline-start: 0 !important;
+  }
+  .v-list-item--active .config-icon path {
+    stroke: white;
+  }
+  .nav-section-title .title-text:after {
+    border-block-end: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+    content: '';
+  }
+  .nav-section-title .title-text:after {
+    flex: 1 1 auto;
+  }
+  .title-text:before {
+    flex: 0 1 0.8125rem;
+    margin-inline-start: -1.4375rem;
+  }
+  .nav-section-title .title-text:before,
+  .nav-section-title .title-text:after {
+    border-block-end: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+    content: '';
+  }
+  .title-text {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    column-gap: 0.625rem;
+    font-size: 0.8125rem;
+    line-height: 1.125rem;
+    text-transform: uppercase;
+  }
+  .nav-section-title:not(:first-child) {
+    margin-block-start: 0;
+    margin-inline: 0 1rem;
+    padding-block: 0.4375rem;
+    padding-inline: 1.4375rem 1rem;
+    white-space: nowrap;
+  }
+  .nav-section-title {
+    margin-block-start: 0.5rem;
+    block-size: 2rem;
+    font-size: 0.8125rem;
+    line-height: 1.125rem;
+    letter-spacing: 0.4px;
+    color: rgba(var(--v-theme-on-surface), var(--v-disabled-opacity));
+  }
   .content-container {
     display: flex;
     flex-direction: column;
