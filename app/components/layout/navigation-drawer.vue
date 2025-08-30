@@ -101,11 +101,18 @@
         </v-list>
         <div class="nav-section-title">
           <div class="title-wrapper">
-            <div class="title-text">Notificaciones</div>
+            <div class="title-text">Primeros pasos 0/4</div>
           </div>
         </div>
-        <div class="d-flex pa-4 align-center">
-          <v-alert variant="outlined" type="info">tesst</v-alert>
+        <div class="d-flex align-center">
+          <v-banner :stacked="true" density="compact">
+            <template #text>
+              <v-list density="compact">
+                <v-list-item append-icon="mdi-checkbox-blank-circle-outline">Crea tu primer ubicacion</v-list-item>
+                <v-list-item append-icon="mdi-checkbox-marked-circle">Crea tu primer ubicacion</v-list-item>
+              </v-list>
+            </template>
+          </v-banner>
         </div>
       </div>
     </template>
