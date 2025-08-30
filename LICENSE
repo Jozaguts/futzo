@@ -1,0 +1,60 @@
+Futzo – Acuerdo de Licencia de Usuario Final (EULA)
+
+Copyright (c) 2025 Jozaguts. Todos los derechos reservados.
+
+1. Definiciones
+- “Software”: la aplicación Futzo, su código, documentación, componentes, compilados y cualquier actualización provista.
+- “Licenciante”: Jozaguts, titular de los derechos del Software.
+- “Cliente” o “Usuario”: la persona o entidad que accede o utiliza el Software.
+
+2. Concesión de licencia
+Sujeto al cumplimiento de este EULA y al pago de las tarifas aplicables (si corresponde), el Licenciante otorga al Usuario una licencia limitada, no exclusiva, no sublicenciable, intransferible y revocable para:
+  (a) acceder al Software como servicio (SaaS), y/o
+  (b) instalar y ejecutar el Software on‑premise únicamente en la cantidad de instancias/usuarios autorizada en la orden o contrato comercial correspondiente.
+El Software se licencia, no se vende.
+
+3. Alcance y uso permitido
+- Uso interno: el Software puede utilizarse solo para fines internos del negocio del Usuario.
+- Entornos: salvo autorización expresa, el uso en producción requiere una licencia comercial vigente; el uso en desarrollo/pruebas/evaluación está permitido de forma no productiva.
+- Claves/licenciamiento: el Usuario no eludirá mecanismos de licenciamiento ni compartirá claves.
+
+4. Restricciones
+El Usuario no podrá, salvo que la ley aplicable lo permita de forma no renunciable:
+- copiar, distribuir, publicar o poner el Software a disposición de terceros, excepto copias de respaldo razonables;
+- sublicenciar, arrendar, prestar, revender o prestar servicios gestionados basados en el Software sin permiso escrito del Licenciante;
+- modificar, adaptar, traducir, realizar ingeniería inversa, descompilar o derivar obras del Software;
+- eliminar avisos de derechos de autor, marcas o atribuciones;
+- usar el Software para desarrollar un producto competidor o con fines de benchmarking público sin consentimiento previo por escrito.
+
+5. Propiedad intelectual
+El Software y todos los derechos de propiedad intelectual asociados pertenecen y seguirán perteneciendo al Licenciante. No se transfiere ningún derecho excepto los expresamente otorgados por esta licencia.
+
+6. Datos y privacidad (SaaS)
+Si el Usuario accede al Software como servicio, el tratamiento de datos se rige por las políticas del Licenciante y, cuando aplique, por acuerdos de procesamiento de datos independientes.
+
+7. Soporte y actualizaciones
+El soporte, los niveles de servicio (SLA) y las actualizaciones se proveerán según el plan o contrato comercial correspondiente. El Licenciante puede proporcionar parches o nuevas versiones a su discreción.
+
+8. Garantía y descargos
+EL SOFTWARE SE PROVEE “TAL CUAL” Y “SEGÚN DISPONIBILIDAD”. EN LA MÁXIMA MEDIDA PERMITIDA POR LA LEY, EL LICENCIANTE EXCLUYE TODAS LAS GARANTÍAS, EXPRESAS O IMPLÍCITAS, INCLUIDAS GARANTÍAS DE COMERCIABILIDAD, IDONEIDAD PARA UN FIN PARTICULAR Y NO INFRACCIÓN. EL USUARIO ES RESPONSABLE DE RESPALDOS, CONFIGURACIONES Y USO SEGURO.
+
+9. Limitación de responsabilidad
+EN NINGÚN CASO EL LICENCIANTE SERÁ RESPONSABLE POR DAÑOS INDIRECTOS, INCIDENTALES, ESPECIALES, EMERGENTES, PÉRDIDA DE BENEFICIOS, DATOS O NEGOCIO, INCLUSO SI HUBIERA SIDO ADVERTIDO DE SU POSIBILIDAD. LA RESPONSABILIDAD TOTAL DEL LICENCIANTE POR CUALQUIER RECLAMO RELACIONADO CON EL SOFTWARE NO EXCEDERÁ LAS CANTIDADES PAGADAS POR EL USUARIO EN LOS DOCE (12) MESES ANTERIORES AL HECHO QUE DÉ LUGAR A LA RECLAMACIÓN.
+
+10. Vigencia y terminación
+Este EULA entra en vigor al primer acceso/instalación y permanece vigente hasta su terminación. El Licenciante podrá rescindirlo si el Usuario incumple sus términos. Al terminar, el Usuario cesará todo uso y destruirá desinstalará las copias en su poder.
+
+11. Confidencialidad
+Las claves de licencia, documentación no pública y cualquier información designada como confidencial deberán protegerse con la misma diligencia que la información confidencial propia del Usuario, no inferior a un estándar de cuidado razonable.
+
+12. Ley aplicable y jurisdicción
+Este EULA se regirá por las leyes del domicilio del Licenciante, excluyendo sus normas de conflicto. Toda disputa se someterá a los tribunales competentes de dicho domicilio.
+
+13. Disposiciones generales
+Si alguna cláusula resultara inválida, las restantes continuarán en vigor. Este EULA constituye el acuerdo completo respecto del Software y solo podrá modificarse por escrito firmado por el Licenciante.
+
+14. Contacto y licencias comerciales
+Para licencias comerciales, soporte empresarial o consultas legales, contacte al Licenciante a través del canal oficial del proyecto.
+
+Al instalar, acceder o utilizar el Software, el Usuario acepta estos términos.
+
