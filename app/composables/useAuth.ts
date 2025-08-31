@@ -69,9 +69,11 @@ export default function useAuth() {
 
   async function signUp(form: Partial<AuthForm>) {
     const client = useSanctumClient();
+    const { fbp, fbc, fbclid, event_id } = capiContext();
+    const consent = true; // o tu estado real
     return await client('/auth/register', {
       method: 'POST',
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, fbp, fbc, fbclid, event_id, consent }),
     });
   }
 
