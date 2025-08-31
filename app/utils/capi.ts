@@ -12,13 +12,33 @@ export function capiContext() {
     );
   };
 
-  const fbp = cookieVal('_fbp') || '';
+  // Prefer cookie -> URL param -> localStorage for fbp
+  const fbp = (() => {
+    if (!isBrowser) return '';
+    const fromCookie = cookieVal('_fbp');
+    try {
+      const params = new URL(window.location.href).searchParams;
+      const fromUrl = params.get('fbp') || '';
+      const fromLs = localStorage.getItem('_fbp') || '';
+      const val = fromCookie || fromUrl || fromLs || '';
+      if (fromUrl && fromUrl !== fromLs) localStorage.setItem('_fbp', fromUrl);
+      return val;
+    } catch {
+      return fromCookie || '';
+    }
+  })();
+
   const rawFbc = cookieVal('_fbc') || '';
 
   const fbclid = (() => {
     if (!isBrowser) return '';
     try {
-      return new URL(window.location.href).searchParams.get('fbclid') || '';
+      const params = new URL(window.location.href).searchParams;
+      const fromUrl = params.get('fbclid') || '';
+      const fromLs = localStorage.getItem('fbclid') || '';
+      const val = fromUrl || fromLs || '';
+      if (fromUrl && fromUrl !== fromLs) localStorage.setItem('fbclid', fromUrl);
+      return val;
     } catch {
       return '';
     }
