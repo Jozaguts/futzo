@@ -47,6 +47,21 @@ export function capiContext() {
   // If there's no _fbc cookie but we have fbclid, construct fbc per Meta format
   const fbc = rawFbc || (fbclid ? `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}` : '');
 
+  // Optional: test event code for Meta Test Events
+  const test_event_code = (() => {
+    if (!isBrowser) return '';
+    try {
+      const params = new URL(window.location.href).searchParams;
+      const fromUrl = params.get('capi_test') || '';
+      const fromLs = localStorage.getItem('META_TEST_EVENT_CODE') || '';
+      const val = fromUrl || fromLs || '';
+      if (fromUrl && fromUrl !== fromLs) localStorage.setItem('META_TEST_EVENT_CODE', fromUrl);
+      return val;
+    } catch {
+      return '';
+    }
+  })();
+
   const event_id = (() => {
     // Prefer crypto.randomUUID if available in browser or runtime
     try {
@@ -57,10 +72,11 @@ export function capiContext() {
     return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
   })();
 
-  return { fbp, fbc, fbclid, event_id } as {
+  return { fbp, fbc, fbclid, event_id, test_event_code } as {
     fbp: string;
     fbc: string;
     fbclid: string;
     event_id: string;
+    test_event_code: string;
   };
 }
