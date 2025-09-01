@@ -22,7 +22,7 @@ export interface User {
 }
 export type OnboardingState = {
   steps: string[];
-  next: string;
+  next: string | null;
   all_done: boolean;
   allowed_paths: string[];
 };

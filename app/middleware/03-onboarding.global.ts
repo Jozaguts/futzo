@@ -1,25 +1,16 @@
 import type { User } from '~/models/user';
 
-export default defineNuxtRouteMiddleware(async (to, from) => {
+export default defineNuxtRouteMiddleware(async (to) => {
   if (import.meta.server) return;
   const user = useSanctumUser<User>();
   const isLogin = !!user.value?.email || !!user.value?.phone;
-
-  // No autenticado: no hace nada
   if (!isLogin) return;
+  if (!user.value?.has_league) return; // 02-user-has-league maneja esto
 
-  // Si no tiene liga, deja que 02-user-has-league maneje /bienvenido
-  if (!user.value?.has_league) return;
+  const onboarding = useOnboardingStore();
+  await onboarding.load(); // TTL evita sobrecarga
 
-  const ob = user.value?.onboarding;
-  if (!ob) return;
-
-  // Si ya terminó, no hace nada
-  if (ob.all_done) return;
-
-  // Permitir solo rutas que el backend indica
-  const allowed = ob.allowed_paths || ['/'];
-  if (!allowed.includes(to.path)) {
+  if (!onboarding.state.all_done && !onboarding.canAccessPath(to.path)) {
     return navigateTo('/');
   }
 });

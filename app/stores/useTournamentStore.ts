@@ -185,14 +185,18 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     await client(`/api/v1/admin/tournaments/${tournamentId.value}/locations`, {
       method: 'POST',
       body: tournamentLocationStoreRequest.value,
-    }).then(async () => {
-      useToast().toast({
-        type: 'success',
-        msg: 'Ubicación del torneo',
-        description: 'La Ubicación del torneo ha sido agregada correctamente.',
+    })
+      .then(async () => {
+        await getTournamentLocations();
+        await useOnboardingStore().refresh();
+      })
+      .then(() => {
+        useToast().toast({
+          type: 'success',
+          msg: 'Ubicación del torneo',
+          description: 'La Ubicación del torneo ha sido agregada correctamente.',
+        });
       });
-      await getTournamentLocations();
-    });
   };
   const getStandings = async () => {
     standings.value = await tournamentAPI.getStandings(tournamentId.value as number);

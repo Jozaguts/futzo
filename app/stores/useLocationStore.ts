@@ -120,13 +120,13 @@ export const useLocationStore = defineStore('locationStore', () => {
 
   async function storeLocation(): Promise<void> {
     const client = useSanctumClient();
-    await client('/api/v1/admin/locations', {
+    await client<Promise<LocationCard>>('/api/v1/admin/locations', {
       method: 'POST',
       body: locationStoreRequest.value,
     })
-      .then(async (location: LocationCard) => {
-        locations.value?.splice(0, 0, location);
+      .then(async () => {
         await reloadLocations();
+        await useOnboardingStore().refresh();
         const { toast } = useToast();
         toast({
           type: 'success',
@@ -169,6 +169,7 @@ export const useLocationStore = defineStore('locationStore', () => {
       method: 'DELETE',
     }).then(async () => {
       await getLocations();
+      await useOnboardingStore().refresh();
       const { toast } = useToast();
       toast({ type: 'success', msg: 'Ubicación eliminada', description: 'La ubicación se ha eliminado exitosamente.' });
       locations.value = locations.value?.filter((location) => location.id !== locationToDelete.value.id);
