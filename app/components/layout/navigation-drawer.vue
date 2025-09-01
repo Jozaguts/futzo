@@ -7,10 +7,7 @@
   const drawerRef = ref()
   const authStore = useAuthStore()
   const { user } = storeToRefs(authStore)
-  const disabled = ref(false)
-  useLocationStore().$subscribe((mutation, state) => {
-    disabled.value = state.locations?.length === 0
-  })
+  const { noLocations } = storeToRefs(useLocationStore())
   const links = reactive([
     { icon: 'futzo-icon:home', title: 'Dashboard', to: '/', disabled: false, class: 'mr-2 drawer-icon filled' },
     {
@@ -24,21 +21,21 @@
       icon: 'futzo-icon:trophy',
       title: 'Torneos',
       to: '/torneos',
-      disabled: disabled.value,
+      disabled: noLocations.value,
       class: 'mr-2 drawer-icon filled',
     },
     {
       icon: 'futzo-icon:shirt-sharp',
       title: 'Equipos',
       to: '/equipos',
-      disabled: disabled.value,
+      disabled: noLocations.value,
       class: 'mr-2 drawer-icon filled',
     },
     {
       icon: 'futzo-icon:players',
       title: 'Jugadores',
       to: '/jugadores',
-      disabled: disabled.value,
+      disabled: noLocations.value,
       class: 'mr-2 drawer-icon filled',
     },
   ])
@@ -93,7 +90,7 @@
             :key="link.title"
             link
             :to="link.to"
-            :disabled="disabled && link.title !== 'Dashboard' && link.title !== 'Ubicaciones'"
+            :disabled="noLocations && link.title !== 'Dashboard' && link.title !== 'Ubicaciones'"
             :title="link.title"
             :prepend-icon="() => h(Icon, { name: link.icon, class: link.class, mode: 'svg' })"
           >
