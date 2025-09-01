@@ -70,8 +70,8 @@
   .table-wrapper {
     padding: 0.5rem;
     overflow-x: auto;
-    overflow-y: visible;
-    -webkit-overflow-scrolling: touch;
+    //overflow-y: visible;
+    //-webkit-overflow-scrolling: touch;
   }
 
   .next-games {
@@ -327,10 +327,10 @@
 .table-wrapper {
   flex: 1 1 auto;
   min-height: 0;
-  overflow: auto; /* scroll interno de la tabla */
+  //overflow: auto; /* scroll interno de la tabla */
   padding: 1rem .5rem;
   display: flex;
-    flex-direction: column;
+  flex-direction: column;
 }
 .next-games {
   grid-area: next-games;
