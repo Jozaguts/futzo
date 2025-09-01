@@ -18,7 +18,14 @@ export interface User {
   verified: boolean;
   phone: string;
   image: string;
+  onboarding: OnboardingState;
 }
+export type OnboardingState = {
+  steps: string[];
+  next: string;
+  all_done: boolean;
+  allowed_paths: string[];
+};
 
 export interface UpdateUserForm {
   id: number;

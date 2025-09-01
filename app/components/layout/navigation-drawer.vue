@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { useResizeObserver } from '@vueuse/core'
+  import { type ResizeObserverEntry, useResizeObserver } from '@vueuse/core'
   import { useDisplay } from 'vuetify/framework'
   import { Icon } from '#components'
 
@@ -7,7 +7,7 @@
   const drawerRef = ref()
   const authStore = useAuthStore()
   const { user } = storeToRefs(authStore)
-  const { noLocations } = storeToRefs(useLocationStore())
+  const { state } = storeToRefs(useOnboardingStore())
   const links = reactive([
     { icon: 'futzo-icon:home', title: 'Dashboard', to: '/', disabled: false, class: 'mr-2 drawer-icon filled' },
     {
@@ -21,29 +21,28 @@
       icon: 'futzo-icon:trophy',
       title: 'Torneos',
       to: '/torneos',
-      disabled: noLocations.value,
+      disabled: !state.value.all_done,
       class: 'mr-2 drawer-icon filled',
     },
     {
       icon: 'futzo-icon:shirt-sharp',
       title: 'Equipos',
       to: '/equipos',
-      disabled: noLocations.value,
+      disabled: !state.value.all_done,
       class: 'mr-2 drawer-icon filled',
     },
     {
       icon: 'futzo-icon:players',
       title: 'Jugadores',
       to: '/jugadores',
-      disabled: noLocations.value,
+      disabled: !state.value.all_done,
       class: 'mr-2 drawer-icon filled',
     },
   ])
   const { logout } = useSanctumAuth()
-  useResizeObserver(drawerRef, (entries) => {
+  useResizeObserver(drawerRef, (entries: ReadonlyArray<ResizeObserverEntry>) => {
     const entry = entries[0]
-    const { width } = entry.contentRect
-    drawerWidth.value = width
+    drawerWidth.value = entry?.contentRect?.width as number
   })
   watchEffect(() => {
     rail.value = isMobile.value
@@ -90,7 +89,7 @@
             :key="link.title"
             link
             :to="link.to"
-            :disabled="noLocations && link.title !== 'Dashboard' && link.title !== 'Ubicaciones'"
+            :disabled="link.disabled && link.title !== 'Dashboard' && link.title !== 'Ubicaciones'"
             :title="link.title"
             :prepend-icon="() => h(Icon, { name: link.icon, class: link.class, mode: 'svg' })"
           >
@@ -105,8 +104,8 @@
           <v-banner :stacked="true" density="compact">
             <template #text>
               <v-list density="compact">
-                <v-list-item append-icon="mdi-checkbox-blank-circle-outline">Crea tu primer ubicacion</v-list-item>
-                <v-list-item append-icon="mdi-checkbox-marked-circle">Crea tu primer ubicacion</v-list-item>
+                <v-list-item append-icon="mdi-checkbox-blank-circle-outline">Crea tu primer ubicación</v-list-item>
+                <v-list-item append-icon="mdi-checkbox-marked-circle">Crea tu primer ubicación</v-list-item>
               </v-list>
             </template>
           </v-banner>
