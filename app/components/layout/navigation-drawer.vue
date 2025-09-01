@@ -2,40 +2,41 @@
   import { type ResizeObserverEntry, useResizeObserver } from '@vueuse/core'
   import { useDisplay } from 'vuetify/framework'
   import { Icon } from '#components'
-
   const { drawer, drawerWidth, isMobile, rail } = storeToRefs(useGlobalStore())
+  const onboarding = useOnboardingStore()
   const drawerRef = ref()
   const authStore = useAuthStore()
   const { user } = storeToRefs(authStore)
-  const { state } = storeToRefs(useOnboardingStore())
+  const onClick = (to: string, e: MouseEvent) => {
+    if (onboarding.isDisabled(to)) {
+      e.preventDefault()
+      useToast().toast({ type: 'warning', msg: 'Completa los pasos previos para acceder.' })
+    }
+  }
   const links = reactive([
-    { icon: 'futzo-icon:home', title: 'Dashboard', to: '/', disabled: false, class: 'mr-2 drawer-icon filled' },
+    { icon: 'futzo-icon:home', title: 'Dashboard', to: '/', class: 'mr-2 drawer-icon filled' },
     {
       icon: 'futzo-icon:location',
       title: 'Ubicaciones',
       to: '/ubicaciones',
-      disabled: false,
       class: 'mr-2 drawer-icon',
     },
     {
       icon: 'futzo-icon:trophy',
       title: 'Torneos',
       to: '/torneos',
-      disabled: !state.value.all_done,
       class: 'mr-2 drawer-icon filled',
     },
     {
       icon: 'futzo-icon:shirt-sharp',
       title: 'Equipos',
       to: '/equipos',
-      disabled: !state.value.all_done,
       class: 'mr-2 drawer-icon filled',
     },
     {
       icon: 'futzo-icon:players',
       title: 'Jugadores',
       to: '/jugadores',
-      disabled: !state.value.all_done,
       class: 'mr-2 drawer-icon filled',
     },
   ])
@@ -88,9 +89,10 @@
             v-for="link in links"
             :key="link.title"
             link
-            :to="link.to"
-            :disabled="link.disabled && link.title !== 'Dashboard' && link.title !== 'Ubicaciones'"
+            :to="onboarding.isDisabled(link.to) ? null : link.to"
+            :disabled="onboarding.isDisabled(link.to) && link.title !== 'Dashboard' && link.title !== 'Ubicaciones'"
             :title="link.title"
+            @click="(e) => onClick(link.to, e)"
             :prepend-icon="() => h(Icon, { name: link.icon, class: link.class, mode: 'svg' })"
           >
           </v-list-item>
