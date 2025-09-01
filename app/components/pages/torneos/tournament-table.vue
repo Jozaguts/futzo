@@ -27,7 +27,7 @@
       params: { torneo: _tournament.slug },
     })
   }
-  onMounted(() => (pagination.value.currentPage = 1))
+  onMounted(() => (pagination.value.current_page = 1))
   const scheduleHandler = (model: Tournament) => {
     tournamentId.value = model.id as number
     tournament.value = model

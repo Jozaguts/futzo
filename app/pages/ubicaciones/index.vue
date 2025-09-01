@@ -24,8 +24,8 @@
   }
 
   const searchLocationHandler = useDebounceFn((place: string) => {
-    useLocationStore().pagination.perPage = 10
-    useLocationStore().pagination.currentPage = 1
+    useLocationStore().pagination.per_page = 10
+    useLocationStore().pagination.current_page = 1
     useLocationStore().getLocations(place)
   }, 600)
   const { mobile } = useDisplay()

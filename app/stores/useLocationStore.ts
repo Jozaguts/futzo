@@ -1,5 +1,12 @@
 import { defineStore } from 'pinia';
-import type { FormSteps, LocationAvailability, LocationCard, LocationStoreRequest } from '~/models/Location';
+import type {
+  FormSteps,
+  LocationAvailability,
+  LocationCard,
+  LocationPagination,
+  LocationResponse,
+  LocationStoreRequest,
+} from '~/models/Location';
 import { useApiError } from '~/composables/useApiError';
 import type { IPagination } from '~/interfaces';
 import { ref } from 'vue';
@@ -36,9 +43,9 @@ export const useLocationStore = defineStore('locationStore', () => {
     show: false,
   });
   const pagination = ref<IPagination>({
-    currentPage: 1,
-    perPage: 8,
-    lastPage: 1,
+    current_page: 1,
+    per_page: 8,
+    last_page: 1,
     total: 0,
     sort: 'asc',
   });
@@ -64,9 +71,9 @@ export const useLocationStore = defineStore('locationStore', () => {
     locationCard.value = {} as LocationCard;
     locationToDelete.value = { id: null, show: false };
     pagination.value = {
-      currentPage: 1,
-      perPage: 8,
-      lastPage: 1,
+      current_page: 1,
+      per_page: 8,
+      last_page: 1,
       total: 0,
       sort: 'asc',
     };
@@ -75,9 +82,9 @@ export const useLocationStore = defineStore('locationStore', () => {
 
   async function reloadLocations() {
     pagination.value = {
-      currentPage: 1,
-      perPage: 8,
-      lastPage: 1,
+      current_page: 1,
+      per_page: 8,
+      last_page: 1,
       total: 0,
       sort: 'asc',
     };
@@ -100,17 +107,17 @@ export const useLocationStore = defineStore('locationStore', () => {
 
   async function getLocations(search?: string): Promise<void> {
     const client = useSanctumClient();
-    const url = `/api/v1/admin/locations?per_page=${pagination.value.perPage}&page=${pagination.value.currentPage}&sort=${pagination.value.sort}`;
+    const url = `/api/v1/admin/locations?per_page=${pagination.value.per_page}&page=${pagination.value.current_page}&sort=${pagination.value.sort}`;
 
-    await client(url + (search ? `&search=${search}` : '')).then(({ data, meta }) => {
+    await client<LocationResponse>(url + (search ? `&search=${search}` : '')).then(({ data, meta }) => {
       pagination.value = {
-        currentPage: meta.current_page,
-        lastPage: meta.last_page,
-        perPage: meta.per_page,
+        current_page: meta.current_page,
+        last_page: meta.last_page,
+        per_page: meta.per_page,
         total: meta.total,
         sort: pagination.value.sort,
       };
-      if (pagination.value.currentPage > 1) {
+      if (pagination.value.current_page > 1) {
         locations.value = [...(locations.value as LocationCard[]), ...data];
       } else {
         locations.value = data;

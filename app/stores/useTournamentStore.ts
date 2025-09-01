@@ -57,9 +57,9 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   const tournamentId = ref<number>();
   const tournamentToEdit = ref({} as TournamentForm);
   const pagination = ref<IPagination>({
-    currentPage: 1,
-    perPage: 10,
-    lastPage: 1,
+    current_page: 1,
+    per_page: 10,
+    last_page: 1,
     total: 0,
     sort: 'asc',
   });
@@ -99,7 +99,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     loading.value = true;
     const client = useSanctumClient();
     const response = await client<Promise<{ data: Tournament[]; pagination: IPagination }>>(
-      `/api/v1/admin/tournaments?per_page=${pagination.value.perPage}&page=${pagination.value.currentPage}`
+      `/api/v1/admin/tournaments?per_page=${pagination.value.per_page}&page=${pagination.value.current_page}`
     ).finally(() => (loading.value = false));
     tournaments.value = response.data;
     pagination.value = { ...pagination.value, ...response.pagination };

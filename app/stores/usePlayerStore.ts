@@ -19,10 +19,10 @@ export const usePlayerStore = defineStore('playerStore', () => {
   const playerId = ref<number>();
   const availableTeams = ref<Team[]>([]);
   const pagination = ref<IPagination>({
-    currentPage: 1,
-    perPage: 10,
+    current_page: 1,
+    per_page: 10,
     total: 0,
-    lastPage: 1,
+    last_page: 1,
     sort: 'asc',
   });
   const importModal = ref(false);
@@ -111,7 +111,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
   const getPlayers = async (search?: string) => {
     try {
       const client = useSanctumClient();
-      let url = `/api/v1/admin/players?per_page=${pagination.value.perPage}&page=${pagination.value.currentPage}&sort=${pagination.value.sort}`;
+      let url = `/api/v1/admin/players?per_page=${pagination.value.per_page}&page=${pagination.value.current_page}&sort=${pagination.value.sort}`;
       if (search) {
         url += '&search=' + search;
       }

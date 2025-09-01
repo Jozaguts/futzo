@@ -57,7 +57,7 @@
             .finally(() => {
               isFetching.value = false
               scheduleDialog.value = false
-              schedulePagination.value.currentPage = 1
+              schedulePagination.value.current_page = 1
               useToast().toast({
                 type: 'success',
                 msg: 'Calendario creado',

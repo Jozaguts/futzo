@@ -149,9 +149,9 @@ export type IDashboardStatsValues = {
   label: string;
 };
 export type IPagination = {
-  currentPage: number;
-  perPage: number;
-  lastPage: number;
+  current_page: number;
+  per_page: number;
+  last_page: number;
   total: number;
   sort: 'asc' | 'desc';
 };

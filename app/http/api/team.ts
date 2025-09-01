@@ -101,7 +101,7 @@ export const initPreRegister = async (slug: string) => {
 export const getTeams = async (pagination: IPagination) => {
   const client = useSanctumClient();
   return await client<Promise<TeamsPaginatedResponse>>(
-    `/api/v1/admin/teams?per_page=${pagination.perPage}&page=${pagination.currentPage}&sort=${pagination.sort}`
+    `/api/v1/admin/teams?per_page=${pagination.per_page}&page=${pagination.current_page}&sort=${pagination.sort}`
   );
 };
 export const searchTeams = async (value: string = '') => {

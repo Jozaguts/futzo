@@ -7,12 +7,12 @@
     done: (status: 'error' | 'loading' | 'empty' | 'ok') => void
   }
   const load = (options: CallbackOptions) => {
-    pagination.value.currentPage++
+    pagination.value.current_page++
     useLocationStore()
       .getLocations()
       .then(() => options.done('ok'))
       .finally(() => {
-        if (pagination.value.lastPage < pagination.value.currentPage) {
+        if (pagination.value.last_page < pagination.value.current_page) {
           options.done('empty')
         }
       })

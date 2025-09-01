@@ -59,7 +59,7 @@
       default: false,
     },
   })
-  const itemPerPage = computed(() => {
+  const itemper_page = computed(() => {
     return props.showComplete ? props.items?.length : 10
   })
   const search = defineModel('search', {
@@ -89,7 +89,7 @@
     :items="items"
     :search="search"
     :item-key="itemKey"
-    :items-per-page="itemPerPage"
+    :items-per-page="itemper_page"
     :show-select="selectable"
     :cell-props="{ class: 'text-capitalize' }"
     height="100%"
@@ -185,8 +185,8 @@
       <v-pagination
         v-if="showFooter"
         class="futzo-pagination"
-        v-model="pagination.currentPage"
-        :length="pagination.lastPage"
+        v-model="pagination.current_page"
+        :length="pagination.last_page"
         start="1"
         :total-visible="10"
         @update:modelValue="() => paginate()"

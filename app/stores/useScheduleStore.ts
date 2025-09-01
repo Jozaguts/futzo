@@ -47,9 +47,9 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
   const noSchedules = computed(() => schedules.value?.rounds?.length === 0);
   const isLoadingSchedules = ref(false);
   const schedulePagination = ref<IPagination & { filterBy?: RoundStatus | string; search?: string }>({
-    currentPage: 1,
-    perPage: 10,
-    lastPage: 1,
+    current_page: 1,
+    per_page: 10,
+    last_page: 1,
     total: 0,
     sort: 'asc',
     filterBy: undefined,
@@ -120,9 +120,9 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     };
     isLoadingSchedules.value = false;
     schedulePagination.value = {
-      currentPage: 1,
-      perPage: 10,
-      lastPage: 1,
+      current_page: 1,
+      per_page: 10,
+      last_page: 1,
       total: 0,
       sort: 'asc',
       filterBy: undefined,
@@ -179,7 +179,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
   const getTournamentSchedules = async () => {
     isLoadingSchedules.value = true;
     const client = useSanctumClient();
-    let url = `/api/v1/admin/tournaments/${tournamentStore.tournamentId}/schedule?page=${schedulePagination.value.currentPage}`;
+    let url = `/api/v1/admin/tournaments/${tournamentStore.tournamentId}/schedule?page=${schedulePagination.value.current_page}`;
 
     if (schedulePagination.value.filterBy) {
       url += `&filterBy=${schedulePagination.value.filterBy}`;
@@ -203,15 +203,15 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       schedules.value.rounds.push(...newRounds);
     }
 
-    schedulePagination.value.currentPage += 1;
-    schedulePagination.value.lastPage = response.pagination.total_rounds;
+    schedulePagination.value.current_page += 1;
+    schedulePagination.value.last_page = response.pagination.total_rounds;
     isLoadingSchedules.value = false;
   };
   const fetchSchedule = async () => {
     isLoadingSchedules.value = true;
     const client = useSanctumClient();
     schedules.value = await client(
-      `/api/v1/admin/tournaments/${tournamentStore.tournamentId}/schedule?page=${schedulePagination.value.currentPage}`
+      `/api/v1/admin/tournaments/${tournamentStore.tournamentId}/schedule?page=${schedulePagination.value.current_page}`
     ).finally(() => {
       isLoadingSchedules.value = false;
     });
@@ -224,7 +224,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
         status,
       },
     });
-    schedulePagination.value.currentPage = 1;
+    schedulePagination.value.current_page = 1;
     schedules.value.rounds = [];
     await getTournamentSchedules();
   };
@@ -262,12 +262,12 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     scheduleSettings.value = data.value;
   };
   const fetchScheduleRoundsByStatus = async (filter: string) => {
-    schedulePagination.value.currentPage = 1;
+    schedulePagination.value.current_page = 1;
     schedules.value.rounds = [];
     const response = await fetchRoundByStatus(
       tournamentStore.tournamentId as number,
       filter,
-      schedulePagination.value.currentPage
+      schedulePagination.value.current_page
     );
     schedules.value.rounds = response.rounds ?? [];
   };

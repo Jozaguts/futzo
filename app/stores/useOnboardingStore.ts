@@ -39,9 +39,8 @@ export const useOnboardingStore = defineStore(
     return { state, load, refresh, canAccessPath, isDisabled };
   },
   {
-    // Persiste solo en sessionStorage y se invalida al cerrar pestaña
     persist: {
-      storage: sessionStorage,
+      storage: piniaPluginPersistedstate.sessionStorage(),
       pick: ['state', 'lastFetched'],
     },
   }

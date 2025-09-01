@@ -5,7 +5,7 @@
   const searchHandler = useDebounceFn((value: string) => {
     schedules.value.rounds = []
     schedulePagination.value.search = value
-    schedulePagination.value.currentPage = 1
+    schedulePagination.value.current_page = 1
     getTournamentSchedules()
   }, 500)
 </script>

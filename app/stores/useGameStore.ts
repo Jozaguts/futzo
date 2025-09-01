@@ -142,7 +142,7 @@ export const useGameStore = defineStore('gameStore', () => {
       },
     })
       .then(async () => {
-        useScheduleStore().schedulePagination.currentPage = 1;
+        useScheduleStore().schedulePagination.current_page = 1;
         await useScheduleStore().getTournamentSchedules();
         useToast().toast({
           type: 'success',

@@ -17,9 +17,9 @@ export const useTeamStore = defineStore('teamStore', () => {
   const search = ref('');
   const importModal = ref(false);
   const pagination = ref<IPagination>({
-    currentPage: 1,
-    perPage: 10,
-    lastPage: 1,
+    current_page: 1,
+    per_page: 10,
+    last_page: 1,
     total: 0,
     sort: 'asc',
   });

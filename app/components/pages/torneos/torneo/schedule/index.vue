@@ -12,7 +12,7 @@
   const { schedulePagination, isLoadingSchedules, schedules, scheduleRoundStatus, isExporting } =
     storeToRefs(useScheduleStore())
   const load = async ({ done }: { done: (status: 'ok' | 'empty' | 'error') => void }) => {
-    if (schedulePagination.value.currentPage > schedulePagination.value.lastPage) {
+    if (schedulePagination.value.current_page > schedulePagination.value.last_page) {
       done('empty')
       return
     }
@@ -103,10 +103,10 @@
       .finally(() => (loading.value = false))
   }
   onBeforeMount(async () => {
-    schedulePagination.value.currentPage = 1
+    schedulePagination.value.current_page = 1
   })
   onBeforeUnmount(async () => {
-    schedulePagination.value.currentPage = 1
+    schedulePagination.value.current_page = 1
   })
   const openModal = (type: 'GameReport' | 'ReScheduleGame', _gameId: number, fieldId: number, date: string) => {
     gameDetailsRequest.value = {
