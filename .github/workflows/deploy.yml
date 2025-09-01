@@ -33,7 +33,7 @@ jobs:
           NUXT_GOOGLE_MAP_ID: ${{ vars.NUXT_GOOGLE_MAP_ID }}
           DEPLOY_PATH: ${{ vars.DEPLOY_PATH || secrets.DEPLOY_PATH }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+          ssh -p ${{ vars.SSH_PORT || secrets.SSH_PORT || '22' }} -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
             set -euo pipefail
             cd "$DEPLOY_PATH"
 
@@ -59,5 +59,24 @@ jobs:
             yarn install --frozen-lockfile
             NODE_OPTIONS=--max-old-space-size=4096 node node_modules/.bin/nuxt build --dotenv .env.prod
 
-            pm2 restart ecosystem.config.cjs
+            echo "PM2 diagnostics:"
+            echo "USER: $(whoami)"
+            command -v node && node -v || true
+            command -v pm2 && pm2 -v || echo "pm2 not in PATH"
+
+            # Ensure Node/PM2 when using nvm
+            if [ -s "$HOME/.nvm/nvm.sh" ]; then
+              . "$HOME/.nvm/nvm.sh"
+              nvm use --lts || true
+            fi
+
+            # Show PM2 list (may be empty)
+            pm2 ls || true
+
+            # Start or reload app; --update-env to take new env vars
+            pm2 startOrReload ecosystem.config.cjs --update-env || pm2 start ecosystem.config.cjs --update-env
+
+            # Show process details and recent logs
+            pm2 describe futzo || true
+            pm2 logs futzo --lines 30 || true
           EOF
