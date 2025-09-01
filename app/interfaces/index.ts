@@ -1,4 +1,16 @@
 import type { ImageForm } from '~/models/tournament';
+
+export type Stats = {
+  registeredTeams: ActivePlayers;
+  activePlayers: ActivePlayers;
+  completedGames: ActivePlayers;
+};
+export type ActivePlayers = {
+  total: number;
+  current: number;
+  dailyData: number[];
+  label: string;
+};
 export type toastTypes = 'success' | 'warning' | 'error' | 'info';
 export type Action = 'login';
 export type ToastOptions = {

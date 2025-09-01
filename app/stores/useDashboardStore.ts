@@ -1,54 +1,53 @@
-import {defineStore} from "pinia";
-import type {IStatStage, ITeamStats} from "~/interfaces";
+import { defineStore } from 'pinia';
+import type { IStatStage, ITeamStats, Stats } from '~/interfaces';
+import type { NextGames } from '~/models/Game';
 
-export const useDashboardStore = defineStore("dashboardStore", () => {
-    const range = ref<IStatStage>("lastMonth");
+export const useDashboardStore = defineStore('dashboardStore', () => {
+  const range = ref<IStatStage>('lastMonth');
 
-    const teamStats = ref<ITeamStats>({
-        registeredTeams: {
-            total: 0,
-            current: 0,
-            dailyData: [],
-            label: "vs último mes",
-        },
-        activePlayers: {
-            total: 0,
-            current: 0,
-            dailyData: [],
-            label: "vs último mes",
-        },
-        completedGames: {
-            total: 0,
-            current: 0,
-            dailyData: [],
-            label: "vs último mes",
-        },
+  const teamStats = ref<ITeamStats>({
+    registeredTeams: {
+      total: 0,
+      current: 0,
+      dailyData: [],
+      label: 'vs último mes',
+    },
+    activePlayers: {
+      total: 0,
+      current: 0,
+      dailyData: [],
+      label: 'vs último mes',
+    },
+    completedGames: {
+      total: 0,
+      current: 0,
+      dailyData: [],
+      label: 'vs último mes',
+    },
+  });
+  const nextGames = ref(<NextGames['data']>[]);
+
+  function byRange() {
+    const client = useSanctumClient();
+    client<Stats>(`/api/v1/admin/dashboard/stats?range=${range.value}`).then((response) => {
+      teamStats.value.registeredTeams = response.registeredTeams;
+      teamStats.value.activePlayers = response.activePlayers;
+      teamStats.value.completedGames = response.completedGames;
     });
-    const nextGames = ref([]);
+  }
 
-    function byRange() {
-        const client = useSanctumClient();
-        client(`/api/v1/admin/dashboard/stats?range=${range.value}`).then(
-            (response) => {
-                teamStats.value.registeredTeams = response.registeredTeams;
-                teamStats.value.activePlayers = response.activePlayers;
-                teamStats.value.completedGames = response.completedGames;
-            },
-        );
-    }
+  function getNextGames() {
+    const client = useSanctumClient();
+    client<NextGames>('/api/v1/admin/dashboard/next-games').then((response) => {
+      nextGames.value = response.data;
+    });
+  }
 
-    function getNextGames() {
-        const client = useSanctumClient();
-        client("/api/v1/admin/dashboard/next-games").then(({data}) => {
-            nextGames.value = data;
-        });
-    }
-
-    return {
-        teamStats,
-        range,
-        nextGames,
-        byRange,
-        getNextGames
-    };
+  return {
+    teamStats,
+    range,
+    nextGames,
+    byRange,
+    getNextGames,
+  };
 });

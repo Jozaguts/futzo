@@ -24,7 +24,6 @@
     }
   })
   onMounted(() => {
-    console.log(useAuth().isSignUp.value)
     if (useAuth().isSignUp.value) {
       useDashboardStore().byRange()
       useDashboardStore().getNextGames()
