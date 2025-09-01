@@ -7,6 +7,7 @@ on:
 
 jobs:
   deploy:
+    environment: production
     runs-on: ubuntu-latest
 
     steps:
@@ -22,35 +23,41 @@ jobs:
 
       - name: Deploy Nuxt App via SSH
         env:
-          NUXT_PUBLIC_URL_BACKEND: ${{ secrets.NUXT_PUBLIC_URL_BACKEND }}
-          NUXT_PUBLIC_BACKEND_PREFIX: ${{ secrets.NUXT_PUBLIC_BACKEND_PREFIX }}
-          FACEBOOK_APP_ID: ${{ secrets.FACEBOOK_APP_ID }}
-          NUXT_HOST: ${{ secrets.NUXT_HOST }}
-          NUXT_PUBLIC_APP_NAME: ${{ secrets.NUXT_PUBLIC_APP_NAME }}
-          NODE_ENV: ${{ secrets.NODE_ENV }}
-          NUXT_GOOGLE_MAPS_API_KEY: ${{ secrets.NUXT_GOOGLE_MAPS_API_KEY }}
-          NUXT_GOOGLE_MAP_ID: ${{ secrets.NUXT_GOOGLE_MAP_ID }}
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          NUXT_PUBLIC_URL_BACKEND: ${{ vars.NUXT_PUBLIC_URL_BACKEND }}
+          NUXT_PUBLIC_BACKEND_PREFIX: ${{ vars.NUXT_PUBLIC_BACKEND_PREFIX || 'api/v1' }}
+          FACEBOOK_APP_ID: ${{ vars.FACEBOOK_APP_ID }}
+          NUXT_HOST: ${{ vars.NUXT_HOST || '0.0.0.0' }}
+          NUXT_PUBLIC_APP_NAME: ${{ vars.NUXT_PUBLIC_APP_NAME || vars.APP_NAME || 'Futzo' }}
+          NODE_ENV: ${{ vars.NODE_ENV || 'production' }}
+          NUXT_GOOGLE_MAPS_API_KEY: ${{ vars.NUXT_GOOGLE_MAPS_API_KEY || secrets.NUXT_GOOGLE_MAPS_API_KEY }}
+          NUXT_GOOGLE_MAP_ID: ${{ vars.NUXT_GOOGLE_MAP_ID }}
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH || secrets.DEPLOY_PATH }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
-            cd $DEPLOY_PATH
-          
-            echo "NUXT_PUBLIC_URL_BACKEND=$NUXT_PUBLIC_URL_BACKEND" > .env.prod
-            echo "NUXT_PUBLIC_BACKEND_PREFIX=$NUXT_PUBLIC_BACKEND_PREFIX" >> .env.prod
-            echo "FACEBOOK_APP_ID=$FACEBOOK_APP_ID" >> .env.prod
-            echo "NUXT_HOST=$NUXT_HOST" >> .env.prod
-            echo "NUXT_PUBLIC_APP_NAME=$NUXT_PUBLIC_APP_NAME" >> .env.prod
-            echo "NODE_ENV=$NODE_ENV" >> .env.prod
-            echo "NUXT_GOOGLE_MAPS_API_KEY=$NUXT_GOOGLE_MAPS_API_KEY" >> .env.prod
-            echo "NUXT_GOOGLE_MAP_ID=$NUXT_GOOGLE_MAP_ID" >> .env.prod
-   
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            set -euo pipefail
+            cd "$DEPLOY_PATH"
+
+            # Ensure clean working tree and latest code
+            git fetch --prune
+            git checkout main
             git reset --hard
             git clean -fd
-            git fetch --all
-            git pull origin main
-            
+            git pull --ff-only origin main
+
+            # Write .env.prod after cleaning
+            cat > .env.prod << EOL
+NUXT_PUBLIC_URL_BACKEND=$NUXT_PUBLIC_URL_BACKEND
+NUXT_PUBLIC_BACKEND_PREFIX=$NUXT_PUBLIC_BACKEND_PREFIX
+FACEBOOK_APP_ID=$FACEBOOK_APP_ID
+NUXT_HOST=$NUXT_HOST
+NUXT_PUBLIC_APP_NAME=$NUXT_PUBLIC_APP_NAME
+NODE_ENV=$NODE_ENV
+NUXT_GOOGLE_MAPS_API_KEY=$NUXT_GOOGLE_MAPS_API_KEY
+NUXT_GOOGLE_MAP_ID=$NUXT_GOOGLE_MAP_ID
+EOL
+
             yarn install --frozen-lockfile
-            node --max-old-space-size=4096 node_modules/.bin/nuxt build --dotenv .env.prod
-              
+            NODE_OPTIONS=--max-old-space-size=4096 node node_modules/.bin/nuxt build --dotenv .env.prod
+
             pm2 restart ecosystem.config.cjs
           EOF
