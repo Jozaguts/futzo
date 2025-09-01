@@ -76,7 +76,7 @@ jobs:
             # Start or reload app; --update-env to take new env vars
             pm2 startOrReload ecosystem.config.cjs --update-env || pm2 start ecosystem.config.cjs --update-env
 
-            # Show process details and recent logs
+            # Show process details and non-blocking status (avoid hanging logs)
             pm2 describe futzo || true
-            pm2 logs futzo --lines 30 || true
+            pm2 status futzo || true
           EOF
