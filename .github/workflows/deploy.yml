@@ -34,7 +34,8 @@ jobs:
           DEPLOY_PATH: ${{ vars.DEPLOY_PATH || secrets.DEPLOY_PATH }}
         run: |
           ssh -p ${{ vars.SSH_PORT || secrets.SSH_PORT || '22' }} -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
-            set -euo pipefail
+            set -Eeuo pipefail
+            trap 'echo "[frontend-deploy] Failed at line $LINENO" >&2' ERR
             cd "$DEPLOY_PATH"
 
             # Ensure clean working tree and latest code
@@ -59,6 +60,9 @@ jobs:
             yarn install --frozen-lockfile
             NODE_OPTIONS=--max-old-space-size=4096 node node_modules/.bin/nuxt build --dotenv .env.prod
 
+            # Verify build artifact exists (fail early if not)
+            [ -f .output/server/index.mjs ] || { echo 'ERROR: Nuxt build output missing (.output/server/index.mjs)'; exit 1; }
+
             echo "PM2 diagnostics:"
             echo "USER: $(whoami)"
             command -v node && node -v || true
@@ -73,10 +77,10 @@ jobs:
             # Show PM2 list (may be empty)
             pm2 ls || true
 
-            # Start or reload app; --update-env to take new env vars
-            pm2 startOrReload ecosystem.config.cjs --update-env || pm2 start ecosystem.config.cjs --update-env
+            # Start or reload app; --update-env to take new env vars. If startOrReload fails, try start, else fail.
+            pm2 startOrReload ecosystem.config.cjs --update-env || pm2 start ecosystem.config.cjs --update-env || { echo 'ERROR: pm2 failed to start/reload app'; exit 1; }
 
-            # Show process details and non-blocking status (avoid hanging logs)
-            pm2 describe futzo || true
-            pm2 status futzo || true
+            # Verify app process is online
+            pm2 describe futzo
+            pm2 list | grep -E "futzo.*online" >/dev/null || { echo 'ERROR: PM2 process futzo is not online'; pm2 status futzo || true; exit 1; }
           EOF
