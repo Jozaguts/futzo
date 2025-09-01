@@ -33,7 +33,7 @@ jobs:
           NUXT_GOOGLE_MAP_ID: ${{ vars.NUXT_GOOGLE_MAP_ID }}
           DEPLOY_PATH: ${{ vars.DEPLOY_PATH || secrets.DEPLOY_PATH }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
             set -euo pipefail
             cd "$DEPLOY_PATH"
 
@@ -54,7 +54,7 @@ jobs:
             NODE_ENV=$NODE_ENV
             NUXT_GOOGLE_MAPS_API_KEY=$NUXT_GOOGLE_MAPS_API_KEY
             NUXT_GOOGLE_MAP_ID=$NUXT_GOOGLE_MAP_ID
-          EOL
+            EOL
 
             yarn install --frozen-lockfile
             NODE_OPTIONS=--max-old-space-size=4096 node node_modules/.bin/nuxt build --dotenv .env.prod
