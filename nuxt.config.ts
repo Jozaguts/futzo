@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
+import path from 'node:path';
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
@@ -110,6 +111,12 @@ export default defineNuxtConfig({
       preprocessorOptions: {
         // Use modern Sass compiler API (mejor rendimiento y menos edge-cases con PNPM)
         sass: { api: 'modern-compiler' },
+      },
+    },
+    resolve: {
+      alias: {
+        // Shim to provide named export { autoAnimate } for versions < commit 6d2950b
+        '@formkit/auto-animate$': path.resolve(__dirname, 'app/shims/auto-animate.ts'),
       },
     },
   },
