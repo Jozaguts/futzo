@@ -1,4 +1,4 @@
-import type { User } from '~/models/user';
+import type { User } from '~/models/User';
 import type { Team } from '~/models/Team';
 import type { Position } from '~/models/Position';
 

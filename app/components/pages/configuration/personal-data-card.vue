@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { VPhoneInput } from 'v-phone-input'
-  import type { UpdateUserForm, User } from '~/models/user'
+  import type { UpdateUserForm, User } from '~/models/User'
 
   const { fields, resetForm, handleSubmit } = useSchemas('edit-user')
   const user = computed(() => useAuthStore().user as User)

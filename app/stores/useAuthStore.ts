@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import type { ResetPasswordState, UpdateUserForm, UpdateUserPasswordForm, User } from '~/models/user';
+import type { ResetPasswordState, UpdateUserForm, UpdateUserPasswordForm, User } from '~/models/User';
 import { useToast } from '~/composables/useToast';
 
 export const useAuthStore = defineStore(

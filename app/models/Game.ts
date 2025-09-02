@@ -1,6 +1,6 @@
 import type { Availability, AvailableIntervals } from '~/models/Schedule';
 import type { Player, TeamLineupAvailablePlayers } from '~/models/Player';
-import type { User } from '~/models/user';
+import type { User } from '~/models/User';
 
 export type GameEvents = {
   id: number;

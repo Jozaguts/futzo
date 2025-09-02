@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import type { UpdateUserPasswordForm, User } from '~/models/user'
+  import type { UpdateUserPasswordForm, User } from '~/models/User'
 
   const { fields, handleSubmit } = useSchemas('edit-password')
   const user = computed(() => useAuthStore().user as User)

@@ -1,4 +1,4 @@
-import type { OnboardingState } from '~/models/user';
+import type { OnboardingState } from '~/models/User';
 
 export const getOnboardingState = async () => {
   const client = useSanctumClient();

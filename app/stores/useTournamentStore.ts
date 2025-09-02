@@ -12,7 +12,7 @@ import type {
   ExportType,
 } from '~/models/tournament';
 import type { Game } from '~/models/Game';
-import type { User } from '~/models/user';
+import type { User } from '~/models/User';
 import prepareForm from '~/utils/prepareFormData';
 import type { IPagination } from '~/interfaces';
 import * as tournamentAPI from '~/http/api/tournament';
