@@ -3,7 +3,6 @@ import type {
   FormSteps,
   LocationAvailability,
   LocationCard,
-  LocationPagination,
   LocationResponse,
   LocationStoreRequest,
 } from '~/models/Location';
