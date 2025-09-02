@@ -110,6 +110,7 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         // Use modern Sass compiler API (mejor rendimiento y menos edge-cases con PNPM)
+        // @ts-expect-error
         sass: { api: 'modern-compiler' },
       },
     },

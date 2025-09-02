@@ -19,6 +19,7 @@ export interface User {
   phone: string;
   image: string;
   onboarding: OnboardingState;
+  is_operational: boolean;
 }
 export type OnboardingStep = {
   id: string;
