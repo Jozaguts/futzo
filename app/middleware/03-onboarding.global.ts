@@ -12,7 +12,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   // Prioridad al pago: si no está operacional, manda a checkout y no cargues onboarding
   if (userRef.value && userRef.value.is_operational === false) {
-    if (to.path !== '/configuracion') return navigateTo('/configuracion');
+    if (to.path !== '/configuracion') return navigateTo({ name: 'configuracion', query: { step: 'account' } });
     return;
   }
 
