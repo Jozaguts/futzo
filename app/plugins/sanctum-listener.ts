@@ -28,7 +28,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
     if (status === 402) {
       const route = useRoute();
-      if (route.path !== '/configuracion') navigateTo('/configuracion');
+      if (route.path !== '/configuracion') navigateTo({ name: 'configuracion', query: { step: 'account' } });
     }
     console.log(status);
   });

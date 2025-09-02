@@ -68,6 +68,8 @@ export const useOnboardingStore = defineStore(
     };
 
     const canAccessPath = (path: string) => {
+      const { user } = useAuthStore();
+      if (!user?.is_operational) return false;
       if (state.value.all_done) return true;
       // Permite index siempre (respaldado por backend)
       if (path === '/') return true;

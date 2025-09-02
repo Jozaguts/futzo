@@ -100,14 +100,14 @@
             :key="link.title"
             link
             :to="onboarding.isDisabled(link.to) ? null : link.to"
-            :disabled="onboarding.isDisabled(link.to) && link.title !== 'Dashboard' && link.title !== 'Ubicaciones'"
+            :disabled="onboarding.isDisabled(link.to)"
             :title="link.title"
             @click="(e) => onClick(link.to, e)"
             :prepend-icon="() => h(Icon, { name: link.icon, class: link.class, mode: 'svg' })"
           >
           </v-list-item>
         </v-list>
-        <OnboardingSteps v-if="!onboarding.state.all_done" />
+        <OnboardingSteps v-if="!onboarding.state.all_done && user?.is_operational" />
       </div>
     </template>
     <template #append>
