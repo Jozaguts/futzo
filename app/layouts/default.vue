@@ -17,8 +17,10 @@
   })
 </script>
 <template>
-  <NuxtLoadingIndicator color="#9155FD" :height="6" />
   <div>
+    <ClientOnly>
+      <NuxtLoadingIndicator color="#9155FD" :height="6" />
+    </ClientOnly>
     <v-layout>
       <v-app app>
         <ClientOnly>
