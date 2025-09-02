@@ -19,10 +19,17 @@
   }
 </script>
 <template>
-  <v-infinite-scroll height="900" mode="intersect" @load="load" v-if="!noLocations">
-    <v-container fluid>
-      <v-row>
-        <v-col cols="12" md="3" lg="3" v-for="location in locations" :key="location.id">
+  <v-infinite-scroll
+    height="900"
+    mode="intersect"
+    @load="load"
+    v-if="!noLocations"
+    empty-text="No hay más ubicaciones"
+    loader-text="Cargando más ubicaciones..."
+  >
+    <v-container fluid class="pa-0">
+      <v-row no-gutters>
+        <v-col cols="12" md="3" lg="3" class="pa-0" v-for="location in locations" :key="location.id">
           <LocationCard :location="location" />
         </v-col>
       </v-row>
