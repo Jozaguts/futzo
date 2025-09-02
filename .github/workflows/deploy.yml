@@ -45,6 +45,28 @@ jobs:
             git clean -fd
             git pull --ff-only origin main
 
+            # Compute semantic version
+            LAST_TAG=$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null || echo 'v0.0.0')
+            COMMITS=$(git log --pretty=%s ${LAST_TAG}..HEAD || true)
+            if [ -z "$COMMITS" ]; then
+              VERSION="$LAST_TAG"
+            else
+              BUMP=patch
+              echo "$COMMITS" | grep -E 'BREAKING CHANGE|!:' >/dev/null 2>&1 && BUMP=major
+              if [ "$BUMP" = "patch" ] && echo "$COMMITS" | grep -E '^feat(\(|:)' >/dev/null 2>&1; then BUMP=minor; fi
+              VER=${LAST_TAG#v}
+              IFS='.' read -r MA MI PA <<EOFV
+              $VER
+              EOFV
+              case "$BUMP" in
+                major) MA=$((MA+1)); MI=0; PA=0;;
+                minor) MI=$((MI+1)); PA=0;;
+                patch) PA=$((PA+1));;
+              esac
+              VERSION="v${MA}.${MI}.${PA}"
+            fi
+            echo "Computed version: $VERSION"
+
             # Write .env.prod after cleaning (avoid heredoc indentation issues)
             (
               echo "NUXT_PUBLIC_URL_BACKEND=$NUXT_PUBLIC_URL_BACKEND"
@@ -55,6 +77,7 @@ jobs:
               echo "NODE_ENV=$NODE_ENV"
               echo "NUXT_GOOGLE_MAPS_API_KEY=$NUXT_GOOGLE_MAPS_API_KEY"
               echo "NUXT_GOOGLE_MAP_ID=$NUXT_GOOGLE_MAP_ID"
+              echo "NUXT_PUBLIC_APP_VERSION=$VERSION"
             ) > .env.prod
 
             yarn install --frozen-lockfile

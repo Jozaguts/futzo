@@ -157,6 +157,7 @@ export default defineNuxtConfig({
       baseURLBackend: process.env.NUXT_PUBLIC_URL_BACKEND,
       backendPrefix: process.env.NUXT_PUBLIC_BACKEND_PREFIX,
       appName: process.env.NUXT_PUBLIC_APP_NAME,
+      appVersion: process.env.NUXT_PUBLIC_APP_VERSION || 'dev',
       googleMapsAPIKey: process.env.NUXT_GOOGLE_MAPS_API_KEY,
       googleMapId: process.env.NUXT_GOOGLE_MAP_ID,
       baseUrl: process.env.NUXT_PUBLIC_URL,

@@ -4,6 +4,9 @@
       <Toaster position="top-right" offset="80px" :duration="toastDuration" />
     </ClientOnly>
     <slot />
+    <ClientOnly>
+      <VersionBadge />
+    </ClientOnly>
   </v-app>
 </template>
 <script setup lang="ts">

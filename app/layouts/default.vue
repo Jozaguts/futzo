@@ -31,6 +31,9 @@
           </v-main>
         </ClientOnly>
         <AnimatedGradiendButton />
+        <ClientOnly>
+          <VersionBadge />
+        </ClientOnly>
       </v-app>
     </v-layout>
   </div>
