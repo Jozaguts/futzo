@@ -4,6 +4,7 @@
   import { Icon } from '#components'
   const { drawer, drawerWidth, isMobile, rail } = storeToRefs(useGlobalStore())
   const onboarding = useOnboardingStore()
+  const { doneStepsCound } = storeToRefs(useOnboardingStore())
   const drawerRef = ref()
   const authStore = useAuthStore()
   const { user } = storeToRefs(authStore)
@@ -99,17 +100,29 @@
         </v-list>
         <div class="nav-section-title">
           <div class="title-wrapper">
-            <div class="title-text">Primeros pasos 0/4</div>
+            <div class="title-text">Primeros pasos {{ doneStepsCound }}</div>
           </div>
         </div>
         <div class="d-flex align-center">
-          <v-banner :stacked="true" density="compact">
-            <template #text>
+          <v-banner :stacked="true" density="compact" class="pl-2 pr-3">
+            <v-banner-text class="pa-0">
               <v-list density="compact">
-                <v-list-item append-icon="mdi-checkbox-blank-circle-outline">Crea tu primer ubicación</v-list-item>
-                <v-list-item append-icon="mdi-checkbox-marked-circle">Crea tu primer ubicación</v-list-item>
+                <v-list-item
+                  class="text-primary border-sm rounded-lg my-2 pa-2 text-left"
+                  :class="{
+                    'text-primary': task?.done,
+                    'text-disabled': !task?.done,
+                  }"
+                  v-for="task in onboarding.state.steps"
+                  :key="task?.title"
+                >
+                  <v-list-item-title>
+                    {{ task?.title }}
+                  </v-list-item-title>
+                  <template #append><v-icon v-if="task.done">mdi-check</v-icon> </template>
+                </v-list-item>
               </v-list>
-            </template>
+            </v-banner-text>
           </v-banner>
         </div>
       </div>

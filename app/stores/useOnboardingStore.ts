@@ -4,7 +4,7 @@ export const useOnboardingStore = defineStore(
   'onboarding',
   () => {
     const state = ref<OnboardingState>({
-      steps: [],
+      steps: [] as OnboardingState['steps'],
       next: null,
       all_done: false,
       allowed_paths: ['/'],
@@ -36,7 +36,11 @@ export const useOnboardingStore = defineStore(
 
     const isDisabled = (path: string) => !canAccessPath(path);
 
-    return { state, load, refresh, canAccessPath, isDisabled };
+    const doneStepsCound = computed(() => {
+      return `${state.value.steps.filter((s) => s?.done)?.length}/${state.value.steps.length}`;
+    });
+
+    return { state, load, refresh, canAccessPath, isDisabled, doneStepsCound };
   },
   {
     persist: {

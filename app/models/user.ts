@@ -20,8 +20,16 @@ export interface User {
   image: string;
   onboarding: OnboardingState;
 }
+export type OnboardingStep = {
+  id: string;
+  title: string;
+  description: string;
+  done: boolean;
+  link: string;
+  blocking: boolean;
+};
 export type OnboardingState = {
-  steps: string[];
+  steps: OnboardingStep[];
   next: string | null;
   all_done: boolean;
   allowed_paths: string[];

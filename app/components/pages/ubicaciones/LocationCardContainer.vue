@@ -20,7 +20,7 @@
 </script>
 <template>
   <v-infinite-scroll
-    height="900"
+    height="100%"
     mode="intersect"
     @load="load"
     v-if="!noLocations"
