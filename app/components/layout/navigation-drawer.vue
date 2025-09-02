@@ -3,6 +3,7 @@
   import { useDisplay } from 'vuetify/framework'
   import { Icon } from '#components'
   import OnboardingSteps from '~/components/layout/OnboardingSteps.vue'
+  import { useOnboardingStore } from '~/stores/useOnboardingStore'
   const { drawer, drawerWidth, isMobile, rail } = storeToRefs(useGlobalStore())
   const onboarding = useOnboardingStore()
   const drawerRef = ref()
@@ -54,11 +55,19 @@
       await logout()
       useTournamentStore().$reset()
       useLocationStore().$reset()
+      useOnboardingStore().$reset()
     } catch (error) {
       console.error('Error during logout:', error)
     }
   }
   const { mobile } = useDisplay()
+  watch(
+    () => user.value?.is_operational,
+    async (ok) => {
+      if (ok) await onboarding.loadSafe()
+    },
+    { immediate: true }
+  )
 </script>
 
 <template>

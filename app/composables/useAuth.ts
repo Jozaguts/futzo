@@ -2,10 +2,12 @@ import { FetchError } from 'ofetch';
 import { useForm } from 'vee-validate';
 import { boolean, object, string } from 'yup';
 import { ref } from 'vue';
-import type { AuthForm } from '~/models/user';
+import type { AuthForm } from '~/models/User';
 import { specialCharacters, phoneRegex } from '~/utils/constants';
 
 export default function useAuth() {
+  const { refreshIdentity, logout } = useSanctumAuth();
+  const user = useSanctumUser();
   const isPhone = ref(false);
   const { handleSubmit, defineField, errors, meta, resetForm } = useForm({
     initialValues: {
@@ -51,6 +53,20 @@ export default function useAuth() {
   const isLoading = ref(false);
   const errorMessage = ref('');
   const areaCode = ref('+52');
+
+  const refreshIdentitySafe = async () => {
+    try {
+      await refreshIdentity();
+      return !!user.value;
+    } catch (e: any) {
+      if (e?.response?.status === 401) {
+        await logout?.().catch(() => {});
+        user.value = null as any;
+        return false;
+      }
+      return false;
+    }
+  };
 
   async function signIn(form: Partial<AuthForm>) {
     errorMessage.value = '';
@@ -140,8 +156,9 @@ export default function useAuth() {
     meta,
     areaCode,
     isSignUp,
-    showRegisterFormHandler,
     submitHandler,
     resetForm,
+    showRegisterFormHandler,
+    refreshIdentitySafe,
   };
 }
