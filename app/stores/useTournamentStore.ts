@@ -91,14 +91,14 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
 
   async function tournamentFields($tournamentId: number) {
     const client = useSanctumClient();
-    const { data } = await client<Promise<{ data: Field[] }>>(`api/v1/admin/tournaments/${$tournamentId}/fields`);
+    const { data } = await client<{ data: Field[] }>(`api/v1/admin/tournaments/${$tournamentId}/fields`);
     return data;
   }
 
   async function loadTournaments() {
     loading.value = true;
     const client = useSanctumClient();
-    const response = await client<Promise<{ data: Tournament[]; pagination: IPagination }>>(
+    const response = await client<{ data: Tournament[]; pagination: IPagination }>(
       `/api/v1/admin/tournaments?per_page=${pagination.value.per_page}&page=${pagination.value.current_page}`
     ).finally(() => (loading.value = false));
     tournaments.value = response.data;
@@ -151,7 +151,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     if (!leagueId) {
       leagueId = user.value?.league?.id;
     }
-    const { data } = await client<Promise<{ data: Tournament[] }>>(`api/v1/admin/leagues/${leagueId}/tournaments`);
+    const { data } = await client<{ data: Tournament[] }>(`api/v1/admin/leagues/${leagueId}/tournaments`);
     tournaments.value = data || [];
   }
 
@@ -176,7 +176,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
 
   const getTournamentLocations = async () => {
     const client = useSanctumClient();
-    tournamentLocations.value = await client<Promise<TournamentLocation[]>>(
+    tournamentLocations.value = await client<TournamentLocation[]>(
       `/api/v1/admin/tournaments/${tournamentId.value}/locations`
     );
   };

@@ -6,7 +6,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
     try {
       // Call backend API
-      const { canRegister } = await useSanctumClient()<Promise<{ canRegister: boolean }>>(
+      const { canRegister } = await useSanctumClient()<<{ canRegister: boolean }>(
         `/api/v1/public/tournaments/${slug}/can-register`
       );
 

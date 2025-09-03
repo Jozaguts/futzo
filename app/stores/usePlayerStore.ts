@@ -46,7 +46,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
   const getPlayer = async (id: string) => {
     try {
       const client = useSanctumClient();
-      const response = await client<Promise<{ data: Player }>>(`/api/v1/admin/players/${id}`);
+      const response = await client<{ data: Player }>(`/api/v1/admin/players/${id}`);
       player.value = response.data;
     } catch (error) {
       console.error(error);
@@ -62,7 +62,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
     try {
       const client = useSanctumClient();
       loading.value = true;
-      const blob = await client<Promise<Blob>>('/api/v1/admin/players/template');
+      const blob = await client<Blob>('/api/v1/admin/players/template');
       parseBlobResponse(blob, 'plantilla de jugadores', 'excel');
     } catch (error) {
       toast({

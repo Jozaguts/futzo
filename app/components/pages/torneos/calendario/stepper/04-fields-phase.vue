@@ -38,7 +38,7 @@
   onMounted(async () => {
     const locationIds = scheduleStoreRequest.value.general.locations.map((location) => location.id)
     const client = useSanctumClient()
-    fields.value = await client<Promise<LocationFieldsRequest[]>>(
+    fields.value = await client<LocationFieldsRequest[]>(
       `/api/v1/admin/locations/fields?location_ids=${locationIds.join(',')}&tournament_id=${tournamentId.value}`
     )
     scheduleStoreRequest.value.fields_phase = fields.value

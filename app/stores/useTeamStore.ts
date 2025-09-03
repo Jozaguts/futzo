@@ -59,7 +59,7 @@ export const useTeamStore = defineStore('teamStore', () => {
   const downloadTemplate = async () => {
     try {
       loading.value = true;
-      const blob = await client<Promise<Blob>>('/api/v1/admin/teams/template');
+      const blob = await client<Blob>('/api/v1/admin/teams/template');
       parseBlobResponse(blob, 'plantilla de equipos', 'excel');
     } catch (error) {
       toast({
