@@ -1,9 +1,10 @@
 <script lang="ts" setup>
   import Avatar from '~/components/pages/configuration/avatar.vue'
   import PersonalDataCard from '~/components/pages/configuration/personal-data-card.vue'
+  import Plans from '~/components/pages/configuration/plans/index.vue'
 
   const user = computed(() => useAuthStore().user)
-  const tab = ref(1)
+  const tab = ref(!user?.value?.is_operational ? 3 : 1)
   definePageMeta({
     middleware: ['sanctum:auth'],
   })
@@ -22,6 +23,7 @@
         <v-tabs v-model="tab">
           <v-tab :value="1"> Datos personales</v-tab>
           <v-tab :value="2"> Contraseña</v-tab>
+          <v-tab :value="3">Suscripción</v-tab>
         </v-tabs>
         <v-tabs-window v-model="tab">
           <v-tabs-window-item :value="1" :key="1">
@@ -29,6 +31,9 @@
           </v-tabs-window-item>
           <v-tabs-window-item :value="2" :key="2">
             <lazy-pages-configuration-password-data-card />
+          </v-tabs-window-item>
+          <v-tabs-window-item :value="3" :key="3">
+            <Plans />
           </v-tabs-window-item>
         </v-tabs-window>
       </v-card-text>
