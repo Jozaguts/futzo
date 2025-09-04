@@ -1,22 +1,27 @@
 <script setup lang="ts">
   import { Icon } from '#components'
   import type { FutzoPlan } from '~/models/Product'
+  import checkout from '~/http/api/checkout'
+  import { useToast } from '~/composables/useToast'
   const {
     isMonthlyPrice,
     plan,
     prioritary = false,
   } = defineProps<{ isMonthlyPrice: boolean; plan: FutzoPlan; prioritary?: Boolean }>()
-  const payHandler = () => {
-    useSanctumClient()('/api/v1/checkout', {
-      query: {
-        user_id: useAuth()?.user?.id,
-        plan: plan?.sku,
-        period: isMonthlyPrice ? 'month' : 'year',
-      },
-    })
+  const disabled = ref(false)
+  const loading = ref(false)
+  const payHandler = async () => {
+    try {
+      checkout(plan.sku, isMonthlyPrice ? 'month' : 'year')
+    } catch (error) {
+      useToast().toast({
+        type: 'error',
+        msg: 'Checkout',
+        description: 'No pudimos generar tu checkout. Intenta de nuevo o contáctanos en soporte@futzo.io',
+      })
+    }
   }
 </script>
-
 <template>
   <v-card class="pa-8 futzo-rounded" min-width="280" :elevation="prioritary ? 10 : 2">
     <div class="position-relative" v-if="prioritary">
@@ -64,9 +69,9 @@
       </v-list>
     </v-card-text>
     <v-card-actions>
-      <v-btn block variant="outlined" @click="payHandler">Suscribete</v-btn>
+      <v-btn block variant="outlined" @click="payHandler" :disabled="disabled" :loading="loading">{{
+        loading ? 'Generando tu checkout seguro...' : 'Comenzar ahora'
+      }}</v-btn>
     </v-card-actions>
   </v-card>
 </template>
-
-<style scoped></style>

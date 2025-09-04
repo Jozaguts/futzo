@@ -2,11 +2,22 @@
   import Avatar from '~/components/pages/configuration/avatar.vue'
   import PersonalDataCard from '~/components/pages/configuration/personal-data-card.vue'
   import Plans from '~/components/pages/configuration/plans/index.vue'
+  import { useToast } from '~/composables/useToast'
 
   const user = computed(() => useAuthStore().user)
   const tab = ref(!user?.value?.is_operational ? 3 : 1)
   definePageMeta({
     middleware: ['sanctum:auth'],
+  })
+  onMounted(async () => {
+    if (useRoute().query.payment == 'success') {
+      tab.value = 3
+      useToast().toast({
+        type: 'success',
+        msg: '🎉',
+        description: '¡Listo! Tu suscripción al plan ProPlay está activa.',
+      })
+    }
   })
 </script>
 <template>
