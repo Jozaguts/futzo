@@ -1,11 +1,29 @@
 <script setup lang="ts">
   import { Icon } from '#components'
   import type { FutzoPlan } from '~/models/Product'
-  const { isMonthlyPrice, plan } = defineProps<{ isMonthlyPrice: boolean; plan: FutzoPlan }>()
+  const {
+    isMonthlyPrice,
+    plan,
+    prioritary = false,
+  } = defineProps<{ isMonthlyPrice: boolean; plan: FutzoPlan; prioritary?: Boolean }>()
+  const payHandler = () => {
+    useSanctumClient()('/api/v1/checkout', {
+      query: {
+        user_id: useAuth()?.user?.id,
+        plan: plan?.sku,
+        period: isMonthlyPrice ? 'month' : 'year',
+      },
+    })
+  }
 </script>
 
 <template>
-  <v-card class="pa-8 futzo-rounded" min-width="280" elevation="10">
+  <v-card class="pa-8 futzo-rounded" min-width="280" :elevation="prioritary ? 10 : 2">
+    <div class="position-relative" v-if="prioritary">
+      <v-chip class="float-end position-absolute top-0 right-0" color="primary" variant="flat" size="small"
+        >Más elegido</v-chip
+      >
+    </div>
     <v-card-title class="text-center text-h5"> {{ plan?.name }} </v-card-title>
     <v-card-subtitle class="text-center">
       <span
@@ -46,7 +64,7 @@
       </v-list>
     </v-card-text>
     <v-card-actions>
-      <v-btn block variant="outlined">Suscribete</v-btn>
+      <v-btn block variant="outlined" @click="payHandler">Suscribete</v-btn>
     </v-card-actions>
   </v-card>
 </template>

@@ -18,7 +18,7 @@
       <v-col cols="12" lg="10" md="10">
         <div class="d-flex ga-8 justify-center">
           <PlanCard :isMonthlyPrice="isMonthly" :plan="productPrices.kickoff" />
-          <PlanCard :isMonthlyPrice="isMonthly" :plan="productPrices.pro_play" />
+          <PlanCard :isMonthlyPrice="isMonthly" :plan="productPrices.pro_play" :prioritary="true" />
           <PlanCard :isMonthlyPrice="isMonthly" :plan="productPrices.elite_league" />
         </div>
       </v-col>
