@@ -3,6 +3,7 @@
   import { Toaster } from 'vue-sonner'
   const show = ref(false)
   const { rail, isMobile, toastDuration } = storeToRefs(useGlobalStore())
+  const { user } = storeToRefs(useAuthStore())
   onMounted(() => {
     show.value = true
   })
@@ -32,7 +33,7 @@
             <slot></slot>
           </v-main>
         </ClientOnly>
-        <AnimatedGradiendButton />
+        <AnimatedGradiendButton v-if="!user?.is_operational" />
         <ClientOnly>
           <VersionBadge />
         </ClientOnly>

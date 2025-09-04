@@ -115,6 +115,7 @@ export const useAuthStore = defineStore(
         })
         .finally(() => (resendingVerificationCode.value = false));
     };
+    const isOperational = computed(() => !!user?.value?.is_operational);
 
     return {
       role,
@@ -124,6 +125,7 @@ export const useAuthStore = defineStore(
       forgotPasswordState,
       resendingVerificationCode,
       errorMessage,
+      isOperational,
       updateUser,
       updateImage,
       updatePassword,
