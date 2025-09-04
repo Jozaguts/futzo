@@ -1,10 +1,13 @@
-export default async (identifier: string, plan: string, period: string) => {
+export default (plan: string, period: string) => {
   const client = useSanctumClient();
-  return await client(`/api/v1/checkout`, {
+  client<{ url: string }>(`/api/v1/checkout`, {
     query: {
-      identifier,
       plan,
       period,
     },
+  }).then((response) => {
+    const link = document.createElement('a');
+    link.href = response.url;
+    link.click();
   });
 };
