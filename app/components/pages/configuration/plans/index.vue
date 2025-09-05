@@ -81,12 +81,12 @@
             } as FutzoPlan
           "
         >
-          <template #subtitle>{{ user.plan.billing_period === 'month' ? 'Mensual' : 'Anual' }} </template>
+          <template #subtitle>{{ user?.plan?.billing_period === 'month' ? 'Mensual' : 'Anual' }} </template>
           <template #separator>
             <div class="d-flex justify-end">
               <p class="text-medium-emphasis">
                 <span class=""> Próxima fecha de cobro </span>
-                <span class="text-decoration-underline">{{ user.plan?.current_period_end }}</span>
+                <span class="text-decoration-underline">{{ user?.plan?.current_period_end }}</span>
               </p>
             </div>
           </template>
