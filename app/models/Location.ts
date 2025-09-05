@@ -21,16 +21,45 @@ export type Location = {
   name: string;
   city: string;
   address: string;
+  position: LocationPosition;
   autocomplete_prediction: object;
 };
-
 export type LocationStoreRequest = {
   tags: string[];
-  availability: LocationAvailability[];
+  fields: Field[];
   fields_count: number;
-  position: { lat: number; lng: number };
-  completed: boolean;
+  steps: {
+    location: {
+      completed: boolean;
+    };
+    fields: {
+      completed: boolean;
+    };
+  };
 } & Location;
+export type Field = {
+  name: string;
+  windows: Windows;
+};
+export type Windows = {
+  mon?: All[];
+  tue?: All[];
+  wed?: All[];
+  thu?: All[];
+  fri?: All[];
+  sat?: All[];
+  sun?: All[];
+  all?: All[];
+};
+export type All = {
+  start: string;
+  end: string;
+};
+export type LocationPosition = {
+  lat: number;
+  lng: number;
+};
+
 export type LocationCard = {
   image: string;
 } & LocationStoreRequest;

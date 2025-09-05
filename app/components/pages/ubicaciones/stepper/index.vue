@@ -2,15 +2,37 @@
   import IndicatorStep from '~/components/shared/IndicatorStep.vue'
   import LocationStep from '~/components/pages/ubicaciones/stepper/LocationStep.vue'
   import AvailabilityStep from '~/components/pages/ubicaciones/stepper/AvailabilityStep.vue'
-  import type { CurrentStep } from '~/models/Location'
+  import type { CurrentStep, Field, LocationPosition, LocationStoreRequest } from '~/models/Location'
+  import { provide } from 'vue'
 
-  const { locationStoreRequest, isEdition, formSteps, isAllStepsCompleted, locationDialog } =
-    storeToRefs(useLocationStore())
+  const { locationStoreRequest, isEdition, formSteps, locationDialog } = storeToRefs(useLocationStore())
   const emits = defineEmits(['next', 'back', 'close'])
   const locationStepRef = useTemplateRef<{
     validate: Function
     handleSubmit: Function
   }>('locationStepRef')
+  const form = ref<LocationStoreRequest>({
+    name: '',
+    city: '',
+    address: '',
+    position: {} as LocationPosition,
+    autocomplete_prediction: {},
+    tags: [] as string[],
+    fields: [] as Field[],
+    fields_count: 1,
+    steps: {
+      location: {
+        completed: false,
+      },
+      fields: {
+        completed: false,
+      },
+    },
+  })
+  function updateForm(value: LocationStoreRequest) {
+    form.value = { ...value }
+  }
+
   const availabilityStepRef = useTemplateRef<{
     validate: Function
     handleSubmit: Function
@@ -48,6 +70,7 @@
     }
     formSteps.value.current = 'location'
   }
+  provide('location_form', { form, updateForm })
 </script>
 <template>
   <v-card-text>
@@ -72,7 +95,7 @@
             :show-icon="false"
             class="w-btn"
             :text="textButton"
-            :disabled="!isAllStepsCompleted"
+            :disabled="!form.steps.location.completed"
             variant="elevated"
             @click="nextStepHandler"
           />

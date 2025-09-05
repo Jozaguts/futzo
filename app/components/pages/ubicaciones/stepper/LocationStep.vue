@@ -1,61 +1,30 @@
 <script lang="ts" setup>
-  import type { LocationStoreRequest } from '~/models/Location'
-  import { array, object, string, number } from 'yup'
   import type { Prediction } from '~/interfaces'
   import { usePlaceSearch, getPlaceDetails } from '~/utils/googleSearch'
   import type { AutocompletePrediction } from '~/models/Schedule'
-  import { useForm } from 'vee-validate'
-  import { toTypedSchema } from '@vee-validate/yup'
   import { GoogleMap, AdvancedMarker } from 'vue3-google-map'
-  import { useLocale } from 'vuetify/framework'
+  import { inject } from 'vue'
 
-  const { locationStoreRequest, isEdition } = storeToRefs(useLocationStore())
-  const { defineField, errors, meta, controlledValues, setFieldError } = useForm<LocationStoreRequest>({
-    validationSchema: toTypedSchema(
-      object({
-        name: string().required('El campo es requerido').default(locationStoreRequest.value.name),
-        city: string().required('El campo es requerido').default(locationStoreRequest.value.city),
-        address: string().required('El campo es requerido').default(locationStoreRequest.value.address),
-        autocomplete_prediction: object()
-          .required('El campo es requerido')
-          .default(locationStoreRequest.value.autocomplete_prediction),
-        fields_count: number()
-          .required('La cantidad de campos de juego es requerida')
-          .default(locationStoreRequest.value.fields_count),
-        tags: array().of(string()),
-        position: object({
-          lat: number().required(),
-          lng: number().required(),
-        }).default(locationStoreRequest.value.position),
-      })
-    ),
-  })
-  const searchString = ref('')
+  const { form, updateForm } = inject('location_form')
+  const searchString = ref<AutocompletePrediction>()
   const { search } = usePlaceSearch()
-  const [name] = reactive(defineField('name'))
-  const [city] = reactive(defineField('city'))
-  const [address] = reactive(defineField('address'))
-  const [tags] = reactive(defineField('tags'))
-  const [fields_count] = reactive(defineField('fields_count'))
-  const [autocomplete_prediction] = reactive(defineField('autocomplete_prediction'))
-  const [position] = reactive(defineField('position'))
   let foundedLocations = ref([] as AutocompletePrediction[])
-  const { decimalSeparator } = useLocale()
-  console.log(decimalSeparator?.value)
   const tag = ref<string>('')
+  const tagError = ref<boolean>(false)
   const tagHandler = () => {
-    setFieldError('tags', 'La etiqueta ya existe o está vacía')
+    tagError.value = false
+    // setFieldError('tags', 'La etiqueta ya existe o está vacía')
     const trimmedTag = tag.value?.trim()
-    if (!trimmedTag || tags.value?.includes(trimmedTag)) {
-      setFieldError('tags', 'La etiqueta ya existe o está vacía')
+    if (!trimmedTag || form?.value?.tags?.includes(trimmedTag)) {
+      tagError.value = true
       return
     }
-
-    tags.value = [...(tags.value || []), trimmedTag]
+    //
+    form.value.tags = [...(form.value.tags.value || []), trimmedTag]
     tag.value = ''
   }
   const removeTag = (tagToRemove: string) => {
-    tags.value = tags.value?.filter((tag) => tag !== tagToRemove)
+    form.value.tags = form.value.tags?.filter((tag) => tag !== tagToRemove)
   }
   const itemProps = (item: Prediction) => {
     return {
@@ -73,43 +42,24 @@
   const updateValue = async (value: AutocompletePrediction) => {
     if (value?.place_id) {
       const details = await getPlaceDetails(value.place_id)
-      defineField('name', details?.name as string)
-      locationStoreRequest.value.name = details?.name as string
-      name.value = details?.name as string
-      if (details?.lat && details?.lng) {
-        locationStoreRequest.value.position = {
-          lat: details.lat,
-          lng: details.lng,
-        }
-        position.value = locationStoreRequest.value.position
+      if (details?.name) {
+        updateForm({
+          ...form.value,
+          name: details?.name,
+          address: details?.address,
+          position: {
+            lat: details.lat,
+            lng: details.lng,
+          },
+        })
       }
-    } else {
-      console.error('No se pudieron obtener coordenadas del lugar.')
     }
-    autocomplete_prediction.value = value
-    city.value = value.structured_formatting?.secondary_text
-    address.value = value?.description
-    locationStoreRequest.value.city = value.structured_formatting?.secondary_text
-    locationStoreRequest.value.address = value?.description
   }
-  const isValidFrom = computed(() => meta.value.valid)
-  const controlledValues2 = computed(() => controlledValues.value)
   const markerOptions = computed(() => {
-    return { position: position.value, title: name.value }
+    return { position: form.value.position, title: form.value.name }
   })
-  watch(isValidFrom, (value) => {
-    locationStoreRequest.value.completed = value
-  })
-  watch(controlledValues2, (value) => {
-    locationStoreRequest.value = { ...locationStoreRequest.value, ...value }
-  })
-  onMounted(async () => {
-    if (isEdition.value) {
-      locationStoreRequest.value.completed = true
-      if (locationStoreRequest.value?.tags?.length) {
-        tags.value = [...locationStoreRequest.value.tags]
-      }
-    }
+  watch(form, () => {
+    form.value.steps.location.completed = form?.value?.name && form?.value?.address && form?.value?.fields_count >= 1
   })
 </script>
 <template>
@@ -129,38 +79,28 @@
           no-filter
           @update:model-value="updateValue"
           @update:search="searchHandler($event)"
-          :error-messages="errors.city"
         >
-        </v-autocomplete
-      ></v-col>
+          :error-messages="errors.city"
+        </v-autocomplete></v-col
+      >
       <v-col cols="5">
         <v-text-field
           active
+          disabled
           density="compact"
           variant="outlined"
-          :value="name"
-          readonly
-          :error-messages="errors.name"
+          :value="form?.name"
           class="mt-4"
           label="Nombre"
         />
-        <v-text-field
-          active
-          placeholder="p.ej. Puerto Vallarta"
-          density="compact"
-          variant="outlined"
-          readonly
-          class="mt-4"
-          label="Cuidad"
-          :value="city"
-        ></v-text-field>
+
         <v-text-field
           active
           placeholder="p.ej. Las Américas #323 Centro, Puerto Vallarta."
-          density="compact"
+          density="comfortable"
           variant="outlined"
-          readonly
-          :value="address"
+          disabled
+          :value="form.address"
           class="mt-4"
           label="Dirección"
         ></v-text-field>
@@ -170,8 +110,7 @@
           variant="outlined"
           density="compact"
           control-variant="stacked"
-          v-model="fields_count"
-          :error-messages="errors.fields_count"
+          v-model="form.fields_count"
           label="# Campos de juego"
           class="mt-4"
           hide-details
@@ -181,7 +120,6 @@
           class="mt-4"
           v-model="tag"
           label="Etiquetas"
-          active
           placeholder="Ej. Cancha A, Estacionamiento, Entrada principal"
           density="compact"
           variant="outlined"
@@ -189,11 +127,10 @@
           clearable
           hint="Presiona ENTER o + para agregar"
           persistent-hint
-          :error-messages="errors.tags"
         >
         </v-text-field>
         <v-chip-group column variant="outlined" center-active>
-          <v-chip v-for="(t, index) in tags" :key="index" closable @click:close="removeTag(t)">
+          <v-chip v-for="(t, index) in form.tags" :key="index" closable @click:close="removeTag(t)">
             {{ t }}
           </v-chip>
         </v-chip-group>
@@ -203,7 +140,7 @@
           :api-key="useRuntimeConfig().public.googleMapsAPIKey"
           :mapId="useRuntimeConfig().public.googleMapId"
           class="futzo-rounded"
-          :center="position"
+          :center="form.position"
           :camera-control="false"
           :disable-double-click-zoom="true"
           :clickable-icons="false"
