@@ -34,7 +34,7 @@ export default defineNuxtConfig({
       ],
       script: [
         {
-          src: `https://maps.googleapis.com/maps/api/js?key=${process.env.NUXT_GOOGLE_MAPS_API_KEY}&libraries=places&loading=async`,
+          src: `https://maps.googleapis.com/maps/api/js?key=${process.env.NUXT_GOOGLE_MAPS_API_KEY}&libraries=places,marker&loading=async`,
           defer: true,
         },
       ],
