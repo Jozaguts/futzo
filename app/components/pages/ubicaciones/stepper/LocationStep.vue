@@ -114,7 +114,7 @@
 </script>
 <template>
   <v-container class="pa-0">
-    <v-row>
+    <v-row no-gutters>
       <v-col cols="12">
         <v-autocomplete
           label="Dirección del centro deportivo o canchas de juego"
@@ -131,79 +131,57 @@
           @update:search="searchHandler($event)"
           :error-messages="errors.city"
         >
-        </v-autocomplete>
-      </v-col>
-      <v-col cols="12">
-        <GoogleMap
-          :api-key="useRuntimeConfig().public.googleMapsAPIKey"
-          :mapId="useRuntimeConfig().public.googleMapId"
-          class="futzo-rounded"
-          :center="position"
-          :zoom="15"
-          id="map"
-        >
-          <AdvancedMarker :options="markerOptions" />
-        </GoogleMap>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1">Nombre</span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <v-text-field :value="name" readonly :error-messages="errors.name"> </v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Ciudad</span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
+        </v-autocomplete
+      ></v-col>
+      <v-col cols="5">
         <v-text-field
+          active
+          density="compact"
+          variant="outlined"
+          :value="name"
+          readonly
+          :error-messages="errors.name"
+          class="mt-4"
+          label="Nombre"
+        />
+        <v-text-field
+          active
           placeholder="p.ej. Puerto Vallarta"
           density="compact"
           variant="outlined"
           readonly
+          class="mt-4"
+          label="Cuidad"
           :value="city"
         ></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Dirección </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
         <v-text-field
+          active
           placeholder="p.ej. Las Américas #323 Centro, Puerto Vallarta."
           density="compact"
           variant="outlined"
           readonly
           :value="address"
+          class="mt-4"
+          label="Dirección"
         ></v-text-field>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col cols="12" lg="4" md="4"> Campos de juego</v-col>
-      <v-col cols="12" lg="8" md="8">
-        <v-text-field
-          type="number"
+        <v-number-input
+          :min="1"
+          active
+          variant="outlined"
+          density="compact"
+          control-variant="stacked"
           v-model="fields_count"
           :error-messages="errors.fields_count"
-          density="compact"
-          label="Campos en la misma locación"
-          :min="1"
-          variant="outlined"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1">Etiquetas</span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
+          label="# Campos de juego"
+          class="mt-4"
+          hide-details
+        >
+        </v-number-input>
         <v-text-field
+          class="mt-4"
           v-model="tag"
+          label="Etiquetas"
+          active
           placeholder="Ej. Cancha A, Estacionamiento, Entrada principal"
           density="compact"
           variant="outlined"
@@ -214,12 +192,28 @@
           :error-messages="errors.tags"
         >
         </v-text-field>
-
         <v-chip-group column variant="outlined" center-active>
           <v-chip v-for="(t, index) in tags" :key="index" closable @click:close="removeTag(t)">
             {{ t }}
           </v-chip>
         </v-chip-group>
+      </v-col>
+      <v-col cols="7" class="pa-2">
+        <GoogleMap
+          :api-key="useRuntimeConfig().public.googleMapsAPIKey"
+          :mapId="useRuntimeConfig().public.googleMapId"
+          class="futzo-rounded"
+          :center="position"
+          :camera-control="false"
+          :disable-double-click-zoom="true"
+          :clickable-icons="false"
+          :disable-default-ui="true"
+          :zoom="15"
+          id="map"
+          style="width: 100%; height: 100%"
+        >
+          <AdvancedMarker :options="markerOptions" />
+        </GoogleMap>
       </v-col>
     </v-row>
   </v-container>
