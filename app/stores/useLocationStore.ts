@@ -131,7 +131,7 @@ export const useLocationStore = defineStore('locationStore', () => {
       body: locationStoreRequest.value,
     })
       .then(async () => {
-        await Promise.all([reloadLocations(), useOnboardingStore().refresh()]);
+        await Promise.all([reloadLocations(), useOnboardingStore().refresh(), useSanctumAuth().refreshIdentity()]);
         const { toast } = useToast();
         toast({
           type: 'success',
