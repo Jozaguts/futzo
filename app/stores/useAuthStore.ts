@@ -116,6 +116,7 @@ export const useAuthStore = defineStore(
         .finally(() => (resendingVerificationCode.value = false));
     };
     const isOperational = computed(() => !!user?.value?.is_operational);
+    const isSubscribed = computed(() => user?.value?.subscribed ?? false);
 
     return {
       role,
@@ -126,6 +127,7 @@ export const useAuthStore = defineStore(
       resendingVerificationCode,
       errorMessage,
       isOperational,
+      isSubscribed,
       updateUser,
       updateImage,
       updatePassword,

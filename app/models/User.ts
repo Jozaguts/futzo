@@ -20,6 +20,7 @@ export interface User {
   image: string;
   onboarding: OnboardingState;
   is_operational: boolean;
+  subscribed: boolean;
 }
 export type OnboardingStep = {
   id: string;
