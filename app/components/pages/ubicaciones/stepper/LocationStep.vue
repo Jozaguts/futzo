@@ -4,8 +4,10 @@
   import type { AutocompletePrediction } from '~/models/Schedule'
   import { GoogleMap, AdvancedMarker } from 'vue3-google-map'
   import { inject } from 'vue'
+  import type { Windows } from '~/models/Location'
+  import { WINDOWS } from '~/utils/constants'
 
-  const { form, updateForm } = inject('location_form')
+  const { form, updateForm } = inject('location_form') as any
   const searchString = ref<AutocompletePrediction>()
   const { search } = usePlaceSearch()
   let foundedLocations = ref([] as AutocompletePrediction[])
@@ -20,7 +22,7 @@
       return
     }
     //
-    form.value.tags = [...(form.value.tags.value || []), trimmedTag]
+    form.value.tags = [...(form.value.tags || []), trimmedTag]
     tag.value = ''
   }
   const removeTag = (tagToRemove: string) => {
@@ -58,9 +60,37 @@
   const markerOptions = computed(() => {
     return { position: form.value.position, title: form.value.name }
   })
-  watch(form, () => {
-    form.value.steps.location.completed = form?.value?.name && form?.value?.address && form?.value?.fields_count >= 1
-  })
+  watch(
+    () => form.value,
+    () => {
+      form.value.steps.location.completed = !!(form?.value?.name && form?.value?.address && form?.value?.fields_count >= 1)
+    },
+    { deep: true }
+  )
+
+  const appendDefaultFieldStructure = (value: number) => {
+    form.value.fields = []
+    const fields = []
+    for (let i = 1; i <= value; i++) {
+      // Deep clone WINDOWS so each field has its own windows object
+      const cloned = JSON.parse(JSON.stringify(WINDOWS))
+      fields.push({ id: i, name: `campo ${i}`, windows: cloned })
+    }
+    updateForm({ ...form.value, fields })
+  }
+
+  // Mantener sincronizados fields con fields_count
+  watch(
+    () => form.value.fields_count,
+    (val) => {
+      if (!val || val < 1) return
+      // si no hay fields o el tamaño no coincide, regenerar
+      if (!Array.isArray(form.value.fields) || form.value.fields.length !== val) {
+        appendDefaultFieldStructure(val)
+      }
+    },
+    { immediate: true }
+  )
 </script>
 <template>
   <v-container class="pa-0">
@@ -80,7 +110,6 @@
           @update:model-value="updateValue"
           @update:search="searchHandler($event)"
         >
-          :error-messages="errors.city"
         </v-autocomplete></v-col
       >
       <v-col cols="5">
@@ -112,6 +141,7 @@
           control-variant="stacked"
           v-model="form.fields_count"
           label="# Campos de juego"
+          @update:model-value="appendDefaultFieldStructure"
           class="mt-4"
           hide-details
         >

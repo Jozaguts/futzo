@@ -1,88 +1,124 @@
 <script lang="ts" setup>
-import type {TimeRange, AvailabilityTime} from "~/models/Location";
-import "@vuepic/vue-datepicker/dist/main.css";
-import VueDatePicker from "@vuepic/vue-datepicker";
+  import type { All } from '~/models/Location'
+  import type { PropType } from 'vue'
+  import '@vuepic/vue-datepicker/dist/main.css'
+  import VueDatePicker from '@vuepic/vue-datepicker'
 
-const props = defineProps({
-  day: {
-    type: Object as PropType<TimeRange>,
-    required: true
-  },
-  label: {
-    type: String,
-    required: true
-  },
-  onUpdateDay: {
-    type: Function as PropType<(val: TimeRange) => void>,
-    required: true
-  },
-  id: {
-    type: String,
+  const props = defineProps({
+    day: {
+      type: Object as PropType<All>,
+      required: true,
+    },
+    label: {
+      type: String,
+      required: true,
+    },
+    onUpdateDay: {
+      type: Function as PropType<(val: All) => void>,
+      required: true,
+    },
+    id: {
+      type: String,
+    },
+  })
+
+  function toHHmm(val: any): string {
+    if (!val) return ''
+    if (typeof val === 'string') return val
+    if (val?.hours !== undefined && val?.minutes !== undefined) {
+      const h = String(val.hours).padStart(2, '0')
+      const m = String(val.minutes).padStart(2, '0')
+      return `${h}:${m}`
+    }
+    if (val instanceof Date) {
+      const h = String(val.getHours()).padStart(2, '0')
+      const m = String(val.getMinutes()).padStart(2, '0')
+      return `${h}:${m}`
+    }
+    return ''
   }
-})
+
+  function parseToHM(val: any): { hours: number; minutes: number } | null {
+    if (!val) return null
+    if (typeof val === 'string') {
+      const [h, m] = val.split(':')
+      return { hours: Number(h || 0), minutes: Number(m || 0) }
+    }
+    if (val instanceof Date) {
+      return { hours: val.getHours(), minutes: val.getMinutes() }
+    }
+    if (val?.hours !== undefined && val?.minutes !== undefined) {
+      return { hours: Number(val.hours || 0), minutes: Number(val.minutes || 0) }
+    }
+    return null
+  }
+
+  const startTime = computed({
+    get: () => parseToHM(props.day.start) || { hours: 9, minutes: 0 },
+    set: (val: any) => props.onUpdateDay({ ...props.day, start: toHHmm(val) }),
+  })
+  const endTime = computed({
+    get: () => parseToHM(props.day.end) || { hours: 17, minutes: 0 },
+    set: (val: any) => props.onUpdateDay({ ...props.day, end: toHHmm(val) }),
+  })
 </script>
 <template>
   <v-row v-auto-animate="{ duration: 300 }">
     <v-col cols="12" lg="3" md="3">
       <v-switch
-          :model-value="props.day.enabled"
-          @update:model-value="(val: boolean | null) => props.onUpdateDay({ ...props.day, enabled: val as boolean })"
-          class="mt-1 text-caption"
-          density="compact"
-
+        :model-value="props.day.enabled"
+        @update:model-value="(val: boolean) => $emit('update-enabled', val)"
+        class="mt-1 text-caption"
+        density="compact"
       >
-        <template #label><span class="text-caption"> {{ label }}</span></template>
+        <template #label
+          ><span class="text-caption"> {{ props.label }}</span></template
+        >
       </v-switch>
     </v-col>
 
-    <v-col v-if="day.enabled" cols="12" lg="9" md="9">
+    <v-col v-if="props.day.enabled" cols="12" lg="9" md="9">
       <div class="d-flex">
         <div class="w-100 mx-2">
-
           <VueDatePicker
-              time-picker class="custom-dp-location" :is24="false"
-              :model-value="props.day.start"
-              @update:model-value="(val: AvailabilityTime) => props.onUpdateDay({ ...props.day, start: val})"
+            time-picker
+            class="custom-dp-location"
+            :is24="true"
+            v-model="startTime"
           >
             <template #dp-input="{ value }">
-              <v-text-field :value="value"
-                            density="compact"
-                            variant="outlined"
-                            rounded="lg"
-                            :single-line="true"
-                            class="custom-location-input"
-                            :error="!value"
+              <v-text-field
+                :value="value"
+                density="compact"
+                variant="outlined"
+                rounded="lg"
+                :single-line="true"
+                class="custom-location-input"
+                :error="!value"
               >
-                <template #prepend-inner
-                ><span class="text-medium-emphasis">Desde</span></template
-                >
-
+                <template #prepend-inner><span class="text-medium-emphasis">Desde</span></template>
               </v-text-field>
             </template>
           </VueDatePicker>
         </div>
-        <div class="w-100 mx-2 ">
+        <div class="w-100 mx-2">
           <VueDatePicker
-              class="custom-dp-location"
-              :model-value="props.day.end"
-              @update:model-value="(val: AvailabilityTime) => props.onUpdateDay({ ...props.day, end: val })"
-              time-picker
-              :is24="false"
+            class="custom-dp-location"
+            v-model="endTime"
+            time-picker
+            :is24="true"
           >
             <template #dp-input="{ value }">
               <v-text-field
-                  class="custom-location-input"
-                  :value="value"
-                  density="compact"
-                  variant="outlined"
-                  rounded="lg"
-                  :single-line="true"
-                  :error="!value"
+                class="custom-location-input"
+                :value="value"
+                density="compact"
+                variant="outlined"
+                rounded="lg"
+                :single-line="true"
+                :error="!value"
               >
-
-                <template #prepend-inner
-                ><span class="text-medium-emphasis mr-1">Hasta</span></template
-                >
+                <template #prepend-inner><span class="text-medium-emphasis mr-1">Hasta</span></template>
               </v-text-field>
             </template>
           </VueDatePicker>
@@ -98,5 +134,5 @@ const props = defineProps({
   </v-row>
 </template>
 <style lang="sass">
-@use "assets/scss/components/input-location-disabled.sass"
+  @use "assets/scss/components/input-location-disabled.sass"
 </style>

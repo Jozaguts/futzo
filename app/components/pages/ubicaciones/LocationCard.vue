@@ -10,13 +10,11 @@
     if (action === 'Editar') {
       locationStoreRequest.value = {
         name: location.name,
-        city: location.city,
         address: location.address,
-        autocomplete_prediction: { ...location.autocomplete_prediction },
         tags: location.tags,
         fields_count: location.fields_count,
         position: location.position,
-        availability: location.availability,
+        fields: location.fields,
         completed: true,
         id: location.id,
       }

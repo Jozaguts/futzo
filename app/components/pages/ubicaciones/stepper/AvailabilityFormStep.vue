@@ -1,117 +1,116 @@
 <script lang="ts" setup>
   import InputDay from '~/components/pages/ubicaciones/stepper/InputDay.vue'
-  import { object, string, number, boolean } from 'yup'
   import type { PropType } from 'vue'
-  import type { Day, LocationAvailability } from '~/models/Location'
-  import { useForm } from 'vee-validate'
-  import { toTypedSchema } from '@vee-validate/yup'
-  import type { WeekDay } from '~/models/Schedule'
-
-  const props = defineProps({
+  import type { Field, Windows, All } from '~/models/Location'
+  import { WINDOWS } from '~/utils/constants'
+  import { inject } from 'vue'
+  const { step, initForm } = defineProps({
     step: {
       type: Number,
       required: true,
     },
     initForm: {
-      type: Object as PropType<LocationAvailability>,
+      type: Object as PropType<Field>,
     },
   })
-  const emits = defineEmits(['step-completed'])
-  const { locationStoreRequest } = storeToRefs(useLocationStore())
-  const createDaySchema = () =>
-    object({
-      enabled: boolean().default(false),
-      start: object({
-        hours: string().default('09'),
-        minutes: string().default('00'),
-      }),
-      end: object({
-        hours: string().default('23'),
-        minutes: string().default('00'),
-      }),
-    })
-  const schema = object({
-    id: number().default(props.step),
-    name: string().required('Nombre del campo es requerido'),
-    isCompleted: boolean().required('Debes marcar como completado').default(false),
-    monday: createDaySchema(),
-    tuesday: createDaySchema(),
-    wednesday: createDaySchema(),
-    thursday: createDaySchema(),
-    friday: createDaySchema(),
-    saturday: createDaySchema(),
-    sunday: createDaySchema(),
+  const emits = defineEmits(['step-completed', 'update-field'])
+  const form = ref<Field>({
+    id: initForm?.id as number,
+    name: initForm?.name ?? '',
+    windows: initForm?.windows ?? WINDOWS,
   })
-  const { values, errors, handleSubmit, validate, setFieldValue, defineField, meta } = useForm<LocationAvailability>({
-    validationSchema: toTypedSchema(schema),
-    initialValues: props.initForm ?? { id: props.step },
-  })
-  const [name, nameAttr] = defineField('name')
-  const isCompletedHandler = async () => {
-    setFieldValue('isCompleted', !values.isCompleted)
-    const validated = await validate()
-    updateAvailability(values?.id, values)
-    if (validated.valid && validated?.values?.isCompleted) {
-      emits('step-completed', 'next', validated)
-    }
+  const { form: parentForm } = inject('location_form') as any
+
+  function emitUpdate() {
+    emits('update-field', { ...form.value })
+    // Mark fields step as completed when any change occurs
+    if (parentForm?.value?.steps?.fields) parentForm.value.steps.fields.completed = true
   }
-  const updateAvailability = (id: number, values: LocationAvailability) => {
-    const index = locationStoreRequest.value.availability.findIndex((item) => item.id === id)
-    if (index !== -1) {
-      locationStoreRequest.value.availability[index] = values
-    }
+
+  function updateDayHandler(dayKey: keyof Windows, val: All) {
+    const next: Windows = { ...(form.value.windows as Windows) }
+    // Ensure array exists and update first window
+    const arr = Array.isArray(next[dayKey]) ? (next[dayKey] as All[]) : ([] as All[])
+    arr[0] = { ...arr[0], ...val }
+    next[dayKey] = arr
+    form.value.windows = next
+    emitUpdate()
   }
-  const updateDayHandler = (day: WeekDay, value: Day) => {
-    setFieldValue(day, value)
+
+  function updateEnabledHandler(dayKey: keyof Windows, enabled: boolean) {
+    const next: Windows = { ...(form.value.windows as Windows) }
+    const arr = Array.isArray(next[dayKey]) ? (next[dayKey] as All[]) : ([] as All[])
+    // set default hours when enabling if empty
+    const defaults: All = { start: '09:00', end: '17:00', enabled }
+    arr[0] = { ...(arr[0] || defaults), ...(enabled ? defaults : {}), enabled }
+    next[dayKey] = arr
+    form.value.windows = next
+    emitUpdate()
   }
-  onMounted(() => setFieldValue('isCompleted', false))
 </script>
 <template>
   <v-row>
     <v-col cols="12">
       <v-text-field
-        v-model="name"
+        v-model="form.name"
         variant="outlined"
         label="Nombre o Identificador del campo de juego*"
-        :error-messages="errors?.name"
+        @update:model-value="emitUpdate"
       ></v-text-field>
     </v-col>
   </v-row>
-  <InputDay :day="values.monday" id="monday" label="Lunes" :onUpdateDay="(val) => updateDayHandler('monday', val)" />
   <InputDay
-    :day="values.tuesday"
-    label="Martes"
+    :day="form.windows.mon[0]"
+    id="monday"
+    label="Lunes"
+    :onUpdateDay="(val) => updateDayHandler('mon', val)"
+    @update-enabled="(enabled) => updateEnabledHandler('mon', enabled)"
+  />
+  <InputDay
+    :day="form.windows.tue[0]"
     id="tuesday"
-    :onUpdateDay="(val) => updateDayHandler('tuesday', val)"
+    label="Martes"
+    :onUpdateDay="(val) => updateDayHandler('tue', val)"
+    @update-enabled="(enabled) => updateEnabledHandler('tue', enabled)"
   />
   <InputDay
-    :day="values.wednesday"
+    :day="form.windows.wed[0]"
+    id="wednesday"
     label="Miércoles"
-    id="wednesday"
-    :onUpdateDay="(val) => updateDayHandler('wednesday', val)"
+    :onUpdateDay="(val) => updateDayHandler('wed', val)"
+    @update-enabled="(enabled) => updateEnabledHandler('wed', enabled)"
   />
   <InputDay
-    :day="values.thursday"
+    :day="form.windows.thu[0]"
+    id="thursday"
     label="Jueves"
-    id="wednesday"
-    :onUpdateDay="(val) => updateDayHandler('thursday', val)"
+    :onUpdateDay="(val) => updateDayHandler('thu', val)"
+    @update-enabled="(enabled) => updateEnabledHandler('thu', enabled)"
   />
   <InputDay
-    :day="values.friday"
+    :day="form.windows.fri[0]"
+    id="friday"
     label="Viernes"
-    id="wednesday"
-    :onUpdateDay="(val) => updateDayHandler('friday', val)"
+    :onUpdateDay="(val) => updateDayHandler('fri', val)"
+    @update-enabled="(enabled) => updateEnabledHandler('fri', enabled)"
   />
-  <InputDay :day="values.saturday" label="Sábado" id="" :onUpdateDay="(val) => updateDayHandler('saturday', val)" />
   <InputDay
-    :day="values.sunday"
+    :day="form.windows.sat[0]"
+    id="saturday"
+    label="Sábado"
+    :onUpdateDay="(val) => updateDayHandler('sat', val)"
+    @update-enabled="(enabled) => updateEnabledHandler('sat', enabled)"
+  />
+  <InputDay
+    :day="form.windows.sun[0]"
+    id="sunday"
     label="Domingo"
-    id="wednesday"
-    :onUpdateDay="(val) => updateDayHandler('sunday', val)"
+    :onUpdateDay="(val) => updateDayHandler('sun', val)"
+    @update-enabled="(enabled) => updateEnabledHandler('sun', enabled)"
   />
   <v-row>
     <v-col>
-      <v-checkbox :model-value="values.isCompleted" :disabled="!meta.valid" @change="isCompletedHandler">
+      <v-checkbox @change="$emit('step-completed', 'next')">
         <template #label>
           <div>Marcar como completado</div>
         </template>

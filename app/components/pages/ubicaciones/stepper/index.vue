@@ -13,10 +13,8 @@
   }>('locationStepRef')
   const form = ref<LocationStoreRequest>({
     name: '',
-    city: '',
     address: '',
-    position: {} as LocationPosition,
-    autocomplete_prediction: {},
+    position: { lat: 16.8639515, lng: -99.8822807 } as LocationPosition,
     tags: [] as string[],
     fields: [] as Field[],
     fields_count: 1,
@@ -29,8 +27,16 @@
       },
     },
   })
-  function updateForm(value: LocationStoreRequest) {
-    form.value = { ...value }
+  function updateForm(value: Partial<LocationStoreRequest>) {
+    // Deep-merge to avoid losing nested structures like steps
+    form.value = {
+      ...form.value,
+      ...value,
+      steps: {
+        ...(form.value.steps || { location: { completed: false }, fields: { completed: false } }),
+        ...(value?.steps || {}),
+      },
+    } as LocationStoreRequest
   }
 
   const availabilityStepRef = useTemplateRef<{
@@ -46,21 +52,27 @@
   })
   const backTextButton = computed(() => (formSteps.value.current === 'location' ? 'Cancelar' : 'Anterior'))
   const nextStepHandler = async () => {
-    if (!locationStoreRequest.value.completed) {
+    const firstStepCompleted = !!form.value?.steps?.location?.completed
+    const secondStepCompleted = !!form.value?.steps?.fields?.completed
+    if (!firstStepCompleted && !secondStepCompleted) {
       return
     }
-    const stepsOrder: CurrentStep[] = ['location', 'availability']
-    const currentStepIndex = stepsOrder.indexOf(formSteps.value.current)
-    if (!formSteps.value.steps[currentStepIndex].completed) {
-      formSteps.value.steps[currentStepIndex].completed = true
+    if (!secondStepCompleted && firstStepCompleted) {
+      formSteps.value.current = 'availability'
+      return
     }
-    const isLastStep = currentStepIndex === stepsOrder.length - 1
-
-    isLastStep ? await saveHandler() : (formSteps.value.current = stepsOrder[currentStepIndex + 1])
+    if (secondStepCompleted && firstStepCompleted) {
+      await saveHandler()
+      return
+    }
   }
 
   async function saveHandler() {
-    isEdition.value ? await useLocationStore().updateLocation() : await useLocationStore().storeLocation()
+    // Sync local provided form into store request before saving
+    const store = useLocationStore()
+    const { locationStoreRequest: storeRequest } = storeToRefs(store)
+    storeRequest.value = { ...(form.value as any) }
+    isEdition.value ? await store.updateLocation() : await store.storeLocation()
   }
 
   const backStepHandler = () => {
@@ -95,7 +107,7 @@
             :show-icon="false"
             class="w-btn"
             :text="textButton"
-            :disabled="!form.steps.location.completed"
+            :disabled="!form?.steps?.location?.completed"
             variant="elevated"
             @click="nextStepHandler"
           />
