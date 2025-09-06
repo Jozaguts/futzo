@@ -79,8 +79,9 @@
       <v-col>
         <v-alert type="info" variant="tonal" class="mb-4">
           <div>
-            Jornada: {{ matchesPerRound }} partidos × {{ Math.round(matchDurationMins / 60) }}h ≈
-            {{ hours(requiredMinutesPerRound) }}h requeridas por semana.
+            Partidos por Jornada: {{ matchesPerRound }} <br />
+            Duracion de partido aproximado: {{ Math.round(matchDurationMins / 60) }}h <br />
+            Horas necesarios: {{ hours(requiredMinutesPerRound) }}h requeridas por semana.
           </div>
           <div>
             Capacidad reservada: {{ hours(reservedMinutesPerWeek) }}h.

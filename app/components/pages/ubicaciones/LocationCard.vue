@@ -26,6 +26,10 @@
       locationToDelete.value.show = true
     }
   }
+  const fieldsInfo = computed(() => {
+    console.log(location.windows)
+    return location.windows
+  })
 </script>
 <template>
   <v-card class="futzo-rounded" max-width="330" flat>
@@ -37,25 +41,46 @@
       </v-card-title>
       <v-card-subtitle class="card-subtitle">
         <span class="d-inline-block text-truncate" style="max-width: 300px">
-          {{ location.address }}, {{ location.city }}
+          {{ location.address }}
         </span>
       </v-card-subtitle>
-      <v-divider />
     </v-card-item>
     <v-card-text class="pt-2">
-      <p class="card-content-title">Horarios</p>
-      <div class="card-content-text">Lunes - viernes 9am - 5pm</div>
-      <v-divider />
+      <p class="card-content-title">Horarios de Campos</p>
+      <v-expansion-panels :ripple="true" color="grey-100" :elevation="1" variant="accordion">
+        <v-expansion-panel v-for="info in fieldsInfo" :key="info?.id" :title="info.name">
+          <v-expansion-panel-text eager class="pa-0">
+            <v-container fluid class="pa-0">
+              <v-row no-gutters>
+                <v-col cols="6" v-for="window in info.windows" :key="window.id" class="font-weight-bold my-1">
+                  <p>
+                    {{ window[0].day.toString().substring(0, 3) }}
+                    <span class="text-medium-emphasis mr-1">{{ window[0].start }}</span
+                    >-<span class="text-medium-emphasis ml-1">{{ window[0].end }}</span>
+                  </p>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
     </v-card-text>
+    <v-divider />
     <v-card-actions>
-      <v-chip-group variant="outlined" v-if="location.tags.length">
-        <v-chip v-for="tag in location.tags" :key="tag" class="ma-1 tags-rounded" color="primary" label>{{
-          tag
-        }}</v-chip>
-      </v-chip-group>
-      <div v-else class="pa-3">
-        <span class="text-caption font-weight-thin">Sin etiquetas</span>
+      <div class="pa-3">
+        <span class="text-caption font-weight-bold text-medium-emphasis">Etiquetas</span>
       </div>
+      <v-chip-group variant="elevated" v-if="location.tags.length">
+        <v-chip
+          v-for="tag in location.tags"
+          :key="tag"
+          class="ma-1 tags-rounded"
+          base-color="primary"
+          :ripple="false"
+          :elevation="false"
+          >{{ tag }}</v-chip
+        >
+      </v-chip-group>
     </v-card-actions>
   </v-card>
 </template>
