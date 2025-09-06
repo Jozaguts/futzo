@@ -13,22 +13,32 @@
   )
   const isPreRegister = computed(() => useRoute().name === 'equipos-equipo-jugadores-inscripcion')
   const updateCategory = (teamId: number) => {
-    const team = teams.value?.find((team) => team.id === teamId)
-    if (team) {
-      fields.category_id.fieldValue = team.category.id
-    }
+    const selectedTeam = teams.value?.find((t) => t.id === teamId)
+    if (!selectedTeam) return
+    // Prefer single category if present; fallback to first of categories array in preregister context
+    const categoryId = (selectedTeam as any)?.category?.id ?? (selectedTeam as any)?.categories?.[0]?.id
+    if (categoryId) fields.category_id.fieldValue = categoryId
   }
   onMounted(() => {
     if (!isPreRegister.value) {
       useTeamStore().list()
     }
-    if (playerStoreRequest.value?.basic) {
-      setValues({ ...playerStoreRequest.value.basic })
-      if (playerStoreRequest.value.basic.image) {
-        dragDropImageRef.value?.loadImage()
-      }
-    }
   })
+
+  // Ensure form reflects preloaded data (e.g., preregister flow) even if it arrives after mount
+  watch(
+    () => playerStoreRequest.value?.basic,
+    (basic) => {
+      if (!basic) return
+      setValues({ ...basic })
+      // If category not present but team is, derive it from selected team
+      if (!basic.category_id && basic.team_id) updateCategory(basic.team_id as number)
+      nextTick(() => {
+        if ((basic as any).image) dragDropImageRef.value?.loadImage()
+      })
+    },
+    { immediate: true, deep: true }
+  )
   onUnmounted(() => {
     resetForm()
   })
@@ -88,6 +98,6 @@
   </v-container>
 </template>
 <style lang="sass">
-  @use "assets/scss/pages/players.sass"
-  @use "assets/css/vue-datepicker-custom"
+  @use "~/assets/scss/pages/players.sass"
+  @use "~/assets/css/vue-datepicker-custom"
 </style>
