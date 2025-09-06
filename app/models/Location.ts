@@ -20,6 +20,7 @@ export type Location = {
   id?: number;
   name: string;
   address: string;
+  place_id: string;
   position: LocationPosition;
 };
 export type LocationStoreRequest = {

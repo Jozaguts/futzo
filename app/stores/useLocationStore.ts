@@ -4,6 +4,32 @@ import { useApiError } from '~/composables/useApiError';
 import type { IPagination } from '~/interfaces';
 import { ref } from 'vue';
 import { DEFAULT_POSITION } from '~/utils/constants';
+import type { All, Windows } from '~/models/Location';
+
+function sanitizeWindows(windows: Windows): Windows {
+  const keys: (keyof Windows)[] = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'all']
+  const out: Windows = {}
+  for (const key of keys) {
+    if (!windows || !windows[key]) continue
+    const arr = (windows[key] as All[]) || []
+    // keep only enabled windows and strip the enabled flag before sending
+    const enabled = arr.filter((w) => w && w.enabled === true).map((w) => ({ start: w.start, end: w.end })) as any
+    // If none enabled, send empty array to signal no availability for that day
+    ;(out as any)[key] = enabled
+  }
+  return out
+}
+
+function sanitizeLocationPayload(payload: LocationStoreRequest): LocationStoreRequest {
+  const copy = JSON.parse(JSON.stringify(payload)) as LocationStoreRequest
+  if (Array.isArray(copy.fields)) {
+    copy.fields = copy.fields.map((f) => ({
+      ...f,
+      windows: sanitizeWindows(f.windows as Windows),
+    }))
+  }
+  return copy
+}
 
 export const useLocationStore = defineStore('locationStore', () => {
   const stepsCompleted = computed(() => {
@@ -123,9 +149,10 @@ export const useLocationStore = defineStore('locationStore', () => {
 
   async function storeLocation(): Promise<void> {
     const client = useSanctumClient();
+    const body = sanitizeLocationPayload(locationStoreRequest.value)
     await client<LocationCard>('/api/v1/admin/locations', {
       method: 'POST',
-      body: locationStoreRequest.value,
+      body,
     })
       .then(async () => {
         await Promise.all([reloadLocations(), useOnboardingStore().refresh(), useSanctumAuth().refreshIdentity()]);
@@ -150,9 +177,10 @@ export const useLocationStore = defineStore('locationStore', () => {
 
   async function updateLocation(): Promise<void> {
     const client = useSanctumClient();
+    const body = sanitizeLocationPayload(locationStoreRequest.value)
     await client(`/api/v1/admin/locations/${locationCard.value?.id}`, {
       method: 'PUT',
-      body: locationStoreRequest.value,
+      body,
     }).then(async () => {
       await Promise.all([reloadLocations(), useOnboardingStore().refresh()]);
       const { toast } = useToast();

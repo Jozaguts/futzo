@@ -14,6 +14,7 @@
   const form = ref<LocationStoreRequest>({
     name: '',
     address: '',
+    place_id: '',
     position: { lat: 16.8639515, lng: -99.8822807 } as LocationPosition,
     tags: [] as string[],
     fields: [] as Field[],
@@ -82,7 +83,7 @@
     }
     formSteps.value.current = 'location'
   }
-  provide('location_form', { form })
+  provide('location_form', { form, updateForm })
 </script>
 <template>
   <v-card-text>

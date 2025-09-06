@@ -48,6 +48,7 @@
           ...form.value,
           name: details?.name,
           address: details?.address,
+          place_id: value?.place_id,
           position: {
             lat: details.lat,
             lng: details.lng,
