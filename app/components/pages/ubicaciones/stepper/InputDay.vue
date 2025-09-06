@@ -80,12 +80,7 @@
     <v-col v-if="props.day.enabled" cols="12" lg="9" md="9">
       <div class="d-flex">
         <div class="w-100 mx-2">
-          <VueDatePicker
-            time-picker
-            class="custom-dp-location"
-            :is24="true"
-            v-model="startTime"
-          >
+          <VueDatePicker time-picker class="custom-dp-location" :is24="true" v-model="startTime">
             <template #dp-input="{ value }">
               <v-text-field
                 :value="value"
@@ -102,12 +97,7 @@
           </VueDatePicker>
         </div>
         <div class="w-100 mx-2">
-          <VueDatePicker
-            class="custom-dp-location"
-            v-model="endTime"
-            time-picker
-            :is24="true"
-          >
+          <VueDatePicker class="custom-dp-location" v-model="endTime" time-picker :is24="true">
             <template #dp-input="{ value }">
               <v-text-field
                 class="custom-location-input"
@@ -134,5 +124,5 @@
   </v-row>
 </template>
 <style lang="sass">
-  @use "assets/scss/components/input-location-disabled.sass"
+  @use "~/assets/scss/components/input-location-disabled.sass"
 </style>

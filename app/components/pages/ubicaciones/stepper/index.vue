@@ -2,7 +2,7 @@
   import IndicatorStep from '~/components/shared/IndicatorStep.vue'
   import LocationStep from '~/components/pages/ubicaciones/stepper/LocationStep.vue'
   import AvailabilityStep from '~/components/pages/ubicaciones/stepper/AvailabilityStep.vue'
-  import type { CurrentStep, Field, LocationPosition, LocationStoreRequest } from '~/models/Location'
+  import type { Field, LocationPosition, LocationStoreRequest } from '~/models/Location'
   import { provide } from 'vue'
 
   const { locationStoreRequest, isEdition, formSteps, locationDialog } = storeToRefs(useLocationStore())

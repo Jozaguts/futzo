@@ -19,15 +19,15 @@ export type StepperItem = { title: string; value: number };
 export type Location = {
   id?: number;
   name: string;
-  city: string;
   address: string;
   position: LocationPosition;
-  autocomplete_prediction: object;
 };
 export type LocationStoreRequest = {
   tags: string[];
   fields: Field[];
   fields_count: number;
+  // Optional completion flag kept for legacy UI checks
+  completed?: boolean;
   steps: {
     location: {
       completed: boolean;
@@ -38,6 +38,7 @@ export type LocationStoreRequest = {
   };
 } & Location;
 export type Field = {
+  id: number;
   name: string;
   windows: Windows;
 };
@@ -52,6 +53,7 @@ export type Windows = {
   all?: All[];
 };
 export type All = {
+  enabled: boolean;
   start: string;
   end: string;
 };

@@ -1,4 +1,4 @@
-import type { Interval, LocationAvailability } from '~/models/Location';
+import type { Interval, LocationAvailability, Windows } from '~/models/Location';
 import type { ActionGameReportState, DialogHandlerActionsNames } from '~/models/Game';
 export const MAIN_PADDING_TOP = 48;
 export const MAIN_PADDING_BOTTOM = 64;
@@ -83,3 +83,13 @@ export const SUBSTITUTIONS_STATE: ActionGameReportState = {
 };
 export const POST_CHECKOUT_LOGIN_SUCCESS_STATUS_CODE = 200;
 export const POST_CHECKOUT_LOGIN_ERROR_STATUS_CODE = 400;
+export const WINDOWS: Windows = {
+  mon: [{ start: '09:00', end: '17:00', enabled: false }],
+  tue: [{ start: '09:00', end: '17:00', enabled: false }],
+  wed: [{ start: '09:00', end: '17:00', enabled: false }],
+  thu: [{ start: '09:00', end: '17:00', enabled: false }],
+  fri: [{ start: '09:00', end: '17:00', enabled: true }],
+  sat: [{ start: '09:00', end: '17:00', enabled: true }],
+  sun: [{ start: '09:00', end: '17:00', enabled: true }],
+  all: [{ start: '09:00', end: '17:00', enabled: false }],
+};

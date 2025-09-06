@@ -4,7 +4,6 @@
   import type { AutocompletePrediction } from '~/models/Schedule'
   import { GoogleMap, AdvancedMarker } from 'vue3-google-map'
   import { inject } from 'vue'
-  import type { Windows } from '~/models/Location'
   import { WINDOWS } from '~/utils/constants'
 
   const { form, updateForm } = inject('location_form') as any
@@ -63,7 +62,11 @@
   watch(
     () => form.value,
     () => {
-      form.value.steps.location.completed = !!(form?.value?.name && form?.value?.address && form?.value?.fields_count >= 1)
+      form.value.steps.location.completed = !!(
+        form?.value?.name &&
+        form?.value?.address &&
+        form?.value?.fields_count >= 1
+      )
     },
     { deep: true }
   )
@@ -110,8 +113,8 @@
           @update:model-value="updateValue"
           @update:search="searchHandler($event)"
         >
-        </v-autocomplete></v-col
-      >
+        </v-autocomplete
+      ></v-col>
       <v-col cols="5">
         <v-text-field
           active

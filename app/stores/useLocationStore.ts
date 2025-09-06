@@ -1,11 +1,5 @@
 import { defineStore } from 'pinia';
-import type {
-  FormSteps,
-  LocationAvailability,
-  LocationCard,
-  LocationResponse,
-  LocationStoreRequest,
-} from '~/models/Location';
+import type { FormSteps, LocationCard, LocationResponse, LocationStoreRequest, Field } from '~/models/Location';
 import { useApiError } from '~/composables/useApiError';
 import type { IPagination } from '~/interfaces';
 import { ref } from 'vue';
@@ -13,26 +7,27 @@ import { DEFAULT_POSITION } from '~/utils/constants';
 
 export const useLocationStore = defineStore('locationStore', () => {
   const stepsCompleted = computed(() => {
-    return locationStoreRequest.value.availability.filter((item) => item.isCompleted).length;
+    const steps = locationStoreRequest.value?.steps;
+    if (!steps) return 0;
+    return Number(!!steps.location?.completed) + Number(!!steps.fields?.completed);
   });
   const isAllStepsCompleted = computed(() => {
-    return (
-      (locationStoreRequest.value.availability.every((item) => item.isCompleted) &&
-        locationStoreRequest.value.completed) ||
-      (formSteps.value.current === 'location' && locationStoreRequest.value.completed) ||
-      isEdition.value
-    );
+    const steps = locationStoreRequest.value?.steps;
+    return (!!steps?.location?.completed && !!steps?.fields?.completed) || isEdition.value;
   });
   const locations = ref<LocationCard[]>();
   const locationStoreRequest = ref<LocationStoreRequest>({
     name: '',
-    city: '',
     address: '',
-    autocomplete_prediction: {},
     tags: [] as string[],
-    availability: [] as LocationAvailability[],
+    fields: [] as Field[],
     fields_count: 0,
     position: DEFAULT_POSITION,
+    steps: {
+      location: { completed: false },
+      fields: { completed: false },
+    },
+    completed: false,
   } as LocationStoreRequest);
   const locationDialog = ref(false);
   const isEdition = ref(false);
@@ -93,13 +88,15 @@ export const useLocationStore = defineStore('locationStore', () => {
   function resetLocationStoreRequest() {
     locationStoreRequest.value = {
       name: '',
-      city: '',
       address: '',
-      autocomplete_prediction: {},
       tags: [],
-      availability: [] as LocationAvailability[],
+      fields: [] as Field[],
       fields_count: 0,
       position: DEFAULT_POSITION,
+      steps: {
+        location: { completed: false },
+        fields: { completed: false },
+      },
       completed: false,
     } as LocationStoreRequest;
   }

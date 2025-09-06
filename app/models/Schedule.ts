@@ -214,9 +214,7 @@ export interface Format {
 export interface Location {
   id: number;
   name: string;
-  city: string;
   address: string;
-  autocomplete_prediction: AutocompletePrediction;
   pivot: Pivot;
   tags: any[];
 }

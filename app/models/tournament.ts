@@ -81,7 +81,6 @@ export interface TournamentForm {
   category_id: number;
   tournament_format_id: number;
   location: AutocompletePrediction;
-  city: string;
   address: string;
   start_date: string;
   end_date: string;
@@ -172,7 +171,6 @@ export type CalendarTypePicker = {
 export type TournamentVenue = {
   id: number;
   name: string;
-  city: string;
   address: string;
   tournament_availability: LocationAvailability;
 };
@@ -210,7 +208,6 @@ export interface Format {
 export interface Location {
   id?: number;
   name: string;
-  city: string;
   address: string;
   autocomplete_prediction: AutocompletePrediction;
 }
