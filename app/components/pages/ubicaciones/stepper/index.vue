@@ -5,7 +5,7 @@
   import type { Field, LocationPosition, LocationStoreRequest } from '~/models/Location'
   import { provide } from 'vue'
 
-  const { locationStoreRequest, isEdition, formSteps, locationDialog } = storeToRefs(useLocationStore())
+  const { isEdition, formSteps, locationDialog } = storeToRefs(useLocationStore())
   const emits = defineEmits(['next', 'back', 'close'])
   const locationStepRef = useTemplateRef<{
     validate: Function
@@ -82,7 +82,7 @@
     }
     formSteps.value.current = 'location'
   }
-  provide('location_form', { form, updateForm })
+  provide('location_form', { form })
 </script>
 <template>
   <v-card-text>
