@@ -119,10 +119,12 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     if (parts.length !== 2) return undefined;
     return { start: minute(parts[0].trim()), end: minute(parts[1].trim()) };
   };
-  const matchDurationMins = computed(() =>
-    Number(scheduleSettings.value.game_time || 0) +
-    Number(scheduleSettings.value.time_between_games || 0) +
-    MATCH_GLOBAL_REST + MATCH_UNEXPECTED_BUFFER
+  const matchDurationMins = computed(
+    () =>
+      Number(scheduleSettings.value.game_time || 0) +
+      Number(scheduleSettings.value.time_between_games || 0) +
+      MATCH_GLOBAL_REST +
+      MATCH_UNEXPECTED_BUFFER
   );
   const matchesPerRound = computed(() => {
     const teams = Number(scheduleSettings.value.teams || scheduleStoreRequest.value.general?.total_teams || 0);
@@ -138,7 +140,8 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       for (const key of Object.keys(av)) {
         const day = av[key];
         if (!day || typeof day !== 'object' || key === 'isCompleted' || !day.enabled) continue;
-        const selected = (day.intervals || []).filter((i: any) => i && i.selected && i.value && i.value !== '*')
+        const selected = (day.intervals || [])
+          .filter((i: any) => i && i.selected && i.value && i.value !== '*')
           .map((i: any) => minute(String(i.value)))
           .sort((a: number, b: number) => a - b);
         const range = parseRange(day.available_range);
@@ -290,31 +293,31 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       body: JSON.stringify(scheduleStoreRequest.value),
     });
   };
-  const settingsSchedule = async () => {
+  const settingsSchedule = async (force = false) => {
     const client = useSanctumClient();
-    const { data } = (await useAsyncData<ScheduleSettings>('tournament-settings', () =>
-      client(`api/v1/admin/tournaments/${tournamentStore.tournamentId}/schedule/settings`)
-    )) as { data: Ref<ScheduleSettings> };
+    const data = await client<ScheduleSettings>(
+      `api/v1/admin/tournaments/${tournamentStore.tournamentId}/schedule/settings`
+    );
     const generalSchedule = {} as FormGeneralScheduleRequest;
     generalSchedule.tournament_id = tournamentStore.tournamentId as number;
-    generalSchedule.tournament_format_id = data.value.format.id;
-    generalSchedule.football_type_id = data.value.footballType.id;
-    generalSchedule.start_date = data.value.start_date;
-    generalSchedule.game_time = data.value.game_time;
-    generalSchedule.time_between_games = data.value.time_between_games;
-    generalSchedule.total_teams = data.value.teams;
+    generalSchedule.tournament_format_id = data.format.id;
+    generalSchedule.football_type_id = data.footballType.id;
+    generalSchedule.start_date = data.start_date;
+    generalSchedule.game_time = data.game_time;
+    generalSchedule.time_between_games = data.time_between_games;
+    generalSchedule.total_teams = data.teams;
     generalSchedule.locations = [];
     scheduleStoreRequest.value.general = generalSchedule;
     scheduleStoreRequest.value.regular_phase = {
-      round_trip: data.value.round_trip,
-      tiebreakers: data.value.tiebreakers,
+      round_trip: data.round_trip,
+      tiebreakers: data.tiebreakers,
     };
     scheduleStoreRequest.value.elimination_phase = {
       teams_to_next_round: 8,
       round_trip: false,
-      phases: data.value.phases,
+      phases: data.phases,
     };
-    scheduleSettings.value = data.value;
+    scheduleSettings.value = data;
   };
   const fetchScheduleRoundsByStatus = async (filter: string) => {
     schedulePagination.value.current_page = 1;
