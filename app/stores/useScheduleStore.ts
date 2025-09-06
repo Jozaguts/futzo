@@ -104,6 +104,61 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
   });
   const isExporting = ref(false);
 
+  // ---- Capacity helpers (client-side estimation) ----
+  const MATCH_GLOBAL_REST = 15;
+  const MATCH_UNEXPECTED_BUFFER = 15;
+  const minute = (hhmm: string): number => {
+    const [h, m] = (hhmm || '0:0').split(':');
+    return Number(h) * 60 + Number(m);
+  };
+  const parseRange = (range?: string): { start: number; end: number } | undefined => {
+    if (!range) return undefined;
+    // accepts "09:00-17:00" or "09:00 a 17:00"
+    const norm = range.replace(/\s*a\s*/i, '-');
+    const parts = norm.split('-');
+    if (parts.length !== 2) return undefined;
+    return { start: minute(parts[0].trim()), end: minute(parts[1].trim()) };
+  };
+  const matchDurationMins = computed(() =>
+    Number(scheduleSettings.value.game_time || 0) +
+    Number(scheduleSettings.value.time_between_games || 0) +
+    MATCH_GLOBAL_REST + MATCH_UNEXPECTED_BUFFER
+  );
+  const matchesPerRound = computed(() => {
+    const teams = Number(scheduleSettings.value.teams || scheduleStoreRequest.value.general?.total_teams || 0);
+    return teams > 1 ? Math.floor(teams / 2) : 0;
+  });
+  const requiredMinutesPerRound = computed(() => matchesPerRound.value * matchDurationMins.value);
+  const reservedMinutesPerWeek = computed(() => {
+    let total = 0;
+    const md = matchDurationMins.value;
+    const fields = scheduleStoreRequest.value.fields_phase || [];
+    for (const field of fields) {
+      const av = (field as any).availability || {};
+      for (const key of Object.keys(av)) {
+        const day = av[key];
+        if (!day || typeof day !== 'object' || key === 'isCompleted' || !day.enabled) continue;
+        const selected = (day.intervals || []).filter((i: any) => i && i.selected && i.value && i.value !== '*')
+          .map((i: any) => minute(String(i.value)))
+          .sort((a: number, b: number) => a - b);
+        const range = parseRange(day.available_range);
+        if (selected.length === 0) continue;
+        let start = selected[0];
+        let end = selected[selected.length - 1] + md; // mirror backend behavior (last slot + matchDuration)
+        if (range) {
+          if (start < range.start) start = range.start;
+          if (end > range.end) end = range.end;
+        }
+        if (end > start) {
+          const matches = Math.floor((end - start) / md);
+          total += matches * md;
+        }
+      }
+    }
+    return total;
+  });
+  const hasEnoughCapacity = computed(() => reservedMinutesPerWeek.value >= requiredMinutesPerRound.value);
+
   const scheduleRoundStatus = ref<ScheduleRoundStatus[]>([
     { value: 'programado', text: 'Programada' },
     { value: 'en_progreso', text: 'En progreso' },
@@ -302,6 +357,12 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     calendarSteps,
     scheduleStoreRequest,
     isExporting,
+    // capacity info
+    matchDurationMins,
+    matchesPerRound,
+    requiredMinutesPerRound,
+    reservedMinutesPerWeek,
+    hasEnoughCapacity,
     updateStatusGame,
     getTournamentSchedules,
     fetchSchedule,

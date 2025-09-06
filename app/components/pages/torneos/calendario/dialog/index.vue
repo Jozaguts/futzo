@@ -3,7 +3,17 @@
   import type { CurrentCalendarStep } from '~/models/tournament'
   import { useToast } from '~/composables/useToast'
 
-  const { calendarSteps, scheduleDialog, scheduleStoreRequest, schedulePagination } = storeToRefs(useScheduleStore())
+  const {
+    calendarSteps,
+    scheduleDialog,
+    scheduleStoreRequest,
+    schedulePagination,
+    hasEnoughCapacity,
+    requiredMinutesPerRound,
+    reservedMinutesPerWeek,
+    matchDurationMins,
+    matchesPerRound,
+  } = storeToRefs(useScheduleStore())
 
   const { secondaryTextBtn, primaryTextBtn, backHandler } = useDialog(calendarSteps, scheduleDialog)
   const stepContainerRef = ref()
@@ -33,11 +43,9 @@
     }
   }
   const disabledButton = computed(() => {
-    if (calendarSteps.value.current !== 'fields') {
-      return false
-    } else {
-      return !scheduleStoreRequest.value.fields_phase.every((field) => field.availability.isCompleted)
-    }
+    if (calendarSteps.value.current !== 'fields') return false
+    const allCompleted = scheduleStoreRequest.value.fields_phase.every((field) => field.availability.isCompleted)
+    return !allCompleted || !hasEnoughCapacity.value
   })
   const nextStep = () => {
     const stepsOrder: CurrentCalendarStep[] = ['general', 'regular', 'elimination', 'fields']

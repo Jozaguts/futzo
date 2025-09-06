@@ -3,7 +3,14 @@
   import type { LocationFieldsRequest, NextHandlerType, WeekDay } from '~/models/Schedule'
 
   const { tournamentId } = storeToRefs(useTournamentStore())
-  const { scheduleStoreRequest } = storeToRefs(useScheduleStore())
+  const {
+    scheduleStoreRequest,
+    hasEnoughCapacity,
+    reservedMinutesPerWeek,
+    requiredMinutesPerRound,
+    matchDurationMins,
+    matchesPerRound,
+  } = storeToRefs(useScheduleStore())
 
   const { meta, validate } = useSchemas('calendar-location-step', {
     tournament_id: tournamentId.value,
@@ -45,6 +52,8 @@
     currentStep.value = fields.value[0]?.step
   })
 
+  const hours = (mins: number) => (mins / 60).toFixed(1)
+
   const fieldDisableHandler = (data: NextHandlerType) => {
     fields.value.map((field) => {
       if (field.field_id === data.field_id) {
@@ -68,6 +77,17 @@
   <v-container>
     <v-row>
       <v-col>
+        <v-alert type="info" variant="tonal" class="mb-4">
+          <div>
+            Jornada: {{ matchesPerRound }} partidos × {{ Math.round(matchDurationMins / 60) }}h ≈
+            {{ hours(requiredMinutesPerRound) }}h requeridas por semana.
+          </div>
+          <div>
+            Capacidad reservada: {{ hours(reservedMinutesPerWeek) }}h.
+            <span v-if="!hasEnoughCapacity" class="text-error">Faltan horas para completar la jornada.</span>
+            <span v-else class="text-success">Capacidad suficiente.</span>
+          </div>
+        </v-alert>
         <v-stepper editable class="pa-0 ma-0" v-model="currentStep">
           <v-stepper-header>
             <v-stepper-item
