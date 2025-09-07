@@ -9,6 +9,15 @@
   const clickHandler = (action: 'Eliminar' | 'Editar') => {
     if (action === 'Editar') {
       locationStoreRequest.value = {
+        place_id: '',
+        steps: {
+          fields: {
+            completed: true,
+          },
+          location: {
+            completed: true,
+          },
+        },
         name: location.name,
         address: location.address,
         tags: location.tags,
@@ -26,9 +35,6 @@
       locationToDelete.value.show = true
     }
   }
-  const fieldsInfo = computed(() => {
-    return location.windows
-  })
 </script>
 <template>
   <v-card class="futzo-rounded" max-width="330" flat>
@@ -47,15 +53,15 @@
     <v-card-text class="pt-2">
       <p class="card-content-title">Horarios de Campos</p>
       <v-expansion-panels :ripple="true" color="grey-100" :elevation="1" variant="accordion">
-        <v-expansion-panel v-for="info in fieldsInfo" :key="info?.id" :title="info.name">
+        <v-expansion-panel v-for="info in location.windows" :key="info?.id" :title="info.name">
           <v-expansion-panel-text eager class="pa-0">
             <v-container fluid class="pa-0">
               <v-row no-gutters>
-                <v-col cols="6" v-for="window in info.windows" :key="window.id" class="font-weight-bold my-1">
+                <v-col cols="6" v-for="window in info.windows" :key="window[0]?.day" class="font-weight-bold my-1">
                   <p>
-                    {{ window[0].day.toString().substring(0, 3) }}
-                    <span class="text-medium-emphasis mr-1">{{ window[0].start }}</span
-                    >-<span class="text-medium-emphasis ml-1">{{ window[0].end }}</span>
+                    {{ window[0]?.day.toString().substring(0, 3) }}
+                    <span class="text-medium-emphasis mr-1">{{ window[0]?.start }}</span
+                    >-<span class="text-medium-emphasis ml-1">{{ window[0]?.end }}</span>
                   </p>
                 </v-col>
               </v-row>

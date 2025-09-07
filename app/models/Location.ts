@@ -65,8 +65,20 @@ export type LocationPosition = {
 
 export type LocationCard = {
   image: string;
+  windows: WindowLocation[];
 } & LocationStoreRequest;
-
+export type WindowLocation = {
+  id: number;
+  name: string;
+  type: string;
+  windows: Array<WindowReserved[]>;
+};
+export type WindowReserved = {
+  day: EspWeekDay;
+  end: string;
+  start: string;
+};
+export type EspWeekDay = 'lunes' | 'martes' | 'miércoles' | 'jueves' | 'viernes' | 'sábado' | 'domingo';
 export interface FormSteps {
   current: CurrentStep;
   steps: LocationSteps[];
