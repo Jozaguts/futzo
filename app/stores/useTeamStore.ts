@@ -147,12 +147,12 @@ export const useTeamStore = defineStore('teamStore', () => {
   const getTeams = async () => {
     const response = await teamAPI.getTeams(pagination.value);
     teams.value = response.data;
-    pagination.value = { ...pagination.value, ...response.pagination };
+    pagination.value = { ...pagination.value, ...response.meta };
   };
   const searchTeams = async (value: string = '') => {
     const response = await teamAPI.searchTeams(value);
     teams.value = response.data || [];
-    pagination.value = { ...pagination.value, ...response.pagination };
+    pagination.value = { ...pagination.value, ...response.meta };
   };
   const list = async () => {
     try {
