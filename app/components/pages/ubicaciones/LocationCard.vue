@@ -27,7 +27,6 @@
     }
   }
   const fieldsInfo = computed(() => {
-    console.log(location.windows)
     return location.windows
   })
 </script>
@@ -77,7 +76,7 @@
           class="ma-1 tags-rounded"
           base-color="primary"
           :ripple="false"
-          :elevation="false"
+          :elevation="0"
           >{{ tag }}</v-chip
         >
       </v-chip-group>
