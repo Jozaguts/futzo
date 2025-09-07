@@ -102,7 +102,8 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
       `/api/v1/admin/tournaments?per_page=${pagination.value.per_page}&page=${pagination.value.current_page}`
     ).finally(() => (loading.value = false));
     tournaments.value = response.data;
-    pagination.value = { ...pagination.value, ...response.pagination };
+
+    pagination.value = { ...pagination.value, ...response?.meta };
   }
 
   async function storeTournament() {

@@ -113,12 +113,13 @@ export const usePlayerStore = defineStore('playerStore', () => {
       const client = useSanctumClient();
       let url = `/api/v1/admin/players?per_page=${pagination.value.per_page}&page=${pagination.value.current_page}&sort=${pagination.value.sort}`;
       if (search) {
+        pagination.value.per_page = 10;
+        pagination.value.current_page = 1;
         url += '&search=' + search;
       }
-      await client(url).then(({ data, pagination: _pagination }) => {
-        pagination.value = { ...pagination.value, ..._pagination };
-        players.value = data;
-      });
+      const response = await client(url);
+      pagination.value = { ...pagination.value, ...response.meta };
+      players.value = response?.data;
     } catch (error) {
       console.log(error);
     }
