@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 
 test.describe('Initial loader (#loading-bg)', () => {
   test('muestra y luego oculta el loader en la primera carga', async ({ page }) => {

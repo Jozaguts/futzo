@@ -102,5 +102,19 @@ test.describe('Auth: registro UI (local backend)', () => {
     await leagueInput.fill('Liga12'); // 6 chars
     await page.keyboard.press('Tab');
     await expect(createBtn).toBeEnabled();
+
+    // Enviar formulario para crear la liga
+    await createBtn.click();
+
+    // Debe mostrarse la tarjeta de confirmación
+    await expect(page.getByText(/Tu liga ha sido creada/i)).toBeVisible({ timeout: 15000 });
+    await expect(page.getByText(/Ya puedes empezar a planificar tu liga\./i)).toBeVisible();
+    const homeBtn = page.getByRole('button', { name: /^Inicio$/i });
+    await expect(homeBtn).toBeVisible();
+
+    // Click en Inicio redirige a /
+    await homeBtn.click();
+    await page.waitForLoadState('networkidle');
+    await page.waitForURL('**/');
   });
 });
