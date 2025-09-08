@@ -14,4 +14,6 @@ dist
 yarn-error.log
 .idea/dbnavigator.xml
 .env.prod
-
+playwright/.auth
+test-results
+playwright-report

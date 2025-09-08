@@ -61,6 +61,12 @@ npm run dev
 - `build:test`: compila usando `.env`
 - `preview`: previsualiza la build localmente
 - `generate`: genera salida estática (si aplica)
+- `test`: corre Vitest (unit + nuxt UI)
+- `test:nuxt`: corre sólo los tests de UI con @nuxt/test-utils (mocks)
+- `test:e2e`: corre E2E headless (peticiones reales) con RUN_E2E=1
+- `pw:install`: instala navegadores de Playwright
+- `test:pw`: corre E2E de navegador (Playwright) contra backend real
+- `test:pw:headed`: igual que arriba pero con navegador visible
 
 ## Build y producción (SSR)
 
@@ -124,6 +130,52 @@ Para producción, considera una build multi-stage que ejecute `.output/server/in
 
 - Google Fonts: la integración `@nuxtjs/google-fonts` necesita red durante el build. En ambientes sin acceso, desactiva el módulo o provee las fuentes localmente.
 - Íconos personalizados: ver `app/assets/icons` y la configuración de `@nuxt/icon` en `nuxt.config.ts`.
+
+## Tests
+
+### Unit/NUXT (Vitest)
+
+- Mocks de endpoints con `registerEndpoint` para validar wiring UI→API sin salir al backend.
+- Config: `vitest.config.ts` (proyecto `nuxt`).
+
+### E2E headless (peticiones reales)
+
+- Proyecto `nuxt-e2e` apunta al backend definido por `NUXT_PUBLIC_URL_BACKEND`.
+- Ejecutar:
+
+```bash
+RUN_E2E=1 NUXT_PUBLIC_URL_BACKEND=http://app.futzo.test yarn test:e2e
+```
+
+### E2E navegador (Playwright)
+
+1) Configurar `.env` (ver `.env.example`):
+
+```env
+NUXT_PUBLIC_URL_BACKEND=http://app.futzo.test
+NUXT_PUBLIC_BACKEND_PREFIX=api/v1
+PW_E2E_EMAIL=tu-usuario@example.com
+PW_E2E_PASSWORD=tu-password
+# Opcional si usas host local custom
+# PW_BASE_URL=http://futzo.test:3000
+```
+
+2) Instalar navegadores de Playwright:
+
+```bash
+yarn pw:install
+```
+
+3) Correr tests:
+
+```bash
+yarn test:pw           # headless
+yarn test:pw:headed   # con navegador visible
+```
+
+Requisitos para entorno local:
+- El dominio `app.futzo.test` debe resolver a tu backend local (edita `/etc/hosts` si aplica).
+- Backend con Sanctum/CORS configurado para permitir origen del front (`127.0.0.1:3000` o `futzo.test:3000`).
 
 ## Estructura breve
 

@@ -90,7 +90,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@vee-validate/nuxt',
     'nuxt-auth-sanctum',
-    // "nuxt-typed-router",
+    'nuxt-typed-router',
     '@nuxtjs/google-fonts',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
@@ -101,6 +101,7 @@ export default defineNuxtConfig({
     'vue-sonner/nuxt',
     'nuxt-svgo',
     '@nuxt/image',
+    '@nuxt/test-utils/module',
   ],
   vite: {
     vue: {

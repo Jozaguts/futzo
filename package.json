@@ -9,7 +9,15 @@
     "dev": "rm -rf /tmp/nitro && nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "test:nuxt": "vitest --project nuxt",
+    "test:e2e": "RUN_E2E=1 vitest --project nuxt-e2e",
+    "test:unit": "vitest --project unit",
+    "test": "vitest",
+    "pw:install": "npx -y playwright install --with-deps || true",
+    "test:pw": "PW_E2E_EMAIL=$PW_E2E_EMAIL PW_E2E_PASSWORD=$PW_E2E_PASSWORD NUXT_PUBLIC_URL_BACKEND=${NUXT_PUBLIC_URL_BACKEND:-http://app.futzo.test} NUXT_PUBLIC_BACKEND_PREFIX=${NUXT_PUBLIC_BACKEND_PREFIX:-api/v1} playwright test",
+    "test:pw:headed": "PW_E2E_EMAIL=$PW_E2E_EMAIL PW_E2E_PASSWORD=$PW_E2E_PASSWORD NUXT_PUBLIC_URL_BACKEND=${NUXT_PUBLIC_URL_BACKEND:-http://app.futzo.test} NUXT_PUBLIC_BACKEND_PREFIX=${NUXT_PUBLIC_BACKEND_PREFIX:-api/v1} playwright test --headed",
+    "test:pw:ui": "playwright test --ui"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.8.2",
@@ -51,10 +59,16 @@
     "@iconify-json/tabler": "^1.2.22",
     "@iconify-json/uil": "^1.2.3",
     "@nuxt/icon": "^2.0.0",
+    "@nuxt/test-utils": "^3.19.2",
     "@types/google.maps": "^3.58.1",
     "@types/node": "^22.14.0",
+    "@vue/test-utils": "^2.4.6",
+    "happy-dom": "^18.0.1",
+    "@playwright/test": "^1.55.0",
+    "playwright-core": "^1.55.0",
     "sass-embedded": "^1.86.3",
     "vite-plugin-vuetify": "^2.1.2",
+    "vitest": "^3.2.4",
     "vuetify": "^3.9.5"
   },
   "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447",
