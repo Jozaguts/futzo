@@ -93,7 +93,7 @@
           density="compact"
           block
           type="submit"
-          :disabled="leagueName.length < 5"
+          :disabled="leagueName.length < 6"
         >
           Crear liga
         </v-btn>

@@ -73,6 +73,7 @@
           <v-badge :content="counter" location="bottom right" :offset-x="-4">
             <v-btn
               block
+              id="re-send"
               :disabled="!!counter || forgotPasswordState.isFetching"
               :loading="forgotPasswordState.isFetching"
               @click="resendCode"

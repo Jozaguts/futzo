@@ -106,7 +106,7 @@ export default function useAuth() {
         });
         const url = isPhone.value
           ? `/verificar?phone=${encodeURIComponent(`${areaCode.value}${username.value}`)}`
-          : `/verificar?email=${username.value}`;
+          : `/verificar?email=${encodeURIComponent(String(username.value))}`;
         await useRouter().push(url);
         showRegisterForm.value = false;
       })

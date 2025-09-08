@@ -151,7 +151,7 @@
                   </span>
                 </div>
                 <div class="d-flex align-center justify-space-between flex-wrap" v-auto-animate="{ duration: 100 }">
-                  <v-checkbox v-if="isSignUp" v-model="terms">
+                  <v-checkbox v-if="isSignUp" v-model="terms" id="consent">
                     <template #label
                       ><span class="text-caption">
                         Entiendo que recibiré un código de verificación por WhatsApp
