@@ -48,6 +48,7 @@ export default defineNuxtConfig({
   // these 3 are necessary
   ssr: true,
   i18n: {
+    defaultLocale: 'es',
     bundle: {
       optimizeTranslationDirective: false,
     },

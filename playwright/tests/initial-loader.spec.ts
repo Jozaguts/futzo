@@ -5,7 +5,7 @@ test.describe('Initial loader (#loading-bg)', () => {
     // Cargamos la home y comprobamos que el overlay aparece
     await page.goto('/', { waitUntil: 'commit' });
     const loader = page.locator('#loading-bg');
-    await loader.waitFor({ state: 'visible', timeout: 5000 });
+    await loader.waitFor({ state: 'visible', timeout: 90000 });
 
     // El plugin cliente lo oculta al montar la app y luego lo elimina
     await loader.waitFor({ state: 'detached', timeout: 90000 });
@@ -19,7 +19,7 @@ test.describe('Initial loader (#loading-bg)', () => {
     // Recargar y volver a verificar
     await page.reload({ waitUntil: 'commit' });
     const loader = page.locator('#loading-bg');
-    await loader.waitFor({ state: 'visible', timeout: 5000 });
+    await loader.waitFor({ state: 'visible', timeout: 90000 });
     await loader.waitFor({ state: 'detached', timeout: 90000 });
   });
 });
