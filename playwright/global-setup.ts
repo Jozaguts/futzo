@@ -1,10 +1,11 @@
 import 'dotenv/config';
-import { FullConfig, request, chromium } from '@playwright/test';
+import { FullConfig, request } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
 
 export default async function globalSetup(config: FullConfig) {
   const backendURL = process.env.NUXT_PUBLIC_URL_BACKEND || 'http://app.futzo.test';
+  const appOrigin = process.env.PW_BASE_URL || `http://127.0.0.1:${process.env.NUXT_PORT || '3000'}`;
   const email = process.env.PW_E2E_EMAIL;
   const password = process.env.PW_E2E_PASSWORD;
   const outDir = path.resolve(process.cwd(), 'playwright/.auth');
@@ -18,8 +19,16 @@ export default async function globalSetup(config: FullConfig) {
     return;
   }
 
-  // Login vía API para obtener cookies de Sanctum
-  const api = await request.newContext({ baseURL: backendURL });
+  // Login vía API para obtener cookies de Sanctum (SPA stateful)
+  const api = await request.newContext({
+    baseURL: backendURL,
+    extraHTTPHeaders: {
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+      Origin: appOrigin,
+      Referer: appOrigin,
+    },
+  });
 
   // 1) Pedir CSRF cookie (XSRF-TOKEN)
   const csrfRes = await api.get('/sanctum/csrf-cookie');
@@ -33,17 +42,15 @@ export default async function globalSetup(config: FullConfig) {
   // 2) Login
   const loginRes = await api.post('/auth/login', {
     headers: {
-      'Accept': 'application/json',
       'Content-Type': 'application/json',
       'X-XSRF-TOKEN': xsrfToken,
-      'Referer': backendURL,
     },
     data: { email, password },
   });
   if (!loginRes.ok()) throw new Error(`Login failed: ${loginRes.status()} ${await loginRes.text()}`);
 
   // 3) Verificar identidad
-  const me = await api.get('/api/v1/me', { headers: { 'Accept': 'application/json' } });
+  const me = await api.get('/api/v1/me');
   if (!me.ok()) throw new Error(`/me failed: ${me.status()} ${await me.text()}`);
 
   // Guardar cookies en storageState de Playwright
