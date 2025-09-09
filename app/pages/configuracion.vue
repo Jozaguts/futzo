@@ -3,8 +3,9 @@
   import PersonalDataCard from '~/components/pages/configuration/personal-data-card.vue'
   import Plans from '~/components/pages/configuration/plans/index.vue'
   import { useToast } from '~/composables/useToast'
-
+  import StripeElementsDrawer from '~/components/pages/configuration/plans/StripeElementsDrawer.vue'
   const user = computed(() => useAuthStore().user)
+  const { stripeDialog } = storeToRefs(useAuthStore())
   const tab = ref(!user?.value?.is_operational ? 3 : 1)
   definePageMeta({
     middleware: ['sanctum:auth'],
@@ -49,6 +50,17 @@
         </v-tabs-window>
       </v-card-text>
     </v-card>
+    <StripeElementsDrawer
+      v-model="stripeDialog.open"
+      :plan-sku="stripeDialog.sku"
+      :plan-name="stripeDialog.name"
+      :period="stripeDialog.period"
+      @success="
+        async () => {
+          await useSanctumAuth().refreshIdentity()
+        }
+      "
+    />
   </v-sheet>
 </template>
 <style lang="sass">

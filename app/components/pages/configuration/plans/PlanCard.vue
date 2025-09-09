@@ -1,8 +1,8 @@
 <script setup lang="ts">
   import { Icon } from '#components'
   import type { FutzoPlan } from '~/models/Product'
-  import checkout from '~/http/api/checkout'
   import { useToast } from '~/composables/useToast'
+  import { createBillingPortalSession } from '~/http/api/stripe'
   const {
     isMonthlyPrice,
     plan,
@@ -20,17 +20,30 @@
   }>()
   const disabled = ref(false)
   const loading = ref(false)
+  const emit = defineEmits<{
+    (e: 'checkout', payload: { sku: string; period: 'month' | 'year'; name: string }): void
+  }>()
+
   const buttonHandler = async () => {
-    subscribed ? console.log('subscribed') : paymentHandler()
-  }
-  const paymentHandler = () => {
     try {
-      checkout(plan.sku, isMonthlyPrice ? 'month' : 'year')
-    } catch (error) {
+      if (subscribed) {
+        loading.value = true
+        const { url } = await createBillingPortalSession()
+        window.open(url, '_blank', 'noopener,noreferrer')
+        loading.value = false
+        return
+      }
+      emit('checkout', { sku: plan.sku, period: isMonthlyPrice ? 'month' : 'year', name: plan.name })
+    } catch (error: any) {
+      loading.value = false
       useToast().toast({
         type: 'error',
-        msg: 'Checkout',
-        description: 'No pudimos generar tu checkout. Intenta de nuevo o contáctanos en soporte@futzo.io',
+        msg: subscribed ? 'Portal de facturación' : 'Checkout',
+        description:
+          error?.data?.message ||
+          (subscribed
+            ? 'No pudimos abrir el portal de facturación.'
+            : 'No pudimos iniciar el pago. Intenta de nuevo.'),
       })
     }
   }

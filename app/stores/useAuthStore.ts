@@ -117,7 +117,7 @@ export const useAuthStore = defineStore(
     };
     const isOperational = computed(() => !!user?.value?.is_operational);
     const isSubscribed = computed(() => user?.value?.subscribed ?? false);
-
+    const stripeDialog = ref({ open: false, sku: '', period: 'month' as 'month' | 'year', name: '' });
     return {
       role,
       isSuperAdmin,
@@ -128,6 +128,7 @@ export const useAuthStore = defineStore(
       errorMessage,
       isOperational,
       isSubscribed,
+      stripeDialog,
       updateUser,
       updateImage,
       updatePassword,

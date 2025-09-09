@@ -1,11 +1,13 @@
 <script setup lang="ts">
   import type { Currency, FutzoPlan, Prices, ProductPrices } from '~/models/Product'
   import PlanCard from '~/components/pages/configuration/plans/PlanCard.vue'
+  import StripeElementsDrawer from '~/components/pages/configuration/plans/StripeElementsDrawer.vue'
   const type = ref<'yearly' | 'monthly'>('yearly')
   const isYearly = computed(() => type.value === 'yearly')
   const isMonthly = computed(() => type.value === 'monthly')
-  const { isSubscribed, user } = storeToRefs(useAuthStore())
+  const { isSubscribed, user, stripeDialog } = storeToRefs(useAuthStore())
   const productPrices = ref()
+
   onMounted(async () => {
     if (!isSubscribed.value) {
       productPrices.value = await useSanctumClient()<ProductPrices>('/api/v1/public/products/prices')
@@ -14,6 +16,13 @@
       await useSanctumAuth().refreshIdentity()
     }
   })
+
+  const handleCheckout = (p: { sku: string; period: 'month' | 'year'; name: string }) => {
+    stripeDialog.value.sku = p.sku
+    stripeDialog.value.period = p.period
+    stripeDialog.value.name = p.name
+    stripeDialog.value.open = true
+  }
 
   const features: Record<keyof ProductPrices, string[]> = {
     kickoff: [
@@ -46,14 +55,25 @@
       </v-col>
       <v-col cols="12" lg="10" md="10">
         <div class="d-flex ga-8 justify-center">
-          <PlanCard :isMonthlyPrice="isMonthly" :plan="productPrices?.kickoff" :features="features.kickoff" />
+          <PlanCard
+            :isMonthlyPrice="isMonthly"
+            :plan="productPrices?.kickoff"
+            :features="features.kickoff"
+            @checkout="handleCheckout"
+          />
           <PlanCard
             :isMonthlyPrice="isMonthly"
             :plan="productPrices?.pro_play"
             :prioritary="true"
             :features="features.pro_play"
+            @checkout="handleCheckout"
           />
-          <PlanCard :isMonthlyPrice="isMonthly" :plan="productPrices?.elite_league" :features="features.elite_league" />
+          <PlanCard
+            :isMonthlyPrice="isMonthly"
+            :plan="productPrices?.elite_league"
+            :features="features.elite_league"
+            @checkout="handleCheckout"
+          />
         </div>
       </v-col>
     </v-row>

@@ -21,6 +21,9 @@ export interface User {
   onboarding: OnboardingState;
   is_operational: boolean;
   subscribed: boolean;
+  plan: {
+    billing_period: string;
+  };
 }
 export type OnboardingStep = {
   id: string;

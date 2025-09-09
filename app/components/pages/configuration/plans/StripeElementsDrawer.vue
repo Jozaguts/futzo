@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { createPaymentIntent } from '~/http/api/stripe'
+  import { createSubscriptionIntent } from '~/http/api/stripe'
   const props = defineProps<{
     modelValue: boolean
     planSku?: string
@@ -22,6 +22,7 @@
   let elements: any = null
   let paymentElement: any = null
   const errorMessage = ref('')
+  const { user } = storeToRefs(useAuthStore())
 
   const mountElements = async () => {
     if (!clientSecret.value) return
@@ -56,7 +57,7 @@
     if (!props.planSku || !props.period) return
     loading.value = true
     try {
-      const res = await createPaymentIntent(props.planSku, props.period)
+      const res = await createSubscriptionIntent(props.planSku, props.period, user.value?.email || undefined)
       clientSecret.value = res.client_secret
       // mostrar contenedor antes de montar
       loading.value = false
@@ -129,17 +130,14 @@
     <div class="pa-4">
       <div v-if="loading && !isLoading" class="text-medium-emphasis mt-4">Cargando Stripe…</div>
       <form id="payment-form">
-        <div id="link-authentication-element" />
         <div id="payment-element" />
-        <v-btn block class="mt-2" id="submit" :disabled="isLoading">Pagar</v-btn>
-        <!--        <sr-messages :messages="messages" />-->
       </form>
       <v-alert v-if="errorMessage" type="error" class="mt-4" density="comfortable">{{ errorMessage }}</v-alert>
     </div>
     <template #append>
       <div class="pa-4 d-flex ga-2">
-        <v-btn block variant="text" @click="open = false">Cancelar</v-btn>
-        <v-btn block color="primary" :loading="confirming" :disabled="!clientSecret" @click="confirm">Pagar</v-btn>
+        <v-btn variant="text" @click="open = false">Cancelar</v-btn>
+        <v-btn color="primary" :loading="confirming" :disabled="!clientSecret" @click="confirm">Pagar</v-btn>
       </div>
     </template>
   </v-navigation-drawer>
