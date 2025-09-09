@@ -2,44 +2,13 @@
   import IndicatorStep from '~/components/shared/IndicatorStep.vue'
   import LocationStep from '~/components/pages/ubicaciones/stepper/LocationStep.vue'
   import AvailabilityStep from '~/components/pages/ubicaciones/stepper/AvailabilityStep.vue'
-  import type { Field, LocationPosition, LocationStoreRequest } from '~/models/Location'
-  import { provide } from 'vue'
 
-  const { isEdition, formSteps, locationDialog } = storeToRefs(useLocationStore())
+  const { isEdition, formSteps, locationDialog, locationStoreRequest } = storeToRefs(useLocationStore())
   const emits = defineEmits(['next', 'back', 'close'])
   const locationStepRef = useTemplateRef<{
     validate: Function
     handleSubmit: Function
   }>('locationStepRef')
-  const form = ref<LocationStoreRequest>({
-    name: '',
-    address: '',
-    place_id: '',
-    position: { lat: 16.8639515, lng: -99.8822807 } as LocationPosition,
-    tags: [] as string[],
-    fields: [] as Field[],
-    fields_count: 1,
-    steps: {
-      location: {
-        completed: false,
-      },
-      fields: {
-        completed: false,
-      },
-    },
-  })
-  function updateForm(value: Partial<LocationStoreRequest>) {
-    // Deep-merge to avoid losing nested structures like steps
-    form.value = {
-      ...form.value,
-      ...value,
-      steps: {
-        ...(form.value.steps || { location: { completed: false }, fields: { completed: false } }),
-        ...(value?.steps || {}),
-      },
-    } as LocationStoreRequest
-  }
-
   const availabilityStepRef = useTemplateRef<{
     validate: Function
     handleSubmit: Function
@@ -53,8 +22,8 @@
   })
   const backTextButton = computed(() => (formSteps.value.current === 'location' ? 'Cancelar' : 'Anterior'))
   const nextStepHandler = async () => {
-    const firstStepCompleted = !!form.value?.steps?.location?.completed
-    const secondStepCompleted = !!form.value?.steps?.fields?.completed
+    const firstStepCompleted = !!locationStoreRequest.value?.steps?.location?.completed
+    const secondStepCompleted = !!locationStoreRequest.value?.steps?.fields?.completed
     if (!firstStepCompleted && !secondStepCompleted) {
       return
     }
@@ -72,7 +41,7 @@
     // Sync local provided form into store request before saving
     const store = useLocationStore()
     const { locationStoreRequest: storeRequest } = storeToRefs(store)
-    storeRequest.value = { ...(form.value as any) }
+    storeRequest.value = { ...locationStoreRequest.value }
     isEdition.value ? await store.updateLocation() : await store.storeLocation()
   }
 
@@ -83,7 +52,6 @@
     }
     formSteps.value.current = 'location'
   }
-  provide('location_form', { form, updateForm })
 </script>
 <template>
   <v-card-text>
@@ -108,7 +76,7 @@
             :show-icon="false"
             class="w-btn"
             :text="textButton"
-            :disabled="!form?.steps?.location?.completed"
+            :disabled="!locationStoreRequest?.steps?.location?.completed"
             variant="elevated"
             @click="nextStepHandler"
           />

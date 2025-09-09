@@ -4,32 +4,30 @@
 
   const { isEdition, locationDialog, locationToDelete, locationStoreRequest, locationCard } =
     storeToRefs(useLocationStore())
-
   const { location } = defineProps<{ location: LocationCard }>()
   const clickHandler = (action: 'Eliminar' | 'Editar') => {
     if (action === 'Editar') {
       locationStoreRequest.value = {
-        place_id: '',
+        id: location.id,
+        name: location.name,
+        address: location.address,
+        place_id: location.place_id,
+        position: location.position,
+        tags: location.tags,
+        fields: location.fields,
+        fields_count: location.fields.length ?? 0,
         steps: {
-          fields: {
-            completed: true,
-          },
           location: {
             completed: true,
           },
+          fields: {
+            completed: false,
+          },
         },
-        name: location.name,
-        address: location.address,
-        tags: location.tags,
-        fields_count: location.fields_count,
-        position: location.position,
-        fields: location.fields,
-        completed: true,
-        id: location.id,
       }
-      locationCard.value.id = location.id as number
       isEdition.value = true
       locationDialog.value = true
+      locationCard.value.id = location.id
     } else if (action === 'Eliminar') {
       locationToDelete.value.id = location.id as number
       locationToDelete.value.show = true

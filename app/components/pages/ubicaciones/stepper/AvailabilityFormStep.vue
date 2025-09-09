@@ -1,30 +1,20 @@
 <script lang="ts" setup>
   import InputDay from '~/components/pages/ubicaciones/stepper/InputDay.vue'
-  import type { PropType } from 'vue'
   import type { Field, Windows, All } from '~/models/Location'
   import { WINDOWS } from '~/utils/constants'
-  import { inject } from 'vue'
-  const { step, initForm } = defineProps({
-    step: {
-      type: Number,
-      required: true,
-    },
-    initForm: {
-      type: Object as PropType<Field>,
-    },
-  })
+  const { initForm, step } = defineProps<{ step: number; initForm: Field }>()
   const emits = defineEmits(['step-completed', 'update-field'])
   const form = ref<Field>({
     id: initForm?.id as number,
     name: initForm?.name ?? '',
-    windows: initForm?.windows ?? WINDOWS,
+    windows: { ...WINDOWS, ...initForm.windows },
   })
-  const { form: parentForm } = inject('location_form') as any
+  const { locationStoreRequest } = storeToRefs(useLocationStore())
 
   function emitUpdate() {
     emits('update-field', { ...form.value })
     // Mark fields step as completed when any change occurs
-    if (parentForm?.value?.steps?.fields) parentForm.value.steps.fields.completed = true
+    if (locationStoreRequest?.value?.steps?.fields) locationStoreRequest.value.steps.fields.completed = true
   }
 
   function updateDayHandler(dayKey: keyof Windows, val: All) {
@@ -40,7 +30,6 @@
   function updateEnabledHandler(dayKey: keyof Windows, enabled: boolean) {
     const next: Windows = { ...(form.value.windows as Windows) }
     const arr = Array.isArray(next[dayKey]) ? (next[dayKey] as All[]) : ([] as All[])
-    // set default hours when enabling if empty
     const defaults: All = { start: '09:00', end: '17:00', enabled }
     arr[0] = { ...(arr[0] || defaults), ...(enabled ? defaults : {}), enabled }
     next[dayKey] = arr
@@ -60,10 +49,10 @@
     </v-col>
   </v-row>
   <InputDay
-    :day="form.windows.mon[0]"
+    :day="form.windows.mon?.[0]"
     id="monday"
     label="Lunes"
-    :onUpdateDay="(val) => updateDayHandler('mon', val)"
+    :onUpdateDay="(val: All) => updateDayHandler('mon', val)"
     @update-enabled="(enabled) => updateEnabledHandler('mon', enabled)"
   />
   <InputDay

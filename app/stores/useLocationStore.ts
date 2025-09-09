@@ -1,5 +1,12 @@
 import { defineStore } from 'pinia';
-import type { FormSteps, LocationCard, LocationResponse, LocationStoreRequest, Field } from '~/models/Location';
+import type {
+  FormSteps,
+  LocationCard,
+  LocationResponse,
+  LocationStoreRequest,
+  Field,
+  LocationPosition,
+} from '~/models/Location';
 import { useApiError } from '~/composables/useApiError';
 import type { IPagination } from '~/interfaces';
 import { ref } from 'vue';
@@ -45,16 +52,20 @@ export const useLocationStore = defineStore('locationStore', () => {
   const locationStoreRequest = ref<LocationStoreRequest>({
     name: '',
     address: '',
+    place_id: '',
+    position: { lat: 16.8639515, lng: -99.8822807 } as LocationPosition,
     tags: [] as string[],
     fields: [] as Field[],
-    fields_count: 0,
-    position: DEFAULT_POSITION,
+    fields_count: 1,
     steps: {
-      location: { completed: false },
-      fields: { completed: false },
+      location: {
+        completed: false,
+      },
+      fields: {
+        completed: false,
+      },
     },
-    completed: false,
-  } as LocationStoreRequest);
+  });
   const locationDialog = ref(false);
   const isEdition = ref(false);
   const locationCard = ref<LocationCard>({} as LocationCard);

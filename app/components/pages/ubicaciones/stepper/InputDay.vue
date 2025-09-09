@@ -3,25 +3,8 @@
   import type { PropType } from 'vue'
   import '@vuepic/vue-datepicker/dist/main.css'
   import VueDatePicker from '@vuepic/vue-datepicker'
-
-  const props = defineProps({
-    day: {
-      type: Object as PropType<All>,
-      required: true,
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-    onUpdateDay: {
-      type: Function as PropType<(val: All) => void>,
-      required: true,
-    },
-    id: {
-      type: String,
-    },
-  })
-
+  type OnUpdateDay = (val: All) => void
+  const props = defineProps<{ day?: All; label: string; onUpdateDay: OnUpdateDay; id: string }>()
   function toHHmm(val: any): string {
     if (!val) return ''
     if (typeof val === 'string') return val
