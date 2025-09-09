@@ -2,7 +2,6 @@ import type { User } from '~/models/User';
 
 export default defineNuxtRouteMiddleware(async (to) => {
   if (import.meta.server) return;
-
   const userRef = useSanctumUser<User>();
   const isLogin = !!userRef.value?.email || !!userRef.value?.phone;
   if (!isLogin) return;
@@ -11,8 +10,13 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (!userRef.value?.has_league) return;
 
   // Prioridad al pago: si no está operacional, manda a checkout y no cargues onboarding
+  // esto pasa cuando el trial venció y no tiene un subscription activa
   if (userRef.value && userRef.value.is_operational === false) {
-    if (to.path !== '/configuracion') return navigateTo({ name: 'configuracion', query: { step: 'account' } });
+    if (to.name !== 'configuracion') {
+      return navigateTo(
+        `/configuracion?step=account&is_operational=${userRef.value.is_operational}&subscribed=${userRef.value.subscribed}`
+      );
+    }
     return;
   }
 
