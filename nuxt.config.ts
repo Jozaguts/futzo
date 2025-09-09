@@ -103,6 +103,7 @@ export default defineNuxtConfig({
     'nuxt-svgo',
     '@nuxt/image',
     '@nuxt/test-utils/module',
+    '@unlok-co/nuxt-stripe',
   ],
   vite: {
     vue: {
@@ -158,6 +159,10 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
+      stripe: {
+        key: process.env.NUXT_PUBLIC_STRIPE_KEY,
+        options: {},
+      },
       baseURLBackend: process.env.NUXT_PUBLIC_URL_BACKEND,
       backendPrefix: process.env.NUXT_PUBLIC_BACKEND_PREFIX,
       appName: process.env.NUXT_PUBLIC_APP_NAME,
