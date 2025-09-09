@@ -5,7 +5,6 @@ export default defineNuxtPlugin((nuxtApp) => {
       useCookie('league_id').value = leagueId;
     }
   });
-
   nuxtApp.hook('sanctum:request', (app, ctx, logger) => {
     const leagueId = useCookie('league_id').value;
     if (leagueId) {
@@ -28,8 +27,8 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
     if (status === 402) {
       const route = useRoute();
+      //@ts-ignore
       if (route.path !== '/configuracion') navigateTo({ name: 'configuracion', query: { step: 'account' } });
     }
-    console.log(status);
   });
 });

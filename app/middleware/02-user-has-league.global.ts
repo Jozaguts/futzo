@@ -9,6 +9,7 @@ export default defineNuxtRouteMiddleware((to) => {
     return;
   }
   if (isLogin && to.path !== '/bienvenido' && !user.value?.has_league) {
+    //@ts-ignore
     return navigateTo({ name: 'bienvenido' });
   }
 });
