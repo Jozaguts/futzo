@@ -13,6 +13,7 @@
     reservedMinutesPerWeek,
     matchDurationMins,
     matchesPerRound,
+    scheduleSettings,
   } = storeToRefs(useScheduleStore())
 
   const { secondaryTextBtn, primaryTextBtn, backHandler } = useDialog(calendarSteps, scheduleDialog)
@@ -120,7 +121,7 @@
         density="comfortable"
         size="large"
         :loading="isFetching"
-        :disabled="disabledButton || isFetching"
+        :disabled="disabledButton || isFetching || scheduleSettings?.teams < scheduleSettings?.min_teams"
         @click="handleChange"
         >{{ primaryTextBtn }}
       </v-btn>

@@ -41,15 +41,6 @@ export type ScheduleLocationAvailability = {
   saturday: Day;
   sunday: Day;
 };
-export type FormLocationAvailabilityStep = {
-  field_id: number;
-  step: number;
-  field_name: string;
-  location_name: string;
-  location_id: number;
-  availability: LocationAvailability;
-};
-
 export type Phase =
   | 'Fase de grupos'
   | 'Tabla general'
@@ -62,6 +53,7 @@ export type EliminationPhase = {
   name: Phase;
   is_active: boolean;
   is_completed: boolean;
+  min_teams_for: number;
 };
 export type Tiebreaker = {
   id: number;

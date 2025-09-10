@@ -98,7 +98,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   async function loadTournaments() {
     loading.value = true;
     const client = useSanctumClient();
-    const response = await client<{ data: Tournament[]; pagination: IPagination }>(
+    const response = await client<{ data: Tournament[]; meta: IPagination }>(
       `/api/v1/admin/tournaments?per_page=${pagination.value.per_page}&page=${pagination.value.current_page}`
     ).finally(() => (loading.value = false));
     tournaments.value = response.data;

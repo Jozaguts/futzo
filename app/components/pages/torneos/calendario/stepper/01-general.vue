@@ -115,7 +115,15 @@
       </v-col>
       <v-col cols="12" lg="8" md="8">
         <p class="text-body-1">
-          <v-chip color="primary" readonly variant="outlined">{{ scheduleSettings.teams }}</v-chip>
+          <v-chip
+            :color="scheduleSettings.teams < scheduleSettings.min_teams ? 'error' : 'primary'"
+            readonly
+            variant="outlined"
+            >{{ scheduleSettings.teams }}</v-chip
+          >
+        </p>
+        <p v-if="scheduleSettings.teams < scheduleSettings.min_teams" class="text-caption text-error">
+          No hay equipos suficientes para generar el calendario
         </p>
       </v-col>
     </v-row>
