@@ -51,16 +51,16 @@
     <v-card-text class="pt-2">
       <p class="card-content-title">Horarios de Campos</p>
       <v-expansion-panels :ripple="true" color="grey-100" :elevation="1" variant="accordion">
-        <v-expansion-panel v-for="info in location.windows" :key="info?.id" :title="info.name">
+        <v-expansion-panel v-for="info in location.fields" :key="info?.id" :title="info.name">
           <v-expansion-panel-text eager class="pa-0">
             <v-container fluid class="pa-0">
               <v-row no-gutters>
-                <v-col cols="6" v-for="window in info.windows" :key="window[0]?.day" class="font-weight-bold my-1">
-                  <p>
-                    {{ window[0]?.day.toString().substring(0, 3) }}
-                    <span class="text-medium-emphasis mr-1">{{ window[0]?.start }}</span
-                    >-<span class="text-medium-emphasis ml-1">{{ window[0]?.end }}</span>
-                  </p>
+                <v-col cols="6" v-for="value in info.windows" :key="key" class="font-weight-bold my-1">
+                  <div>
+                    <p class="text-left">{{ value[0]?.label?.toString().substring(0, 3) }}</p>
+                    <span class="text-medium-emphasis mr-1">{{ value[0]?.start }}</span
+                    >-<span class="text-medium-emphasis ml-1">{{ value[0]?.end }}</span>
+                  </div>
                 </v-col>
               </v-row>
             </v-container>

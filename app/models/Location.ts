@@ -54,6 +54,7 @@ export type Windows = {
   all?: All[];
 };
 export type All = {
+  label: string;
   enabled: boolean;
   start: string;
   end: string;
