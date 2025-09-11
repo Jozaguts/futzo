@@ -8,9 +8,9 @@
   import { vuetifyConfig } from '~/utils/constants'
   import type { Field } from '~/models/Location'
 
-  const { isEdition, tournamentStoreRequest, dialog, steps } = storeToRefs(useTournamentStore())
+  const { tournamentStoreRequest, steps } = storeToRefs(useTournamentStore())
   const { t } = useI18n()
-  const { defineField, handleSubmit, resetForm, meta, values } = useForm<TournamentStoreRequest['details']>({
+  const { defineField, resetForm, meta, values } = useForm<TournamentStoreRequest['details']>({
     validationSchema: toTypedSchema(
       object({
         location_ids: yup.array().of(yup.number()).required(t('forms.required')),
@@ -64,6 +64,7 @@
   watch(
     meta,
     () => {
+      steps.value.steps[steps.value.current].disable = !meta.value.valid
       if (meta.value.valid && meta.value.touched) {
         tournamentStoreRequest.value.details = { ...values }
       }
