@@ -1,61 +1,96 @@
 <script lang="ts" setup>
   import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
-  import useSchemas from '~/composables/useSchemas'
   import CategorySelectComponent from '~/components/inputs/CategoriesSelect.vue'
-  import { FUTBOL_11_ID, MAX_TEAMS, MIN_TEAMS } from '~/utils/constants'
-
+  import { FUTBOL_11_ID, MAX_TEAMS, MIN_TEAMS, vuetifyConfig } from '~/utils/constants'
+  import { useForm } from 'vee-validate'
+  import * as yup from 'yup'
+  import { object } from 'yup'
+  import type { TournamentStoreRequest } from '~/models/tournament'
+  import { storeToRefs } from 'pinia'
   const { footballTypes } = storeToRefs(useLeaguesStore())
   const { formats } = storeToRefs(useCategoryStore())
-  const { isEdition, tournamentStoreRequest } = storeToRefs(useTournamentStore())
-  const { handleSubmit, resetForm, fields, validate, setValues } = useSchemas(
-    isEdition.value ? 'edit-tournament-basic-info' : 'create-tournament-basic-info'
-  )
-  const minMax = ref<number[]>()
+  const { isEdition, tournamentStoreRequest, dialog, steps } = storeToRefs(useTournamentStore())
+  const { t } = useI18n()
+  const { defineField, handleSubmit, resetForm, meta } = useForm<TournamentStoreRequest['basic']>({
+    validationSchema: toTypedSchema(
+      object({
+        id: yup.number().nullable(),
+        name: yup
+          .string()
+          .required(t('forms.required'))
+          .test('no-leading-space', 'No se permite espacio en blanco al inicio', (value) => {
+            return !(value && value.startsWith(' '))
+          }),
+        image: yup
+          .mixed()
+          .nullable()
+          .test('File is required', 'Solo imágenes .jgp, png, svg ', (value: any) => {
+            if (!value) return true
+            return value?.type?.includes('image/') || typeof value === 'string'
+          }),
+        min_max: yup
+          .array()
+          .required(t('forms.required'))
+          .default([8, 30])
+          .test('minMax', 'El mínimo debe ser menor que el máximo', function (value) {
+            return value[0] < value[1]
+          }),
+        start_date: yup.date().required(t('forms.required')),
+        end_date: yup.date().nullable(t('forms.required')),
+        substitutions_per_team: yup.number().required(t('forms.required')),
+        category_id: yup.number().required(t('forms.required')),
+        tournament_format_id: yup.number().required(t('forms.required')),
+        football_type_id: yup.number().required(t('forms.required')),
+      })
+    ),
+    initialValues: tournamentStoreRequest.value.basic,
+  })
+  const [id, id_props] = defineField('id', vuetifyConfig)
+  const [name, name_props] = defineField('name', vuetifyConfig)
+  const [image, image_props] = defineField('image', vuetifyConfig)
+  const [min_max, min_max_props] = defineField('min_max', vuetifyConfig)
+  const [start_date, start_date_props] = defineField('start_date', vuetifyConfig)
+  const [end_date, end_date_props] = defineField('end_date', vuetifyConfig)
+  const [substitutions_per_team, substitutions_per_team_props] = defineField('substitutions_per_team', vuetifyConfig)
+  const [category_id, category_id_props] = defineField('category_id', vuetifyConfig)
+  const [tournament_format_id, tournament_format_id_props] = defineField('tournament_format_id', vuetifyConfig)
+  const [football_type_id, football_type_id_props] = defineField('football_type_id', vuetifyConfig)
   onMounted(() => {
+    steps.value.current = 'basicInfo'
     useCategoryStore().fetchCategories()
     useCategoryStore().fetchFormats()
-    minMax.value = [MIN_TEAMS, MAX_TEAMS]
-    if (tournamentStoreRequest.value?.basic) {
-      setValues({ ...tournamentStoreRequest.value.basic })
-      if (tournamentStoreRequest.value.basic.image) {
-        fields.image = tournamentStoreRequest.value.basic.image
-      }
-    }
+    min_max.value = [MIN_TEAMS, MAX_TEAMS]
     if (!isEdition.value) {
-      fields.football_type_id.fieldValue = FUTBOL_11_ID
+      football_type_id.value = FUTBOL_11_ID
     }
   })
   onUnmounted(() => {
     resetForm()
   })
-  watch(minMax, (value) => {
-    fields.minMax.fieldValue = value
-  })
-  defineExpose({
-    validate,
-    handleSubmit,
-  })
+  watch(
+    meta,
+    () => {
+      steps.value.steps[steps.value.current].disable = !meta.value.valid
+    },
+    { deep: true }
+  )
 </script>
 <template>
   <v-container class="container">
-    <BaseInput v-model="fields.name" label="Nombre del torneo*" placeholder="p.ej. Torneo de verano" />
-    <BaseInput label="Fecha de inicio*">
+    <BaseInput v-model="name" :props="name_props" label="Nombre del torneo*" placeholder="p.ej. Torneo de verano" />
+    <BaseInput label="Fecha de inicio*" :props="start_date_props">
       <template #input>
         <BaseCalendarInput
-          v-model:start_date="fields.start_date.fieldValue"
-          v-model:end_date="fields.end_date.fieldValue"
-          :multiCalendar="isEdition"
+          v-model:start_date="start_date"
+          v-model:end_date="end_date"
+          :multiCalendar="false"
+          :error-messages="start_date_props"
         />
       </template>
     </BaseInput>
     <BaseInput label="Imagen del torneo">
       <template #input>
-        <DragDropImage v-model="fields.image.fieldValue" />
-        <span
-          class="text-error text-caption"
-          :class="fields.image.fieldPropsValue['error-messages'][0] ? 'ml-2' : ''"
-          >{{ fields.image.fieldPropsValue['error-messages'][0] ?? '' }}</span
-        >
+        <DragDropImage v-model="image" :error-messages="image_props" />
       </template>
     </BaseInput>
     <BaseInput label="Formato*">
@@ -67,13 +102,13 @@
           item-value="id"
           placeholder="Formato"
           menu-icon="mdi-chevron-down"
-          v-model="fields.tournament_format_id.fieldValue"
-          v-bind="fields.tournament_format_id.fieldPropsValue"
+          v-model="tournament_format_id"
+          v-bind="tournament_format_id_props"
         >
           <template v-slot:item="{ props, item }">
             <v-list-item v-bind="props">
               <v-tooltip activator="parent" location="end" max-width="300">
-                {{ item.raw.description }}
+                {{ item.raw?.description }}
               </v-tooltip>
             </v-list-item>
           </template>
@@ -89,8 +124,8 @@
           item-value="id"
           placeholder="Tipo"
           menu-icon="mdi-chevron-down"
-          v-model="fields.football_type_id.fieldValue"
-          v-bind="fields.football_type_id.fieldPropsValue"
+          v-model="football_type_id"
+          v-bind="football_type_id_props"
         >
           <template v-slot:item="{ props, item }">
             <v-list-item v-bind="props">
@@ -104,11 +139,7 @@
     </BaseInput>
     <BaseInput label="Categoría*">
       <template #input>
-        <CategorySelectComponent
-          :disabled="false"
-          v-model="fields.category_id.fieldValue"
-          :errors="fields.category_id.fieldPropsValue"
-        />
+        <CategorySelectComponent :disabled="false" v-model="category_id" :errors="category_id_props" />
       </template>
     </BaseInput>
     <BaseInput label="Equipos*" sublabel="Mínimo y máximo">
@@ -120,7 +151,8 @@
           hide-spin-buttons
           hint="Selecciona la cantidad de equipos requeridos para iniciar el torneo y el límite de participantes permitidos."
           persistent-hint
-          v-model="minMax"
+          v-model="min_max"
+          v-bind="min_max_props"
           strict
         >
         </v-range-slider>
@@ -129,8 +161,8 @@
     <BaseInput label="Cambios permitidos*">
       <template #input>
         <v-text-field
-          v-model="fields.substitutions_per_team.fieldValue"
-          v-bind="fields.substitutions_per_team.fieldPropsValue"
+          v-model="substitutions_per_team"
+          v-bind="substitutions_per_team_props"
           step="1"
           type="number"
           :min="-1"
