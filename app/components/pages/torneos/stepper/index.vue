@@ -2,10 +2,7 @@
   import BasicInfo from '~/components/pages/torneos/stepper/01-basicInfo.vue'
   import DetailsInfo from '~/components/pages/torneos/stepper/02-detailsInfo.vue'
   import IndicatorStep from '~/components/shared/IndicatorStep.vue'
-  import type { BasicInfoForm, CreateTournamentForm, CurrentStep, DetailsInfoForm } from '~/models/tournament'
-
-  const loading = ref(false)
-  const { steps, isEdition, tournamentStoreRequest, dialog } = storeToRefs(useTournamentStore())
+  const { steps } = storeToRefs(useTournamentStore())
   const stepRef = ref<{ validate: Function; handleSubmit: Function }>({
     validate: Function,
     handleSubmit: Function,
@@ -16,7 +13,7 @@
     <v-container class="pa-0">
       <v-row>
         <v-col>
-          <IndicatorStep :form-steps="steps" />
+          <IndicatorStep :steps="steps" />
         </v-col>
       </v-row>
       <v-row>

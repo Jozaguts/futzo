@@ -1,4 +1,3 @@
-import { defineStore } from 'pinia';
 import type {
   CalendarStoreRequest,
   FormSteps,
@@ -18,6 +17,7 @@ import type { IPagination } from '~/interfaces';
 import * as tournamentAPI from '~/http/api/tournament';
 import type { Field } from '~/models/Schedule';
 import type { CreateTeamForm } from '~/models/Team';
+import { defineStore } from 'pinia';
 
 export const useTournamentStore = defineStore('tournamentStore', () => {
   const tournament = ref<Tournament>({} as Tournament);
@@ -27,20 +27,35 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   const calendarDialog = ref(false);
   const tournamentStoreRequest = ref({} as TournamentStoreRequest);
   const calendarStoreRequest = ref({} as CalendarStoreRequest);
+  const dialog = ref(false);
   const steps = ref<FormSteps>({
-    current: 'basic-info',
-    steps: [
-      {
-        step: 'basic-info',
+    current: 'basicInfo',
+    steps: {
+      basicInfo: {
+        number: 1,
         completed: false,
         label: 'Crea un torneo',
+        disable: true,
+        back: () => (dialog.value = false),
+        next: async () => {
+          steps.value.current = 'detailsInfo';
+        },
       },
-      {
-        step: 'details-info',
+      detailsInfo: {
         completed: false,
+        number: 2,
         label: 'Detalles del torneo',
+        disable: false,
+        back: () => (steps.value.current = 'basicInfo'),
+        next: async () => {
+          if (isEdition.value) {
+            await updateTournament();
+          } else {
+            await storeTournament();
+          }
+        },
       },
-    ],
+    },
   });
   const nextGames = ref<Game[]>([] as Game[]);
   const currentGames = ref<Game[]>([] as Game[]);
@@ -51,7 +66,6 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   const matchesByRound = ref(0);
   const loading = ref(false);
   const tournamentTypes = ref();
-  const dialog = ref(false);
   const isEdition = ref(false);
   const isCalendarEdition = ref(false);
   const tournamentId = ref<number>();
@@ -63,11 +77,9 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     total: 0,
     sort: 'asc',
   });
-
   const tournamentsInCreatedState = computed(() => {
     return tournaments.value.filter((tournament) => tournament.status === 'creado');
   });
-
   const tournamentLocations = ref<TournamentLocation[]>([] as TournamentLocation[]);
   const tournamentLocationStoreRequest = ref<TournamentLocationStoreRequest>();
   const selectedLocations = ref<TournamentLocation[]>([]);
@@ -83,8 +95,36 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
 
   function $reset() {
     tournamentStoreRequest.value = {} as TournamentStoreRequest;
-    steps.value.current = 'basic-info';
-    steps.value.steps.map((step) => (step.completed = false));
+    steps.value.current = 'basicInfo';
+    steps.value = {
+      current: 'basicInfo',
+      steps: {
+        basicInfo: {
+          number: 1,
+          completed: false,
+          label: 'Crea un torneo',
+          disable: true,
+          back: () => (dialog.value = false),
+          next: async () => {
+            steps.value.current = 'detailsInfo';
+          },
+        },
+        detailsInfo: {
+          number: 2,
+          completed: false,
+          label: 'Detalles del torneo',
+          disable: false,
+          back: () => (steps.value.current = 'basicInfo'),
+          next: async () => {
+            if (isEdition.value) {
+              await updateTournament();
+            } else {
+              await storeTournament();
+            }
+          },
+        },
+      },
+    };
     isEdition.value = false;
     tournamentId.value = undefined;
   }

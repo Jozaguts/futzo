@@ -1,23 +1,23 @@
 <script lang="ts" setup>
-const { active, completed, label, addDivider } = defineProps({
-  active: {
-    type: Boolean,
-    default: false,
-  },
-  completed: {
-    type: Boolean,
-    default: false,
-  },
-  label: {
-    type: String,
-    default: "",
-  },
-  addDivider: {
-    type: Boolean,
-    default: true,
-  },
-});
-const color = computed(() => (active ? "#9155FD" : "#E0E0E0"));
+  const { active, completed, label, addDivider } = defineProps({
+    active: {
+      type: Boolean,
+      default: false,
+    },
+    completed: {
+      type: Boolean,
+      default: false,
+    },
+    label: {
+      type: String,
+      default: '',
+    },
+    addDivider: {
+      type: Boolean,
+      default: true,
+    },
+  })
+  const color = computed(() => (active ? '#9155FD' : '#E0E0E0'))
 </script>
 <template>
   <div class="step-dot-container">
@@ -63,44 +63,42 @@ const color = computed(() => (active ? "#9155FD" : "#E0E0E0"));
         <rect x="0.333984" width="24" height="24" rx="12" fill="#E0E0E0" />
         <circle cx="12.334" cy="12" r="4" fill="white" />
       </svg>
-      <small class="dot-label" :class="active ? 'active' : ''">{{
-        label
-      }}</small>
+      <small class="dot-label" :class="active ? 'active' : ''">{{ label }}</small>
     </div>
   </div>
   <v-divider v-if="addDivider" />
 </template>
 <style>
-.step-dot-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+  .step-dot-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-svg.step-dot {
-  width: 2rem;
-  height: 2rem;
-  border: 2px solid v-bind(color);
-  padding: 1px;
-  border-radius: 100%;
-  position: relative;
-}
+  svg.step-dot {
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid v-bind(color);
+    padding: 1px;
+    border-radius: 100%;
+    position: relative;
+  }
 
-.dot-label {
-  position: absolute;
-  bottom: -1.5rem;
-  width: 200px;
-  text-align: center;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 20px;
-  color: #344054;
-  display: block;
-}
+  .dot-label {
+    position: absolute;
+    bottom: -1.5rem;
+    width: 200px;
+    text-align: center;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    color: #344054;
+    display: block;
+  }
 
-.dot-label.active {
-  color: #9155fd;
-}
+  .dot-label.active {
+    color: #9155fd;
+  }
 </style>

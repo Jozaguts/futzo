@@ -1,35 +1,40 @@
 <script lang="ts" setup>
-interface FormSteps {
-  formSteps: {
-    current: string;
-    steps: Step[];
-  };
-}
-
-interface Step {
-  step: string;
-  completed: boolean;
-  label: string;
-}
-
-const props = withDefaults(defineProps<FormSteps>(), {});
+  export type Steps = Record<
+    string,
+    {
+      number: number
+      completed: boolean
+      label: string
+      disable: boolean
+      back: Function
+      next: Function
+    }
+  >
+  export interface FormSteps {
+    current: string
+    steps: Steps
+  }
+  const { steps } = defineProps<{ steps: FormSteps }>()
+  const countSteps = computed(() => {
+    return Object.keys(steps.steps).length
+  })
 </script>
 <template>
   <div class="steps-container">
     <DotStepper
-      v-for="(step, index) in props.formSteps.steps"
-      :active="props.formSteps.current === step.step"
+      v-for="(step, key) in steps.steps"
+      :active="key === steps.current"
       :completed="step.completed"
       :label="step.label"
-      :add-divider="index !== props.formSteps.steps.length - 1"
+      :add-divider="step.number < countSteps"
     />
   </div>
 </template>
 <style lang="sass" scoped>
-.steps-container
-    display: flex
-    align-items: center
-    max-width: 80%
-    margin: 1rem auto 3rem auto
-    position: relative
+  .steps-container
+      display: flex
+      align-items: center
+      max-width: 80%
+      margin: 1rem auto 3rem auto
+      position: relative
 </style>
