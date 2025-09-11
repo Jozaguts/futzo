@@ -102,14 +102,18 @@ export interface BasicInfoForm {
   category_id: number;
   tournament_format_id: number;
   image?: File;
+  min_max: number[];
+  start_date?: string | Date;
+  end_date?: string | Date;
+  football_type_id: number;
 }
 
 export interface DetailsInfoForm {
   description: string;
-  end_date: string;
-  prize: string;
-  start_date: string;
-  location: AutocompletePrediction;
+  location_ids: number[];
+  prize?: string;
+  winner?: string;
+  status?: string;
 }
 
 export type CalendarStoreRequest = {
@@ -267,7 +271,7 @@ export interface ImageForm {
 
 export interface FormSteps {
   current: CurrentStep;
-  steps: TournamentSteps[];
+  steps: TournamentSteps;
 }
 
 export type CalendarStepsForm = {
@@ -282,14 +286,20 @@ export type CalendarSteps = {
 export type CurrentCalendarStep = 'general' | 'regular' | 'elimination' | 'fields';
 export type CalendarLabelStep = 'General' | 'Fase Regular' | 'Fase de Eliminación' | 'Campos de juego';
 
-export type TournamentSteps = {
-  step: CurrentStep;
-  completed: boolean;
-  label: FormLabelStep;
-};
+export type TournamentSteps = Record<
+  CurrentStep,
+  {
+    number: number;
+    completed: boolean;
+    label: FormLabelStep;
+    disable: boolean;
+    back: Function;
+    next: Function;
+  }
+>;
 export type FormLabelStep = 'Crea un torneo' | 'Detalles del torneo';
 
-export type CurrentStep = 'basic-info' | 'details-info';
+export type CurrentStep = 'basicInfo' | 'detailsInfo';
 
 export interface CreateTournamentForm extends TournamentStoreRequest {}
 

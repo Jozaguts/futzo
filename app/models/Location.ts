@@ -41,6 +41,8 @@ export type LocationStoreRequest = {
 export type Field = {
   id: number;
   name: string;
+  type?: string;
+  field_count?: number;
   windows: Windows;
 };
 export type Windows = {

@@ -1,6 +1,6 @@
 import type { League, LeagueType } from '~/models/league';
 import { defineStore } from 'pinia';
-import type { LocationStoreRequest } from '~/models/Location';
+import type { Field } from '~/models/Location';
 
 export const useLeaguesStore = defineStore('leaguesStore', () => {
   const leagues = ref<League[]>([]);
@@ -15,9 +15,7 @@ export const useLeaguesStore = defineStore('leaguesStore', () => {
   };
   const getLeagueLocations = async () => {
     const client = useSanctumClient();
-    return await client<LocationStoreRequest[]>(
-      '/api/v1/admin/leagues/locations'
-    );
+    return await client<Field[]>('/api/v1/admin/leagues/locations');
   };
   onBeforeMount(async () => {
     await useLeaguesStore().fetchLeagues();
