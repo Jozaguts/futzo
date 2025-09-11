@@ -16,11 +16,11 @@ export const createTournamentBasicInfoSchema = yup.object({
       if (!value) return true;
       return value?.type?.includes('image/') || typeof value === 'string';
     }),
-  minMax: yup
+  min_max: yup
     .array()
     .required(t('forms.required'))
     .default([8, 30])
-    .test('minMax', 'El mínimo debe ser menor que el máximo', function (value) {
+    .test('min_max', 'El mínimo debe ser menor que el máximo', function (value) {
       return value[0] < value[1];
     }),
   start_date: yup.date().required(),

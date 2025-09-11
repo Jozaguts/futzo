@@ -11,7 +11,7 @@
   const { formats } = storeToRefs(useCategoryStore())
   const { isEdition, tournamentStoreRequest, dialog, steps } = storeToRefs(useTournamentStore())
   const { t } = useI18n()
-  const { defineField, handleSubmit, resetForm, meta } = useForm<TournamentStoreRequest['basic']>({
+  const { defineField, handleSubmit, resetForm, meta, values } = useForm<TournamentStoreRequest['basic']>({
     validationSchema: toTypedSchema(
       object({
         id: yup.number().nullable(),
@@ -32,7 +32,7 @@
           .array()
           .required(t('forms.required'))
           .default([8, 30])
-          .test('minMax', 'El mínimo debe ser menor que el máximo', function (value) {
+          .test('min_max', 'El mínimo debe ser menor que el máximo', function (value) {
             return value[0] < value[1]
           }),
         start_date: yup.date().required(t('forms.required')),
@@ -71,6 +71,9 @@
     meta,
     () => {
       steps.value.steps[steps.value.current].disable = !meta.value.valid
+      if (meta.value.valid && meta.value.touched) {
+        tournamentStoreRequest.value.basic = { ...values }
+      }
     },
     { deep: true }
   )

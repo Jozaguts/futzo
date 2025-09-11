@@ -10,7 +10,7 @@
 
   const { isEdition, tournamentStoreRequest, dialog, steps } = storeToRefs(useTournamentStore())
   const { t } = useI18n()
-  const { defineField, handleSubmit, resetForm } = useForm<TournamentStoreRequest['details']>({
+  const { defineField, handleSubmit, resetForm, meta, values } = useForm<TournamentStoreRequest['details']>({
     validationSchema: toTypedSchema(
       object({
         location_ids: yup.array().of(yup.number()).required(t('forms.required')),
@@ -51,7 +51,6 @@
   const search2 = ref('')
   const fields = ref<Field[]>([] as Field[])
   const searchHandler2 = (term: string) => console.log(term)
-  const nextHandler = () => {}
   onMounted(() => {
     useLeaguesStore()
       .getLeagueLocations()
@@ -62,6 +61,15 @@
   onUnmounted(() => {
     resetForm()
   })
+  watch(
+    meta,
+    () => {
+      if (meta.value.valid && meta.value.touched) {
+        tournamentStoreRequest.value.details = { ...values }
+      }
+    },
+    { deep: true }
+  )
 </script>
 <template>
   <v-container class="container">

@@ -341,11 +341,11 @@ function getSchemaByName(name: string) {
       schemaFields.football_type_id = yup.number().required(t('forms.required'));
       schemaFields.start_date = yup.date().nullable();
       schemaFields.end_date = yup.date().nullable();
-      schemaFields.minMax = yup
+      schemaFields.min_max = yup
         .array()
         .required(t('forms.required'))
         .default([8, 30])
-        .test('minMax', 'El mínimo debe ser menor que el máximo', function (value) {
+        .test('min_max', 'El mínimo debe ser menor que el máximo', function (value) {
           return value[0] < value[1];
         });
       break;
@@ -360,11 +360,11 @@ function getSchemaByName(name: string) {
           if (!value) return true;
           return value?.type?.includes('image/') || typeof value === 'string';
         });
-      schemaFields.minMax = yup
+      schemaFields.min_max = yup
         .array()
         .required(t('forms.required'))
         .default([8, 30])
-        .test('minMax', 'El mínimo debe ser menor que el máximo', function (value) {
+        .test('min_max', 'El mínimo debe ser menor que el máximo', function (value) {
           return value[0] < value[1];
         });
       schemaFields.category_id = yup.number().required(t('forms.required'));
