@@ -1,52 +1,40 @@
 <script setup lang="ts">
-  import type { DragAndDrop } from '~/interfaces'
-  import { MAX_SIZE } from '~/utils/constants'
+  import { Icon } from '#components'
 
+  type VErrorProps = {
+    'error-messages': string[]
+  }
+  import type { DragAndDrop } from '~/interfaces'
+  import { INIT_IMAGE_STATE, MAX_SIZE } from '~/utils/constants'
   const image = defineModel<File | null>({ default: null })
-  const state = reactive<DragAndDrop>({
-    dragging: false,
-    dropped: false,
-    interval: 1,
-    value: 10,
-    bufferValue: 20,
-    image: {
-      file: image.value,
-      name: '',
-      size: 0,
-      hasError: false,
-      errors: {
-        name: null,
-        description: null,
-        action: null,
-      },
-    },
-  })
+  const state = ref<DragAndDrop>({ ...INIT_IMAGE_STATE })
   const inputRef = ref<HTMLElement>()
   const border = computed(() => {
-    if (state.image.hasError) return ''
-    return `primary ${state.dragging || state.dropped ? 'sm opacity-100' : 'thin'}`
+    if (state.value.image.hasError) return ''
+    return `primary ${state.value.dragging || state.value.dropped ? 'sm opacity-100' : 'thin'}`
   })
+  const { errorMessages = { 'error-messages': [] } } = defineProps<{ errorMessages: VErrorProps }>()
 
   const imageName = computed(() => {
-    const formattedName = state.image.name.replace(/[-_]/g, ' ')
+    const formattedName = state.value.image.name.replace(/[-_]/g, ' ')
     const capitalized = formattedName.charAt(0).toUpperCase() + formattedName.slice(1)
     return capitalized.length > 20 ? `${capitalized.substring(0, 20)}...` : capitalized
   })
   const validateSize = () => {
-    const imageSizeMB = Number((state.image.size / (1024 * 1024)).toFixed(2))
+    const imageSizeMB = Number((state.value.image.size / (1024 * 1024)).toFixed(2))
     if (imageSizeMB > MAX_SIZE) {
-      state.image.errors = {
+      state.value.image.errors = {
         name: `${imageSizeMB}MB`,
         description: 'La imagen es muy pesada, prueba con otra.',
         action: 'reintentar',
       }
-      state.image.hasError = true
+      state.value.image.hasError = true
     }
   }
 
   const eventHandler = (e: DragEvent | Event) => {
     e.preventDefault()
-    state.dragging = false
+    state.value.dragging = false
     let files = [] as File[]
     if (e.type === 'drop') {
       const event = e as DragEvent
@@ -56,60 +44,72 @@
     }
     if (files.length) {
       startBuffer()
-      state.dropped = true
+      state.value.dropped = true
       image.value = files[0]
-      state.image.name = files[0].name
-      state.image.size = files[0].size
+      state.value.image.name = files[0].name
+      state.value.image.size = files[0].size
     }
   }
   const startBuffer = () => {
     const updateValue = (val: number) => Math.min(val + Math.random() * 10, 100)
-    state.interval = setInterval(() => {
-      if (state.image.hasError) {
-        clearInterval(state.interval)
+    state.value.interval = setInterval(() => {
+      if (state.value.image.hasError) {
+        clearInterval(state.value.interval)
         return
       }
-      state.value = updateValue(state.value)
-      state.bufferValue = updateValue(state.bufferValue)
+      state.value.value = updateValue(state.value.value)
+      state.value.bufferValue = updateValue(state.value.bufferValue)
     }, 100) as unknown as number
   }
   const removeImage = () => {
-    state.image.name = ''
-    state.image.size = 0
-    state.image.hasError = false
-    state.image.errors = {
+    state.value.image.name = ''
+    state.value.image.size = 0
+    state.value.image.hasError = false
+    state.value.image.errors = {
       name: '',
       description: '',
       action: '',
     }
-    state.dragging = false
-    state.dropped = false
-    state.value = 10
-    state.bufferValue = 20
+    state.value.dragging = false
+    state.value.dropped = false
+    state.value.value = 10
+    state.value.bufferValue = 20
     image.value = null
   }
   const loadImage = () => {
-    state.value = 100
-    state.bufferValue = 100
-    state.dropped = true
-    state.image.name = 'imagen.jpg'
+    state.value.value = 100
+    state.value.bufferValue = 100
+    state.value.dropped = true
+    state.value.image.name = 'imagen.jpg'
   }
   watch(
-    () => state.value,
+    () => state.value.value,
     (newValue) => {
       if (newValue >= 100) {
-        clearInterval(state.interval)
+        clearInterval(state.value.interval)
       }
     }
   )
   watch(
-    () => state.image.size,
+    () => state.value.image.size,
     () => {
       validateSize()
     }
   )
+  watchEffect(() => {
+    if (errorMessages['error-messages'].length) {
+      state.value.image.hasError = true
+      state.value.image.errors = {
+        name: 'Error',
+        action: 'Limpiar',
+        description: errorMessages['error-messages'][0] as string,
+      }
+    } else {
+      state.value.image.hasError = false
+    }
+  })
   onBeforeMount(() => {
-    clearInterval(state.interval)
+    clearInterval(state.value.interval)
   })
   const showInput = () => {
     const input = inputRef.value?.$el?.querySelector('input')
@@ -117,6 +117,9 @@
   }
   defineExpose({
     loadImage,
+  })
+  const hasError = computed(() => {
+    return state.value.image.hasError
   })
 </script>
 <template>
@@ -152,10 +155,25 @@
           <p class="text-body-1">
             {{ state.image.hasError ? state.image.errors?.name : imageName }}
           </p>
-          <v-btn :icon="true" size="default" slim flat density="compact" color="background" @click="removeImage">
-            <Icon v-if="!state.image.hasError" name="futzo-icon:trash" class="trash"></Icon>
-            <Icon v-else name="futzo-icon:trash-error" class="trash-error"></Icon>
-          </v-btn>
+          <v-btn
+            size="default"
+            slim
+            flat
+            :icon="
+              () =>
+                h(Icon, {
+                  name: !state.image.hasError ? 'futzo-icon:trash' : 'futzo-icon:trash-error',
+                  size: 32,
+                  mode: 'svg',
+                })
+            "
+            width="40"
+            height="40"
+            rounded="lg"
+            density="compact"
+            color="background"
+            @click="removeImage"
+          />
         </div>
         <div v-if="!state.image.hasError" class="d-flex w-100 justify-center align-center">
           <v-progress-linear
