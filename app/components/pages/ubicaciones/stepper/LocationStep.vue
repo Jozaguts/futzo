@@ -3,26 +3,29 @@
   import { usePlaceSearch, getPlaceDetails } from '~/utils/googleSearch'
   import type { AutocompletePrediction } from '~/models/Schedule'
   import { GoogleMap, AdvancedMarker } from 'vue3-google-map'
+  import type { LocationStoreRequest } from '~/models/Location'
+  import { object, number, string, array } from 'yup'
+  import { vuetifyConfig } from '~/utils/constants'
   const searchString = ref<AutocompletePrediction>()
-  const { search } = usePlaceSearch()
   let foundedLocations = ref([] as AutocompletePrediction[])
   const tag = ref<string>('')
   const tagError = ref<boolean>(false)
-  const { locationStoreRequest } = storeToRefs(useLocationStore())
+  const { search } = usePlaceSearch()
+  const { locationStoreRequest, formSteps } = storeToRefs(useLocationStore())
   const tagHandler = () => {
     tagError.value = false
     // setFieldError('tags', 'La etiqueta ya existe o está vacía')
     const trimmedTag = tag.value?.trim()
-    if (!trimmedTag || locationStoreRequest?.value?.tags?.includes(trimmedTag)) {
+    if (!trimmedTag || tags.value?.includes(trimmedTag)) {
       tagError.value = true
       return
     }
     //
-    locationStoreRequest.value.tags = [...(locationStoreRequest.value.tags || []), trimmedTag]
+    tags.value = [...(tags.value || []), trimmedTag]
     tag.value = ''
   }
   const removeTag = (tagToRemove: string) => {
-    locationStoreRequest.value.tags = locationStoreRequest.value.tags?.filter((tag) => tag !== tagToRemove)
+    tags.value = tags?.value.filter((tag) => tag !== tagToRemove)
   }
   const itemProps = (item: Prediction) => {
     return {
@@ -41,34 +44,61 @@
     if (value?.place_id) {
       const details = await getPlaceDetails(value.place_id)
       if (details?.name) {
-        locationStoreRequest.value = {
-          ...locationStoreRequest.value,
-          name: details?.name,
-          address: details?.address,
-          place_id: value?.place_id,
-          position: {
-            lat: details.lat,
-            lng: details.lng,
-          },
+        name.value = details?.name
+        address.value = details?.address
+        place_id.value = value?.place_id
+        position.value = {
+          lat: details.lat,
+          lng: details.lng,
         }
       }
     }
   }
   const markerOptions = computed(() => {
-    return { position: locationStoreRequest.value.position, title: locationStoreRequest.value.name }
+    return { position: position.value, title: 'test' }
   })
-  watch(
-    () => locationStoreRequest.value,
-    () => {
-      locationStoreRequest.value.steps.location.completed = !!(
-        locationStoreRequest?.value?.name &&
-        locationStoreRequest?.value?.address &&
-        locationStoreRequest?.value?.fields_count >= 1
-      )
-    },
-    { deep: true }
-  )
 
+  const { defineField, meta, values } = useForm<
+    Pick<LocationStoreRequest, 'name' | 'address' | 'fields_count' | 'tags' | 'id' | 'position' | 'place_id'> & {
+      place: AutocompletePrediction
+    }
+  >({
+    validationSchema: toTypedSchema(
+      object({
+        id: number().nullable(),
+        name: string().required(),
+        address: string().required(),
+        fields_count: number().required(),
+        tags: array().nullable(),
+        position: object({
+          lat: number().required(),
+          lng: number().required(),
+        })
+          .default({
+            lat: 16.8639515,
+            lng: -99.8822807,
+          })
+          .required(),
+        place_id: string().required(),
+      })
+    ),
+    initialValues: {
+      id: locationStoreRequest.value.id,
+      name: locationStoreRequest.value.name,
+      address: locationStoreRequest.value.address,
+      fields_count: locationStoreRequest.value.fields_count,
+      tags: locationStoreRequest.value.tags ?? [],
+      position: locationStoreRequest.value.position,
+      place_id: locationStoreRequest.value.place_id,
+    },
+  })
+  const [id, id_props] = defineField('id', vuetifyConfig)
+  const [name, name_props] = defineField('name', vuetifyConfig)
+  const [address, address_props] = defineField('address', vuetifyConfig)
+  const [fields_count, fields_count_props] = defineField('fields_count', vuetifyConfig)
+  const [tags, tags_props] = defineField('tags', vuetifyConfig)
+  const [position, position_props] = defineField('position', vuetifyConfig)
+  const [place_id, place_id_props] = defineField('place_id', vuetifyConfig)
   const appendDefaultFieldStructure = (value: number) => {
     locationStoreRequest.value.fields = []
     const fields = []
@@ -77,20 +107,31 @@
       const cloned = JSON.parse(JSON.stringify(WINDOWS))
       fields.push({ id: i, name: `campo ${i}`, windows: cloned })
     }
-    locationStoreRequest.value = { ...locationStoreRequest.value, fields }
+    locationStoreRequest.value.fields = fields
   }
 
-  // Mantener sincronizados fields con fields_count
   watch(
-    () => locationStoreRequest.value.fields_count,
-    (val) => {
-      if (!val || val < 1) return
-      // si no hay fields o el tamaño no coincide, regenerar
-      if (!Array.isArray(locationStoreRequest.value.fields) || locationStoreRequest.value.fields.length !== val) {
-        appendDefaultFieldStructure(val)
+    () => fields_count.value,
+    (new_fields_count) => {
+      if (!new_fields_count || new_fields_count < 1) return
+      if (
+        !Array.isArray(locationStoreRequest.value.fields) ||
+        locationStoreRequest.value.fields.length !== new_fields_count
+      ) {
+        appendDefaultFieldStructure(new_fields_count)
       }
     },
     { immediate: true }
+  )
+  watch(
+    meta,
+    () => {
+      formSteps.value.steps[formSteps.value.current].disable = !meta.value.valid
+      if (meta.value.valid && (meta.value.touched || meta.value.dirty)) {
+        locationStoreRequest.value = { ...locationStoreRequest.value, ...values }
+      }
+    },
+    { deep: true }
   )
 </script>
 <template>
@@ -119,7 +160,8 @@
           disabled
           density="compact"
           variant="outlined"
-          :value="locationStoreRequest?.name"
+          v-model="name"
+          v-bind="name_props"
           class="mt-4"
           label="Nombre"
         />
@@ -130,7 +172,8 @@
           density="comfortable"
           variant="outlined"
           disabled
-          :value="locationStoreRequest.address"
+          :value="address"
+          v-bind="address_props"
           class="mt-4"
           label="Dirección"
         ></v-text-field>
@@ -140,7 +183,8 @@
           variant="outlined"
           density="compact"
           control-variant="stacked"
-          v-model="locationStoreRequest.fields_count"
+          v-model="fields_count"
+          v-bind="fields_count_props"
           label="# Campos de juego"
           @update:model-value="appendDefaultFieldStructure"
           class="mt-4"
@@ -158,10 +202,11 @@
           clearable
           hint="Presiona ENTER o + para agregar"
           persistent-hint
+          v-bind="tags_props"
         >
         </v-text-field>
         <v-chip-group column variant="outlined" center-active>
-          <v-chip v-for="(t, index) in locationStoreRequest.tags" :key="index" closable @click:close="removeTag(t)">
+          <v-chip v-for="(t, index) in tags" :key="index" closable @click:close="removeTag(t)">
             {{ t }}
           </v-chip>
         </v-chip-group>
@@ -171,14 +216,14 @@
           :api-key="useRuntimeConfig().public.googleMapsAPIKey"
           :mapId="useRuntimeConfig().public.googleMapId"
           class="futzo-rounded"
-          :center="locationStoreRequest.position"
+          :center="position"
           :camera-control="false"
           :disable-double-click-zoom="true"
           :clickable-icons="false"
           :disable-default-ui="true"
           :zoom="15"
           id="map"
-          style="width: 100%; height: 100%"
+          style="width: 100%; height: 100%; min-height: 400px"
         >
           <AdvancedMarker :options="markerOptions" />
         </GoogleMap>
@@ -186,11 +231,3 @@
     </v-row>
   </v-container>
 </template>
-<style>
-  #map {
-    height: 200px;
-    width: 100%;
-
-    margin: 0 auto;
-  }
-</style>
