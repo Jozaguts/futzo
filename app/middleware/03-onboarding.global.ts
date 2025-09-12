@@ -22,7 +22,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   // Cargar onboarding de forma segura
   const onboarding = useOnboardingStore();
-  // 1) Si ya está todo listo, no pidas nada
+  // 1) Si ya está listo, no pidas nada
   if (onboarding.state.all_done === true) return;
 
   // 2) Si la ruta ya es accesible segun estado local, no pidas nada

@@ -233,7 +233,6 @@ function getSchemaByName(name: string) {
           (value, context) => {
             const isEmail = yupString().email().isValidSync(value);
             const isPhone = phoneRegex.test(value);
-            console.log(context);
             context.parent.inputType = isPhone ? 'phone' : isEmail ? 'email' : null;
             return isEmail || isPhone;
           }
