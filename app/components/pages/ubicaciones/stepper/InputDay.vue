@@ -4,7 +4,7 @@
   import '@vuepic/vue-datepicker/dist/main.css'
   import VueDatePicker from '@vuepic/vue-datepicker'
   type OnUpdateDay = (val: All) => void
-  const props = defineProps<{ day?: All; label: string; onUpdateDay: OnUpdateDay; id: string }>()
+  const props = defineProps<{ day?: All; label: string; onUpdateDay: OnUpdateDay; id: string; clearable?: boolean }>()
   function toHHmm(val: any): string {
     if (!val) return ''
     if (typeof val === 'string') return val
@@ -63,7 +63,14 @@
     <v-col v-if="props.day.enabled" cols="12" lg="9" md="9">
       <div class="d-flex">
         <div class="w-100 mx-2">
-          <VueDatePicker time-picker class="custom-dp-location" :is24="true" v-model="startTime" teleport>
+          <VueDatePicker
+            time-picker
+            class="custom-dp-location"
+            :is24="true"
+            v-model="startTime"
+            teleport
+            :clearable="props?.clearable"
+          >
             <template #dp-input="{ value }">
               <v-text-field
                 :value="value"
@@ -80,7 +87,14 @@
           </VueDatePicker>
         </div>
         <div class="w-100 mx-2">
-          <VueDatePicker class="custom-dp-location" v-model="endTime" time-picker :is24="true" teleport>
+          <VueDatePicker
+            class="custom-dp-location"
+            v-model="endTime"
+            time-picker
+            :is24="true"
+            teleport
+            :clearable="props?.clearable"
+          >
             <template #dp-input="{ value }">
               <v-text-field
                 class="custom-location-input"
