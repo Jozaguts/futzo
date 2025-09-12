@@ -42,6 +42,7 @@ export type Field = {
   id: number;
   name: string;
   type?: string;
+  completed: boolean;
   field_count?: number;
   windows: Windows;
 };
@@ -84,14 +85,20 @@ export type WindowReserved = {
 export type EspWeekDay = 'lunes' | 'martes' | 'miércoles' | 'jueves' | 'viernes' | 'sábado' | 'domingo';
 export interface FormSteps {
   current: CurrentStep;
-  steps: LocationSteps[];
+  steps: LocationSteps;
 }
 
-export type LocationSteps = {
-  step: CurrentStep;
-  completed: boolean;
-  label: FormLabelStep;
-};
+export type LocationSteps = Record<
+  CurrentStep,
+  {
+    number: number;
+    completed: boolean;
+    label: FormLabelStep;
+    disable: boolean;
+    back: Function;
+    next: Function;
+  }
+>;
 export type CurrentStep = 'location' | 'availability';
 export type FormLabelStep = 'Ubicación' | 'Disponibilidad';
 

@@ -12,6 +12,7 @@ import type { IPagination } from '~/interfaces';
 import { ref } from 'vue';
 import { DEFAULT_POSITION } from '~/utils/constants';
 import type { All, Windows } from '~/models/Location';
+import { useSanctumClient } from '#imports';
 
 function sanitizeWindows(windows: Windows): Windows {
   const keys: (keyof Windows)[] = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'all'];
@@ -82,18 +83,30 @@ export const useLocationStore = defineStore('locationStore', () => {
   });
   const formSteps = ref<FormSteps>({
     current: 'location',
-    steps: [
-      {
-        step: 'location',
+    steps: {
+      location: {
+        number: 1,
         completed: false,
         label: 'Ubicación',
+        disable: true,
+        back: () => (locationDialog.value = false),
+        next: async () => (formSteps.value.current = 'availability'),
       },
-      {
-        step: 'availability',
+      availability: {
+        number: 2,
         completed: false,
         label: 'Disponibilidad',
+        disable: true,
+        back: () => (formSteps.value.current = 'location'),
+        next: async () => {
+          if (isEdition.value) {
+            await updateLocation();
+          } else {
+            await storeLocation();
+          }
+        },
       },
-    ],
+    },
   });
   const $reset = () => {
     resetLocationStoreRequest();
