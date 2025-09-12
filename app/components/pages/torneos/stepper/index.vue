@@ -16,8 +16,8 @@
           <IndicatorStep :steps="steps" />
         </v-col>
       </v-row>
-      <v-row>
-        <v-col class="pt-0">
+      <v-row class="pt-0">
+        <v-col>
           <transition-slide
             group
             :offset="{

@@ -3,44 +3,40 @@
   import CategorySelectComponent from '~/components/inputs/CategoriesSelect.vue'
   import { FUTBOL_11_ID, MAX_TEAMS, MIN_TEAMS, vuetifyConfig } from '~/utils/constants'
   import { useForm } from 'vee-validate'
-  import * as yup from 'yup'
-  import { object } from 'yup'
+  import { object, number, string, mixed, array, date } from 'yup'
   import type { TournamentStoreRequest } from '~/models/tournament'
   import { storeToRefs } from 'pinia'
   const { footballTypes } = storeToRefs(useLeaguesStore())
   const { formats } = storeToRefs(useCategoryStore())
-  const { isEdition, tournamentStoreRequest, dialog, steps } = storeToRefs(useTournamentStore())
+  const { isEdition, tournamentStoreRequest, steps } = storeToRefs(useTournamentStore())
   const { t } = useI18n()
-  const { defineField, handleSubmit, resetForm, meta, values } = useForm<TournamentStoreRequest['basic']>({
+  const { defineField, meta, values, resetForm } = useForm<TournamentStoreRequest['basic']>({
     validationSchema: toTypedSchema(
       object({
-        id: yup.number().nullable(),
-        name: yup
-          .string()
+        id: number().nullable(),
+        name: string()
           .required(t('forms.required'))
           .test('no-leading-space', 'No se permite espacio en blanco al inicio', (value) => {
             return !(value && value.startsWith(' '))
           }),
-        image: yup
-          .mixed()
+        image: mixed()
           .nullable()
           .test('File is required', 'Solo imágenes .jgp, png, svg ', (value: any) => {
             if (!value) return true
             return value?.type?.includes('image/') || typeof value === 'string'
           }),
-        min_max: yup
-          .array()
+        min_max: array()
           .required(t('forms.required'))
           .default([8, 30])
           .test('min_max', 'El mínimo debe ser menor que el máximo', function (value) {
             return value[0] < value[1]
           }),
-        start_date: yup.date().required(t('forms.required')),
-        end_date: yup.date().nullable(t('forms.required')),
-        substitutions_per_team: yup.number().required(t('forms.required')),
-        category_id: yup.number().required(t('forms.required')),
-        tournament_format_id: yup.number().required(t('forms.required')),
-        football_type_id: yup.number().required(t('forms.required')),
+        start_date: date().required(t('forms.required')),
+        end_date: date().nullable(t('forms.required')),
+        substitutions_per_team: number().required(t('forms.required')),
+        category_id: number().required(t('forms.required')),
+        tournament_format_id: number().required(t('forms.required')),
+        football_type_id: number().required(t('forms.required')),
       })
     ),
     initialValues: tournamentStoreRequest.value.basic,

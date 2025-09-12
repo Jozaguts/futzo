@@ -9,7 +9,6 @@
   const disabled = computed(() => {
     return steps.value.steps[steps.value.current].disable
   })
-  const nextHandler = () => {}
 </script>
 <template>
   <v-dialog v-model="dialog" max-width="690" min-height="80vh" @after-leave="leaveHandler" scrollable>
