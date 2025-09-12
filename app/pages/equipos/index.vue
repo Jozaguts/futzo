@@ -25,7 +25,11 @@
     </template>
     <template #default>
       <NoTeams />
-      <TeamsTable />
+      <div class="table" style="height: 100%">
+        <div class="table-wrapper">
+          <TeamsTable />
+        </div>
+      </div>
       <CreateTeamDialog />
       <ImportDialog />
     </template>

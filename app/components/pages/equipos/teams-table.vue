@@ -15,6 +15,7 @@
     :paginate="useTeamStore().getTeams"
     :custom-name="true"
     :show-link="true"
+    :item-per-page="15"
   >
     <template #actions="{ item }">
       <v-btn size="small" rounded="md" variant="outlined" class="table-action-btn" :to="`/equipos/${item?.slug}`"

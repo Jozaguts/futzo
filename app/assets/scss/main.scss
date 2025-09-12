@@ -177,3 +177,21 @@ tbody > tr.v-data-table__tr:nth-child(even) {
 .v-infinite-scroll__side{
   padding: 0 !important;
 }
+.table-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 1rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+}
+.table {
+  grid-area: table;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 0 1rem;
+  border-radius: 12px;
+  border-width: 1px;
+  min-height: 0;
+  overflow: hidden;
+}

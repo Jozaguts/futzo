@@ -24,7 +24,11 @@
     </template>
     <template #default>
       <NoTournaments />
-      <TournamentTable />
+      <div class="table" style="height: 100%">
+        <div class="table-wrapper">
+          <TournamentTable />
+        </div>
+      </div>
       <TournamentDialog />
     </template>
   </PageLayout>

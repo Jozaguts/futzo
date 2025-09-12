@@ -59,7 +59,7 @@
       default: false,
     },
   })
-  const itemper_page = computed(() => {
+  const itemPerPage = computed(() => {
     return props.showComplete ? props.items?.length : 10
   })
   const search = defineModel('search', {
@@ -89,12 +89,13 @@
     :items="items"
     :search="search"
     :item-key="itemKey"
-    :items-per-page="itemper_page"
+    :items-per-page="itemPerPage"
     :show-select="selectable"
     :cell-props="{ class: 'text-capitalize' }"
     height="100%"
     fixed-header
     sticky
+    striped="odd"
   >
     <!--    header-->
     <template v-slot:header.data-table-select="{ allSelected, selectAll, someSelected }">
