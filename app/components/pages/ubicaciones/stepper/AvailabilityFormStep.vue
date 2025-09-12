@@ -32,7 +32,7 @@
     arr[0] = { ...arr[0], ...val }
     next[dayKey] = arr
     form.value.windows = next
-    emitUpdate()
+    emitUpdate(true)
   }
 
   function updateEnabledHandler(dayKey: keyof Windows, enabled: boolean) {
@@ -42,7 +42,7 @@
     arr[0] = { ...(arr[0] || defaults), ...(enabled ? defaults : {}), enabled }
     next[dayKey] = arr
     form.value.windows = next
-    emitUpdate()
+    emitUpdate(true)
   }
   const markAsCompleted = () => {
     emits('step-completed', { completed: form.value.completed, isLast, form: form.value })

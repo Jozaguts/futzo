@@ -11,7 +11,7 @@
   const tag = ref<string>('')
   const tagError = ref<boolean>(false)
   const { search } = usePlaceSearch()
-  const { locationStoreRequest, formSteps } = storeToRefs(useLocationStore())
+  const { locationStoreRequest, formSteps, isEdition } = storeToRefs(useLocationStore())
   const tagHandler = () => {
     tagError.value = false
     // setFieldError('tags', 'La etiqueta ya existe o está vacía')
@@ -118,7 +118,9 @@
         !Array.isArray(locationStoreRequest.value.fields) ||
         locationStoreRequest.value.fields.length !== new_fields_count
       ) {
-        appendDefaultFieldStructure(new_fields_count)
+        if (isEdition.value) {
+          appendDefaultFieldStructure(new_fields_count)
+        }
       }
     },
     { immediate: true }
@@ -126,7 +128,7 @@
   watch(
     meta,
     () => {
-      formSteps.value.steps[formSteps.value.current].disable = !meta.value.valid
+      formSteps.value.steps[formSteps.value.current].disable = isEdition.value ? false : !meta.value.valid
       if (meta.value.valid && (meta.value.touched || meta.value.dirty)) {
         locationStoreRequest.value = { ...locationStoreRequest.value, ...values }
       }
@@ -139,6 +141,7 @@
     <v-row no-gutters>
       <v-col cols="12">
         <v-autocomplete
+          v-if="!isEdition"
           label="Dirección del centro deportivo o canchas de juego"
           v-model="searchString"
           :items="foundedLocations"
@@ -157,12 +160,12 @@
       <v-col cols="5">
         <v-text-field
           active
-          disabled
+          readonly
           density="compact"
-          variant="outlined"
+          variant="plain"
           v-model="name"
           v-bind="name_props"
-          class="mt-4"
+          class="mt-4 pl-1"
           label="Nombre"
         />
 
@@ -170,24 +173,25 @@
           active
           placeholder="p.ej. Las Américas #323 Centro, Puerto Vallarta."
           density="comfortable"
-          variant="outlined"
-          disabled
+          readonly
+          variant="plain"
           :value="address"
           v-bind="address_props"
-          class="mt-4"
+          class="mt-4 pl-1"
           label="Dirección"
         ></v-text-field>
         <v-number-input
           :min="1"
           active
-          variant="outlined"
+          :variant="isEdition ? 'plain' : 'outlined'"
+          :readonly="isEdition"
           density="compact"
-          control-variant="stacked"
+          :control-variant="isEdition ? 'hidden' : 'stacked'"
           v-model="fields_count"
           v-bind="fields_count_props"
           label="# Campos de juego"
           @update:model-value="appendDefaultFieldStructure"
-          class="mt-4"
+          class="mt-4 pl-1"
           hide-details
         >
         </v-number-input>

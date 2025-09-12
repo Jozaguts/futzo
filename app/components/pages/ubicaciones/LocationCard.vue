@@ -2,7 +2,7 @@
   import type { LocationCard } from '~/models/Location'
   import CardMenu from '~/components/pages/ubicaciones/CardMenu.vue'
 
-  const { isEdition, locationDialog, locationToDelete, locationStoreRequest, locationCard } =
+  const { isEdition, locationDialog, locationToDelete, locationStoreRequest, locationCard, formSteps } =
     storeToRefs(useLocationStore())
   const { location } = defineProps<{ location: LocationCard }>()
   const clickHandler = (action: 'Eliminar' | 'Editar') => {
@@ -35,7 +35,7 @@
   }
 </script>
 <template>
-  <v-card class="futzo-rounded" max-width="330" flat>
+  <v-card class="futzo-rounded" max-width="330" min-height="550" flat>
     <CardMenu @click="clickHandler" />
     <v-img :src="`/locations/${location.image}.png`" max-width="330" max-height="250" min-height="250" cover />
     <v-card-item>
@@ -55,7 +55,7 @@
           <v-expansion-panel-text eager class="pa-0">
             <v-container fluid class="pa-0">
               <v-row no-gutters>
-                <v-col cols="6" v-for="value in info.windows" :key="key" class="font-weight-bold my-1">
+                <v-col cols="6" v-for="(value, idx) in info.windows" :key="idx" class="font-weight-bold my-1">
                   <div>
                     <p class="text-left">{{ value[0]?.label?.toString().substring(0, 3) }}</p>
                     <span class="text-medium-emphasis mr-1">{{ value[0]?.start }}</span

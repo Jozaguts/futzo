@@ -42,7 +42,9 @@
   })
   const { fields, update, replace } = useFieldArray<Field>('fields')
   const test = handleSubmit((values) => {
-    // console.log({ values })
+    if (values?.fields) {
+      locationStoreRequest.value.fields = values.fields
+    }
   })
   const markAsCompletedHandler = (data: { completed: boolean; isLast: boolean; form: Field; idx: number }) => {
     if (!data.completed) {
