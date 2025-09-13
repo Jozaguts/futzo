@@ -3,7 +3,7 @@ import type { IPagination } from '~/interfaces';
 
 export type TeamsPaginatedResponse = {
   data: Team[];
-  pagination: IPagination;
+  meta: IPagination;
 };
 
 export type PreRegisterTeamResponse = {
@@ -23,14 +23,20 @@ export type Formation = {
 };
 export interface FormSteps {
   current: CurrentStep;
-  steps: TeamSteps[];
+  steps: TeamSteps;
 }
 
-export type TeamSteps = {
-  step: CurrentStep;
-  completed: boolean;
-  label: FormLabelStep;
-};
+export type TeamSteps = Record<
+  CurrentStep,
+  {
+    number: number;
+    completed: boolean;
+    label: FormLabelStep;
+    disable: boolean;
+    back: Function;
+    next: Function;
+  }
+>;
 export type CurrentStep = 'createTeam' | 'createDt' | 'createOwner';
 export type FormLabelStep = 'Crea un equipo' | 'Crea el DT' | 'Crea el presidente';
 

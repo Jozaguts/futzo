@@ -27,23 +27,38 @@ export const useTeamStore = defineStore('teamStore', () => {
   const client = useSanctumClient();
   const steps = ref<FormSteps>({
     current: 'createTeam',
-    steps: [
-      {
-        step: 'createTeam',
+    steps: {
+      createTeam: {
+        number: 1,
         completed: false,
         label: 'Crea un equipo',
+        disable: true,
+        back: () => (dialog.value = false),
+        next: () => (steps.value.current = 'createDt'),
       },
-      {
-        step: 'createDt',
+      createDt: {
+        number: 2,
         completed: false,
         label: 'Crea el DT',
+        disable: true,
+        back: () => (steps.value.current = 'createTeam'),
+        next: () => (steps.value.current = 'createOwner'),
       },
-      {
-        step: 'createOwner',
+      createOwner: {
+        number: 3,
         completed: false,
         label: 'Crea el presidente',
+        disable: true,
+        back: () => (steps.value.current = 'createDt'),
+        next: async () => {
+          if (isEdition.value) {
+            await updateTeam(teamId.value);
+          } else {
+            await createTeam();
+          }
+        },
       },
-    ],
+    },
   });
   const isEdition = ref(false);
   const loading = ref(false);
@@ -91,17 +106,19 @@ export const useTeamStore = defineStore('teamStore', () => {
         await getTeams();
       })
       .catch((error) => {
-        toast(
-          'error',
-          'Error al importar equipos',
-          error.data?.message ?? 'No se pudieron importar los equipos. Verifica tu archivo e inténtalo de nuevo.'
-        );
+        toast({
+          type: 'error',
+          msg: 'Error al importar equipos',
+          description:
+            error.data?.message ?? 'No se pudieron importar los equipos. Verifica tu archivo e inténtalo de nuevo.',
+        });
       });
   }
 
   const createTeam = async () => {
     let form = prepareForm(teamStoreRequest);
-    const isPreRegister = useRoute().name === 'torneos-torneo-equipos-inscripcion';
+    //@ts-ignore
+    const isPreRegister = useRoute().name == 'torneos-torneo-equipos-inscripcion';
     const url = isPreRegister
       ? `/api/v1/public/tournaments/${teamStoreRequest.value.team?.tournament_id}/pre-register-team`
       : '/api/v1/admin/teams';
@@ -117,11 +134,12 @@ export const useTeamStore = defineStore('teamStore', () => {
         dialog.value = false;
       })
       .catch((error) => {
-        toast(
-          'error',
-          'Error al crear el equipo',
-          error.data?.message ?? 'No se pudo crear el equipo. Verifica tu información e inténtalo de nuevo.'
-        );
+        toast({
+          type: 'error',
+          msg: 'Error al crear el equipo',
+          description:
+            error.data?.message ?? 'No se pudo crear el equipo. Verifica tu información e inténtalo de nuevo.',
+        });
       });
   };
   const updateTeam = async (teamId: number) => {
