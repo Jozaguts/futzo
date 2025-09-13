@@ -7,14 +7,80 @@
   import { VPhoneInput } from 'v-phone-input'
   import { dragDropImageRef, imageForm, removeImage, saveImage } from '~/composables/useImage'
   import { usePlaceSearch } from '~/utils/googleSearch'
+  import { useForm } from 'vee-validate'
+  import type { TeamStoreRequest } from '~/models/Team'
+  import { array, mixed, number, object, string } from 'yup'
+  import { vuetifyConfig } from '~/utils/constants'
 
   let locationsFind = ref([])
   const { tournaments, tournament } = storeToRefs(useTournamentStore())
   const { teamStoreRequest, isEdition } = storeToRefs(useTeamStore())
-  const { handleSubmit, resetForm, fields, validate, setValues } = useSchemas(
-    isEdition.value ? 'edit-team' : 'create-team'
-  )
   const { search } = usePlaceSearch()
+  const { t } = useI18n()
+  const { defineField, meta, values, resetForm, setValues } = useForm<TeamStoreRequest['team']>({
+    validationSchema: toTypedSchema(
+      object({
+        id: number().nullable(),
+        name: string()
+          .required(t('forms.required'))
+          .test('no-leading-space', 'No se permite espacio en blanco al inicio', (value) => {
+            return !(value && value.startsWith(' '))
+          }),
+        image: mixed()
+          .nullable()
+          .test('File is required', 'Solo imágenes .jgp, png, svg ', (value: any) => {
+            if (!value) return true
+            return value?.type?.includes('image/') || typeof value === 'string'
+          }),
+        category_id: number().required(t('forms.required')),
+        address: object()
+          .shape({
+            description: string(),
+            matched_substrings: array().of(string()),
+            place_id: string(),
+            reference: string(),
+            structured_formatting: object().shape({
+              main_text: string(),
+              secondary_text: string(),
+              main_text_matched_substrings: array().of(object().shape({ fg: array() })),
+              terms: array().of(string()),
+              types: array().of(string()),
+            }),
+          })
+          .nullable(),
+        colors: object()
+          .shape({
+            home: object().shape({
+              primary: string(),
+              secondary: string(),
+            }),
+            away: object().shape({
+              primary: string(),
+              secondary: string(),
+            }),
+          })
+          .nullable(),
+        description: string().nullable(),
+        email: string().email().nullable(),
+        tournament_id: number().required(t('forms.required')),
+        phone: string()
+          .transform((value) => (value === '' ? null : value))
+          .nullable()
+          .notRequired()
+          .matches(/^(\+52)?(\d{10})$/, 'Número de teléfono no es válido'),
+      })
+    ),
+  })
+  const [id, id_props] = defineField('id', vuetifyConfig)
+  const [name, name_props] = defineField('name', vuetifyConfig)
+  const [address, address_props] = defineField('address', vuetifyConfig)
+  const [image, image_props] = defineField('image', vuetifyConfig)
+  const [category_id, category_id_props] = defineField('category_id', vuetifyConfig)
+  const [tournament_id, tournament_id_props] = defineField('tournament_id', vuetifyConfig)
+  const [phone, phone_props] = defineField('phone', vuetifyConfig)
+  const [email, email_props] = defineField('email', vuetifyConfig)
+  const [description, description_props] = defineField('description', vuetifyConfig)
+  const [colors, colors_props] = defineField('colors', vuetifyConfig)
   const saveImageHandler = (image: File) => {
     saveImage(image)
     fields.image.fieldValue = image
@@ -37,6 +103,12 @@
     const tournament = tournaments.value.find((tournament) => tournament.id === value)
     fields.category_id.fieldValue = tournament?.category_id
   }
+  const isInscription = computed(() => {
+    return useRoute().name === 'torneos-torneo-inscripcion'
+  })
+  const isPreInscription = computed(() => {
+    return useRoute().name === 'torneos-torneo-equipos-inscripcion'
+  })
   onMounted(() => {
     if (teamStoreRequest.value?.team) {
       setValues({ ...teamStoreRequest.value.team })
@@ -54,88 +126,42 @@
   onUnmounted(() => {
     resetForm()
   })
-  defineExpose({
-    validate,
-    handleSubmit,
-  })
-  const isInscription = computed(() => {
-    return useRoute().name === 'torneos-torneo-inscripcion'
-  })
-  const isPreInscription = computed(() => {
-    return useRoute().name === 'torneos-torneo-equipos-inscripcion'
-  })
 </script>
 <template>
   <v-container class="container" style="min-height: 480px">
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Nombre del equipo* </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <v-text-field
-          placeholder="p.ej. Equipo de verano"
-          outlined
-          v-model="fields.name.fieldValue"
-          v-bind="fields.name.fieldPropsValue"
-          density="compact"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Torneo* </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
+    <BaseInput v-model="name" :props="name_props" label="Nombre del equipo" placeholder="p.ej. Equipo de verano" />
+    <BaseInput label="Torneo">
+      <template #input>
         <v-select
+          placeholder="p.ej. Clausura"
           item-title="name"
           item-value="id"
           clearable
           :items="tournaments"
-          placeholder="p.ej. Clausura "
           outlined
           :disabled="isEdition || isInscription || isPreInscription"
-          v-model="fields.tournament_id.fieldValue"
-          v-bind="fields.tournament_id.fieldPropsValue"
+          v-model="tournament_id"
+          v-bind="tournament_id_props"
           density="compact"
           @update:model-value="categoryHandler"
         >
         </v-select>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Categoría* </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <CategorySelectComponent v-model="fields.category_id.fieldValue" :errors="fields.category_id.fieldPropsValue" />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Imagen del equipo </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <DragDropImage
-          ref="dragDropImageRef"
-          :image="imageForm"
-          @image-dropped="saveImageHandler"
-          @remove-image="removeImageHandler"
-        />
-        <span
-          class="text-error text-caption"
-          :class="fields.image.fieldPropsValue['error-messages'][0] ? 'ml-2' : ''"
-          >{{ fields.image.fieldPropsValue['error-messages'][0] ?? '' }}</span
-        >
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1">Dirección</span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
+      </template>
+    </BaseInput>
+    <BaseInput label="Categoría">
+      <template #input>
+        <CategorySelectComponent v-model="category_id" :errors="category_id_props" :disabled="isEdition" />
+      </template>
+    </BaseInput>
+    <BaseInput label="Imagen del equipo" sublabel="Opcional">
+      <template #input>
+        <DragDropImage v-model="image" :error-messages="image_props" />
+      </template>
+    </BaseInput>
+    <BaseInput label="Dirección" sublabel="Opcional">
+      <template #input>
         <v-autocomplete
-          v-model="fields.address.fieldValue"
+          v-model="address"
           :items="locationsFind"
           outlined
           return-object
@@ -144,7 +170,7 @@
           clearable
           density="compact"
           no-filter
-          v-bind="fields.address.fieldPropsValue"
+          v-bind="address_props"
           @update:search="searchHandler($event)"
         >
           <template v-slot:item="{ props, item }">
@@ -161,39 +187,32 @@
             </v-list-item>
           </template>
         </v-autocomplete>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Colores del equipo </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8" class="pt-0">
-        <v-row no-gutters class="position-relative">
-          <v-col cols="12">
-            <ColorsComponent v-model:model-value="fields.colors.fieldValue" :errors="fields.colors.fieldPropsValue" />
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Contacto</span>
-      </v-col>
-      <v-col col="12" lg="8" md="8">
-        <v-text-field
-          v-model="fields.email.fieldValue"
-          v-bind="fields.email.fieldPropsValue"
-          placeholder="Correo electrónico"
-          outlined
-          :disabled="isEdition"
-          class="mb-4"
-          density="compact"
-        ></v-text-field>
+      </template>
+    </BaseInput>
+    <BaseInput label="Colores del equipo" sublabel="Opcional">
+      <template #input>
+        <ColorsComponent v-model:model-value="colors" :errors="colors_props" />
+      </template>
+    </BaseInput>
+    <BaseInput label="Correo electrónico" sublabel="Opcional">
+      <v-text-field
+        v-model="email"
+        v-bind="email_props"
+        outlined
+        :disabled="isEdition"
+        class="mb-4"
+        type="mail"
+        density="compact"
+      ></v-text-field>
+    </BaseInput>
+
+    <BaseInput label="Teléfono" sublabel="Opcional">
+      <template #input>
         <client-only>
           <VPhoneInput
             variant="plain"
             :singleLine="true"
-            v-model="fields.phone.fieldValue"
+            v-model="phone"
             class="phone-input"
             :disabled="isEdition"
             display-format="international"
@@ -206,9 +225,9 @@
             "
           >
           </VPhoneInput>
-          <small class="text-error">{{ fields.phone.fieldPropsValue['error-messages'][0] }}</small>
+          <small class="text-error">{{ phone_props['error-messages'][0] }}</small>
         </client-only>
-      </v-col>
-    </v-row>
+      </template>
+    </BaseInput>
   </v-container>
 </template>

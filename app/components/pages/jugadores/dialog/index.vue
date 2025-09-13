@@ -25,5 +25,5 @@
   </v-dialog>
 </template>
 <style lang="sass">
-  @use "assets/scss/pages/create-team.sass"
+  @use "~/assets/scss/pages/create-team.sass"
 </style>

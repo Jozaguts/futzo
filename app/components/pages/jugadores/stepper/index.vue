@@ -100,7 +100,7 @@
       <v-container class="pa-0">
         <v-row>
           <v-col>
-            <IndicatorStep :form-steps="steps" />
+            <IndicatorStep :steps="steps" />
           </v-col>
         </v-row>
         <v-row>
