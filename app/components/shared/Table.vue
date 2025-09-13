@@ -15,6 +15,7 @@
     items: {
       type: Array,
       required: true,
+      default: [],
     },
     itemKey: {
       type: String,
