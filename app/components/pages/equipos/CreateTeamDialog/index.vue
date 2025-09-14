@@ -11,10 +11,12 @@
     // isEdition.value = false
     // teamStoreRequest.value = {}
   }
-  onMounted(() => {
-    if (teamStore.dialog) {
-      useTournamentStore().fetchTournamentsByLeagueId()
-    }
+  onMounted(async () => {
+    console.log('fired')
+    await teamStore.initTeamForm()
+  })
+  const disabled = computed(() => {
+    return steps.value.steps[steps.value.current].disable
   })
 </script>
 <template>
@@ -33,7 +35,7 @@
                 class="text-capitalize"
                 density="comfortable"
                 size="large"
-                @click="() => formSteps.steps[formSteps.current].back()"
+                @click="() => steps.steps[steps.current].back()"
                 >Anterior
               </v-btn>
             </v-col>
@@ -45,7 +47,7 @@
                 color="primary"
                 density="comfortable"
                 size="large"
-                @click="() => formSteps.steps[formSteps.current].next()"
+                @click="() => steps.steps[steps.current].next()"
                 >Siguiente
               </v-btn>
             </v-col>

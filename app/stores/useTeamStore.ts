@@ -240,7 +240,9 @@ export const useTeamStore = defineStore('teamStore', () => {
       positions.value = data.positions;
     });
   };
-
+  const initTeamForm = async () => {
+    await Promise.all([useTournamentStore().fetchTournamentsByLeagueId(), useCategoryStore().fetchCategories()]);
+  };
   return {
     teams,
     team,
@@ -277,5 +279,6 @@ export const useTeamStore = defineStore('teamStore', () => {
     initReportHandler,
     getLastGames,
     initPreRegister,
+    initTeamForm,
   };
 });

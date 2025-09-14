@@ -3,21 +3,20 @@
   import CategorySelectComponent from '~/components/inputs/CategoriesSelect.vue'
   import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
   import ColorsComponent from '~/components/pages/equipos/colors-component.vue'
-  import useSchemas from '~/composables/useSchemas'
   import { VPhoneInput } from 'v-phone-input'
-  import { dragDropImageRef, imageForm, removeImage, saveImage } from '~/composables/useImage'
+  import { dragDropImageRef } from '~/composables/useImage'
   import { usePlaceSearch } from '~/utils/googleSearch'
   import { useForm } from 'vee-validate'
-  import type { TeamStoreRequest } from '~/models/Team'
+  import type { CreateTeamForm, TeamStoreRequest } from '~/models/Team'
   import { array, mixed, number, object, string } from 'yup'
   import { vuetifyConfig } from '~/utils/constants'
 
   let locationsFind = ref([])
   const { tournaments, tournament } = storeToRefs(useTournamentStore())
-  const { teamStoreRequest, isEdition } = storeToRefs(useTeamStore())
+  const { teamStoreRequest, isEdition, steps } = storeToRefs(useTeamStore())
   const { search } = usePlaceSearch()
   const { t } = useI18n()
-  const { defineField, meta, values, resetForm, setValues } = useForm<TeamStoreRequest['team']>({
+  const { defineField, meta, values, resetForm, setValues, errors } = useForm<TeamStoreRequest['team']>({
     validationSchema: toTypedSchema(
       object({
         id: number().nullable(),
@@ -70,6 +69,7 @@
           .matches(/^(\+52)?(\d{10})$/, 'Número de teléfono no es válido'),
       })
     ),
+    initialValues: teamStoreRequest.value.team,
   })
   const [id, id_props] = defineField('id', vuetifyConfig)
   const [name, name_props] = defineField('name', vuetifyConfig)
@@ -81,15 +81,6 @@
   const [email, email_props] = defineField('email', vuetifyConfig)
   const [description, description_props] = defineField('description', vuetifyConfig)
   const [colors, colors_props] = defineField('colors', vuetifyConfig)
-  const saveImageHandler = (image: File) => {
-    saveImage(image)
-    fields.image.fieldValue = image
-  }
-  const removeImageHandler = () => {
-    removeImage()
-    fields.image.fieldValue = null
-    fields.image.fieldValue = null
-  }
   const searchHandler = async (place: string) => {
     const response = await search(place)
     if (response) {
@@ -100,13 +91,15 @@
     if (!value) {
       return
     }
-    const tournament = tournaments.value.find((tournament) => tournament.id === value)
-    fields.category_id.fieldValue = tournament?.category_id
+    const t = tournaments.value.find((tournament) => tournament.id === value)
+    category_id.value = t.category_id
   }
   const isInscription = computed(() => {
+    //@ts-ignore
     return useRoute().name === 'torneos-torneo-inscripcion'
   })
   const isPreInscription = computed(() => {
+    //@ts-ignore
     return useRoute().name === 'torneos-torneo-equipos-inscripcion'
   })
   onMounted(() => {
@@ -116,6 +109,7 @@
         dragDropImageRef.value?.loadImage()
       }
     }
+    //@ts-ignore
     if (useRoute().name === 'torneos-torneo-inscripcion') {
       setValues({
         tournament_id: tournament.value.id,
@@ -126,8 +120,21 @@
   onUnmounted(() => {
     resetForm()
   })
+  watch(
+    meta,
+    () => {
+      steps.value.steps[steps.value.current].disable = !meta.value.valid
+      if (meta.value.valid && meta.value.touched) {
+        teamStoreRequest.value.team = { ...values }
+      }
+    },
+    { deep: true }
+  )
 </script>
 <template>
+  <pre>
+    {{ errors }}
+  </pre>
   <v-container class="container" style="min-height: 480px">
     <BaseInput v-model="name" :props="name_props" label="Nombre del equipo" placeholder="p.ej. Equipo de verano" />
     <BaseInput label="Torneo">
@@ -150,7 +157,7 @@
     </BaseInput>
     <BaseInput label="Categoría">
       <template #input>
-        <CategorySelectComponent v-model="category_id" :errors="category_id_props" :disabled="isEdition" />
+        <CategorySelectComponent v-model="category_id" :errors="category_id_props" />
       </template>
     </BaseInput>
     <BaseInput label="Imagen del equipo" sublabel="Opcional">
@@ -192,41 +199,6 @@
     <BaseInput label="Colores del equipo" sublabel="Opcional">
       <template #input>
         <ColorsComponent v-model:model-value="colors" :errors="colors_props" />
-      </template>
-    </BaseInput>
-    <BaseInput label="Correo electrónico" sublabel="Opcional">
-      <v-text-field
-        v-model="email"
-        v-bind="email_props"
-        outlined
-        :disabled="isEdition"
-        class="mb-4"
-        type="mail"
-        density="compact"
-      ></v-text-field>
-    </BaseInput>
-
-    <BaseInput label="Teléfono" sublabel="Opcional">
-      <template #input>
-        <client-only>
-          <VPhoneInput
-            variant="plain"
-            :singleLine="true"
-            v-model="phone"
-            class="phone-input"
-            :disabled="isEdition"
-            display-format="international"
-            example="52 1 55 1234 5678"
-            validate-on="blur lazy"
-            :invalidMessage="
-              ({ label, example }) => {
-                return `${label} debe ser un numero valido (${example}).`
-              }
-            "
-          >
-          </VPhoneInput>
-          <small class="text-error">{{ phone_props['error-messages'][0] }}</small>
-        </client-only>
       </template>
     </BaseInput>
   </v-container>

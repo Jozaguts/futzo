@@ -43,8 +43,8 @@ export type FormLabelStep = 'Crea un equipo' | 'Crea el DT' | 'Crea el president
 export type CreateTeamForm = {
   id?: number;
   name: string;
-  phone: string;
-  email: string;
+  // phone: string;
+  // email: string;
   address: object;
   category_id: number;
   tournament_id: number;

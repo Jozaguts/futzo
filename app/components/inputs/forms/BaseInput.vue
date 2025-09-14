@@ -3,11 +3,18 @@
     'error-messages': string[]
   }
   const model = defineModel()
-  const { placeholder, label, sublabel, props } = defineProps<{
+  const {
+    placeholder,
+    label,
+    sublabel,
+    props,
+    disabled = false,
+  } = defineProps<{
     placeholder?: string
     label?: string
     sublabel?: string
     props?: VErrorProps
+    disabled?: boolean
   }>()
 </script>
 
@@ -24,6 +31,7 @@
         <v-text-field
           :placeholder="placeholder"
           outlined
+          :disabled="disabled"
           v-model="model"
           density="compact"
           v-bind="props"
