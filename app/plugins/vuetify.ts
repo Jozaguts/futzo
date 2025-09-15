@@ -2,12 +2,15 @@
 import '@mdi/font/css/materialdesignicons.css';
 import theme from '~/../config/vuetify/theme';
 import defaults from '~/../config/vuetify/defaults';
-
+import { VMaskInput } from 'vuetify/labs/VMaskInput';
 import 'vuetify/styles';
 import { createVuetify } from 'vuetify';
 
 export default defineNuxtPlugin((app) => {
   const vuetify = createVuetify({
+    components: {
+      VMaskInput,
+    },
     ssr: true,
     theme,
     defaults,

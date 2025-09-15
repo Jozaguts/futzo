@@ -9,12 +9,14 @@
     sublabel,
     props,
     disabled = false,
+    type = 'text',
   } = defineProps<{
     placeholder?: string
     label?: string
     sublabel?: string
     props?: VErrorProps
     disabled?: boolean
+    type?: string
   }>()
 </script>
 
@@ -29,6 +31,7 @@
     <v-col cols="12" lg="8" md="8">
       <slot name="input">
         <v-text-field
+          :type="type"
           :placeholder="placeholder"
           outlined
           :disabled="disabled"

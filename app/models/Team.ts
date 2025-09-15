@@ -67,6 +67,7 @@ export type CreateDtForm = {
   phone: string;
   email: string;
   image: HTMLImageElement | File | string;
+  iso_code?: number;
 };
 export type CreateOwnerForm = {
   id?: number;
@@ -74,6 +75,7 @@ export type CreateOwnerForm = {
   phone: string;
   email: string;
   image: HTMLImageElement | File | string;
+  iso_code?: number;
 };
 
 export interface TeamStoreRequest {

@@ -7,7 +7,7 @@
   import { dragDropImageRef } from '~/composables/useImage'
   import { usePlaceSearch } from '~/utils/googleSearch'
   import { useForm } from 'vee-validate'
-  import type { CreateTeamForm, TeamStoreRequest } from '~/models/Team'
+  import type { TeamStoreRequest } from '~/models/Team'
   import { array, mixed, number, object, string } from 'yup'
   import { vuetifyConfig } from '~/utils/constants'
 
@@ -16,6 +16,7 @@
   const { teamStoreRequest, isEdition, steps } = storeToRefs(useTeamStore())
   const { search } = usePlaceSearch()
   const { t } = useI18n()
+  // @ts-ignore
   const { defineField, meta, values, resetForm, setValues, errors } = useForm<TeamStoreRequest['team']>({
     validationSchema: toTypedSchema(
       object({
@@ -60,13 +61,7 @@
           })
           .nullable(),
         description: string().nullable(),
-        email: string().email().nullable(),
         tournament_id: number().required(t('forms.required')),
-        phone: string()
-          .transform((value) => (value === '' ? null : value))
-          .nullable()
-          .notRequired()
-          .matches(/^(\+52)?(\d{10})$/, 'Número de teléfono no es válido'),
       })
     ),
     initialValues: teamStoreRequest.value.team,
@@ -77,8 +72,6 @@
   const [image, image_props] = defineField('image', vuetifyConfig)
   const [category_id, category_id_props] = defineField('category_id', vuetifyConfig)
   const [tournament_id, tournament_id_props] = defineField('tournament_id', vuetifyConfig)
-  const [phone, phone_props] = defineField('phone', vuetifyConfig)
-  const [email, email_props] = defineField('email', vuetifyConfig)
   const [description, description_props] = defineField('description', vuetifyConfig)
   const [colors, colors_props] = defineField('colors', vuetifyConfig)
   const searchHandler = async (place: string) => {
@@ -132,9 +125,6 @@
   )
 </script>
 <template>
-  <pre>
-    {{ errors }}
-  </pre>
   <v-container class="container" style="min-height: 480px">
     <BaseInput v-model="name" :props="name_props" label="Nombre del equipo" placeholder="p.ej. Equipo de verano" />
     <BaseInput label="Torneo">

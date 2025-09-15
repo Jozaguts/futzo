@@ -6,7 +6,7 @@
   }
   import type { DragAndDrop } from '~/interfaces'
   import { INIT_IMAGE_STATE, MAX_SIZE } from '~/utils/constants'
-  const image = defineModel<File | null>({ default: null })
+  const image = defineModel<string | File | HTMLImageElemen>({ default: null })
   const state = ref<DragAndDrop>({ ...INIT_IMAGE_STATE })
   const inputRef = ref<HTMLElement>()
   const border = computed(() => {

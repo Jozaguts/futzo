@@ -1,123 +1,142 @@
 <script setup lang="ts">
   import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
-  import type { ImageForm } from '~/models/tournament'
-  import useSchemas from '~/composables/useSchemas'
-  import { VPhoneInput } from 'v-phone-input'
-
-  const dragDropImageRef = ref(null)
-  const imageForm = ref<ImageForm>({
-    file: null,
-    name: '',
-    size: 0,
-  })
-
+  const { t } = useI18n()
+  import type { TeamStoreRequest } from '~/models/Team'
+  import { mixed, number, object, string } from 'yup'
+  import { vuetifyConfig } from '~/utils/constants'
   const teamStore = useTeamStore()
-  const { teamStoreRequest, isEdition } = storeToRefs(teamStore)
+  const { teamStoreRequest, isEdition, steps } = storeToRefs(teamStore)
+  // @ts-ignore
+  const { defineField, meta, values, resetForm, setValues, errors } = useForm<TeamStoreRequest['coach']>({
+    validationSchema: toTypedSchema(
+      object({
+        id: number().nullable(),
+        name: string().test('no-leading-space', 'No se permite espacio en blanco al inicio', (value) => {
+          return !(value && value.startsWith(' '))
+        }),
+        phone: string()
+          .transform((value) => (value === '' ? null : value))
+          .nullable()
+          .notRequired()
+          .matches(/^(\+52)?(\d{10})$/, 'Número de teléfono no es válido'),
+        email: string().email().nullable(),
+        image: mixed()
+          .nullable()
+          .test('File is required', 'Solo imágenes .jgp, png, svg ', (value: any) => {
+            if (!value) return true
+            return value?.type?.includes('image/') || typeof value === 'string'
+          }),
+        iso_code: number().lessThan(999, 'numero de lada invalido'),
+      })
+    ),
+    initialValues: teamStoreRequest.value.coach,
+  })
+  const [name, name_props] = defineField('name', vuetifyConfig)
+  const [image, image_props] = defineField('image', vuetifyConfig)
+  const [email, email_props] = defineField('email', vuetifyConfig)
+  const [phone, phone_props] = defineField('phone', vuetifyConfig)
+  const [iso_code, iso_code_props] = defineField('iso_code', vuetifyConfig)
 
-  const { handleSubmit, resetForm, fields, validate, setValues } = useSchemas(
-    isEdition.value ? 'edit-coach' : 'create-coach'
-  )
-
-  const saveImage = (file: File) => {
-    imageForm.value.file = file
-    imageForm.value.name = file.name
-    imageForm.value.size = file.size
-    fields.image.fieldValue = file
-  }
-  const removeImage = () => {
-    imageForm.value.file = null
-    imageForm.value.name = ''
-    imageForm.value.size = 0
-    fields.image.fieldValue = null
-  }
   onMounted(() => {
     if (teamStoreRequest.value?.coach) {
-      setValues({ ...teamStoreRequest.value.coach })
-
       if (teamStoreRequest.value.coach.image) {
         dragDropImageRef.value?.loadImage()
       }
     }
   })
-  defineExpose({
-    validate,
-    handleSubmit,
-  })
+  watch(
+    meta,
+    () => {
+      steps.value.steps[steps.value.current].disable = !meta.value.valid
+      if (meta.value.valid && meta.value.touched) {
+        teamStoreRequest.value.coach = {
+          name: values.name,
+          email: values.email,
+          phone: `+${values.iso_code}${values.phone}`,
+          image: values.image,
+        }
+      }
+    },
+    { deep: true }
+  )
 </script>
 <template>
   <v-container class="container" style="min-height: 480px">
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Nombre del DT* </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <v-text-field
-          placeholder="p.ej. Luis Veloz"
-          outlined
-          v-model="fields.name.fieldValue"
-          v-bind="fields.name.fieldPropsValue"
-          density="compact"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Imagen del usuario* </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <DragDropImage
-          ref="dragDropImageRef"
-          :image="imageForm"
-          @image-dropped="saveImage"
-          @remove-image="removeImage"
-        />
-        <span
-          class="text-error text-caption"
-          :class="fields.image.fieldPropsValue['error-messages'][0] ? 'ml-2' : ''"
-          >{{ fields.image.fieldPropsValue['error-messages'][0] ?? '' }}</span
-        >
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Correo electrónico* </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <v-text-field
-          placeholder="p.ej. luis@futzo.io "
-          outlined
-          v-model="fields.email.fieldValue"
-          v-bind="fields.email.fieldPropsValue"
-          :disabled="isEdition"
-          density="compact"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Teléfono </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <client-only>
-          <VPhoneInput
-            variant="plain"
-            :disabled="isEdition"
-            :singleLine="true"
-            v-model="fields.phone.fieldValue"
-            class="phone-input"
-            display-format="international"
-            example="52 1 55 1234 5678"
-            validate-on="blur lazy"
-            :invalidMessage="
-              ({ label, example }) => {
-                return `${label} debe ser un numero valido (${example}).`
-              }
-            "
+    <BaseInput
+      v-model="name"
+      :props="name_props"
+      sublabel="Opcional"
+      label="Nombre del DT"
+      placeholder="p.ej. Luis Veloz"
+    />
+    <BaseInput label="Imagen del usuario" sublabel="Opcional">
+      <template #input>
+        <DragDropImage v-model="image" :error-messages="image_props" />
+      </template>
+    </BaseInput>
+    <BaseInput
+      label="Correo electrónico"
+      sublabel="Opcional"
+      v-model="email"
+      :props="email_props"
+      placeholder="p.ej. luis@futzo.io"
+      :disabled="isEdition"
+      type="email"
+    />
+    <BaseInput label="Teléfono" sublabel="Opcional">
+      <template #input>
+        <div class="d-flex">
+          <v-number-input
+            style="max-height: 40px"
+            max-width="100"
+            class="mr-2"
+            v-bind="iso_code_props"
+            placeholder="52"
+            label="lada"
+            single-line
+            prefix="+"
+            v-model="iso_code"
+            density="compact"
+            control-variant="hidden"
+            variant="outlined"
+          ></v-number-input>
+          <v-mask-input
+            variant="outlined"
+            density="compact"
+            v-model="phone"
+            v-bind="phone_props"
+            mask="phone"
+            placeholder="(###) ### - ####"
           >
-          </VPhoneInput>
-          <small class="text-error">{{ fields.phone.fieldPropsValue['error-messages'][0] }}</small>
-        </client-only>
-      </v-col>
-    </v-row>
+          </v-mask-input>
+        </div>
+      </template>
+    </BaseInput>
+    <!--    <v-row>-->
+    <!--      <v-col cols="12" lg="4" md="4">-->
+    <!--        <span class="text-body-1">  </span>-->
+    <!--      </v-col>-->
+    <!--      <v-col cols="12" lg="8" md="8">-->
+    <!--        <client-only>-->
+    <!--          <VPhoneInput-->
+    <!--            variant="plain"-->
+    <!--            :disabled="isEdition"-->
+    <!--            :singleLine="true"-->
+    <!--            v-model="fields.phone.fieldValue"-->
+    <!--            class="phone-input"-->
+    <!--            display-format="international"-->
+    <!--            example="52 1 55 1234 5678"-->
+    <!--            validate-on="blur lazy"-->
+    <!--            :invalidMessage="-->
+    <!--              ({ label, example }) => {-->
+    <!--                return `${label} debe ser un numero valido (${example}).`-->
+    <!--              }-->
+    <!--            "-->
+    <!--          >-->
+    <!--          </VPhoneInput>-->
+    <!--          <small class="text-error">{{ fields.phone.fieldPropsValue['error-messages'][0] }}</small>-->
+    <!--        </client-only>-->
+    <!--      </v-col>-->
+    <!--    </v-row>-->
   </v-container>
 </template>
