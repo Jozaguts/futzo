@@ -128,7 +128,9 @@
     </div>
     <v-divider />
     <div class="pa-4">
-      <div v-if="loading && !isLoading" class="text-medium-emphasis mt-4">Cargando Stripe…</div>
+      <div v-if="loading && !isLoading" class="text-medium-emphasis mt-4">
+        <v-skeleton-loader type="heading, actions "></v-skeleton-loader>
+      </div>
       <form id="payment-form">
         <div id="payment-element" />
       </form>
