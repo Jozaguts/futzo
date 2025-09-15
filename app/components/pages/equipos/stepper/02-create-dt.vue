@@ -1,13 +1,12 @@
 <script setup lang="ts">
   import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
-  const { t } = useI18n()
   import type { TeamStoreRequest } from '~/models/Team'
   import { mixed, number, object, string } from 'yup'
   import { vuetifyConfig } from '~/utils/constants'
   const teamStore = useTeamStore()
   const { teamStoreRequest, isEdition, steps } = storeToRefs(teamStore)
   // @ts-ignore
-  const { defineField, meta, values, resetForm, setValues, errors } = useForm<TeamStoreRequest['coach']>({
+  const { defineField, meta, values } = useForm<TeamStoreRequest['coach']>({
     validationSchema: toTypedSchema(
       object({
         id: number().nullable(),
@@ -38,6 +37,7 @@
   const [iso_code, iso_code_props] = defineField('iso_code', vuetifyConfig)
 
   onMounted(() => {
+    steps.value.steps[steps.value.current].disable = false
     if (teamStoreRequest.value?.coach) {
       if (teamStoreRequest.value.coach.image) {
         dragDropImageRef.value?.loadImage()
@@ -112,31 +112,5 @@
         </div>
       </template>
     </BaseInput>
-    <!--    <v-row>-->
-    <!--      <v-col cols="12" lg="4" md="4">-->
-    <!--        <span class="text-body-1">  </span>-->
-    <!--      </v-col>-->
-    <!--      <v-col cols="12" lg="8" md="8">-->
-    <!--        <client-only>-->
-    <!--          <VPhoneInput-->
-    <!--            variant="plain"-->
-    <!--            :disabled="isEdition"-->
-    <!--            :singleLine="true"-->
-    <!--            v-model="fields.phone.fieldValue"-->
-    <!--            class="phone-input"-->
-    <!--            display-format="international"-->
-    <!--            example="52 1 55 1234 5678"-->
-    <!--            validate-on="blur lazy"-->
-    <!--            :invalidMessage="-->
-    <!--              ({ label, example }) => {-->
-    <!--                return `${label} debe ser un numero valido (${example}).`-->
-    <!--              }-->
-    <!--            "-->
-    <!--          >-->
-    <!--          </VPhoneInput>-->
-    <!--          <small class="text-error">{{ fields.phone.fieldPropsValue['error-messages'][0] }}</small>-->
-    <!--        </client-only>-->
-    <!--      </v-col>-->
-    <!--    </v-row>-->
   </v-container>
 </template>
