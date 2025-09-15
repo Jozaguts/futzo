@@ -31,7 +31,12 @@ jobs:
           NODE_ENV: ${{ vars.NODE_ENV || 'production' }}
           NUXT_GOOGLE_MAPS_API_KEY: ${{ vars.NUXT_GOOGLE_MAPS_API_KEY || secrets.NUXT_GOOGLE_MAPS_API_KEY }}
           NUXT_GOOGLE_MAP_ID: ${{ vars.NUXT_GOOGLE_MAP_ID }}
-          DEPLOY_PATH: ${{ vars.DEPLOY_PATH || secrets.DEPLOY_PATH }}
+          NUXT_PUBLIC_URL: ${{ vars.NUXT_PUBLIC_URL || secrets.NUXT_PUBLIC_URL }}
+          META_PIXEL_ID: ${{ vars.META_PIXEL_ID || secrets.META_PIXEL_ID }}
+          PW_E2E_EMAIL: ${{ vars.PW_E2E_EMAIL || secrets.PW_E2E_EMAIL }}
+          PW_E2E_PASSWORD: ${{ vars.PW_E2E_PASSWORD || secrets.PW_E2E_PASSWORD }}
+          PW_BASE_URL: ${{ vars.PW_BASE_URL || secrets.PW_BASE_URL }}
+          NUXT_PUBLIC_STRIPE_KEY: ${{ vars.NUXT_PUBLIC_STRIPE_KEY || secrets.NUXT_PUBLIC_STRIPE_KEY }}
         run: |
           ssh -p ${{ vars.SSH_PORT || secrets.SSH_PORT || '22' }} -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
             set -Eeuo pipefail
@@ -79,6 +84,12 @@ jobs:
               echo "NUXT_GOOGLE_MAPS_API_KEY=$NUXT_GOOGLE_MAPS_API_KEY"
               echo "NUXT_GOOGLE_MAP_ID=$NUXT_GOOGLE_MAP_ID"
               echo "NUXT_PUBLIC_APP_VERSION=$VERSION"
+              echo "NUXT_PUBLIC_URL=$NUXT_PUBLIC_URL"
+              echo "META_PIXEL_ID=$META_PIXEL_ID"
+              echo "PW_E2E_EMAIL=$PW_E2E_EMAIL"
+              echo "PW_E2E_PASSWORD=$PW_E2E_PASSWORD"
+              echo "PW_BASE_URL=$PW_BASE_URL"
+              echo "NUXT_PUBLIC_STRIPE_KEY=$NUXT_PUBLIC_STRIPE_KEY"
             ) > .env.prod
 
             yarn install --frozen-lockfile
