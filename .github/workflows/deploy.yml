@@ -31,6 +31,7 @@ jobs:
           NODE_ENV: ${{ vars.NODE_ENV || 'production' }}
           NUXT_GOOGLE_MAPS_API_KEY: ${{ vars.NUXT_GOOGLE_MAPS_API_KEY || secrets.NUXT_GOOGLE_MAPS_API_KEY }}
           NUXT_GOOGLE_MAP_ID: ${{ vars.NUXT_GOOGLE_MAP_ID }}
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH || secrets.DEPLOY_PATH }}
           NUXT_PUBLIC_URL: ${{ vars.NUXT_PUBLIC_URL || secrets.NUXT_PUBLIC_URL }}
           META_PIXEL_ID: ${{ vars.META_PIXEL_ID || secrets.META_PIXEL_ID }}
           PW_E2E_EMAIL: ${{ vars.PW_E2E_EMAIL || secrets.PW_E2E_EMAIL }}
