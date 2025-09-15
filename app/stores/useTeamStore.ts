@@ -9,23 +9,7 @@ import { sortFormation } from '~/utils/sort-formation';
 import { useToast } from '~/composables/useToast';
 
 export const useTeamStore = defineStore('teamStore', () => {
-  const { toast } = useToast();
-  const dialog = ref(false);
-  const teams = ref<Team[]>([] as Team[]);
-  const team = ref<Team>({} as Team);
-  const teamId = ref(0);
-  const search = ref('');
-  const importModal = ref(false);
-  const pagination = ref<IPagination>({
-    current_page: 1,
-    per_page: 15,
-    last_page: 1,
-    total: 0,
-    sort: 'asc',
-  });
-  const teamStoreRequest = ref<Partial<TeamStoreRequest>>({} as TeamStoreRequest);
-  const client = useSanctumClient();
-  const steps = ref<FormSteps>({
+  const INIT_STEPS: FormSteps = {
     current: 'createTeam',
     steps: {
       createTeam: {
@@ -59,7 +43,24 @@ export const useTeamStore = defineStore('teamStore', () => {
         },
       },
     },
+  };
+  const { toast } = useToast();
+  const dialog = ref(false);
+  const teams = ref<Team[]>([] as Team[]);
+  const team = ref<Team>({} as Team);
+  const teamId = ref(0);
+  const search = ref('');
+  const importModal = ref(false);
+  const pagination = ref<IPagination>({
+    current_page: 1,
+    per_page: 15,
+    last_page: 1,
+    total: 0,
+    sort: 'asc',
   });
+  const teamStoreRequest = ref<Partial<TeamStoreRequest>>({} as TeamStoreRequest);
+  const client = useSanctumClient();
+  const steps = ref<FormSteps>(INIT_STEPS);
   const isEdition = ref(false);
   const loading = ref(false);
   const homeTeam = ref<Team>({} as Team);
@@ -243,6 +244,12 @@ export const useTeamStore = defineStore('teamStore', () => {
   const initTeamForm = async () => {
     await Promise.all([useTournamentStore().fetchTournamentsByLeagueId(), useCategoryStore().fetchCategories()]);
   };
+  const $storeReset = () => {
+    steps.value = INIT_STEPS;
+    steps.value.current = 'createTeam';
+    teamStoreRequest.value = {} as TeamStoreRequest;
+    isEdition.value = false;
+  };
   return {
     teams,
     team,
@@ -264,6 +271,7 @@ export const useTeamStore = defineStore('teamStore', () => {
     homePlayers,
     awayPlayers,
     lastGames,
+    $storeReset,
     createTeam,
     getTeams,
     getTeam,

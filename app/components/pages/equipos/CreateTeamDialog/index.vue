@@ -3,24 +3,20 @@
   import { storeToRefs } from 'pinia'
   import StepperContainer from '~/components/pages/equipos/stepper/index.vue'
 
-  const teamStore = useTeamStore()
-  const { steps, isEdition, teamStoreRequest } = storeToRefs(teamStore)
+  const { steps, isEdition, dialog } = storeToRefs(useTeamStore())
   const leaveHandler = () => {
-    // steps.value.current = 'createTeam'
-    // steps.value.steps?.map((step) => (step.completed = false))
-    // isEdition.value = false
-    // teamStoreRequest.value = {}
+    console.log('fired')
+    useTeamStore().$storeReset()
   }
   onMounted(async () => {
-    console.log('fired')
-    await teamStore.initTeamForm()
+    await useTeamStore().initTeamForm()
   })
   const disabled = computed(() => {
     return steps.value.steps[steps.value.current].disable
   })
 </script>
 <template>
-  <v-dialog v-model="teamStore.dialog" max-width="690" @after-leave="leaveHandler" scrollable>
+  <v-dialog v-model="dialog" max-width="690" @after-leave="leaveHandler" scrollable>
     <v-card class="create-tournament-card futzo-rounded" :style="{ overflow: $vuetify.display.mobile ? '' : 'hidden' }">
       <HeaderCard />
       <StepperContainer :step="steps.current" />

@@ -118,25 +118,6 @@
             </transition-slide>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col cols="6">
-            <v-btn variant="outlined" block color="secondary" density="comfortable" size="large" @click="backHandler"
-              >{{ textButtonCancel }}
-            </v-btn>
-          </v-col>
-          <v-col cols="6">
-            <v-btn
-              variant="elevated"
-              block
-              color="primary"
-              density="comfortable"
-              size="large"
-              :loading="loading"
-              @click="nextHandler"
-              >{{ textButton }}
-            </v-btn>
-          </v-col>
-        </v-row>
       </v-container>
     </v-card-text>
   </PerfectScrollbar>

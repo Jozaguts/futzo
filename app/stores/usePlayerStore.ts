@@ -10,6 +10,41 @@ import { useToast } from '~/composables/useToast';
 
 export const usePlayerStore = defineStore('playerStore', () => {
   const { toast } = useToast();
+  const INIT_STEPS: FormSteps = {
+    current: 'basic-info',
+    steps: {
+      'basic-info': {
+        number: 1,
+        completed: false,
+        label: 'Información básica',
+        disable: true,
+        back: () => (dialog.value = false),
+        next: () => (steps.value.current = 'details-info'),
+      },
+      'details-info': {
+        number: 2,
+        completed: false,
+        label: 'Detalles del jugador',
+        disable: true,
+        back: () => (steps.value.current = 'basic-info'),
+        next: () => (steps.value.current = 'contact-info'),
+      },
+      'contact-info': {
+        number: 3,
+        completed: false,
+        label: 'Información de contacto',
+        disable: true,
+        back: () => (steps.value.current = 'details-info'),
+        next: async () => {
+          if (isEdition.value) {
+            await updatePlayer(playerId.value as number);
+          } else {
+            await createPlayer();
+          }
+        },
+      },
+    },
+  };
   const players = ref<Player[]>([]);
   const dialog = ref<boolean>(false);
   const search = ref<string>('');
@@ -30,25 +65,14 @@ export const usePlayerStore = defineStore('playerStore', () => {
   const isImporting = ref(false);
   const showAssignTeam = ref(false);
   const player = ref<Player>(null as unknown as Player);
-  const steps = ref<FormSteps>({
-    current: 'basic-info',
-    steps: [
-      { step: 'basic-info', completed: false, label: 'Información básica' },
-      { step: 'details-info', completed: false, label: 'Detalles del jugador' },
-      {
-        step: 'contact-info',
-        completed: false,
-        label: 'Información de contacto',
-      },
-    ],
-  });
+  const steps = ref<FormSteps>(INIT_STEPS);
 
   const getPlayer = async (id: string) => {
     try {
       const client = useSanctumClient();
       const response = await client<{ data: Player }>(`/api/v1/admin/players/${id}`);
       player.value = response.data;
-    } catch (error) {
+    } catch (error: { data: { massage: string } }) {
       console.error(error);
       toast({
         type: 'error',
@@ -80,6 +104,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
   const createPlayer = async () => {
     const form = prepareForm(playerStoreRequest);
     const client = useSanctumClient();
+    //@ts-ignore
     const isPreRegister = useRoute().name === 'equipos-equipo-jugadores-inscripcion';
     const url = isPreRegister
       ? `/api/v1/public/teams/${playerStoreRequest.value.basic.team_id}/pre-register-player`
@@ -117,7 +142,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
         pagination.value.current_page = 1;
         url += '&search=' + search;
       }
-      const response = await client(url);
+      const response = await client<{ data: Player[]; meta: IPagination }>(url);
       pagination.value = { ...pagination.value, ...response.meta };
       players.value = response?.data;
     } catch (error) {
@@ -185,7 +210,14 @@ export const usePlayerStore = defineStore('playerStore', () => {
   const searchPlayer = async (search: string) => {
     players.value = await playerAPI.search(search);
   };
-
+  const $storeReset = () => {
+    steps.value = INIT_STEPS;
+    playerStoreRequest.value = {} as PlayerStoreRequest;
+    isEdition.value = false;
+  };
+  const initPlayerForm = async () => {
+    await Promise.all([useTeamStore().list(), useCategoryStore().fetchCategories()]);
+  };
   return {
     players,
     dialog,
@@ -201,6 +233,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
     isImporting,
     showAssignTeam,
     player,
+    $storeReset,
     updatePlayer,
     createPlayer,
     getPlayers,
@@ -213,5 +246,6 @@ export const usePlayerStore = defineStore('playerStore', () => {
     updateLineup,
     addLineupPlayer,
     searchPlayer,
+    initPlayerForm,
   };
 });

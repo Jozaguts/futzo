@@ -25,14 +25,20 @@ export interface Player {
 
 export interface FormSteps {
   current: CurrentStep;
-  steps: PlayerSteps[];
+  steps: PlayerSteps;
 }
 
-export interface PlayerSteps {
-  step: CurrentStep;
-  completed: boolean;
-  label: FormLabelStep;
-}
+export type PlayerSteps = Record<
+  CurrentStep,
+  {
+    number: number;
+    completed: boolean;
+    label: FormLabelStep;
+    disable: boolean;
+    back: Function;
+    next: Function;
+  }
+>;
 
 export type FormLabelStep = 'Información básica' | 'Detalles del jugador' | 'Información de contacto';
 
@@ -61,7 +67,7 @@ export interface ImageForm {
 export interface BasicInfoForm {
   id?: number;
   name?: string;
-  lastName?: string;
+  last_name?: string;
   birthdate?: string;
   nationality?: string;
   image?: HTMLImageElement | File | string;
@@ -75,13 +81,14 @@ export interface DetailsInfoForm {
   height: number;
   weight: number;
   dominant_foot: string;
-  medical_notes: number;
+  medical_notes: string;
 }
 
 export interface ContactInfoForm {
   email: string;
   phone: string;
   notes: string;
+  iso_code?: string;
 }
 
 export interface PlayerResponse {}

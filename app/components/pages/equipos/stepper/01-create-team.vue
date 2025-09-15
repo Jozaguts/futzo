@@ -3,13 +3,12 @@
   import CategorySelectComponent from '~/components/inputs/CategoriesSelect.vue'
   import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
   import ColorsComponent from '~/components/pages/equipos/colors-component.vue'
-  import { VPhoneInput } from 'v-phone-input'
-  import { dragDropImageRef } from '~/composables/useImage'
   import { usePlaceSearch } from '~/utils/googleSearch'
   import { useForm } from 'vee-validate'
   import type { TeamStoreRequest } from '~/models/Team'
   import { array, mixed, number, object, string } from 'yup'
   import { vuetifyConfig } from '~/utils/constants'
+  import type { Tournament } from '~/models/tournament'
 
   let locationsFind = ref([])
   const { tournaments, tournament } = storeToRefs(useTournamentStore())
@@ -84,7 +83,7 @@
     if (!value) {
       return
     }
-    const t = tournaments.value.find((tournament) => tournament.id === value)
+    const t = tournaments.value.find<Tournament>((tournament: Tournament) => tournament.id === value)
     category_id.value = t.category_id
   }
   const isInscription = computed(() => {
@@ -96,12 +95,6 @@
     return useRoute().name === 'torneos-torneo-equipos-inscripcion'
   })
   onMounted(() => {
-    if (teamStoreRequest.value?.team) {
-      setValues({ ...teamStoreRequest.value.team })
-      if (teamStoreRequest.value.team.image) {
-        dragDropImageRef.value?.loadImage()
-      }
-    }
     //@ts-ignore
     if (useRoute().name === 'torneos-torneo-inscripcion') {
       setValues({
