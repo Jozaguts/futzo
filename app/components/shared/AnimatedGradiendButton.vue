@@ -55,7 +55,7 @@
   }
   .buy-now-button {
     position: fixed;
-    z-index: 999;
+    z-index: 900;
     inset-block-end: 5%;
     inset-inline-end: 79px;
   }
