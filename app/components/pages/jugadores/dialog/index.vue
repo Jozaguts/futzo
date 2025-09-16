@@ -1,14 +1,38 @@
 <script setup lang="ts">
   import HeaderCard from '~/components/pages/jugadores/dialog/header.vue'
   import StepperContainer from '~/components/pages/jugadores/stepper/index.vue'
+  import { storeToRefs, usePlayerStore, useTournamentStore } from '#imports'
+  import type { CurrentStep } from '~/models/Player'
 
-  const { steps, dialog } = storeToRefs(usePlayerStore())
+  const { steps, dialog, isEdition, playerId } = storeToRefs(usePlayerStore())
+  const loading = ref(false)
   const leaveHandler = () => {
     usePlayerStore().$storeReset()
   }
   onMounted(() => {
     useTournamentStore().fetchTournamentsByLeagueId()
   })
+  const disabled = computed(() => {
+    return steps.value.steps[steps.value.current].disable
+  })
+  const next = () => {
+    if (steps.value.steps[steps.value.current].next_step === 'save') {
+      if (isEdition.value) {
+        usePlayerStore().createPlayer()
+      } else {
+        usePlayerStore().updatePlayer(playerId.value as number)
+      }
+    } else {
+      steps.value.current = steps.value.steps[steps.value.current].next_step as CurrentStep
+    }
+  }
+  const back = () => {
+    if (steps.value.steps[steps.value.current].back_step === 'close') {
+      dialog.value = false
+    } else {
+      steps.value.current = steps.value.steps[steps.value.current].back_step as CurrentStep
+    }
+  }
 </script>
 <template>
   <v-dialog v-model="dialog" max-width="690" @after-leave="leaveHandler" scrollable>
@@ -30,20 +54,21 @@
                 class="text-capitalize"
                 density="comfortable"
                 size="large"
-                @click="() => steps.steps[steps.current].back()"
-                >Anterior
+                @click="back"
+                >{{ steps.steps[steps.current].back_label }}
               </v-btn>
             </v-col>
             <v-col cols="6">
               <v-btn
-                :disabled="disabled"
+                :disabled="disabled || loading"
                 variant="elevated"
                 block
                 color="primary"
                 density="comfortable"
                 size="large"
-                @click="() => steps.steps[steps.current].next()"
-                >Siguiente
+                :loading="loading"
+                @click="next"
+                >{{ steps.steps[steps.current].next_label }}
               </v-btn>
             </v-col>
           </v-row>

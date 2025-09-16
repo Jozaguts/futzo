@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import type {
+  CalendarStepsForm,
   EliminationPhase,
   FootballType,
   Format,
@@ -13,14 +14,59 @@ import type {
   ScheduleStoreRequest,
   TournamentSchedule,
 } from '~/models/Schedule';
-import type { Ref } from 'vue';
 import type { IPagination } from '~/interfaces';
-import type { CalendarStepsForm } from '~/models/tournament';
 import { fetchRoundByStatus } from '~/http/api/schedule';
 import * as tournamentAPI from '~/http/api/tournament';
 import { useToast } from '~/composables/useToast';
+import { useTournamentStore } from '~/stores/useTournamentStore';
+import { useSanctumClient } from '#imports';
 
 export const useScheduleStore = defineStore('scheduleStore', () => {
+  const INIT_CALENDAR_STEPS: CalendarStepsForm = {
+    current: 'general',
+    steps: {
+      general: {
+        number: 1,
+        disable: true,
+        label: 'General',
+        completed: false,
+        back_step: 'close',
+        next_step: 'regular',
+        back_label: 'Cancelar',
+        next_label: 'Siguiente',
+      },
+      regular: {
+        number: 2,
+        completed: false,
+        label: 'Fase Regular',
+        disable: false,
+        back_step: 'general',
+        next_step: 'elimination',
+        back_label: 'Anterior',
+        next_label: 'Siguiente',
+      },
+      elimination: {
+        number: 3,
+        completed: false,
+        label: 'Fase de Eliminación',
+        disable: false,
+        back_step: 'regular',
+        next_step: 'fields',
+        back_label: 'Anterior',
+        next_label: 'Siguiente',
+      },
+      fields: {
+        number: 4,
+        completed: false,
+        label: 'Campos de juego',
+        disable: false,
+        back_step: 'elimination',
+        next_step: 'save',
+        back_label: 'Anterior',
+        next_label: 'Crear Calendario',
+      },
+    },
+  };
   const tournamentStore = useTournamentStore();
   const scheduleDialog = ref(false);
   const scheduleParams = ref<{ leagueId: number; tournamentId: number }>();
@@ -77,31 +123,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     elimination_phase: {} as FormEliminationPhaseStep,
     fields_phase: [] as LocationFieldsRequest[],
   });
-  const calendarSteps = ref<CalendarStepsForm>({
-    current: 'general',
-    steps: [
-      {
-        step: 'general',
-        completed: false,
-        label: 'General',
-      },
-      {
-        step: 'regular',
-        completed: false,
-        label: 'Fase Regular',
-      },
-      {
-        step: 'elimination',
-        completed: false,
-        label: 'Fase de Eliminación',
-      },
-      {
-        step: 'fields',
-        completed: false,
-        label: 'Campos de juego',
-      },
-    ],
-  });
+  const calendarSteps = ref<CalendarStepsForm>(INIT_CALENDAR_STEPS);
   const isExporting = ref(false);
 
   // ---- Capacity helpers (client-side estimation) ----
@@ -117,6 +139,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     const norm = range.replace(/\s*a\s*/i, '-');
     const parts = norm.split('-');
     if (parts.length !== 2) return undefined;
+    //@ts-ignore
     return { start: minute(parts[0].trim()), end: minute(parts[1].trim()) };
   };
   const matchDurationMins = computed(
@@ -208,31 +231,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       elimination_phase: {} as FormEliminationPhaseStep,
       fields_phase: [] as LocationFieldsRequest[],
     };
-    calendarSteps.value = {
-      current: 'general',
-      steps: [
-        {
-          step: 'general',
-          completed: false,
-          label: 'General',
-        },
-        {
-          step: 'regular',
-          completed: false,
-          label: 'Fase Regular',
-        },
-        {
-          step: 'elimination',
-          completed: false,
-          label: 'Fase de Eliminación',
-        },
-        {
-          step: 'fields',
-          completed: false,
-          label: 'Campos de juego',
-        },
-      ],
-    };
+    calendarSteps.value = INIT_CALENDAR_STEPS;
   };
   const getTournamentSchedules = async () => {
     isLoadingSchedules.value = true;
@@ -247,6 +246,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     }
 
     const response = await client(url);
+    //@ts-ignore
     const newRounds = response.rounds ?? [];
     if (!schedules.value.rounds.length) {
       schedules.value.rounds = [];
@@ -262,12 +262,14 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     }
 
     schedulePagination.value.current_page += 1;
+    //@ts-ignore
     schedulePagination.value.last_page = response.pagination.total_rounds;
     isLoadingSchedules.value = false;
   };
   const fetchSchedule = async () => {
     isLoadingSchedules.value = true;
     const client = useSanctumClient();
+    //@ts-ignore
     schedules.value = await client(
       `/api/v1/admin/tournaments/${tournamentStore.tournamentId}/schedule?page=${schedulePagination.value.current_page}`
     ).finally(() => {
@@ -327,6 +329,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       filter,
       schedulePagination.value.current_page
     );
+    //@ts-ignore
     schedules.value.rounds = response.rounds ?? [];
   };
   const exportTournamentRoundScheduleAs = async (type: 'excel' | 'img', round: number) => {

@@ -3,10 +3,9 @@
   import '@vuepic/vue-datepicker/dist/main.css'
   import type { PlayerStoreRequest } from '~/models/Player'
   import { vuetifyConfig } from '~/utils/constants'
-  const { isEdition, playerStoreRequest, steps } = storeToRefs(usePlayerStore())
-  const { teams } = storeToRefs(useTeamStore())
+  const { playerStoreRequest, steps } = storeToRefs(usePlayerStore())
   const { positions } = storeToRefs(usePositionsStore())
-  const { defineField, meta, resetForm, values } = useForm<PlayerStoreRequest['details']>({
+  const { defineField, meta, values } = useForm<PlayerStoreRequest['details']>({
     validationSchema: toTypedSchema(
       object({
         position_id: yup_number().nullable(),

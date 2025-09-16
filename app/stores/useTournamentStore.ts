@@ -18,8 +18,42 @@ import * as tournamentAPI from '~/http/api/tournament';
 import type { Field } from '~/models/Schedule';
 import type { CreateTeamForm } from '~/models/Team';
 import { defineStore } from 'pinia';
+import {
+  storeToRefs,
+  useCategoryStore,
+  useOnboardingStore,
+  useSanctumClient,
+  useSanctumUser,
+  useTeamStore,
+  useToast,
+} from '#imports';
 
 export const useTournamentStore = defineStore('tournamentStore', () => {
+  const INIT_STEPS: FormSteps = {
+    current: 'basicInfo',
+    steps: {
+      basicInfo: {
+        number: 1,
+        completed: false,
+        label: 'Crea un torneo',
+        disable: true,
+        back_step: 'close',
+        next_step: 'detailsInfo',
+        back_label: 'Cancelar',
+        next_label: 'Siguiente',
+      },
+      detailsInfo: {
+        completed: false,
+        number: 2,
+        label: 'Detalles del torneo',
+        disable: false,
+        back_step: 'basicInfo',
+        next_step: 'save',
+        back_label: 'Cancelar',
+        next_label: 'Crear torneo',
+      },
+    },
+  };
   const tournament = ref<Tournament>({} as Tournament);
   const tournaments = ref<Tournament[]>([]);
   const noTournaments = computed(() => !tournaments.value.length);
@@ -28,35 +62,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   const tournamentStoreRequest = ref({} as TournamentStoreRequest);
   const calendarStoreRequest = ref({} as CalendarStoreRequest);
   const dialog = ref(false);
-  const steps = ref<FormSteps>({
-    current: 'basicInfo',
-    steps: {
-      basicInfo: {
-        number: 1,
-        completed: false,
-        label: 'Crea un torneo',
-        disable: true,
-        back: () => (dialog.value = false),
-        next: async () => {
-          steps.value.current = 'detailsInfo';
-        },
-      },
-      detailsInfo: {
-        completed: false,
-        number: 2,
-        label: 'Detalles del torneo',
-        disable: false,
-        back: () => (steps.value.current = 'basicInfo'),
-        next: async () => {
-          if (isEdition.value) {
-            await updateTournament();
-          } else {
-            await storeTournament();
-          }
-        },
-      },
-    },
-  });
+  const steps = ref<FormSteps>(INIT_STEPS);
   const nextGames = ref<Game[]>([] as Game[]);
   const currentGames = ref<Game[]>([] as Game[]);
   const categories = ref([]);
@@ -96,35 +102,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   function $reset() {
     tournamentStoreRequest.value = {} as TournamentStoreRequest;
     steps.value.current = 'basicInfo';
-    steps.value = {
-      current: 'basicInfo',
-      steps: {
-        basicInfo: {
-          number: 1,
-          completed: false,
-          label: 'Crea un torneo',
-          disable: true,
-          back: () => (dialog.value = false),
-          next: async () => {
-            steps.value.current = 'detailsInfo';
-          },
-        },
-        detailsInfo: {
-          number: 2,
-          completed: false,
-          label: 'Detalles del torneo',
-          disable: false,
-          back: () => (steps.value.current = 'basicInfo'),
-          next: async () => {
-            if (isEdition.value) {
-              await updateTournament();
-            } else {
-              await storeTournament();
-            }
-          },
-        },
-      },
-    };
+    steps.value = INIT_STEPS;
     isEdition.value = false;
     tournamentId.value = undefined;
   }

@@ -40,6 +40,31 @@ function sanitizeLocationPayload(payload: LocationStoreRequest): LocationStoreRe
 }
 
 export const useLocationStore = defineStore('locationStore', () => {
+  const INIT_STEPS: FormSteps = {
+    current: 'location',
+    steps: {
+      location: {
+        number: 1,
+        completed: false,
+        label: 'Ubicación',
+        disable: true,
+        back_step: 'close',
+        next_step: 'availability',
+        back_label: 'Cancelar',
+        next_label: 'Siguiente',
+      },
+      availability: {
+        number: 2,
+        completed: false,
+        label: 'Disponibilidad',
+        disable: true,
+        back_step: 'location',
+        next_step: 'save',
+        back_label: 'Anterior',
+        next_label: 'Crear ubicación',
+      },
+    },
+  };
   const stepsCompleted = computed(() => {
     const steps = locationStoreRequest.value?.steps;
     if (!steps) return 0;
@@ -81,33 +106,7 @@ export const useLocationStore = defineStore('locationStore', () => {
     total: 0,
     sort: 'asc',
   });
-  const formSteps = ref<FormSteps>({
-    current: 'location',
-    steps: {
-      location: {
-        number: 1,
-        completed: false,
-        label: 'Ubicación',
-        disable: true,
-        back: () => (locationDialog.value = false),
-        next: async () => (formSteps.value.current = 'availability'),
-      },
-      availability: {
-        number: 2,
-        completed: false,
-        label: 'Disponibilidad',
-        disable: true,
-        back: () => (formSteps.value.current = 'location'),
-        next: async () => {
-          if (isEdition.value) {
-            await updateLocation();
-          } else {
-            await storeLocation();
-          }
-        },
-      },
-    },
-  });
+  const formSteps = ref<FormSteps>(INIT_STEPS);
   const $reset = () => {
     resetLocationStoreRequest();
     locationDialog.value = false;

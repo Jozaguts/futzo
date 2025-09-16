@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+  import type { CurrentStep } from '~/models/tournament'
+
   export type Steps = Record<
     string,
     {
@@ -6,8 +8,10 @@
       completed: boolean
       label: string
       disable: boolean
-      back: Function
-      next: Function
+      back_step: string
+      next_step: string
+      back_label: string
+      next_label: string
     }
   >
   export interface FormSteps {

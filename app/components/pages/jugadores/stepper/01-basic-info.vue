@@ -6,14 +6,15 @@
   import { vuetifyConfig } from '~/utils/constants'
   import type { PlayerStoreRequest } from '~/models/Player'
   import type { Team } from '~/models/Team'
+  import { storeToRefs, toTypedSchema, useCategoryStore, usePlayerStore, useTeamStore, useI18n } from '#imports'
   const { t } = useI18n()
-  const { isEdition, playerStoreRequest } = storeToRefs(usePlayerStore())
-  const { teams, steps } = storeToRefs(useTeamStore())
+  const { isEdition, playerStoreRequest, steps } = storeToRefs(usePlayerStore())
+  const { teams } = storeToRefs(useTeamStore())
   const { categories } = storeToRefs(useCategoryStore())
   //@ts-ignore
   const isPreRegister = computed(() => useRoute().name === 'equipos-equipo-jugadores-inscripcion')
   //@ts-ignore
-  const { defineField, meta, resetForm, values } = useForm<PlayerStoreRequest['basic']>({
+  const { defineField, meta, errors, values } = useForm<PlayerStoreRequest['basic']>({
     validationSchema: toTypedSchema(
       object({
         id: number().nullable(),

@@ -2,6 +2,7 @@
   import BasicInfo from '~/components/pages/torneos/stepper/01-basicInfo.vue'
   import DetailsInfo from '~/components/pages/torneos/stepper/02-detailsInfo.vue'
   import IndicatorStep from '~/components/shared/IndicatorStep.vue'
+  import { storeToRefs, useTournamentStore } from '#imports'
   const { steps } = storeToRefs(useTournamentStore())
   const stepRef = ref<{ validate: Function; handleSubmit: Function }>({
     validate: Function,

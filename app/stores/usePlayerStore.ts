@@ -7,6 +7,7 @@ import * as teamAPI from '~/http/api/team';
 import * as playerAPI from '~/http/api/players';
 import type { FormationPlayer } from '~/models/Game';
 import { useToast } from '~/composables/useToast';
+import { useCategoryStore, useSanctumClient, useTeamStore } from '#imports';
 
 export const usePlayerStore = defineStore('playerStore', () => {
   const { toast } = useToast();
@@ -18,30 +19,30 @@ export const usePlayerStore = defineStore('playerStore', () => {
         completed: false,
         label: 'Información básica',
         disable: true,
-        back: () => (dialog.value = false),
-        next: () => (steps.value.current = 'details-info'),
+        back_step: 'close',
+        next_step: 'details-info',
+        back_label: 'Cancelar',
+        next_label: 'Siguiente',
       },
       'details-info': {
         number: 2,
         completed: false,
         label: 'Detalles del jugador',
         disable: true,
-        back: () => (steps.value.current = 'basic-info'),
-        next: () => (steps.value.current = 'contact-info'),
+        back_step: 'basic-info',
+        next_step: 'contact-info',
+        back_label: 'Anterior',
+        next_label: 'Siguiente',
       },
       'contact-info': {
         number: 3,
         completed: false,
         label: 'Información de contacto',
         disable: true,
-        back: () => (steps.value.current = 'details-info'),
-        next: async () => {
-          if (isEdition.value) {
-            await updatePlayer(playerId.value as number);
-          } else {
-            await createPlayer();
-          }
-        },
+        back_step: 'details-info',
+        next_step: 'save',
+        back_label: 'Anterior',
+        next_label: 'Crear jugador',
       },
     },
   };
@@ -72,7 +73,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
       const client = useSanctumClient();
       const response = await client<{ data: Player }>(`/api/v1/admin/players/${id}`);
       player.value = response.data;
-    } catch (error: { data: { massage: string } }) {
+    } catch (error: any) {
       console.error(error);
       toast({
         type: 'error',

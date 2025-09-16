@@ -274,27 +274,17 @@ export interface FormSteps {
   steps: TournamentSteps;
 }
 
-export type CalendarStepsForm = {
-  current: CurrentCalendarStep;
-  steps: CalendarSteps[];
-};
-export type CalendarSteps = {
-  step: CurrentCalendarStep;
-  completed: boolean;
-  label: CalendarLabelStep;
-};
-export type CurrentCalendarStep = 'general' | 'regular' | 'elimination' | 'fields';
-export type CalendarLabelStep = 'General' | 'Fase Regular' | 'Fase de Eliminación' | 'Campos de juego';
-
 export type TournamentSteps = Record<
   CurrentStep,
   {
     number: number;
+    disable: boolean;
     completed: boolean;
     label: FormLabelStep;
-    disable: boolean;
-    back: Function;
-    next: Function;
+    back_step: CurrentStep | 'close';
+    next_step: CurrentStep | 'save';
+    back_label: string;
+    next_label: string;
   }
 >;
 export type FormLabelStep = 'Crea un torneo' | 'Detalles del torneo';

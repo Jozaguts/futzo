@@ -17,30 +17,30 @@ export const useTeamStore = defineStore('teamStore', () => {
         completed: false,
         label: 'Crea un equipo',
         disable: true,
-        back: () => (dialog.value = false),
-        next: () => (steps.value.current = 'createDt'),
+        back_step: 'close',
+        next_step: 'createDt',
+        back_label: 'Cancelar',
+        next_label: 'Siguiente',
       },
       createDt: {
         number: 2,
         completed: false,
         label: 'Crea el DT',
         disable: true,
-        back: () => (steps.value.current = 'createTeam'),
-        next: () => (steps.value.current = 'createOwner'),
+        back_step: 'createTeam',
+        next_step: 'createOwner',
+        back_label: 'Anterior',
+        next_label: 'Siguiente',
       },
       createOwner: {
         number: 3,
         completed: false,
         label: 'Crea el presidente',
         disable: true,
-        back: () => (steps.value.current = 'createDt'),
-        next: async () => {
-          if (isEdition.value) {
-            await updateTeam(teamId.value);
-          } else {
-            await createTeam();
-          }
-        },
+        back_step: 'createDt',
+        next_step: 'save',
+        back_label: 'Anterior',
+        next_label: 'Crear equipo',
       },
     },
   };

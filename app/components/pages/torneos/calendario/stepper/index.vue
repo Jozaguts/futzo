@@ -8,18 +8,12 @@
   type StepRef = { handleSubmit: Function; isValid: boolean; validate: Function }
   const { calendarSteps } = storeToRefs(useScheduleStore())
   const stepRef = defineModel<StepRef>('stepRef')
-  const hasValidForm = () => stepRef.value?.isValid
-  const validate = async () => await stepRef.value.validate()
-  defineExpose({
-    hasValidForm,
-    validate,
-  })
 </script>
 <template>
   <v-container class="pa-0">
     <v-row>
       <v-col>
-        <IndicatorStep :form-steps="calendarSteps" />
+        <IndicatorStep :steps="calendarSteps" />
       </v-col>
     </v-row>
     <v-row>

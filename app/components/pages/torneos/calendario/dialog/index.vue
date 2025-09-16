@@ -1,7 +1,8 @@
 <script lang="ts" setup>
   import StepperContainer from '~/components/pages/torneos/calendario/stepper/index.vue'
-  import type { CurrentCalendarStep } from '~/models/tournament'
-  import { useToast } from '~/composables/useToast'
+  import type { CurrentCalendarStep } from '~/models/Schedule'
+  import { useScheduleStore } from '~/stores/useScheduleStore'
+  import { storeToRefs } from '#imports'
 
   const {
     calendarSteps,
@@ -15,75 +16,27 @@
     matchesPerRound,
     scheduleSettings,
   } = storeToRefs(useScheduleStore())
-
-  const { secondaryTextBtn, primaryTextBtn, backHandler } = useDialog(calendarSteps, scheduleDialog)
-  const stepContainerRef = ref()
   const isFetching = ref(false)
   const leaveHandler = () => {
-    calendarSteps.value.steps.forEach((step) => (step.completed = false))
-    calendarSteps.value.current = 'general'
+    useScheduleStore().$resetScheduleStore()
   }
-  const handleChange = async () => {
-    let hasErrors = !stepContainerRef.value.hasValidForm()
-    let validation = { value: '', step: '' }
-    if (calendarSteps.value.current === 'general') {
-      validation.value = await stepContainerRef.value.validate()
-      validation.step = 'general'
-    } else if (calendarSteps.value.current === 'regular') {
-      validation.value = await stepContainerRef.value.validate()
-      validation.step = 'regular'
-    } else if (calendarSteps.value.current === 'elimination') {
-      validation.value = await stepContainerRef.value.validate()
-      validation.step = 'elimination'
-    } else if (calendarSteps.value.current === 'fields') {
-      validation.value = await stepContainerRef.value.validate()
-      validation.step = 'fields'
-    }
-    if (!hasErrors) {
-      nextStep()
-    }
-  }
-  const disabledButton = computed(() => {
-    if (calendarSteps.value.current !== 'fields') return false
-    const allCompleted = scheduleStoreRequest.value.fields_phase.every((field) => field.availability.isCompleted)
-    return !allCompleted || !hasEnoughCapacity.value
+  const disabled = computed(() => {
+    return calendarSteps.value.steps[calendarSteps.value.current].disable
   })
-  const nextStep = () => {
-    const stepsOrder: CurrentCalendarStep[] = ['general', 'regular', 'elimination', 'fields']
-    const currentStepIndex = stepsOrder.indexOf(calendarSteps.value.current)
-    if (!calendarSteps.value.steps[currentStepIndex].completed) {
-      calendarSteps.value.steps[currentStepIndex].completed = true
-    }
-    if (calendarSteps.value.current !== 'fields') {
-      calendarSteps.value.current = stepsOrder[currentStepIndex + 1]
+  const next = () => {
+    if (calendarSteps.value.steps[calendarSteps.value.current].next_step === 'save') {
+      useScheduleStore().generateSchedule()
     } else {
-      isFetching.value = true
-      useScheduleStore()
-        .generateSchedule()
-        .then(() => {
-          useScheduleStore()
-            .getTournamentSchedules()
-            .finally(() => {
-              isFetching.value = false
-              scheduleDialog.value = false
-              schedulePagination.value.current_page = 1
-              useToast().toast({
-                type: 'success',
-                msg: 'Calendario creado',
-                description: 'El calendario se ha creado correctamente',
-              })
-            })
-        })
-        .finally(() => (isFetching.value = false))
-        .catch((error) => {
-          isFetching.value = false
-          const { message } = useApiError(error)
-          useToast().toast({
-            type: 'error',
-            msg: 'Error al crear el calendario',
-            description: message || 'Ha ocurrido un error al crear el calendario',
-          })
-        })
+      calendarSteps.value.current = calendarSteps.value.steps[calendarSteps.value.current]
+        .next_step as CurrentCalendarStep
+    }
+  }
+  const back = () => {
+    if (calendarSteps.value.steps[calendarSteps.value.current].back_step === 'close') {
+      scheduleDialog.value = false
+    } else {
+      calendarSteps.value.current = calendarSteps.value.steps[calendarSteps.value.current]
+        .back_step as CurrentCalendarStep
     }
   }
 </script>
@@ -91,40 +44,44 @@
   <Dialog
     title="Crear un calendario"
     subtitle="Completa los detalles del calendario."
-    :actions="{
-      primary: primaryTextBtn,
-      secondary: secondaryTextBtn,
-    }"
-    :loading="false"
+    :loading="isFetching"
     v-model="scheduleDialog"
     @leaving="leaveHandler"
   >
     <template #v-card-text>
-      <StepperContainer ref="stepContainerRef" />
+      <StepperContainer />
     </template>
-    <template #actions>
-      <v-btn
-        width="50%"
-        min-height="44"
-        variant="outlined"
-        color="secondary"
-        density="comfortable"
-        size="large"
-        @click="backHandler"
-        >{{ secondaryTextBtn }}
-      </v-btn>
-      <v-btn
-        width="50%"
-        min-height="44"
-        variant="elevated"
-        color="primary"
-        density="comfortable"
-        size="large"
-        :loading="isFetching"
-        :disabled="disabledButton || isFetching || scheduleSettings?.teams < scheduleSettings?.min_teams"
-        @click="handleChange"
-        >{{ primaryTextBtn }}
-      </v-btn>
-    </template>
+    <client-only>
+      <template #actions>
+        <v-container>
+          <v-row>
+            <v-col cols="6">
+              <v-btn
+                variant="outlined"
+                block
+                color="secondary"
+                class="text-capitalize"
+                density="comfortable"
+                size="large"
+                @click="back"
+                >{{ calendarSteps.steps[calendarSteps.current].back_label }}
+              </v-btn>
+            </v-col>
+            <v-col cols="6">
+              <v-btn
+                :disabled="disabled"
+                variant="elevated"
+                block
+                color="primary"
+                density="comfortable"
+                size="large"
+                @click="next"
+                >{{ calendarSteps.steps[calendarSteps.current].next_label }}
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </template>
+    </client-only>
   </Dialog>
 </template>

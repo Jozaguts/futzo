@@ -2,6 +2,7 @@
   import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
   import { mixed, number, object, string } from 'yup'
   import { vuetifyConfig } from '~/utils/constants'
+  import { storeToRefs, useTeamStore } from '#imports'
   const teamStore = useTeamStore()
   const { teamStoreRequest, isEdition, steps } = storeToRefs(teamStore)
   // @ts-ignore
@@ -38,14 +39,13 @@
     steps.value.steps[steps.value.current].disable = false
     if (teamStoreRequest.value?.president) {
       if (teamStoreRequest.value.president.image) {
-        dragDropImageRef.value?.loadImage()
+        // dragDropImageRef.value?.loadImage()
       }
     }
   })
   watch(
     meta,
     () => {
-      steps.value.steps[steps.value.current].disable = !meta.value.valid
       if (meta.value.valid && meta.value.touched) {
         teamStoreRequest.value.president = {
           name: values.name,
@@ -53,6 +53,8 @@
           phone: `+${values.iso_code}${values.phone}`,
           image: values.image,
         }
+      } else if (!meta.value.valid && meta.value.touched) {
+        steps.value.steps[steps.value.current].disable = !meta.value.valid
       }
     },
     { deep: true }

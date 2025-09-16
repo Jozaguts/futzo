@@ -3,9 +3,8 @@
   import createDtStep from '~/components/pages/equipos/stepper/02-create-dt.vue'
   import createOwnerStep from '~/components/pages/equipos/stepper/03-create-owner.vue'
   import IndicatorStep from '~/components/shared/IndicatorStep.vue'
-  import type { CreateTeamForm, CurrentStep } from '~/models/Team'
-  const loading = ref(false)
-  const { steps, isEdition, teamStoreRequest } = storeToRefs(useTeamStore())
+  import { storeToRefs, useTeamStore } from '#imports'
+  const { steps } = storeToRefs(useTeamStore())
 </script>
 <template>
   <PerfectScrollbar :options="{ suppressScrollX: true }">

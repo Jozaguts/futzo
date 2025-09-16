@@ -2,10 +2,12 @@
   import HeaderCard from '~/components/pages/equipos/CreateTeamDialog/Header.vue'
   import { storeToRefs } from 'pinia'
   import StepperContainer from '~/components/pages/equipos/stepper/index.vue'
+  import type { CurrentStep } from '~/models/team'
+  import { useTeamStore } from '#imports'
 
-  const { steps, isEdition, dialog } = storeToRefs(useTeamStore())
+  const { steps, isEdition, dialog, teamId } = storeToRefs(useTeamStore())
+  const loading = ref(false)
   const leaveHandler = () => {
-    console.log('fired')
     useTeamStore().$storeReset()
   }
   onMounted(async () => {
@@ -14,6 +16,29 @@
   const disabled = computed(() => {
     return steps.value.steps[steps.value.current].disable
   })
+  const next = () => {
+    if (steps.value.steps[steps.value.current].next_step === 'save') {
+      loading.value = true
+      if (isEdition.value) {
+        useTeamStore()
+          .updateTeam(teamId.value)
+          .finally(() => (loading.value = false))
+      } else {
+        useTeamStore()
+          .createTeam()
+          .finally(() => (loading.value = false))
+      }
+    } else {
+      steps.value.current = steps.value.steps[steps.value.current].next_step as CurrentStep
+    }
+  }
+  const back = () => {
+    if (steps.value.steps[steps.value.current].back_step === 'close') {
+      dialog.value = false
+    } else {
+      steps.value.current = steps.value.steps[steps.value.current].back_step as CurrentStep
+    }
+  }
 </script>
 <template>
   <v-dialog v-model="dialog" max-width="690" @after-leave="leaveHandler" scrollable>
@@ -31,20 +56,22 @@
                 class="text-capitalize"
                 density="comfortable"
                 size="large"
-                @click="() => steps.steps[steps.current].back()"
-                >Anterior
+                @click="back"
+              >
+                {{ steps.steps[steps.current].back_label }}
               </v-btn>
             </v-col>
             <v-col cols="6">
               <v-btn
-                :disabled="disabled"
+                :disabled="disabled || loading"
                 variant="elevated"
                 block
                 color="primary"
                 density="comfortable"
                 size="large"
-                @click="() => steps.steps[steps.current].next()"
-                >Siguiente
+                @click="next"
+                :loading="loading"
+                >{{ steps.steps[steps.current].next_label }}
               </v-btn>
             </v-col>
           </v-row>

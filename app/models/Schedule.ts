@@ -1,5 +1,22 @@
-import type { LocationAvailability } from '~/models/Location';
-
+export type CalendarLabelStep = 'General' | 'Fase Regular' | 'Fase de Eliminación' | 'Campos de juego';
+export type CurrentCalendarStep = 'general' | 'regular' | 'elimination' | 'fields';
+export type CalendarSteps = Record<
+  CurrentCalendarStep,
+  {
+    number: number;
+    disable: boolean;
+    completed: boolean;
+    label: CalendarLabelStep;
+    back_step: CurrentCalendarStep | 'close';
+    next_step: CurrentCalendarStep | 'save';
+    back_label: string;
+    next_label: string;
+  }
+>;
+export type CalendarStepsForm = {
+  current: CurrentCalendarStep;
+  steps: CalendarSteps;
+};
 export type ScheduleStoreRequest = {
   general: FormGeneralScheduleRequest;
   regular_phase: FormRegularPhaseStep;

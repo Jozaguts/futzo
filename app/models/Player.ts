@@ -35,8 +35,10 @@ export type PlayerSteps = Record<
     completed: boolean;
     label: FormLabelStep;
     disable: boolean;
-    back: Function;
-    next: Function;
+    back_step: CurrentStep | 'close';
+    next_step: CurrentStep | 'save';
+    back_label: string;
+    next_label: string;
   }
 >;
 

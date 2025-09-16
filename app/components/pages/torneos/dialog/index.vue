@@ -1,14 +1,34 @@
 <script lang="ts" setup>
   import HeaderCard from '~/components/pages/torneos/dialog/header.vue'
   import StepperContainer from '~/components/pages/torneos/stepper/index.vue'
+  import type { CurrentStep } from '~/models/tournament'
+  import { storeToRefs, useTournamentStore } from '#imports'
 
-  const { steps, dialog } = storeToRefs(useTournamentStore())
+  const { steps, dialog, isEdition } = storeToRefs(useTournamentStore())
   const leaveHandler = () => {
     useTournamentStore().$reset()
   }
   const disabled = computed(() => {
     return steps.value.steps[steps.value.current].disable
   })
+  const next = () => {
+    if (steps.value.steps[steps.value.current].next_step === 'save') {
+      if (isEdition.value) {
+        useTournamentStore().updateTournament()
+      } else {
+        useTournamentStore().storeTournament()
+      }
+    } else {
+      steps.value.current = steps.value.steps[steps.value.current].next_step as CurrentStep
+    }
+  }
+  const back = () => {
+    if (steps.value.steps[steps.value.current].back_step === 'close') {
+      dialog.value = false
+    } else {
+      steps.value.current = steps.value.steps[steps.value.current].back_step as CurrentStep
+    }
+  }
 </script>
 <template>
   <v-dialog v-model="dialog" max-width="690" min-height="80vh" @after-leave="leaveHandler" scrollable>
@@ -30,8 +50,9 @@
                 class="text-capitalize"
                 density="comfortable"
                 size="large"
-                @click="() => steps.steps[steps.current].back()"
-                >Anterior
+                @click="back"
+              >
+                {{ steps.steps[steps.current].back_label }}
               </v-btn>
             </v-col>
             <v-col cols="6">
@@ -42,8 +63,8 @@
                 color="primary"
                 density="comfortable"
                 size="large"
-                @click="() => steps.steps[steps.current].next()"
-                >Siguiente
+                @click="next"
+                >{{ steps.steps[steps.current].next_label }}
               </v-btn>
             </v-col>
           </v-row>
