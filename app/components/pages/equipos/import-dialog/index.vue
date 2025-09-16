@@ -15,6 +15,7 @@
   const importHandler = () => {
     isImporting.value = true
     importTeamsHandler(file.value as File, tournamentId.value as number).finally(() => {
+      useTournamentStore().fetchTournamentsByLeagueId()
       isImporting.value = false
     })
   }
@@ -29,6 +30,7 @@
     return {
       title: item.name,
       subtitle: 'Espacios disponibles: ' + item.available_places,
+      disabled: item.available_places <= 0,
     }
   }
 </script>
@@ -79,5 +81,5 @@
 </template>
 
 <style lang="sass">
-  @use "assets/scss/pages/create-team.sass"
+  @use "~/assets/scss/pages/create-team.sass"
 </style>
