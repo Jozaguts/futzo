@@ -17,10 +17,15 @@
   })
   const next = () => {
     if (steps.value.steps[steps.value.current].next_step === 'save') {
+      loading.value = true
       if (isEdition.value) {
-        usePlayerStore().createPlayer()
+        usePlayerStore()
+          .updatePlayer(playerId.value as number)
+          .finally(() => (loading.value = false))
       } else {
-        usePlayerStore().updatePlayer(playerId.value as number)
+        usePlayerStore()
+          .createPlayer()
+          .finally(() => (loading.value = false))
       }
     } else {
       steps.value.current = steps.value.steps[steps.value.current].next_step as CurrentStep
