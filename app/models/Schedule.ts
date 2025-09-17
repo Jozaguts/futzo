@@ -1,5 +1,5 @@
-export type CalendarLabelStep = 'General' | 'Fase Regular' | 'Fase de Eliminación' | 'Campos de juego';
-export type CurrentCalendarStep = 'general' | 'regular' | 'elimination' | 'fields';
+export type CalendarLabelStep = 'General' | 'Reglas' | 'Fase de Eliminación' | 'Campos de juego';
+export type CurrentCalendarStep = 'general' | 'rules' | 'elimination' | 'fields';
 export type CalendarSteps = Record<
   CurrentCalendarStep,
   {
@@ -19,7 +19,7 @@ export type CalendarStepsForm = {
 };
 export type ScheduleStoreRequest = {
   general: FormGeneralScheduleRequest;
-  regular_phase: FormRegularPhaseStep;
+  rules_phase: FormRulesPhaseStep;
   elimination_phase: FormEliminationPhaseStep;
   fields_phase: LocationFieldsRequest[];
 };
@@ -37,7 +37,7 @@ export type FormGeneralLocation = {
   id: number;
   name: string;
 };
-export type FormRegularPhaseStep = {
+export type FormRulesPhaseStep = {
   round_trip: boolean;
   tiebreakers: Tiebreaker[];
 };
@@ -46,18 +46,7 @@ export type FormEliminationPhaseStep = {
   round_trip: boolean;
   phases: EliminationPhase[];
 };
-export type ScheduleLocationAvailability = {
-  id: number;
-  name: string;
-  isCompleted: boolean;
-  monday: Day;
-  tuesday: Day;
-  wednesday: Day;
-  thursday: Day;
-  friday: Day;
-  saturday: Day;
-  sunday: Day;
-};
+
 export type Phase =
   | 'Fase de grupos'
   | 'Tabla general'

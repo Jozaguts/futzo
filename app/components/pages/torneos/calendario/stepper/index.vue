@@ -1,13 +1,10 @@
 <script lang="ts" setup>
   import General from '~/components/pages/torneos/calendario/stepper/01-general.vue'
-  import Regular from '~/components/pages/torneos/calendario/stepper/02-regular-phase.vue'
+  import Rules from '~/components/pages/torneos/calendario/stepper/02-rules-phase.vue'
   import Elimination from '~/components/pages/torneos/calendario/stepper/03-elimination-phase.vue'
   import Fields from '~/components/pages/torneos/calendario/stepper/04-fields-phase.vue'
   import IndicatorStep from '~/components/shared/IndicatorStep.vue'
-
-  type StepRef = { handleSubmit: Function; isValid: boolean; validate: Function }
   const { calendarSteps } = storeToRefs(useScheduleStore())
-  const stepRef = defineModel<StepRef>('stepRef')
 </script>
 <template>
   <v-container class="pa-0">
@@ -25,10 +22,10 @@
             leave: ['100%', 0],
           }"
         >
-          <General ref="stepRef" v-if="calendarSteps.current === 'general'" :key="calendarSteps.current" />
-          <Regular ref="stepRef" v-if="calendarSteps.current === 'regular'" :key="calendarSteps.current" />
-          <Elimination ref="stepRef" v-if="calendarSteps.current === 'elimination'" :key="calendarSteps.current" />
-          <Fields ref="stepRef" v-if="calendarSteps.current === 'fields'" :key="calendarSteps.current" />
+          <General v-if="calendarSteps.current === 'general'" :key="calendarSteps.current" />
+          <Rules v-if="calendarSteps.current === 'rules'" :key="calendarSteps.current" />
+          <Elimination v-if="calendarSteps.current === 'elimination'" :key="calendarSteps.current" />
+          <Fields r v-if="calendarSteps.current === 'fields'" :key="calendarSteps.current" />
         </transition-slide>
       </v-col>
     </v-row>

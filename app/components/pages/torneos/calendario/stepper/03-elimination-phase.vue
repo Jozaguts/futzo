@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import type { EliminationPhase, Phase } from '~/models/Schedule'
 
-  const { scheduleSettings } = storeToRefs(useScheduleStore())
+  const { scheduleSettings, scheduleStoreRequest } = storeToRefs(useScheduleStore())
   const chipEventHandler = (value: number[]) => {
     scheduleSettings.value?.phases.map((phase) => (phase.is_active = value.includes(phase.id)))
     fields.eliminationPhases.fieldValue = scheduleSettings.value?.phases.filter((phase) => phase.is_active)
@@ -24,6 +24,9 @@
     )
   }
   const teamsToNextRound = computed(() => {
+    if (scheduleSettings.value.format.name === 'Torneo de Liga') {
+      return 'Nadie, Gana el que mas puntos haga'
+    }
     const phases = scheduleSettings.value.phases
     const getPhase = (name: Phase) => phases.find((phase) => phase.name === name)
     const roundOfSixteen = getPhase('Octavos de Final')
@@ -48,6 +51,9 @@
 </script>
 <template>
   <v-container class="container">
+    <pre>
+      {{ scheduleStoreRequest.elimination_phase }}
+    </pre>
     <v-row>
       <v-col cols="12" lg="4" md="4">
         <span class="text-body-1 d-block">Avanzan a la siguiente ronda:</span>

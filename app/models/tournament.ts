@@ -118,7 +118,7 @@ export interface DetailsInfoForm {
 
 export type CalendarStoreRequest = {
   general: GeneralCalendarForm;
-  regular: RegularPhaseForm;
+  rules: RulesPhaseForm;
   elimination: EliminationPhaseForm;
 };
 /**
@@ -141,7 +141,7 @@ export type GeneralCalendarForm = {
   schedules_available: ScheduleAvailable;
   venues: TournamentVenue[];
 };
-export type RegularPhaseForm = {
+export type RulesPhaseForm = {
   rounds: number; // Number of rounds (e.g., 1 for single round, 2 for home and away)
   points: {
     win: number; // Points for a win

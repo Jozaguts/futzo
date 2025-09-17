@@ -42,6 +42,7 @@
 </script>
 <template>
   <Dialog
+    minHeight="90vh"
     title="Crear un calendario"
     subtitle="Completa los detalles del calendario."
     :loading="isFetching"
@@ -51,37 +52,35 @@
     <template #v-card-text>
       <StepperContainer />
     </template>
-    <client-only>
-      <template #actions>
-        <v-container>
-          <v-row>
-            <v-col cols="6">
-              <v-btn
-                variant="outlined"
-                block
-                color="secondary"
-                class="text-capitalize"
-                density="comfortable"
-                size="large"
-                @click="back"
-                >{{ calendarSteps.steps[calendarSteps.current].back_label }}
-              </v-btn>
-            </v-col>
-            <v-col cols="6">
-              <v-btn
-                :disabled="disabled"
-                variant="elevated"
-                block
-                color="primary"
-                density="comfortable"
-                size="large"
-                @click="next"
-                >{{ calendarSteps.steps[calendarSteps.current].next_label }}
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-container>
-      </template>
-    </client-only>
+    <template #actions>
+      <v-container>
+        <v-row>
+          <v-col cols="6">
+            <v-btn
+              variant="outlined"
+              block
+              color="secondary"
+              class="text-capitalize"
+              density="comfortable"
+              size="large"
+              @click="back"
+              >{{ calendarSteps.steps[calendarSteps.current].back_label }}
+            </v-btn>
+          </v-col>
+          <v-col cols="6">
+            <v-btn
+              :disabled="disabled"
+              variant="elevated"
+              block
+              color="primary"
+              density="comfortable"
+              size="large"
+              @click="next"
+              >{{ calendarSteps.steps[calendarSteps.current].next_label }}
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </template>
   </Dialog>
 </template>

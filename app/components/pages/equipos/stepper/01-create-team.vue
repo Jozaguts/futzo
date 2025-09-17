@@ -16,7 +16,7 @@
   const { search } = usePlaceSearch()
   const { t } = useI18n()
   // @ts-ignore
-  const { defineField, meta, values, resetForm, setValues, errors } = useForm<TeamStoreRequest['team']>({
+  const { defineField, meta, values, resetForm, setValues } = useForm<TeamStoreRequest['team']>({
     validationSchema: toTypedSchema(
       object({
         id: number().nullable(),

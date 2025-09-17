@@ -6,7 +6,7 @@ import type {
   Format,
   FormEliminationPhaseStep,
   FormGeneralScheduleRequest,
-  FormRegularPhaseStep,
+  FormRulesPhaseStep,
   LocationFieldsRequest,
   RoundStatus,
   ScheduleRoundStatus,
@@ -31,14 +31,14 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
         label: 'General',
         completed: false,
         back_step: 'close',
-        next_step: 'regular',
+        next_step: 'rules',
         back_label: 'Cancelar',
         next_label: 'Siguiente',
       },
-      regular: {
+      rules: {
         number: 2,
         completed: false,
-        label: 'Fase Regular',
+        label: 'Reglas',
         disable: false,
         back_step: 'general',
         next_step: 'elimination',
@@ -50,7 +50,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
         completed: false,
         label: 'Fase de Eliminación',
         disable: false,
-        back_step: 'regular',
+        back_step: 'rules',
         next_step: 'fields',
         back_label: 'Anterior',
         next_label: 'Siguiente',
@@ -119,7 +119,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
   });
   const scheduleStoreRequest = ref<ScheduleStoreRequest>({
     general: {} as FormGeneralScheduleRequest,
-    regular_phase: {} as FormRegularPhaseStep,
+    rules_phase: {} as FormRulesPhaseStep,
     elimination_phase: {} as FormEliminationPhaseStep,
     fields_phase: [] as LocationFieldsRequest[],
   });
@@ -227,7 +227,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     };
     scheduleStoreRequest.value = {
       general: {} as FormGeneralScheduleRequest,
-      regular_phase: {} as FormRegularPhaseStep,
+      rules_phase: {} as FormRulesPhaseStep,
       elimination_phase: {} as FormEliminationPhaseStep,
       fields_phase: [] as LocationFieldsRequest[],
     };
@@ -310,7 +310,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     generalSchedule.total_teams = data.teams;
     generalSchedule.locations = [];
     scheduleStoreRequest.value.general = generalSchedule;
-    scheduleStoreRequest.value.regular_phase = {
+    scheduleStoreRequest.value.rules_phase = {
       round_trip: data.round_trip,
       tiebreakers: data.tiebreakers,
     };
