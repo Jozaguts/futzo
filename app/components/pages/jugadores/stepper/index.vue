@@ -8,7 +8,6 @@
     validate: Function,
     handleSubmit: Function,
   })
-  const emits = defineEmits(['registered-player'])
 </script>
 <template>
   <PerfectScrollbar

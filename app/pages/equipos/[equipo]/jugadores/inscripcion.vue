@@ -2,7 +2,8 @@
   import HeaderCard from '~/components/pages/jugadores/dialog/header.vue'
   import StepperContainer from '~/components/pages/jugadores/stepper/index.vue'
   import type { Team, TeamStoreRequest } from '~/models/Team'
-
+  import { usePlayerStore } from '~/stores/usePlayerStore'
+  import type { CurrentStep } from '~/models/Player'
   definePageMeta({
     layout: 'blank',
     sanctum: {
@@ -10,23 +11,48 @@
     },
     middleware: ['verify-team-can-register-player'],
   })
+  const slug = useRoute().params.equipo as unknown as string
+  await useTeamStore().initPreRegister(slug)
   const { steps } = storeToRefs(usePlayerStore())
   const { team } = storeToRefs(useTeamStore())
   const showPreRegisterSuccessModal = ref(false)
-
+  const loading = ref(false)
   const finisHandler = () => {
     useRouter().push({ name: 'login' })
   }
   const tournamentReady = computed(() => {
     return !!team.value
   })
-  const registeredHandler = async (value: TeamStoreRequest) => {
+  const registeredHandler = async () => {
     showPreRegisterSuccessModal.value = true
   }
-  onBeforeMount(() => {
-    const slug = useRoute().params.equipo as unknown as string
-    useTeamStore().initPreRegister(slug)
+  const disabled = computed(() => {
+    return steps.value.steps[steps.value.current].disable
   })
+  const next = () => {
+    if (steps.value.steps[steps.value.current].next_step === 'save') {
+      loading.value = true
+      usePlayerStore()
+        .createPlayer()
+        .then(async () => {
+          await registeredHandler()
+        })
+        .catch((err) => {
+          loading.value = false
+        })
+        .finally(async () => {
+          loading.value = false
+        })
+    } else {
+      steps.value.current = steps.value.steps[steps.value.current].next_step as CurrentStep
+    }
+  }
+  const back = () => {
+    if (steps.value.steps[steps.value.current].back_step === 'close') {
+    } else {
+      steps.value.current = steps.value.steps[steps.value.current].back_step as CurrentStep
+    }
+  }
 </script>
 <template>
   <v-container>
@@ -53,6 +79,37 @@
           >
             <HeaderCard />
             <StepperContainer :step="steps.current" @registered-player="registeredHandler" />
+            <v-card-actions>
+              <v-container>
+                <v-row>
+                  <v-col cols="6">
+                    <v-btn
+                      variant="outlined"
+                      block
+                      color="secondary"
+                      class="text-capitalize"
+                      density="comfortable"
+                      size="large"
+                      @click="back"
+                      >{{ steps.steps[steps.current].back_label }}
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-btn
+                      :disabled="disabled || loading"
+                      variant="elevated"
+                      block
+                      color="primary"
+                      density="comfortable"
+                      size="large"
+                      :loading="loading"
+                      @click="next"
+                      >{{ steps.steps[steps.current].next_label }}
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-actions>
           </v-card>
         </v-col>
       </v-row>

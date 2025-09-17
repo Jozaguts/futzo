@@ -1,8 +1,9 @@
 <script lang="ts" setup>
   import HeaderCard from '~/components/pages/equipos/CreateTeamDialog/Header.vue'
   import StepperContainer from '~/components/pages/equipos/stepper/index.vue'
-  import type { Tournament } from '~/models/tournament'
-  import type { TeamStoreRequest } from '~/models/Team'
+  import { usePlayerStore } from '~/stores/usePlayerStore'
+  import type { CurrentStep } from '~/models/Team'
+  import { useTeamStore } from '#imports'
 
   definePageMeta({
     layout: 'blank',
@@ -11,24 +12,46 @@
     },
     middleware: ['verify-tournament-can-register-team'],
   })
+  const slug = useRoute().params?.torneo as unknown as string
+  useTournamentStore().initPreRegister(slug)
   const { tournament } = storeToRefs(useTournamentStore())
   const { steps } = storeToRefs(useTeamStore())
   const registeredTeam = ref(false)
-  const teamRequest = ref<TeamStoreRequest>()
-  onBeforeMount(() => {
-    const slug = useRoute().params.torneo as unknown as string
-    useTournamentStore().initPreRegister(slug)
-  })
-  const registeredTeamHandler = async (value: TeamStoreRequest) => {
+  const loading = ref(false)
+  const registeredTeamHandler = async () => {
     registeredTeam.value = true
-    teamRequest.value = value as TeamStoreRequest
   }
   const finisHandler = () => {
-    registeredTeam.value = false
     useRouter().push({ name: 'login' })
   }
   const tournamentReady = computed(() => {
     return tournament.value && tournament.value.league && tournament.value.league.name
+  })
+  const next = () => {
+    if (steps.value.steps[steps.value.current].next_step === 'save') {
+      loading.value = true
+      useTeamStore()
+        .createTeam()
+        .then(async (response) => {
+          console.log(response?.data?.data)
+          console.log(response?.status)
+          await registeredTeamHandler()
+        })
+        .finally(async () => {
+          loading.value = false
+        })
+    } else {
+      steps.value.current = steps.value.steps[steps.value.current].next_step as CurrentStep
+    }
+  }
+  const back = () => {
+    if (steps.value.steps[steps.value.current].back_step === 'close') {
+    } else {
+      steps.value.current = steps.value.steps[steps.value.current].back_step as CurrentStep
+    }
+  }
+  const disabled = computed(() => {
+    return steps.value.steps[steps.value.current].disable
   })
 </script>
 <template>
@@ -60,6 +83,37 @@
           >
             <HeaderCard />
             <StepperContainer :step="steps.current" @registered-team="registeredTeamHandler" />
+            <v-card-actions>
+              <v-container>
+                <v-row>
+                  <v-col cols="6">
+                    <v-btn
+                      variant="outlined"
+                      block
+                      color="secondary"
+                      class="text-capitalize"
+                      density="comfortable"
+                      size="large"
+                      @click="back"
+                      >{{ steps.steps[steps.current].back_label }}
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-btn
+                      :disabled="disabled || loading"
+                      variant="elevated"
+                      block
+                      color="primary"
+                      density="comfortable"
+                      size="large"
+                      :loading="loading"
+                      @click="next"
+                      >{{ steps.steps[steps.current].next_label }}
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-actions>
           </v-card>
         </v-col>
       </v-row>
@@ -90,5 +144,5 @@
   </v-container>
 </template>
 <style lang="sass">
-  @use "assets/scss/pages/create-team.sass"
+  @use "~/assets/scss/pages/create-team.sass"
 </style>
