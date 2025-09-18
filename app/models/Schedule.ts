@@ -1,3 +1,8 @@
+export type TournamentRules = {
+  disabledPhases: (phase: EliminationPhase, totalTeams: number) => boolean;
+  teamsToNextRound: (phases: EliminationPhase[], totalTeams: number) => string | number;
+};
+
 export type CalendarLabelStep = 'General' | 'Reglas' | 'Fase de Eliminación' | 'Campos de juego';
 export type CurrentCalendarStep = 'general' | 'rules' | 'elimination' | 'fields';
 export type CalendarSteps = Record<
@@ -43,7 +48,7 @@ export type FormRulesPhaseStep = {
 };
 export type FormEliminationPhaseStep = {
   teams_to_next_round: number;
-  round_trip: boolean;
+  elimination_round_trip: boolean;
   phases: EliminationPhase[];
 };
 

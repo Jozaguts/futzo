@@ -1,93 +1,121 @@
 <script lang="ts" setup>
-  import type { EliminationPhase, Phase } from '~/models/Schedule'
-
+  import type { EliminationPhase, FormEliminationPhaseStep, Phase, TournamentRules } from '~/models/Schedule'
+  import { object, boolean, array, string, number } from 'yup'
+  import { vuetifyConfig } from '~/utils/constants'
   const { scheduleSettings, scheduleStoreRequest } = storeToRefs(useScheduleStore())
-  const chipEventHandler = (value: number[]) => {
-    scheduleSettings.value?.phases.map((phase) => (phase.is_active = value.includes(phase.id)))
-    fields.eliminationPhases.fieldValue = scheduleSettings.value?.phases.filter((phase) => phase.is_active)
-  }
-  const { fields, meta, validate } = useSchemas('calendar-elimination-step', {
-    elimination_round_trip: scheduleSettings.value.elimination_round_trip,
-    eliminationPhases: scheduleSettings.value.phases,
-  })
-  const activePhases = ref(scheduleSettings.value?.phases.filter((phase) => phase.is_active).map((phase) => phase.id))
 
-  const totalTeams = computed(() => {
-    return scheduleSettings.value?.teams
+  const { defineField, meta, values, validate } = useForm<FormEliminationPhaseStep>({
+    validationSchema: toTypedSchema(
+      object({
+        teams_to_next_round: number().required(),
+        elimination_round_trip: boolean().required().default(true),
+        phases: array()
+          .of(
+            object({
+              id: number().required(),
+              name: string().required(),
+              is_active: boolean(),
+              is_completed: boolean(),
+              min_teams_for: number().nullable(),
+            }).required()
+          )
+          .min(1, 'Selecciona al menos una fase para el torneo')
+          .required()
+          .test('fase-grupos-needs-another', 'En "Fase de grupos", debes elegir al menos una fase  mas', (value) => {
+            if (!value) return false
+            const hasGroupPhase = value.some((f) => f.name === 'Fase de grupos')
+            if (hasGroupPhase) {
+              return value.length >= 2
+            }
+            return true
+          })
+          .test('fase-chain-validation', 'Las fases seleccionadas no cumplen con la secuencia obligatoria', (value) => {
+            if (!value) return false
+
+            const selected = value.map((f) => f.name)
+
+            // Si eligió Octavos → también deben estar Cuartos, Semifinal, Final
+            if (selected.includes('Octavos de Final')) {
+              return ['Octavos de Final', 'Cuartos de Final', 'Semifinales', 'Final'].every((f) => selected.includes(f))
+            }
+
+            // Si eligió Cuartos → también deben estar Semifinal y Final
+            if (selected.includes('Cuartos de Final')) {
+              return ['Semifinales', 'Final'].every((f) => selected.includes(f))
+            }
+
+            // Si eligió Semifinal → también debe estar Final
+            if (selected.includes('Semifinales')) {
+              return ['Final'].every((f) => selected.includes(f))
+            }
+
+            // Si eligió solo Final → válido
+            return true
+          }),
+      })
+    ),
+    initialValues: {
+      teams_to_next_round: scheduleStoreRequest.value.elimination_phase.teams_to_next_round,
+      elimination_round_trip: scheduleStoreRequest.value.elimination_phase.elimination_round_trip,
+      phases: scheduleStoreRequest.value.elimination_phase.phases.filter((phase) => phase.is_active),
+    },
+    validateOnMount: true,
   })
-  const disabledOption = (phase: EliminationPhase) => {
-    return (
-      phase.name === 'Fase de grupos' ||
-      phase.name === 'Tabla general' ||
-      (totalTeams.value < 16 && phase.name === 'Octavos de Final') ||
-      (totalTeams.value < 8 && phase.name === 'Cuartos de Final')
-    )
-  }
-  const teamsToNextRound = computed(() => {
-    if (scheduleSettings.value.format.name === 'Torneo de Liga') {
-      return 'Nadie, Gana el que mas puntos haga'
+  const [teams_to_next_round, teams_to_next_round_props] = defineField('teams_to_next_round', vuetifyConfig)
+  const [elimination_round_trip, elimination_round_trip_props] = defineField('elimination_round_trip', vuetifyConfig)
+  const [phases, phases_props] = defineField('phases', vuetifyConfig)
+  const itemProps = (item: EliminationPhase) => {
+    return {
+      ...item,
+      disabled: item.name === 'Fase de grupos' || item.name === 'Tabla general',
+      active: item.name === 'Fase de grupos' || item.name === 'Tabla general',
     }
-    const phases = scheduleSettings.value.phases
-    const getPhase = (name: Phase) => phases.find((phase) => phase.name === name)
-    const roundOfSixteen = getPhase('Octavos de Final')
-    const quarterFinals = getPhase('Cuartos de Final')
-    const semiFinals = getPhase('Semifinales')
-    const final = getPhase('Final')
-
-    if (totalTeams.value > 16 && roundOfSixteen?.is_active) return 16
-    if (totalTeams.value > 8 && quarterFinals?.is_active) return 8
-    if (totalTeams.value > 4 && semiFinals?.is_active) return 4
-    if (totalTeams.value > 2 && final?.is_active) return 2
-    return 1
-  })
-
-  const isValid = computed(() => {
-    return meta.value.valid
-  })
-  defineExpose({
-    isValid,
-    validate,
-  })
+  }
+  const teamsToNestRoundHandler = (items: EliminationPhase[]) => {
+    const selected = items.map((f) => f.name)
+    if (selected.includes('Octavos de Final')) {
+      teams_to_next_round.value = 16
+      return
+    }
+    if (selected.includes('Cuartos de Final')) {
+      teams_to_next_round.value = 8
+      return
+    }
+    if (selected.includes('Semifinales')) {
+      teams_to_next_round.value = 4
+      return
+    }
+    if (selected.includes('Final')) {
+      teams_to_next_round.value = 1
+      return
+    }
+  }
 </script>
 <template>
   <v-container class="container">
-    <pre>
-      {{ scheduleStoreRequest.elimination_phase }}
-    </pre>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1 d-block">Avanzan a la siguiente ronda:</span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <p>{{ teamsToNextRound }}</p>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1"> Ida y Vuelta? </span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <v-switch v-model="fields.elimination_round_trip.fieldValue"></v-switch>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" lg="4" md="4">
-        <span class="text-body-1 d-block">Fases:</span>
-      </v-col>
-      <v-col cols="12" lg="8" md="8">
-        <v-chip-group multiple column filter v-model="activePhases" @update:model-value="chipEventHandler">
-          <v-chip
-            v-for="phase in scheduleSettings.phases"
-            :key="phase.id"
-            :disabled="disabledOption(phase)"
-            :value="phase.id"
-            >{{ phase.name }}
-          </v-chip>
-        </v-chip-group>
-        <small class="text-caption" v-if="scheduleSettings.format.name === 'Liga y Eliminatoria'">
-          *Fase de grupos es obligatoria
-        </small>
-      </v-col>
-    </v-row>
+    <BaseInput label="Formato" disabled v-model="scheduleSettings.format.name"></BaseInput>
+    <BaseInput label="Ida y Vuelta?" sublabel="En rondas de eliminación ">
+      <template #input>
+        <v-switch v-model="elimination_round_trip" v-bind="elimination_round_trip_props"></v-switch>
+      </template>
+    </BaseInput>
+    <BaseInput label="Fases del torneo">
+      <template #input>
+        <v-select
+          multiple
+          active
+          chips
+          closable-chips
+          v-model="phases"
+          v-bind="phases_props"
+          return-object
+          :item-props="itemProps"
+          item-title="name"
+          :items="scheduleSettings.phases"
+          @update:model-value="teamsToNestRoundHandler"
+        >
+        </v-select>
+      </template>
+    </BaseInput>
   </v-container>
 </template>

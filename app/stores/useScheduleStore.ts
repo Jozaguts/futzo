@@ -316,7 +316,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     };
     scheduleStoreRequest.value.elimination_phase = {
       teams_to_next_round: 8,
-      round_trip: false,
+      elimination_round_trip: false,
       phases: data.phases,
     };
     scheduleSettings.value = data;
