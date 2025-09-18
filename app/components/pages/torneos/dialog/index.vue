@@ -5,6 +5,7 @@
   import { storeToRefs, useTournamentStore } from '#imports'
 
   const { steps, dialog, isEdition } = storeToRefs(useTournamentStore())
+  const loading = ref(false)
   const leaveHandler = () => {
     useTournamentStore().$reset()
   }
@@ -13,10 +14,19 @@
   })
   const next = () => {
     if (steps.value.steps[steps.value.current].next_step === 'save') {
+      loading.value = true
       if (isEdition.value) {
-        useTournamentStore().updateTournament()
+        useTournamentStore()
+          .updateTournament()
+          .finally(() => {
+            loading.value = false
+          })
       } else {
-        useTournamentStore().storeTournament()
+        useTournamentStore()
+          .storeTournament()
+          .finally(() => {
+            loading.value = false
+          })
       }
     } else {
       steps.value.current = steps.value.steps[steps.value.current].next_step as CurrentStep
@@ -57,9 +67,10 @@
             </v-col>
             <v-col cols="6">
               <v-btn
-                :disabled="disabled"
+                :disabled="disabled || loading"
                 variant="elevated"
                 block
+                :loading="loading"
                 color="primary"
                 density="comfortable"
                 size="large"
