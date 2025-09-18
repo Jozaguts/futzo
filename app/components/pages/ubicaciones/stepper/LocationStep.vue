@@ -68,7 +68,7 @@
         id: number().nullable(),
         name: string().required(),
         address: string().required(),
-        fields_count: number().required(),
+        fields_count: number().required().min(1),
         tags: array().nullable(),
         position: object({
           lat: number().required(),
@@ -86,7 +86,7 @@
       id: locationStoreRequest.value.id,
       name: locationStoreRequest.value.name,
       address: locationStoreRequest.value.address,
-      fields_count: locationStoreRequest.value.fields_count,
+      fields_count: isEdition.value ? locationStoreRequest.value.fields_count : 0,
       tags: locationStoreRequest.value.tags ?? [],
       position: locationStoreRequest.value.position,
       place_id: locationStoreRequest.value.place_id,
@@ -181,7 +181,7 @@
           label="Dirección"
         ></v-text-field>
         <v-number-input
-          :min="1"
+          :min="0"
           active
           :variant="isEdition ? 'plain' : 'outlined'"
           :readonly="isEdition"

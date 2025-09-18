@@ -40,7 +40,7 @@
     ),
     initialValues: { fields: locationStoreRequest.value.fields },
   })
-  const { fields, update, replace } = useFieldArray<Field>('fields')
+  const { fields, update } = useFieldArray<Field>('fields')
   const test = handleSubmit((values) => {
     if (values?.fields) {
       locationStoreRequest.value.fields = values.fields
