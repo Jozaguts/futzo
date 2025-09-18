@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import LocationFormStep from '~/components/pages/torneos/calendario/location-form-step.vue'
-  import type { LocationFieldsRequest, NextHandlerType, WeekDay } from '~/models/Schedule'
-
+  import type { LocationFieldsRequest, NextHandlerType } from '~/models/Schedule'
+  import { object, boolean, array, string, number } from 'yup'
   const { tournamentId } = storeToRefs(useTournamentStore())
   const {
     scheduleStoreRequest,
@@ -11,82 +11,133 @@
     matchDurationMins,
     matchesPerRound,
   } = storeToRefs(useScheduleStore())
-
-  const { meta, validate } = useSchemas('calendar-location-step', {
-    tournament_id: tournamentId.value,
-    fields: scheduleStoreRequest.value.fields_phase,
+  const { t } = useI18n()
+  const intervalSchema = object({
+    value: string().required('El campo value es obligatorio'),
+    text: string().required('El campo text es obligatorio'),
+    selected: boolean().required(),
+    disabled: boolean().required(),
   })
-
-  const isValid = computed(() => {
-    return meta.value.valid
+  const daySchema = object({
+    enabled: boolean().required(),
+    available_range: string().when('enabled', {
+      is: true,
+      then: (schema) =>
+        schema
+          .required('El rango disponible es obligatorio')
+          .matches(/^\d{2}:\d{2} a \d{2}:\d{2}$/, 'Formato esperado: "HH:MM a HH:MM"'),
+      otherwise: (schema) => schema.nullable(),
+    }),
+    intervals: array()
+      .of(intervalSchema)
+      .when('enabled', {
+        is: true,
+        then: (schema) => schema.min(1, 'Debe existir al menos un intervalo'),
+        otherwise: (schema) => schema.default([]),
+      }),
+    label: string()
+      .oneOf(
+        ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
+        'El label debe ser un día válido'
+      )
+      .required(),
   })
-  defineExpose({
-    isValid,
-    validate,
+  const availabilitySchema = object({
+    monday: daySchema.required(),
+    tuesday: daySchema.required(),
+    wednesday: daySchema.required(),
+    thursday: daySchema.required(),
+    friday: daySchema.required(),
+    saturday: daySchema.required(),
+    sunday: daySchema.required(),
+    isCompleted: boolean().required(),
   })
+  const locationFieldSchema = object({
+    field_id: number().required(),
+    step: number().required(),
+    field_name: string().required(),
+    location_name: string().required(),
+    location_id: number().required(),
+    disabled: boolean().required(),
+    availability: availabilitySchema.required(),
+  })
+  const { values, resetForm } = useForm<{ fields_phase: LocationFieldsRequest[] }>({
+    validationSchema: toTypedSchema(
+      object({
+        fields_phase: array().of(locationFieldSchema).required(),
+      })
+    ),
+    initialValues: {
+      fields_phase: scheduleStoreRequest.value.fields_phase as LocationFieldsRequest[],
+    },
+  })
+  const { fields, update } = useFieldArray<LocationFieldsRequest>('fields_phase')
+  const currentStep = ref(1)
 
-  const currentStep = ref()
-  const fields = ref<LocationFieldsRequest[]>([] as LocationFieldsRequest[])
-  const nextHandler = (value: NextHandlerType) => {
-    scheduleStoreRequest.value.fields_phase.map((field) => {
-      if (field.field_id === value.field_id) {
-        field.availability.isCompleted = true
+  watch(
+    () => values.fields_phase,
+    (newFields) => {
+      if (newFields) {
+        scheduleStoreRequest.value.fields_phase = (newFields as LocationFieldsRequest[]).map((field) => ({
+          ...field,
+        }))
       }
-    })
+    },
+    { deep: true, immediate: true }
+  )
+  const nextHandler = (value: NextHandlerType) => {
+    const targetIndex = fields.value.findIndex((entry) => entry.value.field_id === value.field_id)
+    if (targetIndex !== -1) {
+      const currentField = fields.value[targetIndex].value
+      update(targetIndex, {
+        ...currentField,
+        availability: {
+          ...currentField.availability,
+          isCompleted: true,
+        },
+      })
+    }
     if (currentStep.value < fields.value.length) {
-      currentStep.value += 1
+      const nextEntry = fields.value[currentStep.value]
+      currentStep.value = nextEntry ? nextEntry.value.step : currentStep.value + 1
     }
   }
   const backHandler = () => {
     if (currentStep.value > 1) {
-      currentStep.value -= 1
+      const previousEntry = fields.value[currentStep.value - 2]
+      currentStep.value = previousEntry ? previousEntry.value.step : currentStep.value - 1
     }
   }
   onMounted(async () => {
     const locationIds = scheduleStoreRequest.value.general.locations.map((location) => location.id)
     const client = useSanctumClient()
-    fields.value = await client<LocationFieldsRequest[]>(
+    const data = await client<LocationFieldsRequest[]>(
       `/api/v1/admin/locations/fields?location_ids=${locationIds.join(',')}&tournament_id=${tournamentId.value}`
     )
-    scheduleStoreRequest.value.fields_phase = fields.value
-    currentStep.value = fields.value[0]?.step
+    resetForm({ values: { fields_phase: data as LocationFieldsRequest[] } })
+    scheduleStoreRequest.value.fields_phase = data as LocationFieldsRequest[]
+    currentStep.value = data.length ? data[0].step : 1
   })
 
   const hours = (mins: number) => (mins / 60).toFixed(1)
-
-  const fieldDisableHandler = (data: NextHandlerType) => {
-    fields.value.map((field) => {
-      if (field.field_id === data.field_id) {
-        field.disabled = !field.disabled
-        for (let key in field.availability) {
-          field.availability[key as WeekDay].enabled =
-            field.availability[key as WeekDay].enabled === true ? false : field.availability[key as WeekDay].enabled
-        }
-      }
-    })
-    const _field = fields.value.filter((field) => field.field_id === data.field_id)[0]
-    nextHandler({
-      availability: _field.availability,
-      field_id: _field.field_id,
-      isCompleted: false,
-      name: _field.field_name,
-    })
+  const updateField = (index: number, newValue: LocationFieldsRequest) => {
+    update(index, newValue)
   }
 </script>
 <template>
   <v-container>
     <v-row>
       <v-col>
-        <v-alert type="info" variant="tonal" class="mb-4">
+        <v-alert type="info" class="mb-4">
           <div>
-            Partidos por Jornada: {{ matchesPerRound }} <br />
-            Duracion de partido aproximado: {{ Math.round(matchDurationMins / 60) }}h <br />
-            Horas necesarios: {{ hours(requiredMinutesPerRound) }}h requeridas por semana.
+            Partidos por Jornada: {{ matchesPerRound }}<br />
+            Horas necesarias: {{ hours(requiredMinutesPerRound) }} por jornada
           </div>
           <div>
-            Capacidad reservada: {{ hours(reservedMinutesPerWeek) }}h.
-            <span v-if="!hasEnoughCapacity" class="text-error">Faltan horas para completar la jornada.</span>
-            <span v-else class="text-success">Capacidad suficiente.</span>
+            Horas reservadas:
+            <span class="font-weight-black" :class="hasEnoughCapacity ? 'text-green-darken-3' : 'text-error'">
+              {{ hours(reservedMinutesPerWeek) }}h.</span
+            >
           </div>
         </v-alert>
         <v-stepper editable class="pa-0 ma-0" v-model="currentStep">
@@ -94,34 +145,34 @@
             <v-stepper-item
               v-for="(field, index) in fields"
               :key="index + 1"
-              :value="field.step"
+              :value="field.value.step"
               complete-icon="mdi-check-circle"
             >
               <template #title>
-                {{ field.location_name }}
+                {{ field.value.location_name }}
               </template>
               <template #subtitle>
-                {{ field?.field_name }}
+                {{ field?.value.field_name }}
               </template>
             </v-stepper-item>
           </v-stepper-header>
           <v-stepper-window>
             <v-stepper-window-item
               v-for="(field, index) in fields"
-              :key="index + 1"
-              :value="field.step"
-              :title="field.location_name"
-              :subtitle="field.field_name"
+              :key="field.key"
+              :value="field?.value?.step"
+              :title="field?.value?.location_name"
+              :subtitle="field?.value?.field_name"
               complete-icon="mdi-check-circle"
               edit-icon="mdi-check-circle"
               expand-icon="mdi-chevron-down"
             >
               <LocationFormStep
-                :field="field"
-                :isLastStep="fields.length === currentStep - 1"
+                :field="field.value"
+                :isLastStep="field.isLast"
                 @next="nextHandler"
                 @back="backHandler"
-                @field-disabled="fieldDisableHandler"
+                @update="(newValue) => updateField(index, newValue)"
               ></LocationFormStep>
             </v-stepper-window-item>
           </v-stepper-window>

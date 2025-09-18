@@ -1,77 +1,131 @@
 <script lang="ts" setup>
-import type {Day, IntervalValue} from '~/models/Location'
-import type {Label, WeekDay} from '~/models/Schedule'
+  import type { Day, Label, Text, WeekDay } from '~/models/Schedule'
 
-const props = defineProps({
-  day: {
-    type: Object as PropType<Day>,
-    required: true,
-  },
-  label: {
-    type: String as PropType<Label>,
-    required: true,
-  },
-  id: {
-    type: String as PropType<WeekDay>,
-    required: true,
-  },
-})
-const selected = ref<IntervalValue[]>([])
-const selectableValues = computed<IntervalValue[]>(() =>
-    props.day.intervals
-        .filter(i => !i.disabled)
-        .map(i => i.value)
-)
-const allSelected = computed<boolean>({
-  get: () =>
-      selected.value.length > 0 &&
-      selected.value.length === selectableValues.value.length,
-  set(value) {
-    if (value) {
-      // marcar todos
-      selected.value = [...selectableValues.value]
-    } else {
-      // desmarcar todos
-      selected.value = []
+  const props = defineProps<{
+    day: Day
+    label: Label
+    weekday: WeekDay
+    disabled?: boolean
+  }>()
+
+  const emits = defineEmits<{
+    (e: 'input-date-changed', payload: { weekday: WeekDay; selectedValues: Text[] }): void
+    (e: 'day-disabled', payload: { weekday: WeekDay; enabled: boolean }): void
+    (e: 'select-all', payload: { weekday: WeekDay; value: boolean }): void
+  }>()
+
+  const dayEnabled = ref<boolean>(props.day.enabled)
+  const selectableValues = computed<Text[]>(() =>
+    props.day.intervals.filter((interval) => !interval.disabled).map((interval) => interval.value as Text)
+  )
+  const selectedValues = ref<Text[]>([])
+  const lastEmittedSelected = ref<Text[]>([])
+  const skipNextSelectedEmit = ref(false)
+
+  const arraysEqual = (a: Text[], b: Text[]) => {
+    if (a.length !== b.length) {
+      return false
     }
+    const sortedA = [...a].sort()
+    const sortedB = [...b].sort()
+    return sortedA.every((value, index) => value === sortedB[index])
   }
-})
-watch(selected, newSlots => {
-  emits('input-date-changed', {id: props.id, value: newSlots})
-})
-const emits = defineEmits<{
-  (e: 'input-date-changed', payload: { id: WeekDay; value: IntervalValue[] }): void
-  (e: 'day-disabled', id: WeekDay): void
-}>()
 
-const dayDisabledHandler = () => {
-  emits('day-disabled', props.id)
-}
+  watch(
+    () => props.day.enabled,
+    (enabled) => {
+      if (dayEnabled.value !== enabled) {
+        dayEnabled.value = enabled
+      }
+    }
+  )
+
+  watch(dayEnabled, (enabled) => {
+    if (enabled === props.day.enabled) {
+      return
+    }
+    skipNextSelectedEmit.value = true
+    if (!enabled) {
+      selectedValues.value = []
+    }
+    emits('day-disabled', { weekday: props.weekday, enabled })
+  })
+
+  watch(
+    () =>
+      props.day.intervals.map((interval) => ({
+        value: interval.value as Text,
+        selected: interval.selected,
+      })),
+    (intervalsState) => {
+      const nextSelected = intervalsState.filter((item) => item.selected).map((item) => item.value)
+      if (!arraysEqual(selectedValues.value, nextSelected)) {
+        selectedValues.value = nextSelected
+      }
+    },
+    { immediate: true, deep: true }
+  )
+
+  watch(selectedValues, (values) => {
+    if (skipNextSelectedEmit.value) {
+      skipNextSelectedEmit.value = false
+      lastEmittedSelected.value = [...values]
+      return
+    }
+    if (arraysEqual(values, lastEmittedSelected.value)) {
+      return
+    }
+    lastEmittedSelected.value = [...values]
+    emits('input-date-changed', { weekday: props.weekday, selectedValues: values })
+  })
+
+  const selectAll = computed({
+    get: () => {
+      if (!selectableValues.value.length) {
+        return false
+      }
+      return selectableValues.value.every((value) => selectedValues.value.includes(value))
+    },
+    set(value: boolean) {
+      skipNextSelectedEmit.value = true
+      emits('select-all', { weekday: props.weekday, value })
+    },
+  })
 </script>
 <template>
   <v-container class="pa-0 pb-1">
     <v-row no-gutters>
       <v-col cols="12" class="pr-2 pt-2">
         <v-card class="futzo-rounded">
-          <v-card-title> {{ props.label }}</v-card-title>
-          <v-card-subtitle>Horas disponibles {{ props.day.available_range }}</v-card-subtitle>
+          <v-card-title> {{ label }}</v-card-title>
+          <v-card-subtitle>Horas disponibles {{ day.available_range }}</v-card-subtitle>
           <v-card-text>
-            <v-switch v-model="allSelected"
-                      label="Todo el día"></v-switch>
+            <v-switch
+              v-model="dayEnabled"
+              inset
+              :disabled="disabled"
+              :label="dayEnabled ? 'Día activo' : 'Día inactivo'"
+            ></v-switch>
+            <v-switch
+              v-model="selectAll"
+              label="Todo el día"
+              :disabled="disabled || !dayEnabled || !selectableValues.length"
+            ></v-switch>
             <v-chip-group
-                column
-                multiple
-                selected-class="text-primary"
-                v-model="selected"
+              column
+              multiple
+              selected-class="text-primary"
+              v-model="selectedValues"
+              :disabled="disabled || !dayEnabled"
             >
               <v-chip
-                  v-for="(interval, index) in props.day.intervals"
-                  :key="index"
-                  filter
-                  :value="interval.value"
-                  :disabled="interval.disabled"
-                  class="ma-1"
-                  :text="interval.text"
+                v-for="(interval, index) in day.intervals"
+                :key="index"
+                filter
+                :value="interval.value"
+                :disabled="interval.disabled"
+                class="ma-1"
+                :text="interval.text"
               >
               </v-chip>
             </v-chip-group>

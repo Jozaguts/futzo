@@ -1,58 +1,140 @@
 <script setup lang="ts">
   import InputAvailabilityDate from '~/components/pages/ubicaciones/stepper/InputAvailabilityDate.vue'
-  import type { Day, DayHandlerType, LocationFieldsRequest, NextHandlerType, Text, WeekDay } from '~/models/Schedule'
+  import type { Day, LocationFieldsRequest, NextHandlerType, Text, WeekDay } from '~/models/Schedule'
 
-  const props = defineProps({
-    field: {
-      type: Object as PropType<LocationFieldsRequest>,
-      required: true,
-    },
-    isLastStep: {
-      type: Boolean,
-      required: true,
-    },
-  })
-  const { scheduleStoreRequest } = storeToRefs(useScheduleStore())
-  const form = ref<NextHandlerType>({
-    field_id: props.field.field_id,
-    name: props.field.field_name,
-    isCompleted: false,
-    availability: props.field.availability,
-  })
-  const inputDateChangedHandler = ({ id: day, value: selectedSlots }: DayHandlerType) => {
-    scheduleStoreRequest.value.fields_phase.forEach((field) => {
-      if (field.location_id === props.field.location_id && field.field_id === props.field.field_id) {
-        field.availability[day].intervals.forEach((interval) => {
-          interval.selected = selectedSlots.includes(interval.value)
-        })
-      }
+  const props = defineProps<{
+    field: LocationFieldsRequest
+    isLastStep: boolean
+  }>()
+  const { field, isLastStep } = toRefs(props)
+
+  const emits = defineEmits<{
+    (e: 'back'): void
+    (e: 'next', payload: NextHandlerType): void
+    (e: 'update', payload: LocationFieldsRequest): void
+  }>()
+
+  const fieldDisabled = ref<boolean>(field.value.disabled)
+
+  const emitFieldUpdate = (payload: Partial<LocationFieldsRequest>) => {
+    emits('update', {
+      ...field.value,
+      ...payload,
     })
   }
-  const availabilities = computed(() => {
-    let data = {} as Record<WeekDay, Day>
-    for (const key in props.field.availability) {
-      if (typeof props.field.availability[key as WeekDay] === 'object') {
-        data[key as WeekDay] = props.field.availability[key as WeekDay]
+
+  watch(
+    () => field.value.disabled,
+    (disabled) => {
+      if (fieldDisabled.value !== disabled) {
+        fieldDisabled.value = disabled
       }
     }
+  )
+
+  watch(fieldDisabled, (disabled) => {
+    if (disabled === field.value.disabled) {
+      return
+    }
+    emitFieldUpdate({ disabled })
+  })
+
+  const availabilities = computed(() => {
+    const data = {} as Record<WeekDay, Day>
+    ;(Object.keys(field.value.availability) as Array<keyof LocationFieldsRequest['availability']>).forEach((key) => {
+      const value = field.value.availability[key]
+      if (key !== 'isCompleted' && value && typeof value === 'object') {
+        data[key as WeekDay] = value as Day
+      }
+    })
     return data
   })
-  const emits = defineEmits(['back', 'next', 'field-disabled'])
-  const dayDisabledHandler = (day: WeekDay) => {
-    form.value.availability[day].enabled = !form.value.availability[day].enabled
+
+  const formPayload = computed<NextHandlerType>(() => ({
+    field_id: field.value.field_id,
+    name: field.value.field_name,
+    isCompleted: Boolean(field.value.availability.isCompleted),
+    availability: field.value.availability,
+  }))
+
+  const updateDay = (weekday: WeekDay, nextDay: Day) => {
+    emitFieldUpdate({
+      availability: {
+        ...field.value.availability,
+        [weekday]: nextDay,
+      } as LocationFieldsRequest['availability'],
+    })
+  }
+
+  const inputDateChangedHandler = ({ weekday, selectedValues }: { weekday: WeekDay; selectedValues: Text[] }) => {
+    const currentDay = field.value.availability[weekday]
+    if (!currentDay || typeof currentDay !== 'object') {
+      return
+    }
+    const nextDay: Day = {
+      ...(currentDay as Day),
+      intervals: (currentDay as Day).intervals.map((interval) => ({
+        ...interval,
+        selected: selectedValues.includes(interval.value),
+      })),
+    }
+    updateDay(weekday, nextDay)
+  }
+
+  const dayDisabledHandler = ({ weekday, enabled }: { weekday: WeekDay; enabled: boolean }) => {
+    const currentDay = field.value.availability[weekday]
+    if (!currentDay || typeof currentDay !== 'object') {
+      return
+    }
+    const nextDay: Day = {
+      ...(currentDay as Day),
+      enabled,
+      intervals: enabled
+        ? (currentDay as Day).intervals
+        : (currentDay as Day).intervals.map((interval) => ({
+            ...interval,
+            selected: false,
+          })),
+    }
+    updateDay(weekday, nextDay)
+  }
+
+  const selectAllHandler = ({ weekday, value }: { weekday: WeekDay; value: boolean }) => {
+    const currentDay = field.value.availability[weekday]
+    if (!currentDay || typeof currentDay !== 'object') {
+      return
+    }
+    const nextDay: Day = {
+      ...(currentDay as Day),
+      intervals: (currentDay as Day).intervals.map((interval) => ({
+        ...interval,
+        selected: value && !interval.disabled,
+      })),
+    }
+    updateDay(weekday, nextDay)
   }
 </script>
 <template>
+  <v-row>
+    <v-col cols="12">
+      <v-switch
+        v-model="fieldDisabled"
+        inset
+        color="primary"
+        :label="fieldDisabled ? 'Campo inactivo' : 'Campo activo'"
+      ></v-switch>
+    </v-col>
+  </v-row>
   <InputAvailabilityDate
-    :disabled="field.disabled"
-    v-for="(item, key) in availabilities"
-    :day="props.field.availability[key] as Day"
-    :key="key"
-    :data-value="key"
-    :id="key as WeekDay"
+    v-for="(item, weekday) in availabilities"
+    :key="weekday"
+    :day="field.availability[weekday] as Day"
+    :weekday="weekday as WeekDay"
     :label="item.label"
+    :disabled="fieldDisabled"
     @input-date-changed="inputDateChangedHandler"
     @day-disabled="dayDisabledHandler"
+    @select-all="selectAllHandler"
   />
   <v-row>
     <v-col class="mt-2">
@@ -64,7 +146,11 @@
         :disabled="isLastStep"
         >Anterior
       </v-btn>
-      <v-btn color="primary" variant="outlined" class="vertical-stepper-button next" @click="emits('next', form)"
+      <v-btn
+        color="primary"
+        variant="outlined"
+        class="vertical-stepper-button next"
+        @click="emits('next', formPayload)"
         >Marcar como completado
         <template #append>
           <Icon name="mdi-arrow-right"></Icon>
@@ -74,5 +160,5 @@
   </v-row>
 </template>
 <style lang="sass">
-  @use "assets/scss/components/input-location-disabled.sass"
+  @use "~/assets/scss/components/input-location-disabled.sass"
 </style>
