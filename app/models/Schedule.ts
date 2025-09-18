@@ -1,3 +1,5 @@
+import type { IntervalValue } from '~/models/Location';
+
 export type TournamentRules = {
   disabledPhases: (phase: EliminationPhase, totalTeams: number) => boolean;
   teamsToNextRound: (phases: EliminationPhase[], totalTeams: number) => string | number;
@@ -265,15 +267,10 @@ export type Day = {
   label: Label;
 };
 export type DayHandlerType = {
-  id: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+  weekday: WeekDay;
   day: Day;
-  value: Text[];
+  intervalHoursSelected: Interval[];
 };
-
-interface IntervalValue {
-  start: string;
-  end: string;
-}
 
 export type Interval = {
   value: Text;

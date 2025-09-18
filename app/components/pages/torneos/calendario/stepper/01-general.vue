@@ -71,10 +71,6 @@
   })
 </script>
 <template>
-  <pre>
-      {{ scheduleStoreRequest.general }}
-    </pre
-  >
   <v-container class="container">
     <BaseInput label="Nombre del torneo">
       <template #input>

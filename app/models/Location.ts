@@ -1,4 +1,5 @@
 import type { IPagination } from '~/interfaces';
+import type { Text } from '~/models/Schedule';
 export type LocationRequest = Promise<LocationPagination>;
 export type LocationResponse = Awaited<LocationRequest>;
 export type LocationPagination = {
@@ -130,8 +131,8 @@ export type Interval = {
   value: IntervalValue;
 };
 export type IntervalValue = {
-  start: string;
-  end: string;
+  start: Text;
+  end: Text;
 };
 
 export type TimeRange = {
