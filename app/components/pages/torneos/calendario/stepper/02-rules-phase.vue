@@ -1,21 +1,28 @@
 <script lang="ts" setup>
   import Tiebreakers from '~/components/pages/torneos/calendario/Tiebreakers.vue'
   import { object, boolean, array, string, number } from 'yup'
-  import type { FormRulesPhaseStep } from '~/models/Schedule'
+  import type { FormRulesPhaseStep, Tiebreaker } from '~/models/Schedule'
   import { vuetifyConfig } from '~/utils/constants'
-  const { scheduleStoreRequest } = storeToRefs(useScheduleStore())
-  const { defineField, meta, values } = useForm<FormRulesPhaseStep>({
+  const { scheduleStoreRequest, calendarSteps } = storeToRefs(useScheduleStore())
+  const { defineField, meta, values, setFieldError, resetForm } = useForm<FormRulesPhaseStep>({
     validationSchema: toTypedSchema(
       object({
         round_trip: boolean().required().default(false),
-        tiebreakers: array().of(
-          object({
-            id: number().required(),
-            rule: string().required(),
-            is_active: boolean().required().default(true),
-            priority: number().required(),
-          })
-        ),
+        tiebreakers: array()
+          .of(
+            object({
+              id: number().required(),
+              rule: string().required(),
+              is_active: boolean().required().default(true),
+              priority: number().required(),
+            })
+          )
+          .min(1, 'Debes definir al menos una regla de desempate')
+          .required()
+          .test('at-least-one-active', 'Al menos una regla de desempate debe estar activa', (value) => {
+            if (!value) return false
+            return value.some((item) => item.is_active === true)
+          }),
       })
     ),
     initialValues: scheduleStoreRequest.value.rules_phase,
@@ -26,17 +33,27 @@
     tiebreakers,
     (value) => {
       if (value) {
-        scheduleStoreRequest.value.rules_phase.tiebreakers = value
+        calendarSteps.value.steps[calendarSteps.value.current].disable = value.every(
+          (tiebreaker: Tiebreaker) => !tiebreaker.is_active
+        )
+      }
+    },
+    { deep: true }
+  )
+  watch(
+    meta,
+    (value) => {
+      if (value) {
+        calendarSteps.value.steps[calendarSteps.value.current].disable = !meta.value.valid
+        if (meta.value.valid && meta.value.touched) {
+          scheduleStoreRequest.value.rules_phase = values
+        }
       }
     },
     { deep: true }
   )
 </script>
 <template>
-  <pre>
-      {{ scheduleStoreRequest.rules_phase }}
-    </pre
-  >
   <v-container class="container">
     <BaseInput label=" Ida y Vuelta?">
       <template #input>

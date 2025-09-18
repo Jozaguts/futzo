@@ -69,7 +69,7 @@ export type EliminationPhase = {
 export type Tiebreaker = {
   id: number;
   rule: string;
-  is_active: string;
+  is_active: boolean;
   priority: number;
   deleted_at?: null;
   created_at?: Date;

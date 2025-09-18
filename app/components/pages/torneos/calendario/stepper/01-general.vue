@@ -15,12 +15,15 @@
         start_date: date().required(),
         game_time: number().required(),
         time_between_games: number().required(),
-        locations: array().of(
-          object().shape({
-            id: number().required(),
-            name: string().required(),
-          })
-        ),
+        locations: array()
+          .of(
+            object().shape({
+              id: number().required(),
+              name: string().required(),
+            })
+          )
+          .min(1)
+          .required(),
       })
     ),
     initialValues: { ...scheduleStoreRequest.value.general, total_teams: scheduleSettings.value.teams },

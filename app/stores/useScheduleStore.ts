@@ -192,6 +192,8 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     { value: 'cancelado', text: 'Cancelada' },
   ]);
   const $resetScheduleStore = () => {
+    calendarSteps.value.current = 'general';
+    calendarSteps.value = { ...INIT_CALENDAR_STEPS };
     scheduleDialog.value = false;
     scheduleParams.value = undefined;
     daysToPlaySelected.value = undefined;
@@ -231,7 +233,6 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       elimination_phase: {} as FormEliminationPhaseStep,
       fields_phase: [] as LocationFieldsRequest[],
     };
-    calendarSteps.value = INIT_CALENDAR_STEPS;
   };
   const getTournamentSchedules = async () => {
     isLoadingSchedules.value = true;

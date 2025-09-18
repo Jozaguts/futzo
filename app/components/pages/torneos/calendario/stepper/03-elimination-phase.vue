@@ -2,7 +2,7 @@
   import type { EliminationPhase, FormEliminationPhaseStep, Phase, TournamentRules } from '~/models/Schedule'
   import { object, boolean, array, string, number } from 'yup'
   import { vuetifyConfig } from '~/utils/constants'
-  const { scheduleSettings, scheduleStoreRequest } = storeToRefs(useScheduleStore())
+  const { scheduleSettings, scheduleStoreRequest, calendarSteps } = storeToRefs(useScheduleStore())
 
   const { defineField, meta, values, validate } = useForm<FormEliminationPhaseStep>({
     validationSchema: toTypedSchema(
@@ -90,6 +90,20 @@
       return
     }
   }
+  watch(
+    meta,
+    (value) => {
+      if (value) {
+        calendarSteps.value.steps[calendarSteps.value.current].disable = !meta.value.valid
+        if (meta.value.valid && meta.value.touched) {
+          scheduleStoreRequest.value.elimination_phase.teams_to_next_round = values.teams_to_next_round
+          scheduleStoreRequest.value.elimination_phase.elimination_round_trip = values.elimination_round_trip
+          scheduleStoreRequest.value.elimination_phase.phases = values.phases
+        }
+      }
+    },
+    { deep: true }
+  )
 </script>
 <template>
   <v-container class="container">
