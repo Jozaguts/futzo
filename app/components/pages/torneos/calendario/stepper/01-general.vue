@@ -9,7 +9,17 @@
     validationSchema: toTypedSchema(
       object({
         tournament_id: number().required(),
-        total_teams: number().required(),
+        total_teams: number()
+          .required()
+          .test(
+            'min-teams',
+            ({ value }) => `El torneo requiere al menos ${scheduleSettings.value.min_teams} equipos`,
+            (value) => {
+              // si no hay valor, deja que el required lo atrape
+              if (value == null) return false
+              return value >= scheduleSettings.value.min_teams
+            }
+          ),
         tournament_format_id: number().required(),
         football_type_id: number().required(),
         start_date: date().required(),
@@ -22,14 +32,15 @@
               name: string().required(),
             })
           )
-          .min(1)
+          .min(1, 'selecciona una ubicación')
           .required(),
       })
     ),
+    validateOnMount: true,
     initialValues: { ...scheduleStoreRequest.value.general, total_teams: scheduleSettings.value.teams },
   })
   const [tournament_id, tournament_id_props] = defineField('tournament_id', vuetifyConfig)
-  const [total_teams] = defineField('total_teams', vuetifyConfig)
+  const [total_teams, total_teams_props] = defineField('total_teams', vuetifyConfig)
   const [tournament_format_id, tournament_format_id_props] = defineField('tournament_format_id', vuetifyConfig)
   const [football_type_id, football_type_id_props] = defineField('football_type_id', vuetifyConfig)
   const [start_date, start_date_props] = defineField('start_date', vuetifyConfig)
@@ -119,12 +130,22 @@
     <BaseInput label="Total de equipos registrados">
       <template #input>
         <p class="text-body-1">
-          <v-chip :color="total_teams < scheduleSettings.min_teams ? 'error' : 'primary'" readonly variant="outlined">{{
-            total_teams
-          }}</v-chip>
+          <v-chip
+            :color="
+              total_teams < scheduleSettings.min_teams || total_teams_props['error-messages'].length > 0
+                ? 'error'
+                : 'primary'
+            "
+            readonly
+            variant="outlined"
+            >{{ total_teams }}</v-chip
+          >
         </p>
-        <p v-if="total_teams < scheduleSettings.min_teams" class="text-caption text-error">
-          No hay equipos suficientes para generar el calendario
+        <p
+          v-if="total_teams < scheduleSettings.min_teams || total_teams_props['error-messages']?.length > 0"
+          class="text-caption text-error"
+        >
+          {{ total_teams_props['error-messages'][0] }}
         </p>
       </template>
     </BaseInput>
@@ -140,7 +161,7 @@
       v-model="time_between_games"
       :props="{ ...time_between_games_props, min: 0 }"
     />
-    <BaseInput label="Ubicaciónes">
+    <BaseInput label="Ubicaciones">
       <template #input>
         <SelectLocation :locations="scheduleSettings.locations" v-model="locations"></SelectLocation>
         <div v-auto-animate>
