@@ -1,69 +1,30 @@
 <script lang="ts" setup>
   import type { EliminationPhase, FormEliminationPhaseStep, Phase, TournamentRules } from '~/models/Schedule'
-  import { object, boolean, array, string, number } from 'yup'
+  import { getSchemaForFormat } from '~/utils/tournamentSchemas'
+  import { buildEliminationPayload } from '~/utils/buildEliminationPayload'
   import { vuetifyConfig } from '~/utils/constants'
   const { scheduleSettings, scheduleStoreRequest, calendarSteps } = storeToRefs(useScheduleStore())
-
+  const schema = computed(() => getSchemaForFormat(scheduleSettings.value.format.name))
   const { defineField, meta, values } = useForm<FormEliminationPhaseStep>({
-    validationSchema: toTypedSchema(
-      object({
-        teams_to_next_round: number().required(),
-        elimination_round_trip: boolean().required().default(true),
-        phases: array()
-          .of(
-            object({
-              id: number().required(),
-              name: string().required(),
-              is_active: boolean(),
-              is_completed: boolean(),
-              min_teams_for: number().nullable(),
-            }).required()
-          )
-          .min(1, 'Selecciona al menos una fase para el torneo')
-          .required()
-          .test('fase-grupos-needs-another', 'En "Fase de grupos", debes elegir al menos una fase  mas', (value) => {
-            if (!value) return false
-            const hasGroupPhase = value.some((f) => f.name === 'Fase de grupos')
-            if (hasGroupPhase) {
-              return value.length >= 2
-            }
-            return true
-          })
-          .test('fase-chain-validation', 'Las fases seleccionadas no cumplen con la secuencia obligatoria', (value) => {
-            if (!value) return false
-
-            const selected = value.map((f) => f.name)
-
-            // Si eligió Octavos → también deben estar Cuartos, Semifinal, Final
-            if (selected.includes('Octavos de Final')) {
-              return ['Octavos de Final', 'Cuartos de Final', 'Semifinales', 'Final'].every((f) => selected.includes(f))
-            }
-
-            // Si eligió Cuartos → también deben estar Semifinal y Final
-            if (selected.includes('Cuartos de Final')) {
-              return ['Semifinales', 'Final'].every((f) => selected.includes(f))
-            }
-
-            // Si eligió Semifinal → también debe estar Final
-            if (selected.includes('Semifinales')) {
-              return ['Final'].every((f) => selected.includes(f))
-            }
-
-            // Si eligió solo Final → válido
-            return true
-          }),
-      })
-    ),
+    validationSchema: schema,
     initialValues: {
       teams_to_next_round: scheduleStoreRequest.value.elimination_phase.teams_to_next_round,
       elimination_round_trip: scheduleStoreRequest.value.elimination_phase.elimination_round_trip,
-      phases: scheduleStoreRequest.value.elimination_phase.phases.filter((phase) => phase.is_active),
+      phases: scheduleStoreRequest.value.elimination_phase.phases.filter((p) => p.is_active),
+      group_phase: scheduleStoreRequest.value.elimination_phase.group_phase ?? {
+        teams_per_group: 4,
+        advance_top_n: 2,
+        include_best_thirds: false,
+        best_thirds_count: null,
+      },
     },
     validateOnMount: true,
   })
   const [teams_to_next_round, teams_to_next_round_props] = defineField('teams_to_next_round', vuetifyConfig)
   const [elimination_round_trip, elimination_round_trip_props] = defineField('elimination_round_trip', vuetifyConfig)
   const [phases, phases_props] = defineField('phases', vuetifyConfig)
+  const [group_phase, group_phase_props] = defineField('group_phase') // solo si aplica
+
   const itemProps = (item: EliminationPhase) => {
     return {
       ...item,
@@ -99,6 +60,9 @@
           scheduleStoreRequest.value.elimination_phase.teams_to_next_round = values.teams_to_next_round
           scheduleStoreRequest.value.elimination_phase.elimination_round_trip = values.elimination_round_trip
           scheduleStoreRequest.value.elimination_phase.phases = values.phases
+          if (values.group_phase) {
+            scheduleStoreRequest.value.elimination_phase.group_phase = values.group_phase
+          }
         }
       }
     },

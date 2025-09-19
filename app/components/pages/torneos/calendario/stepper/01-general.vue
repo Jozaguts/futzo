@@ -66,7 +66,6 @@
   }
   watch(meta, () => {
     calendarSteps.value.steps[calendarSteps.value.current].disable = !meta.value.valid
-    console.log(meta.value)
     if (meta.value.valid && meta.value.dirty) {
       scheduleStoreRequest.value.general.tournament_id = values.tournament_id
       scheduleStoreRequest.value.general.total_teams = values.total_teams
@@ -79,7 +78,6 @@
         id: location.id,
         name: location.name,
       }))
-      console.log(scheduleStoreRequest.value.general.locations)
     }
   })
 </script>

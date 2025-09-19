@@ -1,5 +1,27 @@
 import type { IntervalValue } from '~/models/Location';
 
+export type EliminationRules = {
+  round_trip: boolean;
+  away_goals: boolean;
+  extra_time: boolean;
+  penalties: boolean;
+  advance_if_tie: 'better_seed' | 'none';
+};
+export interface EliminationPayload {
+  teams_to_next_round: number;
+  round_trip: boolean;
+  phases: Array<
+    EliminationPhase & {
+      rules: EliminationRules | null;
+    }
+  >;
+  group_phase?: {
+    teams_per_group: number;
+    advance_top_n: number;
+    include_best_thirds: boolean;
+    best_thirds_count: number | null;
+  };
+}
 export type TournamentRules = {
   disabledPhases: (phase: EliminationPhase, totalTeams: number) => boolean;
   teamsToNextRound: (phases: EliminationPhase[], totalTeams: number) => string | number;
@@ -52,6 +74,12 @@ export type FormEliminationPhaseStep = {
   teams_to_next_round: number;
   elimination_round_trip: boolean;
   phases: EliminationPhase[];
+  group_phase?: {
+    teams_per_group: number;
+    advance_top_n: number;
+    include_best_thirds: boolean;
+    best_thirds_count: boolean | null;
+  };
 };
 
 export type Phase =
