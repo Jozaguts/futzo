@@ -61,7 +61,7 @@
     disabled: boolean().required(),
     availability: availabilitySchema.required(),
   })
-  const { values, resetForm } = useForm<{ fields_phase: LocationFieldsRequest[] }>({
+  const { values, resetForm, meta } = useForm<{ fields_phase: LocationFieldsRequest[] }>({
     validationSchema: toTypedSchema(
       object({
         fields_phase: array().of(locationFieldSchema).required(),
@@ -74,17 +74,6 @@
   const { fields, update } = useFieldArray<LocationFieldsRequest>('fields_phase')
   const currentStep = ref(1)
 
-  watch(
-    () => values.fields_phase,
-    (newFields) => {
-      if (newFields) {
-        scheduleStoreRequest.value.fields_phase = (newFields as LocationFieldsRequest[]).map((field) => ({
-          ...field,
-        }))
-      }
-    },
-    { deep: true, immediate: true }
-  )
   const nextHandler = (value: NextHandlerType) => {
     const targetIndex = fields.value.findIndex((entry) => entry.value.field_id === value.field_id)
     if (targetIndex !== -1) {
@@ -96,16 +85,17 @@
           isCompleted: true,
         },
       })
-    }
-    if (currentStep.value < fields.value.length) {
-      const nextEntry = fields.value[currentStep.value]
-      currentStep.value = nextEntry ? nextEntry.value.step : currentStep.value + 1
+
+      const nextEntry = fields.value[targetIndex + 1]
+      if (nextEntry) {
+        currentStep.value = nextEntry.value.step
+      }
     }
   }
   const backHandler = () => {
-    if (currentStep.value > 1) {
-      const previousEntry = fields.value[currentStep.value - 2]
-      currentStep.value = previousEntry ? previousEntry.value.step : currentStep.value - 1
+    const currentIndex = fields.value.findIndex((entry) => entry.value.step === currentStep.value)
+    if (currentIndex > 0) {
+      currentStep.value = fields.value[currentIndex - 1].value.step
     }
   }
   onMounted(async () => {
@@ -116,13 +106,32 @@
     )
     resetForm({ values: { fields_phase: data as LocationFieldsRequest[] } })
     scheduleStoreRequest.value.fields_phase = data as LocationFieldsRequest[]
-    currentStep.value = data.length ? data[0].step : 1
   })
 
   const hours = (mins: number) => (mins / 60).toFixed(1)
   const updateField = (index: number, newValue: LocationFieldsRequest) => {
     update(index, newValue)
   }
+  watch(
+    () => values.fields_phase,
+    (newFields) => {
+      if (newFields) {
+        scheduleStoreRequest.value.fields_phase = (newFields as LocationFieldsRequest[]).map((field) => ({
+          ...field,
+        }))
+      }
+    },
+    { deep: true, immediate: true }
+  )
+  watch(
+    meta,
+    (value) => {
+      if (value) {
+        console.log(meta.value.valid)
+      }
+    },
+    { deep: true, immediate: true }
+  )
 </script>
 <template>
   <v-container>

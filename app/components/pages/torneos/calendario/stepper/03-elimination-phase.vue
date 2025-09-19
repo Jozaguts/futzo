@@ -4,7 +4,7 @@
   import { vuetifyConfig } from '~/utils/constants'
   const { scheduleSettings, scheduleStoreRequest, calendarSteps } = storeToRefs(useScheduleStore())
 
-  const { defineField, meta, values, validate } = useForm<FormEliminationPhaseStep>({
+  const { defineField, meta, values } = useForm<FormEliminationPhaseStep>({
     validationSchema: toTypedSchema(
       object({
         teams_to_next_round: number().required(),

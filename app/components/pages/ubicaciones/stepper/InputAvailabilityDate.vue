@@ -10,11 +10,9 @@
 
   const emits = defineEmits<{
     (e: 'input-date-changed', payload: { weekday: WeekDay; selectedValues: Text[] }): void
-    (e: 'day-disabled', payload: { weekday: WeekDay; enabled: boolean }): void
     (e: 'select-all', payload: { weekday: WeekDay; value: boolean }): void
   }>()
 
-  const dayEnabled = ref<boolean>(props.day.enabled)
   const selectableValues = computed<Text[]>(() =>
     props.day.intervals.filter((interval) => !interval.disabled).map((interval) => interval.value as Text)
   )
@@ -30,26 +28,6 @@
     const sortedB = [...b].sort()
     return sortedA.every((value, index) => value === sortedB[index])
   }
-
-  watch(
-    () => props.day.enabled,
-    (enabled) => {
-      if (dayEnabled.value !== enabled) {
-        dayEnabled.value = enabled
-      }
-    }
-  )
-
-  watch(dayEnabled, (enabled) => {
-    if (enabled === props.day.enabled) {
-      return
-    }
-    skipNextSelectedEmit.value = true
-    if (!enabled) {
-      selectedValues.value = []
-    }
-    emits('day-disabled', { weekday: props.weekday, enabled })
-  })
 
   watch(
     () =>
@@ -101,22 +79,16 @@
           <v-card-subtitle>Horas disponibles {{ day.available_range }}</v-card-subtitle>
           <v-card-text>
             <v-switch
-              v-model="dayEnabled"
-              inset
-              :disabled="disabled"
-              :label="dayEnabled ? 'Día activo' : 'Día inactivo'"
-            ></v-switch>
-            <v-switch
               v-model="selectAll"
               label="Todo el día"
-              :disabled="disabled || !dayEnabled || !selectableValues.length"
+              :disabled="disabled || !selectableValues.length"
             ></v-switch>
             <v-chip-group
               column
               multiple
               selected-class="text-primary"
               v-model="selectedValues"
-              :disabled="disabled || !dayEnabled"
+              :disabled="disabled"
             >
               <v-chip
                 v-for="(interval, index) in day.intervals"

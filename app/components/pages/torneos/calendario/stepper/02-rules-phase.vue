@@ -45,7 +45,7 @@
     (value) => {
       if (value) {
         calendarSteps.value.steps[calendarSteps.value.current].disable = !meta.value.valid
-        if (meta.value.valid && meta.value.touched) {
+        if (meta.value.valid && meta.value.dirty) {
           scheduleStoreRequest.value.rules_phase = values
         }
       }

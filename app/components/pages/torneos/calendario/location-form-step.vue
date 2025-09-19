@@ -14,30 +14,12 @@
     (e: 'update', payload: LocationFieldsRequest): void
   }>()
 
-  const fieldDisabled = ref<boolean>(field.value.disabled)
-
   const emitFieldUpdate = (payload: Partial<LocationFieldsRequest>) => {
     emits('update', {
       ...field.value,
       ...payload,
     })
   }
-
-  watch(
-    () => field.value.disabled,
-    (disabled) => {
-      if (fieldDisabled.value !== disabled) {
-        fieldDisabled.value = disabled
-      }
-    }
-  )
-
-  watch(fieldDisabled, (disabled) => {
-    if (disabled === field.value.disabled) {
-      return
-    }
-    emitFieldUpdate({ disabled })
-  })
 
   const availabilities = computed(() => {
     const data = {} as Record<WeekDay, Day>
@@ -71,30 +53,14 @@
     if (!currentDay || typeof currentDay !== 'object') {
       return
     }
+    const nextIntervals = (currentDay as Day).intervals.map((interval) => ({
+      ...interval,
+      selected: selectedValues.includes(interval.value),
+    }))
     const nextDay: Day = {
       ...(currentDay as Day),
-      intervals: (currentDay as Day).intervals.map((interval) => ({
-        ...interval,
-        selected: selectedValues.includes(interval.value),
-      })),
-    }
-    updateDay(weekday, nextDay)
-  }
-
-  const dayDisabledHandler = ({ weekday, enabled }: { weekday: WeekDay; enabled: boolean }) => {
-    const currentDay = field.value.availability[weekday]
-    if (!currentDay || typeof currentDay !== 'object') {
-      return
-    }
-    const nextDay: Day = {
-      ...(currentDay as Day),
-      enabled,
-      intervals: enabled
-        ? (currentDay as Day).intervals
-        : (currentDay as Day).intervals.map((interval) => ({
-            ...interval,
-            selected: false,
-          })),
+      intervals: nextIntervals,
+      enabled: nextIntervals.some((interval) => interval.selected),
     }
     updateDay(weekday, nextDay)
   }
@@ -104,36 +70,27 @@
     if (!currentDay || typeof currentDay !== 'object') {
       return
     }
+    const nextIntervals = (currentDay as Day).intervals.map((interval) => ({
+      ...interval,
+      selected: value && !interval.disabled,
+    }))
     const nextDay: Day = {
       ...(currentDay as Day),
-      intervals: (currentDay as Day).intervals.map((interval) => ({
-        ...interval,
-        selected: value && !interval.disabled,
-      })),
+      intervals: nextIntervals,
+      enabled: nextIntervals.some((interval) => interval.selected),
     }
     updateDay(weekday, nextDay)
   }
 </script>
 <template>
-  <v-row>
-    <v-col cols="12">
-      <v-switch
-        v-model="fieldDisabled"
-        inset
-        color="primary"
-        :label="fieldDisabled ? 'Campo inactivo' : 'Campo activo'"
-      ></v-switch>
-    </v-col>
-  </v-row>
   <InputAvailabilityDate
     v-for="(item, weekday) in availabilities"
     :key="weekday"
     :day="field.availability[weekday] as Day"
     :weekday="weekday as WeekDay"
     :label="item.label"
-    :disabled="fieldDisabled"
+    :disabled="field.disabled"
     @input-date-changed="inputDateChangedHandler"
-    @day-disabled="dayDisabledHandler"
     @select-all="selectAllHandler"
   />
   <v-row>
