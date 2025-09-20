@@ -63,7 +63,7 @@
         <rect x="0.333984" width="24" height="24" rx="12" fill="#E0E0E0" />
         <circle cx="12.334" cy="12" r="4" fill="white" />
       </svg>
-      <small class="dot-label" :class="active ? 'active' : ''">{{ label }}</small>
+      <small class="dot-label d-none d-md-inline d-lg-inline" :class="active ? 'active' : ''">{{ label }}</small>
     </div>
   </div>
   <v-divider v-if="addDivider" />

@@ -206,6 +206,7 @@ export type Pivot = {
 export type DatePosition = 1 | 2;
 
 export interface ScheduleSettings {
+  tournament_id: number | null;
   start_date: Date | string;
   end_date: null;
   game_time: number;

@@ -152,11 +152,18 @@
         <BaseCalendarInput v-model:start_date="start_date" :multiCalendar="false" :error-messages="start_date_props" />
       </template>
     </BaseInput>
-    <BaseInput label="Duración del partido" type="number" v-model="game_time" :props="{ ...game_time_props, min: 0 }" />
+    <BaseInput
+      label="Duración del partido"
+      type="number"
+      v-model="game_time"
+      :props="{ ...game_time_props, min: 0 }"
+      sublabel="minutos"
+    />
     <BaseInput
       label="Tiempo entre partidos"
       type="number"
       v-model="time_between_games"
+      sublabel="minutos"
       :props="{ ...time_between_games_props, min: 0 }"
     />
     <BaseInput label="Ubicaciones">

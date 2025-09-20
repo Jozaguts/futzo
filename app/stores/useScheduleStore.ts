@@ -102,6 +102,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     search: undefined,
   });
   const scheduleSettings = ref<ScheduleSettings>({
+    tournament_id: null,
     start_date: new Date(),
     end_date: null,
     round_trip: false,
@@ -212,6 +213,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       search: undefined,
     };
     scheduleSettings.value = {
+      tournament_id: null,
       start_date: new Date(),
       end_date: null,
       round_trip: false,
