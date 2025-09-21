@@ -2,7 +2,7 @@
   import type { EliminationPhase, FormEliminationPhaseStep, Phase, TournamentRules } from '~/models/Schedule'
   import { getSchemaForFormat } from '~/utils/tournamentSchemas'
   import { buildEliminationPayload } from '~/utils/buildEliminationPayload'
-  import { vuetifyConfig } from '~/utils/constants'
+  import { DISTRIBUTION_GROUPS, vuetifyConfig } from '~/utils/constants'
   const { scheduleSettings, scheduleStoreRequest, calendarSteps } = storeToRefs(useScheduleStore())
   let initialValues: FormEliminationPhaseStep = {
     teams_to_next_round: scheduleStoreRequest.value.elimination_phase.teams_to_next_round,
@@ -22,12 +22,12 @@
   }
   const schema = computed(() => getSchemaForFormat(scheduleSettings.value.format.name, scheduleSettings.value.teams))
 
-  const { defineField, meta, values, errors } = useForm<FormEliminationPhaseStep>({
+  const { defineField, meta, values } = useForm<FormEliminationPhaseStep>({
     validationSchema: schema,
     initialValues: buildEliminationPayload(
       scheduleSettings.value.format.name,
       scheduleSettings.value.tournament_id as number,
-      scheduleSettings.value.phases.filter((p) => p.is_active)
+      scheduleSettings.value.phases
     ),
     // validateOnMount: true,
   })
@@ -39,6 +39,7 @@
   const [teams_per_group, teams_per_group_props] = defineField('group_phase.teams_per_group', vuetifyConfig)
   const [include_best_thirds, include_best_thirds_props] = defineField('group_phase.include_best_thirds', vuetifyConfig)
   const [best_thirds_count, best_thirds_count_props] = defineField('group_phase.best_thirds_count', vuetifyConfig)
+  const tournamentTeams = computed(() => scheduleSettings.value.teams)
   const itemProps = (item: EliminationPhase) => {
     return {
       ...item,
@@ -90,6 +91,10 @@
   })
 </script>
 <template>
+  <pre>
+
+  {{ group_phase }}
+  </pre>
   <v-container class="container">
     <BaseInput label="Formato" disabled v-model="scheduleSettings.format.name" />
     <BaseInput label="Ida y Vuelta?" sublabel="En rondas de eliminación ">
@@ -97,98 +102,70 @@
         <v-switch v-model="elimination_round_trip" v-bind="elimination_round_trip_props"></v-switch>
       </template>
     </BaseInput>
-    <BaseInput
-      label="Equipos por grupo"
-      v-model="teams_per_group"
-      type="number"
-      :props="{ ...teams_per_group_props, min: 0 }"
-    ></BaseInput>
-    <BaseInput
-      label="Avanzan por grupo"
-      v-model="advance_top_n"
-      type="number"
-      :props="{ ...advance_top_n_props, min: 0 }"
-    ></BaseInput>
-    <BaseInput label="Incluir los mejores terceros">
-      <template #input>
-        <v-switch
-          v-model="include_best_thirds"
-          v-bind="include_best_thirds_props"
-          :disabled="advance_top_n < 2 || advance_top_n > 2"
-        ></v-switch>
-      </template>
-    </BaseInput>
-    <BaseInput
-      label="Cantidad de mejores terceros"
-      v-model="best_thirds_count"
-      type="number"
-      :disabled="advance_top_n < 2 || advance_top_n > 2 || !include_best_thirds"
-      :props="{ ...best_thirds_count_props, min: 0 }"
-    ></BaseInput>
-    <BaseInput label="Fases de eliminatoria">
+    <BaseInput label="Equipos por grupo">
       <template #input>
         <v-select
-          multiple
-          active
-          chips
-          class="futzo-rounded"
-          closable-chips
-          v-model="phases"
-          v-bind="phases_props"
-          return-object
-          :item-props="itemProps"
-          item-title="name"
-          :items="scheduleSettings.phases"
-          flat
-          density="compact"
-          @update:model-value="teamsToNestRoundHandler"
-        >
-        </v-select>
+          v-model="teams_per_group"
+          hint="Mínimo 3 maximo 6 por grupo"
+          persistent-hint
+          :items="DISTRIBUTION_GROUPS[tournamentTeams]"
+        ></v-select>
       </template>
     </BaseInput>
-    <div v-if="scheduleSettings.format.name === 'Grupos y Eliminatoria'" class="my-2">
-      <v-row>
-        <v-col
-          cols="12"
-          md="6"
-          lg="6"
-          v-for="(phase, index) in phases.filter((p) => !['Tabla General', 'Fase de grupos'].includes(p.name))"
-          :key="index"
-        >
-          <v-card density="compact" class="futzo-rounded">
-            <v-card-title>{{ phase.name }}</v-card-title>
-            <v-card-text>
-              <v-select
-                v-model="phase.rules.advance_if_tie"
-                variant="outlined"
-                item-value="value"
-                item-title="text"
-                :items="[
-                  { value: 'better_seed', text: 'Mejor en la tabla' },
-                  { value: 'none', text: 'Ninguno' },
-                ]"
-                label="Avanza si hay empate"
-                class="mt-2"
-                density="compact"
-              />
-              <v-switch v-model="phase.rules.round_trip" label="Ida y vuelta" />
-              <v-switch v-model="phase.rules.extra_time" label="Tiempo extra" />
-              <v-switch
-                density="compact"
-                v-model="phase.rules.away_goals"
-                label="Gol de visitante"
-                :disabled="phase.rules.advance_if_tie === 'better_seed'"
-              />
-              <v-switch
-                v-model="phase.rules.penalties"
-                label="Penales"
-                :disabled="phase.rules.advance_if_tie === 'better_seed'"
-              />
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-    </div>
-    <BaseInput label="Equipos que avanzan a la siguiente fase" disabled v-model="teams_to_next_round"></BaseInput>
+    <v-expansion-panels multiple>
+      <!--      <v-expansion-panel value="group-phase" elevation="0" class="futzo-rounded mb-3">-->
+      <!--        <v-expansion-panel-title>-->
+      <!--          <div class="d-flex align-center justify-space-between w-100">-->
+      <!--            <span class="text-subtitle-2 font-weight-medium">Fase de grupos</span>-->
+      <!--            <v-chip color="primary" size="small" variant="tonal">Activa</v-chip>-->
+      <!--          </div>-->
+      <!--        </v-expansion-panel-title>-->
+      <!--        <v-expansion-panel-text>-->
+      <!--          <div class="text-body-2">-->
+      <!--            La fase de grupos siempre está activa y define los equipos que avanzan a la eliminación.-->
+      <!--          </div>-->
+      <!--        </v-expansion-panel-text>-->
+      <!--      </v-expansion-panel>-->
+      <v-expansion-panel
+        v-for="(phase, index) in scheduleSettings.phases"
+        :key="phase.id"
+        :value="phase.name"
+        elevation="0"
+        class="futzo-rounded mb-3"
+      >
+        <v-expansion-panel-title>
+          <div class="d-flex align-center justify-space-between w-100">
+            <span class="text-subtitle-2 font-weight-medium">{{ phase.name }}</span>
+            <v-chip :color="phase.is_active ? 'primary' : 'secondary'" size="small" variant="tonal"> asdas </v-chip>
+
+            <!--            {{ statusLabels[phase.status] }}-->
+          </div>
+        </v-expansion-panel-title>
+        <!--        <v-expansion-panel-text>-->
+        <!--          <v-row>-->
+        <!--            <v-col cols="12" md="12">-->
+        <!--              <div class="text-caption text-medium-emphasis">Equipos requeridos</div>-->
+        <!--              &lt;!&ndash;              <div class="text-body-1 font-weight-medium">{{ PHASE_REQUIREMENTS[phase.name] ?? '-' }}</div>&ndash;&gt;-->
+        <!--            </v-col>-->
+        <!--            <v-col cols="12" md="12">-->
+        <!--              <div class="text-caption text-medium-emphasis">Activa</div>-->
+        <!--              <v-switch-->
+        <!--                :disabled="phase.disabled"-->
+        <!--                :model-value="phase.is_active"-->
+        <!--                color="primary"-->
+        <!--                density="compact"-->
+        <!--                hide-details-->
+        <!--              />-->
+        <!--            </v-col>-->
+        <!--            <v-col cols="12" md="12">-->
+        <!--              <div class="text-caption text-medium-emphasis">Partidos</div>-->
+        <!--              <div class="text-body-1 font-weight-medium">-->
+        <!--                &lt;!&ndash;                {{ eliminationRulesForPhase(phase)?.round_trip ? 'Ida y vuelta' : 'Partido único' }}&ndash;&gt;-->
+        <!--              </div>-->
+        <!--            </v-col>-->
+        <!--          </v-row>-->
+        <!--        </v-expansion-panel-text>-->
+      </v-expansion-panel>
+    </v-expansion-panels>
   </v-container>
 </template>

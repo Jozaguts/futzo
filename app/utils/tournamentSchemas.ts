@@ -135,32 +135,11 @@ export const getSchemaForFormat = (format: string, total_teams: number) => {
                 return true;
               }
             ),
-
           group_phase: object({
             teams_per_group: number()
               .required()
-              .min(2, 'Debe haber al menos 2 equipos por grupo')
-              .test(
-                'divides-exactly',
-                `El número de equipos ${total_teams} no se puede dividir en grupos iguales`,
-                function (value) {
-                  console.log(total_teams);
-                  if (!value || !total_teams) return false;
-                  return total_teams % value === 0;
-                }
-              )
-              .test(
-                'not-more-than-half',
-                'Los equipos por grupo no pueden ser más de la mitad del total',
-                function (value) {
-                  if (!value || !total_teams) return false;
-                  return value <= total_teams / 2;
-                }
-              )
-              .test('even-number-of-groups', 'El número de grupos debe ser par', function (value) {
-                if (!value || !total_teams) return false;
-                return (total_teams / value) % 2 === 0;
-              }),
+              .min(3, 'Debe haber al menos 3 equipos por grupo')
+              .max(6, 'Maximo 6 equipos por grupo'),
             advance_top_n: number()
               .required()
               .min(1, 'Debe avanzar al menos un equipo')
