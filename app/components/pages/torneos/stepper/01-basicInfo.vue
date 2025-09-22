@@ -106,7 +106,7 @@
         >
           <template v-slot:item="{ props, item }">
             <v-list-item v-bind="props">
-              <v-tooltip activator="parent" location="end" max-width="300">
+              <v-tooltip activator="parent" location="top" max-width="300">
                 {{ item.raw?.description }}
               </v-tooltip>
             </v-list-item>
@@ -128,7 +128,7 @@
         >
           <template v-slot:item="{ props, item }">
             <v-list-item v-bind="props">
-              <v-tooltip activator="parent" location="end" max-width="300">
+              <v-tooltip activator="parent" location="top" max-width="300">
                 {{ item.raw.description }}
               </v-tooltip>
             </v-list-item>
