@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { FetchError } from 'ofetch';
 import type {
   CalendarStepsForm,
   EliminationPhase,
@@ -7,6 +8,7 @@ import type {
   FormEliminationPhaseStep,
   FormGeneralScheduleRequest,
   FormRulesPhaseStep,
+  GroupConfigurationOptions,
   LocationFieldsRequest,
   RoundStatus,
   ScheduleRoundStatus,
@@ -15,11 +17,10 @@ import type {
   TournamentSchedule,
 } from '~/models/Schedule';
 import type { IPagination } from '~/interfaces';
-import { fetchRoundByStatus } from '~/http/api/schedule';
+import * as scheduleAPI from '~/http/api/schedule';
 import * as tournamentAPI from '~/http/api/tournament';
-import { useToast } from '~/composables/useToast';
 import { useTournamentStore } from '~/stores/useTournamentStore';
-import { useSanctumClient } from '#imports';
+import { useApiError, useToast, useSanctumClient } from '#imports';
 
 export const useScheduleStore = defineStore('scheduleStore', () => {
   const INIT_CALENDAR_STEPS: CalendarStepsForm = {
@@ -67,6 +68,26 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       },
     },
   };
+  const INIT_SCHEDULE_SETTINGS: ScheduleSettings = {
+    tournament_id: null,
+    start_date: new Date(),
+    end_date: null,
+    round_trip: false,
+    elimination_round_trip: true,
+    game_time: 0,
+    min_teams: 0,
+    max_teams: 0,
+    time_between_games: 0,
+    teams: 0,
+    format: {} as Format,
+    footballType: {} as FootballType,
+    locations: [],
+    tiebreakers: [],
+    phases: [] as EliminationPhase[],
+    group_configuration_options: [] as GroupConfigurationOptions[],
+    group_phase: null,
+    group_phase_option_id: null,
+  };
   const tournamentStore = useTournamentStore();
   const scheduleDialog = ref(false);
   const scheduleParams = ref<{ leagueId: number; tournamentId: number }>();
@@ -101,23 +122,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     filterBy: undefined,
     search: undefined,
   });
-  const scheduleSettings = ref<ScheduleSettings>({
-    tournament_id: null,
-    start_date: new Date(),
-    end_date: null,
-    round_trip: false,
-    elimination_round_trip: true,
-    game_time: 0,
-    min_teams: 0,
-    max_teams: 0,
-    time_between_games: 0,
-    teams: 0,
-    format: {} as Format,
-    footballType: {} as FootballType,
-    locations: [],
-    tiebreakers: [],
-    phases: [] as EliminationPhase[],
-  });
+  const scheduleSettings = ref<ScheduleSettings>(INIT_SCHEDULE_SETTINGS);
   const scheduleStoreRequest = ref<ScheduleStoreRequest>({
     general: {} as FormGeneralScheduleRequest,
     rules_phase: {} as FormRulesPhaseStep,
@@ -212,23 +217,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       filterBy: undefined,
       search: undefined,
     };
-    scheduleSettings.value = {
-      tournament_id: null,
-      start_date: new Date(),
-      end_date: null,
-      round_trip: false,
-      elimination_round_trip: true,
-      game_time: 0,
-      min_teams: 0,
-      max_teams: 0,
-      time_between_games: 0,
-      teams: 0,
-      format: {} as Format,
-      footballType: {} as FootballType,
-      locations: [],
-      tiebreakers: [],
-      phases: [] as EliminationPhase[],
-    };
+    scheduleSettings.value = INIT_SCHEDULE_SETTINGS;
     scheduleStoreRequest.value = {
       general: {} as FormGeneralScheduleRequest,
       rules_phase: {} as FormRulesPhaseStep,
@@ -292,11 +281,25 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     await getTournamentSchedules();
   };
   const generateSchedule = async () => {
-    const client = useSanctumClient();
-    return await client(`/api/v1/admin/tournaments/${tournamentStore.tournamentId}/schedule`, {
-      method: 'POST',
-      body: JSON.stringify(scheduleStoreRequest.value),
-    });
+    try {
+      await scheduleAPI.generateSchedule(tournamentStore.tournamentId as number, scheduleStoreRequest.value);
+      useToast().toast({
+        type: 'success',
+        msg: 'Calendario',
+        description: 'Calendario Generado correctamente',
+      });
+      schedulePagination.value.current_page = 1;
+      schedules.value.rounds = [];
+      await getTournamentSchedules();
+      scheduleDialog.value = false;
+    } catch (error) {
+      const { message } = useApiError(error as FetchError);
+      useToast().toast({
+        type: 'error',
+        msg: 'Calendario',
+        description: message,
+      });
+    }
   };
   const settingsSchedule = async (force = false) => {
     const client = useSanctumClient();
@@ -327,7 +330,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
   const fetchScheduleRoundsByStatus = async (filter: string) => {
     schedulePagination.value.current_page = 1;
     schedules.value.rounds = [];
-    const response = await fetchRoundByStatus(
+    const response = await scheduleAPI.fetchRoundByStatus(
       tournamentStore.tournamentId as number,
       filter,
       schedulePagination.value.current_page
