@@ -16,10 +16,7 @@ export interface EliminationPayload {
     }
   >;
   group_phase?: {
-    teams_per_group: number;
-    advance_top_n: number;
-    include_best_thirds: boolean;
-    best_thirds_count: number | null;
+    option_id: string | null;
   };
 }
 export type TournamentRules = {
@@ -51,6 +48,9 @@ export type ScheduleStoreRequest = {
   rules_phase: FormRulesPhaseStep;
   elimination_phase: FormEliminationPhaseStep;
   fields_phase: LocationFieldsRequest[];
+  group_phase?: {
+    option_id: string | null;
+  };
 };
 export type FormGeneralScheduleRequest = {
   tournament_id: number;
@@ -75,16 +75,14 @@ export type FormEliminationPhaseStep = {
   elimination_round_trip: boolean;
   phases: EliminationPhase[];
   group_phase?: {
-    teams_per_group: number;
-    advance_top_n: number;
-    include_best_thirds: boolean;
-    best_thirds_count: boolean | null;
+    option_id: string | null;
   };
 };
 
 export type Phase =
   | 'Fase de grupos'
   | 'Tabla general'
+  | 'Dieciseisavos de Final'
   | 'Octavos de Final'
   | 'Cuartos de Final'
   | 'Semifinales'
@@ -94,7 +92,15 @@ export type EliminationPhase = {
   name: Phase;
   is_active: boolean;
   is_completed: boolean;
-  min_teams_for: number;
+  min_teams_for: number | null;
+  rules: Rules;
+};
+export type Rules = {
+  round_trip: boolean;
+  away_goals: boolean;
+  extra_time: boolean;
+  penalties: boolean;
+  advance_if_tie: 'better_seed' | 'none' | string;
 };
 export type Tiebreaker = {
   id: number;
@@ -221,7 +227,31 @@ export interface ScheduleSettings {
   locations: Location[];
   tiebreakers: Tiebreaker[];
   phases: EliminationPhase[];
+  group_configuration_options: GroupConfigurationOptions[];
+  group_phase: string | null;
+  group_phase_option_id: null | string;
 }
+export type GroupConfigurationOptions = {
+  id: string;
+  groups: number;
+  group_sizes: number[];
+  group_phase: GroupPhase;
+  elimination: Elimination;
+};
+
+export type Elimination = {
+  teams: number;
+  label: string;
+  phase_name: string;
+};
+
+export type GroupPhase = {
+  teams_per_group: number;
+  advance_top_n: number;
+  include_best_thirds: boolean;
+  best_thirds_count: number | null;
+  group_sizes: number[];
+};
 
 export interface FootballType {
   id: number;
