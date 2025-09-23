@@ -29,6 +29,7 @@ export function buildEliminationPayload(
       return {
         teams_to_next_round: 1,
         round_trip: false,
+        elimination_round_trip: false,
         phases: phases
           .filter((p) => p.name === 'Tabla general')
           .map((p) => ({
@@ -43,6 +44,7 @@ export function buildEliminationPayload(
       return {
         teams_to_next_round: teamsNext,
         round_trip: true,
+        elimination_round_trip: false,
         phases: phases.map((p) => {
           if (p.name === 'Tabla general') {
             return { ...p, tournament_id: tournamentId, is_active: true, rules: null };
@@ -59,6 +61,7 @@ export function buildEliminationPayload(
       return {
         teams_to_next_round: teamsNext,
         round_trip: true,
+        elimination_round_trip: false,
         phases: phases.map((p) => {
           if (p.name === 'Fase de grupos') {
             return { ...p, tournament_id: tournamentId, is_active: true, rules: null };
@@ -70,10 +73,7 @@ export function buildEliminationPayload(
           };
         }),
         group_phase: opts?.group_phase ?? {
-          teams_per_group: 4,
-          advance_top_n: 2,
-          include_best_thirds: false,
-          best_thirds_count: null,
+          option_id: null,
         },
       };
 
@@ -81,6 +81,7 @@ export function buildEliminationPayload(
       return {
         teams_to_next_round: teamsNext,
         round_trip: false,
+        elimination_round_trip: false,
         phases: phases.map((p) => ({
           ...p,
           tournament_id: tournamentId,

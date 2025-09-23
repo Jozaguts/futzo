@@ -26,7 +26,7 @@ export const getSchemaForFormat = (format: string, total_teams: number) => {
       return toTypedSchema(
         object({
           teams_to_next_round: number().required(),
-          elimination_round_trip: boolean().required(),
+          elimination_round_trip: boolean().nullable(),
           phases: array()
             .of(
               object({
@@ -47,7 +47,7 @@ export const getSchemaForFormat = (format: string, total_teams: number) => {
       return toTypedSchema(
         object({
           teams_to_next_round: number().min(2).required(),
-          elimination_round_trip: boolean().required(),
+          elimination_round_trip: boolean().nullable(),
           phases: array()
             .of(
               object({
@@ -95,8 +95,8 @@ export const getSchemaForFormat = (format: string, total_teams: number) => {
     case 'Grupos y Eliminatoria':
       return toTypedSchema(
         object({
-          teams_to_next_round: number().min(2).required(),
-          elimination_round_trip: boolean().required(),
+          teams_to_next_round: number().min(2, 'Activa al menos 2 fases para el torneo').required(),
+          elimination_round_trip: boolean().nullable(),
           phases: array()
             .of(
               phaseBaseSchema.when('name', {
@@ -117,69 +117,82 @@ export const getSchemaForFormat = (format: string, total_teams: number) => {
             .test(
               'fase-chain-validation',
               'Las fases seleccionadas no cumplen con la secuencia obligatoria',
-              (value) => {
+              (value, ctx) => {
                 if (!value) return false;
-                const selected = value.map((f) => f.name);
+                // Filter active phases only
+                const active = value.filter((f) => f.is_active).map((f) => f.name);
 
-                if (selected.includes('Octavos de Final')) {
-                  return ['Octavos de Final', 'Cuartos de Final', 'Semifinales', 'Final'].every((f) =>
-                    selected.includes(f)
-                  );
+                // Helper to check if all required phases are active
+                const requireAllActive = (required: string[]) => {
+                  const missing = required.filter((f) => !active.includes(f));
+                  return { ok: missing.length === 0, missing };
+                };
+
+                if (active.includes('Dieciseisavos de Final')) {
+                  const { ok, missing } = requireAllActive([
+                    'Dieciseisavos de Final',
+                    'Octavos de Final',
+                    'Cuartos de Final',
+                    'Semifinales',
+                    'Final',
+                  ]);
+                  if (!ok) {
+                    return ctx.createError({
+                      message: `Las fases: ${missing.join(', ')} son obligatorias`,
+                    });
+                  }
                 }
-                if (selected.includes('Cuartos de Final')) {
-                  return ['Semifinales', 'Final'].every((f) => selected.includes(f));
+
+                // Octavos
+                if (active.includes('Octavos de Final')) {
+                  const { ok, missing } = requireAllActive([
+                    'Octavos de Final',
+                    'Cuartos de Final',
+                    'Semifinales',
+                    'Final',
+                  ]);
+                  if (!ok) {
+                    return ctx.createError({
+                      message: `Las fases: ${missing.join(', ')} son obligatorias`,
+                    });
+                  }
                 }
-                if (selected.includes('Semifinales')) {
-                  return selected.includes('Final');
+
+                // Cuartos
+                if (active.includes('Cuartos de Final')) {
+                  const { ok, missing } = requireAllActive(['Cuartos de Final', 'Semifinales', 'Final']);
+                  if (!ok) {
+                    return ctx.createError({
+                      message: `Las fases: ${missing.join(', ')} son obligatorias`,
+                    });
+                  }
                 }
-                return true;
+
+                // Semifinales
+                if (active.includes('Semifinales')) {
+                  const { ok, missing } = requireAllActive(['Semifinales', 'Final']);
+                  if (!ok) {
+                    return ctx.createError({
+                      message: `Las fases: ${missing.join(', ')} son obligatorias`,
+                    });
+                  }
+                }
+
+                // Final
+                if (active.includes('Final')) {
+                  const { ok, missing } = requireAllActive(['Final']);
+                  if (!ok) {
+                    return ctx.createError({
+                      message: `Las fases: ${missing.join(', ')} son obligatorias`,
+                    });
+                  }
+                }
+
+                return true; // if none of the knockout phases are active
               }
             ),
           group_phase: object({
-            teams_per_group: number()
-              .required()
-              .min(3, 'Debe haber al menos 3 equipos por grupo')
-              .max(6, 'Maximo 6 equipos por grupo'),
-            advance_top_n: number()
-              .required()
-              .min(1, 'Debe avanzar al menos un equipo')
-              .test('advance-less-than-teams', 'No pueden avanzar todos los equipos del grupo', function (value) {
-                const { teams_per_group } = this.parent;
-                if (!value || !teams_per_group) return false;
-                return value < teams_per_group;
-              }),
-            include_best_thirds: boolean()
-              .required()
-              .test('only-when-advance-2', 'Solo se permite mejores terceros si avanzan 2 por grupo', function (value) {
-                const { advance_top_n } = this.parent;
-                if (!value) return true; // si es false, no pasa nada
-                return advance_top_n === 2;
-              }),
-            best_thirds_count: number()
-              .nullable()
-              .test('only-if-include-best-thirds', 'Debe estar vacío si no hay mejores terceros', function (value) {
-                const { include_best_thirds, advance_top_n, best_thirds_count } = this.parent;
-                if (!include_best_thirds || advance_top_n !== 2) return value == null;
-                return true;
-              })
-              .test(
-                'valid-total-advancing',
-                'El total de clasificados debe permitir cuadro de eliminación',
-                function (value) {
-                  const { total_teams, teams_per_group, advance_top_n, include_best_thirds } = this.parent;
-                  if (!teams_per_group || !advance_top_n) return false;
-                  const num_groups = total_teams / teams_per_group;
-                  let total_advancing = num_groups * advance_top_n;
-                  //todo  esta validacion no esta funcionadl reviar
-                  if (include_best_thirds && advance_top_n === 2 && value) {
-                    total_advancing += value;
-                  }
-
-                  // El total debe ser potencia de 2 (8,16,32…)
-                  const isPowerOfTwo = (n: number) => (n & (n - 1)) === 0;
-                  return isPowerOfTwo(total_advancing);
-                }
-              ),
+            option_id: string().required('Seleccione la cantidad de equipos por grupo'),
           }),
         })
       );
@@ -188,7 +201,7 @@ export const getSchemaForFormat = (format: string, total_teams: number) => {
       return toTypedSchema(
         object({
           teams_to_next_round: number().min(2).required(),
-          elimination_round_trip: boolean().required(),
+          elimination_round_trip: boolean().nullable(),
           phases: array()
             .of(
               object({
