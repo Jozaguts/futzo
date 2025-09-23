@@ -10,6 +10,7 @@ export type EliminationRules = {
 export interface EliminationPayload {
   teams_to_next_round: number;
   round_trip: boolean;
+  elimination_round_trip: boolean;
   phases: Array<
     EliminationPhase & {
       rules: EliminationRules | null;

@@ -2,70 +2,27 @@
   import type { EliminationPhase, FormEliminationPhaseStep, Phase, TournamentRules } from '~/models/Schedule'
   import { getSchemaForFormat } from '~/utils/tournamentSchemas'
   import { buildEliminationPayload } from '~/utils/buildEliminationPayload'
-  import { DISTRIBUTION_GROUPS, vuetifyConfig } from '~/utils/constants'
+  const panels = ref(['group-phase'])
   const { scheduleSettings, scheduleStoreRequest, calendarSteps } = storeToRefs(useScheduleStore())
-  let initialValues: FormEliminationPhaseStep = {
-    teams_to_next_round: scheduleStoreRequest.value.elimination_phase.teams_to_next_round,
-    elimination_round_trip: scheduleStoreRequest.value.elimination_phase.elimination_round_trip,
-    phases: scheduleStoreRequest.value.elimination_phase.phases.filter((p) => p.is_active),
-  }
-  if (scheduleSettings.value.format.name === 'Grupos y Eliminatoria') {
-    initialValues = {
-      ...initialValues,
-      group_phase: {
-        teams_per_group: 4,
-        advance_top_n: 2,
-        include_best_thirds: false,
-        best_thirds_count: null,
-      },
-    }
-  }
   const schema = computed(() => getSchemaForFormat(scheduleSettings.value.format.name, scheduleSettings.value.teams))
-
-  const { defineField, meta, values } = useForm<FormEliminationPhaseStep>({
+  const { defineField, meta, values, errors } = useForm<FormEliminationPhaseStep>({
     validationSchema: schema,
     initialValues: buildEliminationPayload(
       scheduleSettings.value.format.name,
       scheduleSettings.value.tournament_id as number,
-      scheduleSettings.value.phases
+      scheduleSettings.value.phases,
+      {
+        group_phase: {
+          option_id: scheduleSettings.value.group_phase_option_id,
+        },
+      }
     ),
-    // validateOnMount: true,
+    validateOnMount: true,
   })
   const [teams_to_next_round, teams_to_next_round_props] = defineField('teams_to_next_round', vuetifyConfig)
   const [elimination_round_trip, elimination_round_trip_props] = defineField('elimination_round_trip', vuetifyConfig)
   const [phases, phases_props] = defineField('phases', vuetifyConfig)
-  const [group_phase, group_phase_props] = defineField('group_phase', vuetifyConfig) // solo si aplica
-  const [advance_top_n, advance_top_n_props] = defineField('group_phase.advance_top_n', vuetifyConfig)
-  const [teams_per_group, teams_per_group_props] = defineField('group_phase.teams_per_group', vuetifyConfig)
-  const [include_best_thirds, include_best_thirds_props] = defineField('group_phase.include_best_thirds', vuetifyConfig)
-  const [best_thirds_count, best_thirds_count_props] = defineField('group_phase.best_thirds_count', vuetifyConfig)
-  const tournamentTeams = computed(() => scheduleSettings.value.teams)
-  const itemProps = (item: EliminationPhase) => {
-    return {
-      ...item,
-      disabled: item.name === 'Fase de grupos' || item.name === 'Tabla general',
-      active: item.name === 'Fase de grupos' || item.name === 'Tabla general',
-    }
-  }
-  const teamsToNestRoundHandler = (items: EliminationPhase[]) => {
-    const selected = items.map((f) => f.name)
-    if (selected.includes('Octavos de Final')) {
-      teams_to_next_round.value = 16
-      return
-    }
-    if (selected.includes('Cuartos de Final')) {
-      teams_to_next_round.value = 8
-      return
-    }
-    if (selected.includes('Semifinales')) {
-      teams_to_next_round.value = 4
-      return
-    }
-    if (selected.includes('Final')) {
-      teams_to_next_round.value = 2
-      return
-    }
-  }
+  const [option_id, option_id_props] = defineField('group_phase.option_id', vuetifyConfig)
   watch(
     meta,
     (value) => {
@@ -83,18 +40,32 @@
     },
     { deep: true }
   )
-  watch(advance_top_n, () => {
-    if (advance_top_n.value !== 2) {
-      include_best_thirds.value = false
-      best_thirds_count.value = null
-    }
-  })
+
+  const isGroupAndEliminationFormat = computed(() => scheduleSettings.value.format.name === 'Grupos y Eliminatoria')
+  const teamsPerGroup = computed(() =>
+    scheduleSettings.value.group_configuration_options.map((option) => ({
+      title: option.group_phase.teams_per_group,
+      value: option.id,
+    }))
+  )
+  const groupConfigurationOptionsSelected = computed(() =>
+    scheduleSettings.value.group_configuration_options.find((option) => option.id === option_id.value)
+  )
+  watch(
+    phases,
+    (value) => {
+      if (value.length) {
+        const greater = value.filter((p) => p.is_active).sort((a, b) => b.min_teams_for - a.min_teams_for)
+        if (greater.length) {
+          teams_to_next_round.value = greater[0]?.min_teams_for ?? (null as number)
+        }
+      }
+    },
+    { deep: true }
+  )
+  const step = ref('group-phase')
 </script>
 <template>
-  <pre>
-
-  {{ group_phase }}
-  </pre>
   <v-container class="container">
     <BaseInput label="Formato" disabled v-model="scheduleSettings.format.name" />
     <BaseInput label="Ida y Vuelta?" sublabel="En rondas de eliminación ">
@@ -102,33 +73,81 @@
         <v-switch v-model="elimination_round_trip" v-bind="elimination_round_trip_props"></v-switch>
       </template>
     </BaseInput>
-    <BaseInput label="Equipos por grupo">
-      <template #input>
-        <v-select
-          v-model="teams_per_group"
-          hint="Mínimo 3 maximo 6 por grupo"
-          persistent-hint
-          :items="DISTRIBUTION_GROUPS[tournamentTeams]"
-        ></v-select>
-      </template>
-    </BaseInput>
-    <v-expansion-panels multiple>
-      <!--      <v-expansion-panel value="group-phase" elevation="0" class="futzo-rounded mb-3">-->
-      <!--        <v-expansion-panel-title>-->
-      <!--          <div class="d-flex align-center justify-space-between w-100">-->
-      <!--            <span class="text-subtitle-2 font-weight-medium">Fase de grupos</span>-->
-      <!--            <v-chip color="primary" size="small" variant="tonal">Activa</v-chip>-->
-      <!--          </div>-->
-      <!--        </v-expansion-panel-title>-->
-      <!--        <v-expansion-panel-text>-->
-      <!--          <div class="text-body-2">-->
-      <!--            La fase de grupos siempre está activa y define los equipos que avanzan a la eliminación.-->
-      <!--          </div>-->
-      <!--        </v-expansion-panel-text>-->
-      <!--      </v-expansion-panel>-->
+    <v-divider class="my-4"></v-divider>
+    <v-row>
+      <v-col>
+        <small class="text-error">{{ errors['phases'] }}</small>
+      </v-col>
+    </v-row>
+    <v-expansion-panels model-value="group-phase">
+      <v-expansion-panel value="group-phase" elevation="0" class="futzo-rounded mb-3">
+        <v-expansion-panel-title>
+          <div class="d-flex align-center justify-space-between w-100">
+            <span class="text-subtitle-2 font-weight-medium">Fase de grupos</span>
+            <v-chip color="primary" size="small" variant="tonal">Activa</v-chip>
+          </div>
+        </v-expansion-panel-title>
+        <v-expansion-panel-text>
+          <BaseInput label="Equipos por grupo">
+            <template #input>
+              <v-select
+                v-model="option_id"
+                persistent-hint
+                :items="teamsPerGroup"
+                item-value="value"
+                item-title="title"
+                v-bind="option_id_props"
+                placeholder="Selecciona la cantidad de equipos"
+              ></v-select>
+            </template>
+          </BaseInput>
+          <v-divider class="my-4" />
+          <v-container fluid class="pa-0" v-if="!!groupConfigurationOptionsSelected">
+            <v-table>
+              <thead>
+                <tr>
+                  <th class="text-left">Grupos</th>
+                  <th class="text-left">Siguiente fase</th>
+                  <th class="text-left">Clasifican</th>
+                  <th class="text-left">Por grupo</th>
+                  <th class="text-left">Tercer lugares</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="text-center">
+                    <span>{{ groupConfigurationOptionsSelected.group_sizes.join('-') }}</span>
+                  </td>
+                  <td class="text-center">
+                    <span> {{ groupConfigurationOptionsSelected.elimination.phase_name }}</span>
+                  </td>
+                  <td class="text-center">
+                    <span>{{ groupConfigurationOptionsSelected.elimination.teams }}</span>
+                  </td>
+                  <td class="text-center">
+                    <span> {{ groupConfigurationOptionsSelected.group_phase.advance_top_n }}</span>
+                  </td>
+                  <td class="text-center">
+                    <span> {{ groupConfigurationOptionsSelected.group_phase.include_best_thirds ? 'Si' : 'No' }}</span>
+                    <span v-if="groupConfigurationOptionsSelected.group_phase.include_best_thirds">
+                      ({{ groupConfigurationOptionsSelected.group_phase.best_thirds_count }})</span
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </v-table>
+            <v-row>
+              <v-col>
+                <small class="text-error text-caption float-right">
+                  {{ errors['teams_to_next_round'] }}
+                </small>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
       <v-expansion-panel
-        v-for="(phase, index) in scheduleSettings.phases"
-        :key="phase.id"
+        v-for="phase in phases.filter((p) => p.name !== 'Fase de grupos')"
         :value="phase.name"
         elevation="0"
         class="futzo-rounded mb-3"
@@ -136,35 +155,83 @@
         <v-expansion-panel-title>
           <div class="d-flex align-center justify-space-between w-100">
             <span class="text-subtitle-2 font-weight-medium">{{ phase.name }}</span>
-            <v-chip :color="phase.is_active ? 'primary' : 'secondary'" size="small" variant="tonal"> asdas </v-chip>
-
-            <!--            {{ statusLabels[phase.status] }}-->
+            <v-chip :color="phase.is_active ? 'primary' : 'secondary'" size="small" variant="tonal">{{
+              phase.is_active ? 'Activa' : 'Desactivada'
+            }}</v-chip>
           </div>
         </v-expansion-panel-title>
-        <!--        <v-expansion-panel-text>-->
-        <!--          <v-row>-->
-        <!--            <v-col cols="12" md="12">-->
-        <!--              <div class="text-caption text-medium-emphasis">Equipos requeridos</div>-->
-        <!--              &lt;!&ndash;              <div class="text-body-1 font-weight-medium">{{ PHASE_REQUIREMENTS[phase.name] ?? '-' }}</div>&ndash;&gt;-->
-        <!--            </v-col>-->
-        <!--            <v-col cols="12" md="12">-->
-        <!--              <div class="text-caption text-medium-emphasis">Activa</div>-->
-        <!--              <v-switch-->
-        <!--                :disabled="phase.disabled"-->
-        <!--                :model-value="phase.is_active"-->
-        <!--                color="primary"-->
-        <!--                density="compact"-->
-        <!--                hide-details-->
-        <!--              />-->
-        <!--            </v-col>-->
-        <!--            <v-col cols="12" md="12">-->
-        <!--              <div class="text-caption text-medium-emphasis">Partidos</div>-->
-        <!--              <div class="text-body-1 font-weight-medium">-->
-        <!--                &lt;!&ndash;                {{ eliminationRulesForPhase(phase)?.round_trip ? 'Ida y vuelta' : 'Partido único' }}&ndash;&gt;-->
-        <!--              </div>-->
-        <!--            </v-col>-->
-        <!--          </v-row>-->
-        <!--        </v-expansion-panel-text>-->
+        <v-expansion-panel-text>
+          <v-container>
+            <v-row>
+              <v-col>
+                <div class="d-flex align-center justify-space-between w-100">
+                  <v-chip :color="phase.is_active ? 'primary' : 'secondary'" size="small" variant="tonal"
+                    >{{ phase.is_active ? 'Activa' : 'Desactivada' }}
+                  </v-chip>
+                  <v-switch
+                    v-model="phase.is_active"
+                    color="primary"
+                    density="compact"
+                    hide-details
+                    @update:model-value="
+                      (value) => {
+                        if (!value) {
+                          phase.rules.away_goals = false
+                          phase.rules.round_trip = false
+                          phase.rules.extra_time = false
+                          phase.rules.penalties = false
+                        }
+                      }
+                    "
+                  />
+                </div>
+              </v-col>
+            </v-row>
+            <BaseInput label="Regla de desempate" sublabel="Avanza">
+              <template #input>
+                <v-select
+                  :disabled="!phase.is_active"
+                  v-model="phase.rules.advance_if_tie"
+                  :items="[
+                    { value: 'better_seed', title: 'Mejor en la tabla' },
+                    { value: 'none', title: 'Se define en el campo' },
+                  ]"
+                ></v-select>
+              </template>
+            </BaseInput>
+            <v-divider class="my-4" />
+            <v-row>
+              <v-col cols="12" md="4">
+                <div class="text-caption text-medium-emphasis">Ida y Vuelta</div>
+                <v-switch v-model="phase.rules.round_trip" color="primary" density="compact" hide-details />
+              </v-col>
+              <v-col cols="12" md="4">
+                <div class="text-caption text-medium-emphasis">Tiempo Extra</div>
+                <v-switch v-model="phase.rules.extra_time" color="primary" density="compact" hide-details />
+              </v-col>
+              <v-col cols="12" md="4">
+                <div class="text-caption text-medium-emphasis">Penales</div>
+                <v-switch
+                  :disabled="phase.rules.advance_if_tie === 'better_seed'"
+                  v-model="phase.rules.penalties"
+                  color="primary"
+                  density="compact"
+                  hide-details
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <div class="text-caption text-medium-emphasis">Gol en contra</div>
+                <v-switch
+                  :disabled="phase.rules.advance_if_tie === 'better_seed'"
+                  v-model="phase.rules.away_goals"
+                  color="primary"
+                  density="compact"
+                  hide-details
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
   </v-container>
