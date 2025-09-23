@@ -17,6 +17,7 @@
     scheduleSettings,
   } = storeToRefs(useScheduleStore())
   const isFetching = ref(false)
+  const loading = ref(false)
   const leaveHandler = () => {
     useScheduleStore().$resetScheduleStore()
   }
@@ -25,7 +26,12 @@
   })
   const next = () => {
     if (calendarSteps.value.steps[calendarSteps.value.current].next_step === 'save') {
-      useScheduleStore().generateSchedule()
+      loading.value = true
+      useScheduleStore()
+        .generateSchedule()
+        .finally(() => {
+          loading.value = false
+        })
     } else {
       calendarSteps.value.current = calendarSteps.value.steps[calendarSteps.value.current]
         .next_step as CurrentCalendarStep
@@ -69,12 +75,13 @@
           </v-col>
           <v-col cols="6">
             <v-btn
-              :disabled="disabled"
+              :disabled="disabled || loading"
               variant="elevated"
               block
               color="primary"
               density="comfortable"
               size="large"
+              :loading="loading"
               @click="next"
               >{{ calendarSteps.steps[calendarSteps.current].next_label }}
             </v-btn>
