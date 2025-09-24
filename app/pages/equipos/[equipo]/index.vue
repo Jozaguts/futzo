@@ -71,7 +71,7 @@
           <NextGames :nextGames />
         </div>
         <div class="right-up-zone">
-          <PlayersList title="Jugadores">
+          <PlayersList title="Jugadores" v-if="homePlayers.length > 0">
             <template #table-body>
               <tr v-for="player in homePlayers" :key="player.player_id">
                 <td>
@@ -80,13 +80,29 @@
               </tr>
             </template>
           </PlayersList>
+          <v-card height="100%" v-else>
+            <v-empty-state
+              image="/no-data.svg"
+              size="100"
+              text="No hay jugadores en este equipo"
+              title="Jugadores"
+            ></v-empty-state>
+          </v-card>
         </div>
         <div class="right-down-zone">
-          <NextGamesToday title="Últimos resultados">
+          <NextGamesToday title="Últimos resultados" v-if="lastGames.length > 0">
             <template #content>
               <LastGames :lastGames="lastGames" />
             </template>
           </NextGamesToday>
+          <v-card height="100%" width="100%" v-else>
+            <v-empty-state
+              image="/no-data.svg"
+              size="100"
+              text="El equipo no ha finalizado algun partido"
+              title="Partidos"
+            ></v-empty-state>
+          </v-card>
         </div>
         <CreateTeamDialog />
       </div>
