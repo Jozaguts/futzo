@@ -152,6 +152,12 @@ export type Match = {
   details: MatchDetails;
   result: string;
   options: MatchOptions[];
+  group?: {
+    key: string;
+    name: string;
+    teams_count: number;
+    teams: MatchAway[];
+  };
 };
 export type MatchOptions = {
   available_intervals: AvailableIntervals;
