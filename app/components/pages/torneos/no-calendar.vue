@@ -6,7 +6,6 @@
     return isLoadingSchedules.value ? 'Cargando...' : 'Crear calendario'
   })
   const dialogHandler = async () => {
-    console.log('test')
     await useScheduleStore().settingsSchedule()
     scheduleDialog.value = !scheduleDialog.value
   }
