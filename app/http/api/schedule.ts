@@ -26,14 +26,12 @@ export const generateSchedule = async (tournamentId: number, data: ScheduleStore
   const client = useSanctumClient();
   if (data.elimination_phase.group_phase) {
     const group_phase = { ...data.elimination_phase.group_phase };
-    console.log({ group_phase });
     delete data.elimination_phase.group_phase;
     data = {
       ...data,
       group_phase,
     };
   }
-  console.log(data);
   return await client(`/api/v1/admin/tournaments/${tournamentId}/schedule`, {
     method: 'POST',
     body: JSON.stringify(data),

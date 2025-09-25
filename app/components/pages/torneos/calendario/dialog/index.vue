@@ -4,18 +4,7 @@
   import { useScheduleStore } from '~/stores/useScheduleStore'
   import { storeToRefs } from '#imports'
 
-  const {
-    calendarSteps,
-    scheduleDialog,
-    scheduleStoreRequest,
-    schedulePagination,
-    hasEnoughCapacity,
-    requiredMinutesPerRound,
-    reservedMinutesPerWeek,
-    matchDurationMins,
-    matchesPerRound,
-    scheduleSettings,
-  } = storeToRefs(useScheduleStore())
+  const { calendarSteps, scheduleDialog } = storeToRefs(useScheduleStore())
   const isFetching = ref(false)
   const loading = ref(false)
   const leaveHandler = () => {
