@@ -50,13 +50,13 @@ export const getSchemaForFormat = (format: string, total_teams: number) => {
           elimination_round_trip: boolean().nullable(),
           phases: array()
             .of(
-              object({
-                id: number().required(),
-                name: string().required(),
-                is_active: boolean(),
-                is_completed: boolean(),
-                min_teams_for: number().nullable(),
-                rules: object().nullable(),
+              phaseBaseSchema.when('name', {
+                is: (name: string) =>
+                  ['Dieciseisavos de Final', 'Octavos de Final', 'Cuartos de Final', 'Semifinales', 'Final'].includes(
+                    name
+                  ),
+                then: () => phaseWithRulesSchema, // si es KO → exige rules
+                otherwise: () => phaseBaseSchema, // si es Fase de grupos / Tabla general → rules puede ser null
               })
             )
             .min(1, 'Selecciona al menos una fase para el torneo')
@@ -71,22 +71,78 @@ export const getSchemaForFormat = (format: string, total_teams: number) => {
             .test(
               'fase-chain-validation',
               'Las fases seleccionadas no cumplen con la secuencia obligatoria',
-              (value) => {
+              (value, ctx) => {
                 if (!value) return false;
-                const selected = value.map((f) => f.name);
+                // Filter active phases only
+                const active = value.filter((f) => f.is_active).map((f) => f.name);
 
-                if (selected.includes('Octavos de Final')) {
-                  return ['Octavos de Final', 'Cuartos de Final', 'Semifinales', 'Final'].every((f) =>
-                    selected.includes(f)
-                  );
+                // Helper to check if all required phases are active
+                const requireAllActive = (required: string[]) => {
+                  const missing = required.filter((f) => !active.includes(f));
+                  return { ok: missing.length === 0, missing };
+                };
+
+                if (active.includes('Dieciseisavos de Final')) {
+                  const { ok, missing } = requireAllActive([
+                    'Dieciseisavos de Final',
+                    'Octavos de Final',
+                    'Cuartos de Final',
+                    'Semifinales',
+                    'Final',
+                  ]);
+                  if (!ok) {
+                    return ctx.createError({
+                      message: `Las fases: ${missing.join(', ')} son obligatorias`,
+                    });
+                  }
                 }
-                if (selected.includes('Cuartos de Final')) {
-                  return ['Semifinales', 'Final'].every((f) => selected.includes(f));
+
+                // Octavos
+                if (active.includes('Octavos de Final')) {
+                  const { ok, missing } = requireAllActive([
+                    'Octavos de Final',
+                    'Cuartos de Final',
+                    'Semifinales',
+                    'Final',
+                  ]);
+                  if (!ok) {
+                    return ctx.createError({
+                      message: `Las fases: ${missing.join(', ')} son obligatorias`,
+                    });
+                  }
                 }
-                if (selected.includes('Semifinales')) {
-                  return selected.includes('Final');
+
+                // Cuartos
+                if (active.includes('Cuartos de Final')) {
+                  const { ok, missing } = requireAllActive(['Cuartos de Final', 'Semifinales', 'Final']);
+                  if (!ok) {
+                    return ctx.createError({
+                      message: `Las fases: ${missing.join(', ')} son obligatorias`,
+                    });
+                  }
                 }
-                return true;
+
+                // Semifinales
+                if (active.includes('Semifinales')) {
+                  const { ok, missing } = requireAllActive(['Semifinales', 'Final']);
+                  if (!ok) {
+                    return ctx.createError({
+                      message: `Las fases: ${missing.join(', ')} son obligatorias`,
+                    });
+                  }
+                }
+
+                // Final
+                if (active.includes('Final')) {
+                  const { ok, missing } = requireAllActive(['Final']);
+                  if (!ok) {
+                    return ctx.createError({
+                      message: `Las fases: ${missing.join(', ')} son obligatorias`,
+                    });
+                  }
+                }
+
+                return true; // if none of the knockout phases are active
               }
             ),
         })
@@ -100,7 +156,10 @@ export const getSchemaForFormat = (format: string, total_teams: number) => {
           phases: array()
             .of(
               phaseBaseSchema.when('name', {
-                is: (name: string) => ['Octavos de Final', 'Cuartos de Final', 'Semifinales', 'Final'].includes(name),
+                is: (name: string) =>
+                  ['Dieciseisavos de Final', 'Octavos de Final', 'Cuartos de Final', 'Semifinales', 'Final'].includes(
+                    name
+                  ),
                 then: () => phaseWithRulesSchema, // si es KO → exige rules
                 otherwise: () => phaseBaseSchema, // si es Fase de grupos / Tabla general → rules puede ser null
               })

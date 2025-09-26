@@ -94,7 +94,7 @@ export type EliminationPhase = {
   is_active: boolean;
   is_completed: boolean;
   min_teams_for: number | null;
-  rules: Rules | null;
+  rules?: Rules | null;
 };
 export type Rules = {
   round_trip: boolean;
