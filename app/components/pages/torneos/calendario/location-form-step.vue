@@ -20,7 +20,6 @@
       ...payload,
     })
   }
-
   const availabilities = computed(() => {
     const data = {} as Record<WeekDay, Day>
     ;(Object.keys(field.value.availability) as Array<keyof LocationFieldsRequest['availability']>).forEach((key) => {
@@ -103,11 +102,7 @@
         :disabled="isLastStep"
         >Anterior
       </v-btn>
-      <v-btn
-        color="primary"
-        variant="outlined"
-        class="vertical-stepper-button next"
-        @click="emits('next', formPayload)"
+      <v-btn color="primary" variant="outlined" class="vertical-stepper-button next" @click="emits('next', formPayload)"
         >Marcar como completado
         <template #append>
           <Icon name="mdi-arrow-right"></Icon>

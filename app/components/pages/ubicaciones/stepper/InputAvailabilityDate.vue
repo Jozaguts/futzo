@@ -76,20 +76,18 @@
       <v-col cols="12" class="pr-2 pt-2">
         <v-card class="futzo-rounded">
           <v-card-title> {{ label }}</v-card-title>
-          <v-card-subtitle>Horas disponibles {{ day.available_range }}</v-card-subtitle>
+          <v-card-subtitle
+            >{{ day?.intervals?.length ? ' Horas disponibles' : 'No encontramos horarios disponibles.' }}
+            {{ day.available_range }}</v-card-subtitle
+          >
           <v-card-text>
             <v-switch
+              v-if="day?.intervals?.length"
               v-model="selectAll"
               label="Todo el día"
               :disabled="disabled || !selectableValues.length"
             ></v-switch>
-            <v-chip-group
-              column
-              multiple
-              selected-class="text-primary"
-              v-model="selectedValues"
-              :disabled="disabled"
-            >
+            <v-chip-group column multiple selected-class="text-primary" v-model="selectedValues" :disabled="disabled">
               <v-chip
                 v-for="(interval, index) in day.intervals"
                 :key="index"
