@@ -2,7 +2,6 @@
   import type { FormEliminationPhaseStep } from '~/models/Schedule'
   import { getSchemaForFormat } from '~/utils/tournamentSchemas'
   import { buildEliminationPayload } from '~/utils/buildEliminationPayload'
-  const panels = ref(['group-phase'])
   const { scheduleSettings, scheduleStoreRequest, calendarSteps } = storeToRefs(useScheduleStore())
   const schema = computed(() => getSchemaForFormat(scheduleSettings.value.format.name, scheduleSettings.value.teams))
   const { defineField, meta, values, errors } = useForm<FormEliminationPhaseStep>({
@@ -41,7 +40,13 @@
     { deep: true }
   )
 
-  const isGroupAndEliminationFormat = computed(() => scheduleSettings.value.format.name === 'Grupos y Eliminatoria')
+  const hasPhases = computed(() => {
+    return (
+      scheduleSettings.value.format.name === 'Grupos y Eliminatoria' ||
+      scheduleSettings.value.format.name === 'Liga y Eliminatoria'
+    )
+  })
+  const hasGroupPhase = computed(() => scheduleSettings.value.format.name === 'Grupos y Eliminatoria')
   const teamsPerGroup = computed(() =>
     scheduleSettings.value.group_configuration_options.map((option) => ({
       title: option.group_phase.teams_per_group,
@@ -55,32 +60,31 @@
     phases,
     (value) => {
       if (value.length) {
-        const greater = value.filter((p) => p.is_active).sort((a, b) => b.min_teams_for - a.min_teams_for)
+        const greater = value.filter((p) => p.is_active).sort((a, b) => b?.min_teams_for - a?.min_teams_for)
         if (greater.length) {
-          teams_to_next_round.value = greater[0]?.min_teams_for ?? (null as number)
+          teams_to_next_round.value = greater[0]?.min_teams_for as number
         }
       }
     },
     { deep: true }
   )
-  const step = ref('group-phase')
 </script>
 <template>
   <v-container class="container">
     <BaseInput label="Formato" disabled v-model="scheduleSettings.format.name" />
-    <BaseInput v-if="isGroupAndEliminationFormat" label="Ida y Vuelta?" sublabel="En rondas de eliminación">
+    <BaseInput v-if="hasPhases" label="Ida y Vuelta?" sublabel="En rondas de eliminación">
       <template #input>
         <v-switch v-model="elimination_round_trip" v-bind="elimination_round_trip_props"></v-switch>
       </template>
     </BaseInput>
-    <v-row v-if="isGroupAndEliminationFormat">
+    <v-row v-if="hasPhases">
       <v-divider class="my-2"></v-divider>
       <v-col cols="12">
         <small class="text-error">{{ errors['phases'] }}</small>
       </v-col>
       <v-col cols="12">
         <v-expansion-panels model-value="group-phase">
-          <v-expansion-panel value="group-phase" elevation="0" class="futzo-rounded mb-3">
+          <v-expansion-panel value="group-phase" elevation="0" class="futzo-rounded mb-3" v-if="hasGroupPhase">
             <v-expansion-panel-title>
               <div class="d-flex align-center justify-space-between w-100">
                 <span class="text-subtitle-2 font-weight-medium">Fase de grupos</span>
@@ -149,7 +153,7 @@
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel
-            v-for="phase in phases.filter((p) => p.name !== 'Fase de grupos')"
+            v-for="phase in phases.filter((p) => p.name !== 'Fase de grupos').filter((p) => p.name !== 'Tabla general')"
             :value="phase.name"
             elevation="0"
             class="futzo-rounded mb-3"
@@ -178,11 +182,12 @@
                         @update:model-value="
                           (value) => {
                             if (!value) {
-                              console.log(phase.rules)
-                              phase.rules.away_goals = false
-                              phase.rules.round_trip = false
-                              phase.rules.extra_time = false
-                              phase.rules.penalties = false
+                              if (phase.rules) {
+                                phase.rules.away_goals = false
+                                phase.rules.round_trip = false
+                                phase.rules.extra_time = false
+                                phase.rules.penalties = false
+                              }
                             }
                           }
                         "
@@ -199,6 +204,15 @@
                         { value: 'better_seed', title: 'Mejor en la tabla' },
                         { value: 'none', title: 'Se define en el campo' },
                       ]"
+                      @update:model-value="
+                        (value) => {
+                          if (value === 'better_seed') {
+                            phase.rules.extra_time = false
+                            phase.rules.penalties = false
+                            phase.rules.away_goals = false
+                          }
+                        }
+                      "
                     ></v-select>
                   </template>
                 </BaseInput>
@@ -210,12 +224,18 @@
                   </v-col>
                   <v-col cols="12" md="4">
                     <div class="text-caption text-medium-emphasis">Tiempo Extra</div>
-                    <v-switch v-model="phase.rules.extra_time" color="primary" density="compact" hide-details />
+                    <v-switch
+                      :disabled="phase?.rules?.advance_if_tie === 'better_seed'"
+                      v-model="phase.rules.extra_time"
+                      color="primary"
+                      density="compact"
+                      hide-details
+                    />
                   </v-col>
                   <v-col cols="12" md="4">
                     <div class="text-caption text-medium-emphasis">Penales</div>
                     <v-switch
-                      :disabled="phase.rules.advance_if_tie === 'better_seed'"
+                      :disabled="phase?.rules?.advance_if_tie === 'better_seed'"
                       v-model="phase.rules.penalties"
                       color="primary"
                       density="compact"
@@ -225,7 +245,7 @@
                   <v-col cols="12" md="4">
                     <div class="text-caption text-medium-emphasis">Gol en contra</div>
                     <v-switch
-                      :disabled="phase.rules.advance_if_tie === 'better_seed'"
+                      :disabled="phase?.rules?.advance_if_tie === 'better_seed' || !phase?.rules?.round_trip"
                       v-model="phase.rules.away_goals"
                       color="primary"
                       density="compact"
