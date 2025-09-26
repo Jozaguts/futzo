@@ -25,7 +25,19 @@
             if (!value) return true
             return value?.type?.includes('image/') || typeof value === 'string'
           }),
-        iso_code: number().lessThan(999, 'numero de lada invalido'),
+        iso_code: number()
+          .when('phone', {
+            is: (value) => {
+              return !!value
+            },
+            then: (schema: any) => {
+              return schema.required('Campo requerido')
+            },
+            otherwise: (schema: any) => {
+              return schema.nullable()
+            },
+          })
+          .lessThan(999, 'numero de lada invalido'),
       })
     ),
     initialValues: teamStoreRequest.value.coach,
@@ -48,13 +60,17 @@
     meta,
     () => {
       steps.value.steps[steps.value.current].disable = !meta.value.valid
-      if (meta.value.valid && meta.value.touched) {
+      if (meta.value.valid && meta.value.dirty) {
+        let { name, email, image, iso_code, phone } = values
+        phone = iso_code && phone ? `+${iso_code}${phone}` : ''
         teamStoreRequest.value.coach = {
-          name: values.name,
-          email: values.email,
-          phone: `+${values.iso_code}${values.phone}`,
-          image: values.image,
+          name,
+          email,
+          image,
+          phone,
         }
+      } else if (!meta.value.valid && meta.value.touched) {
+        steps.value.steps[steps.value.current].disable = !meta.value.valid
       }
     },
     { deep: true }

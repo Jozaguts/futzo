@@ -32,9 +32,7 @@
       loading.value = true
       useTeamStore()
         .createTeam()
-        .then(async (response) => {
-          console.log(response?.data?.data)
-          console.log(response?.status)
+        .then(async () => {
           await registeredTeamHandler()
         })
         .finally(async () => {
