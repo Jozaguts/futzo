@@ -19,7 +19,7 @@
     disabled: boolean().required(),
   })
   const daySchema = object({
-    enabled: boolean().required(),
+    enabled: boolean().nullable(),
     available_range: string().when('enabled', {
       is: true,
       then: (schema) =>
@@ -40,7 +40,7 @@
         ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
         'El label debe ser un día válido'
       )
-      .required(),
+      .nullable(),
   })
   const availabilitySchema = object({
     monday: daySchema.required(),
@@ -123,15 +123,7 @@
     },
     { deep: true, immediate: true }
   )
-  watch(
-    meta,
-    (value) => {
-      if (value) {
-        console.log(meta.value.valid)
-      }
-    },
-    { deep: true, immediate: true }
-  )
+  // validator watch removed
 </script>
 <template>
   <v-container>
