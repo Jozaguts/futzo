@@ -73,6 +73,10 @@ export interface Tournament {
   updated_at: Date;
   teams: Team[];
   substitutions_per_team: number;
+  format: {
+    id: number;
+    name: string;
+  };
 }
 
 export interface TournamentForm {

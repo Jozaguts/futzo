@@ -1,8 +1,9 @@
 <script setup lang="ts">
   import getHeaders from '~/utils/headers-table'
   import type { ExportListItem } from '~/models/tournament'
-  const { standings } = defineProps<{
+  const { standings, groupStanding } = defineProps<{
     standings: any
+    groupStanding: any
   }>()
   const headers = getHeaders('standings')
   const items: ExportListItem[] = [
@@ -16,18 +17,39 @@
       .exportStandingTournament(item.value)
       .finally(() => (loading.value = false))
   }
+  const tableType = ref('general')
+  const tableChangeHandler = (type: string) => {
+    tableType.value = type
+  }
 </script>
 <template>
   <v-table class="positions-table futzo-table">
     <template #top>
       <div class="d-flex align-center">
-        <h2 class="positions-table-title mt-0">Tabla de posiciones</h2>
+        <h2 class="positions-table-title mt-0 mr-2">Tabla de posiciones</h2>
         <v-spacer />
         <v-menu location="start" transition="slide-x-transition" :close-on-content-click="false">
           <template v-slot:activator="{ props }">
             <v-btn icon="mdi-dots-vertical" variant="plain" v-bind="props" :ripple="false" />
           </template>
           <v-list density="compact" nav :disabled="loading">
+            <v-list-subheader> Tabla </v-list-subheader>
+            <v-list-item
+              :active="tableType === 'general'"
+              v-model="tableType"
+              value="general"
+              density="compact"
+              @click="() => tableChangeHandler('general')"
+              >General</v-list-item
+            >
+            <v-list-item
+              :active="tableType === 'groups'"
+              v-model="tableType"
+              value="groups"
+              density="compact"
+              @click="() => tableChangeHandler('groups')"
+              >Grupos</v-list-item
+            >
             <v-list-subheader> Exportar </v-list-subheader>
             <v-list-item v-for="(item, i) in items" :key="i" :value="i" @click="exportAsHandler(item)">
               <template #prepend>
@@ -42,7 +64,22 @@
     </template>
     <template #wrapper>
       <div class="v-table__wrapper">
-        <Table :headers="headers" :items="standings" itemKey="name" :showFooter="false" show-complete />
+        <Table
+          v-if="tableType === 'general'"
+          :headers="headers"
+          :items="standings"
+          itemKey="name"
+          :showFooter="false"
+          show-complete
+        />
+        <div v-else-if="tableType === 'groups'">
+          <v-card v-for="group in groupStanding.groups">
+            <v-card-title> Grupo {{ group.group }} </v-card-title>
+            <v-card-text>
+              <Table :headers="headers" :items="group.standings" itemKey="name" :showFooter="false" show-complete />
+            </v-card-text>
+          </v-card>
+        </div>
       </div>
     </template>
   </v-table>

@@ -67,3 +67,11 @@ export const initPreRegister = async (slug: string) => {
   const client = useSanctumClient();
   return await client<PreRegisterTournamentResponse>(`/api/v1/public/tournaments/${slug}/registrations/catalogs`);
 };
+export const getGroupStanding = async (tournamentId: number, phase_id?: number) => {
+  const client = useSanctumClient();
+  let url = `/api/v1/admin/tournaments/${tournamentId}/group-standings`;
+  if (phase_id) {
+    url += '?phase_id=' + phase_id;
+  }
+  return await client(url);
+};

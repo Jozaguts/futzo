@@ -9,7 +9,7 @@
   import AppBar from '~/components/layout/AppBar.vue'
   import AppBarBtn from '~/components/pages/torneos/torneo/app-bar-btn.vue'
   import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
-  const { standings, tournamentId, lastResults, nextGames } = storeToRefs(useTournamentStore())
+  const { standings, tournamentId, lastResults, nextGames, groupStanding } = storeToRefs(useTournamentStore())
   const route = useRoute()
   onMounted(() => {
     if (tournamentId.value) {
@@ -39,7 +39,7 @@
     <template #default>
       <div class="teams-team-container">
         <div class="primary-zone">
-          <PositionsTable :standings="standings" />
+          <PositionsTable :standings="standings" :groupStanding="groupStanding" />
         </div>
         <div class="secondary-zone">
           <NextGames :nextGames="nextGames" />

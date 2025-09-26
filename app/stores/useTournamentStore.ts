@@ -91,6 +91,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   const selectedLocations = ref<TournamentLocation[]>([]);
   const selectedLocationsHasError = ref(false);
   const standings = ref();
+  const groupStanding = ref();
   const tournamentStats = ref<TournamentStats>({
     goals: [],
     assistance: [],
@@ -219,6 +220,9 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   };
   const getStandings = async () => {
     standings.value = await tournamentAPI.getStandings(tournamentId.value as number);
+    if (tournament.value.format.name === 'Grupos y Eliminatoria') {
+      groupStanding.value = await tournamentAPI.getGroupStanding(tournamentId.value as number);
+    }
   };
   const getTournamentBySlug = async (slug: string) => {
     const data = await tournamentAPI.getBySlug(slug);
@@ -285,6 +289,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     standings,
     tournamentStats,
     lastResults,
+    groupStanding,
     getTournamentLocations,
     loadTournaments,
     storeTournament,
