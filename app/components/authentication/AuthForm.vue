@@ -84,9 +84,7 @@
         <v-card-text>
           <v-form @submit.prevent="submitHandler" class="px-4">
             <v-row>
-              <v-col cols="12" class="text-center mt-8 pb-0">
-                <AuthProvider />
-              </v-col>
+              <AuthProvider />
               <v-col cols="12" class="d-flex align-center">
                 <VDivider />
                 <span class="mx-4 separator-text">o</span>
