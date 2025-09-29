@@ -11,7 +11,7 @@
     :border="false"
     elevation="0"
     app
-    height="90"
+    :height="mobile ? 50 : 90"
     :extension-height="mobile && extended ? 55 : 0"
     :extended="extended"
   >

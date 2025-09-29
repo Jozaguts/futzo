@@ -19,19 +19,13 @@
 :root {
   --header-height: 90px; /* ajusta a tu header real */
 }
+
 .main {
   grid-area: main;
   box-sizing: border-box;
   padding: 40px;
   min-height: 0; /* importante para permitir encoger */
 }
-@media (max-width: 600px) {
-  .main {
-    padding-top: 0 !important;
-    position: relative;
-  }
-}
-
 .futzo-page-container {
   height: 100%;
   display: grid;
@@ -50,11 +44,6 @@
   box-sizing: border-box;
 }
 
-.main {
-  grid-area: main;
-  box-sizing: border-box;
-  padding: 40px;
-}
 .v-list-item__prepend > .v-badge .v-icon, .v-list-item__prepend > .v-icon, .v-list-item__append > .v-badge .v-icon, .v-list-item__append > .v-icon {
   opacity: 1 !important;
 }
@@ -194,4 +183,10 @@ tbody > tr.v-data-table__tr:nth-child(even) {
   border-width: 1px;
   min-height: 0;
   overflow: hidden;
+}
+@media (width <= 600px) {
+  .main {
+    padding: 16px 16px 0 55px ;
+    position: relative;
+  }
 }

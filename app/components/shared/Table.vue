@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import type { Header, IPagination } from '~/interfaces'
   import CopyLink from '~/components/shared/copy-link.vue'
-
+  import { useDisplay } from 'vuetify'
   const props = defineProps({
     headers: {
       type: Array as PropType<Header[]>,
@@ -82,11 +82,15 @@
       }
     })
   }
+  const { mobile } = useDisplay()
+  const customHeaders = computed(() => {
+    return mobile.value ? props.headers?.slice(0, 5) : props.headers
+  })
 </script>
 <template>
   <v-data-table
     class="border-sm futzo-rounded"
-    :headers="headers"
+    :headers="customHeaders"
     :items="items"
     :search="search"
     :item-key="itemKey"
@@ -97,6 +101,7 @@
     fixed-header
     sticky
     striped="odd"
+    :mobile="mobile"
   >
     <!--    header-->
     <template v-slot:header.data-table-select="{ allSelected, selectAll, someSelected }">

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
   import type { IStatStage } from '~/interfaces'
   const { range } = storeToRefs(useDashboardStore())
-  const ranges: { value: IStatStage; name: string }[] = [
-    { value: 'lastYear', name: `12 Meses` },
-    { value: 'lastMonth', name: `30 días` },
-    { value: 'lastWeek', name: `7 Días` },
-    { value: 'last24Hrs', name: '24 Horas' },
+  const ranges: { value: IStatStage; name: string; mobile_text: string }[] = [
+    { value: 'lastYear', name: `12 Meses`, mobile_text: '12M' },
+    { value: 'lastMonth', name: `30 días`, mobile_text: '30D' },
+    { value: 'lastWeek', name: `7 Días`, mobile_text: '7D' },
+    { value: 'last24Hrs', name: '24 Horas', mobile_text: '24Hrs' },
   ]
   watch(range, (value, oldValue) => {
     if (value !== oldValue) {
@@ -22,7 +22,8 @@
         :color="isSelected ? 'primary' : ''"
         :class="['dashboard-app-bar-btn dashboard-app-bar-btn-' + item.value]"
       >
-        {{ item.name }}
+        <span class="d-none d-md-block d-lg-block">{{ item.name }}</span>
+        <span class="d-block d-md-none d-lg-none">{{ item.mobile_text }}</span>
       </v-btn>
     </v-item>
   </v-item-group>
