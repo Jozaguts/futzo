@@ -5,8 +5,8 @@
       default: 'mt-10',
     },
   })
+  const { rail, isMobile } = storeToRefs(useGlobalStore())
   onMounted(() => {
-    const { rail, isMobile } = storeToRefs(useGlobalStore())
     if (isMobile.value) {
       rail.value = true
     }
@@ -20,8 +20,10 @@
     <div class="main">
       <slot name="default" />
     </div>
-    <div class="footer d-lg-none d-md-none">
-      <slot name="footer"></slot>
-    </div>
+    <client-only>
+      <div class="footer">
+        <slot name="footer"></slot>
+      </div>
+    </client-only>
   </div>
 </template>
