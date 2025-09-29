@@ -195,7 +195,7 @@
         v-model="pagination.current_page"
         :length="pagination.last_page"
         start="1"
-        :total-visible="10"
+        :total-visible="mobile ? 1 : 10"
         @update:modelValue="() => paginate()"
       >
         <template #prev="props">
