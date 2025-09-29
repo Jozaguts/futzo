@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { useDisplay } from 'vuetify'
   import Navigation from '~/components/layout/navigation-drawer.vue'
   import { Toaster } from 'vue-sonner'
   const show = ref(false)
@@ -35,9 +34,6 @@
           </v-main>
         </ClientOnly>
         <AnimatedGradiendButton v-if="!user?.is_operational" />
-        <!--        <ClientOnly>-->
-        <!--          <VersionBadge />-->
-        <!--        </ClientOnly>-->
       </v-app>
     </v-layout>
   </div>
