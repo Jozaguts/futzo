@@ -74,7 +74,6 @@
         max-width="448"
         min-height="80%"
         elevation="0"
-        color="on-background"
       >
         <v-card-item class="justify-center text-center">
           <Logo width="165" class="mx-auto" />
@@ -152,8 +151,8 @@
                   <v-checkbox v-if="isSignUp" v-model="terms" id="consent">
                     <template #label
                       ><span class="text-caption">
-                        Entiendo que recibiré un código de verificación por WhatsApp
-                        <Icon name="logos:whatsapp-icon"></Icon> si uso mi número o por correo si elijo esa opción.
+                        El código llegará al medio que seleccione: WhatsApp
+                        <Icon name="logos:whatsapp-icon"></Icon> o correo.
                       </span>
                     </template>
                   </v-checkbox>
@@ -174,23 +173,23 @@
                 </v-expand-transition>
                 <div class="text-caption text-secondary text-justify mt-2 ml-1" v-auto-animate="{ duration: 100 }">
                   <p v-if="showRegisterForm">
-                    Al crear una cuenta en Futzo aceptas los
+                    Al registrarme en Futzo acepto
                     <span
                       class="text-high-emphasis text-decoration-underline cursor-pointer text-justify"
                       @click="$router.push({ name: 'terminos-de-servicio' })"
-                      >Términos de Servicio</span
+                      >Términos</span
                     >
-                    y
+                    y la
                     <span
                       @click="$router.push({ name: 'politica-de-privacidad' })"
                       class="text-high-emphasis text-decoration-underline cursor-pointer text-justify"
-                      >Políticas de privacidad.</span
+                      >Política de privacidad.</span
                     >
                   </p>
                 </div>
               </v-col>
               <ErrorMessages v-model:errors="errorMessage" :username="username" :area-code="areaCode" />
-              <v-col cols="12" class="text-center text-base pb-0">
+              <v-col cols="12" class="text-center text-base pb-4">
                 <span>{{ showRegisterForm ? '¿Ya tienes cuenta?' : '¿No tienes cuenta? ' }}</span>
                 <a tabindex="5" href="#" class="text-primary ms-2" @click="showRegisterFormHandler">
                   {{ showRegisterForm ? 'Iniciar sesión' : 'Crea una cuenta' }}

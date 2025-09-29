@@ -1,5 +1,7 @@
+
 .login-card{
-  padding: 24px !important;
+  padding: 2rem 0 0 0;
+  height: calc(100vh - 24px);
 }
 .auth-logo {
   position: absolute;
@@ -96,4 +98,10 @@
 
 .search-country > .v-input__control > .v-field > .v-field__append-inner {
   font-size: 12px;
+}
+@media screen and (width >= 600px) {
+  .login-card{
+    padding: 24px;
+    height: 100%;
+  }
 }
