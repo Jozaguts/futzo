@@ -4,7 +4,7 @@
   import DialogLocation from '~/components/pages/ubicaciones/dialog/index.vue'
   import LocationCardContainer from '~/components/pages/ubicaciones/LocationCardContainer.vue'
   import ConfirmDialog from '~/components/shared/confirm-dialog.vue'
-  import { useDisplay } from 'vuetify/framework'
+  import { useDisplay } from 'vuetify'
   definePageMeta({
     middleware: ['sanctum:auth'],
   })

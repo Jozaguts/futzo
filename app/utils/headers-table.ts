@@ -14,6 +14,12 @@ export default function getHeaders(tableName: string): Header[] {
         { title: 'Equipo', value: 'name', sortable: true },
         { title: 'Torneo', value: 'tournament.name', sortable: true },
         { title: 'Categoría', value: 'category.name', sortable: true },
+        {
+          title: 'Enlace',
+          value: 'link',
+          sortable: false,
+          align: 'center',
+        },
         // {title: 'Cancha', value: 'field', sortable: true},
         {
           title: 'Delegado/Presidente',
@@ -33,12 +39,7 @@ export default function getHeaders(tableName: string): Header[] {
           sortable: true,
           align: 'center',
         },
-        {
-          title: 'Enlace',
-          value: 'link',
-          sortable: false,
-          align: 'center',
-        },
+
         {
           title: 'Dirección',
           value: 'address.structured_formatting.main_text',
@@ -53,6 +54,12 @@ export default function getHeaders(tableName: string): Header[] {
         { title: 'Categoría', value: 'category.name', sortable: true },
         { title: 'Formato', value: 'format.name', sortable: true },
         { title: 'Inicio', value: 'start_date_to_string', sortable: true },
+        {
+          title: 'Enlace',
+          value: 'link',
+          sortable: false,
+          align: 'center',
+        },
         // {title: "Fin", value: "end_date", sortable: true},
         {
           title: '# de equipos',
@@ -73,12 +80,7 @@ export default function getHeaders(tableName: string): Header[] {
           align: 'center',
         },
         { title: 'Status', value: 'status', sortable: true, align: 'center' },
-        {
-          title: 'Enlace',
-          value: 'link',
-          sortable: false,
-          align: 'center',
-        },
+
         {
           title: 'Acciones',
           value: 'actions',
