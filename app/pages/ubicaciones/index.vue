@@ -59,10 +59,10 @@
           </div>
         </template>
         <template #extension>
-          <div class="d-flex d-md-none d-lg-none flex-column">
+          <div class="d-flex d-md-none d-lg-none flex-column w-100">
             <SearchInput
               placeholder="Busca una ubicación…"
-              :min-width="'calc(100vw - 2rem)'"
+              min-width="50%"
               class="mx-4 text-center"
               @searching="searchLocationHandler"
             />
@@ -80,6 +80,14 @@
         title="¿Estás seguro que quieres eliminar esta ubicación?"
         @action-confirmed="deleteLocationHandler"
       />
+    </template>
+    <template #footer>
+      <v-bottom-navigation horizontal bg-color="primary">
+        <v-btn @click="showStoreLocationDialog">
+          <v-icon>mdi-plus</v-icon>
+          Crear ubicación
+        </v-btn>
+      </v-bottom-navigation>
     </template>
   </PageLayout>
 </template>

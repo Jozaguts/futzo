@@ -19,114 +19,151 @@
 :root {
   --header-height: 90px; /* ajusta a tu header real */
 }
-
+/* Base styles (mobile first) */
 .main {
   grid-area: main;
   box-sizing: border-box;
-  padding: 40px;
-  min-height: 0; /* importante para permitir encoger */
+  padding: 16px 16px 0 55px; // mobile default
+  position: relative;
+  min-height: 0;
 }
+
 .futzo-page-container {
-  height: 100%;
   display: grid;
+  grid-template-areas:
+    "header header"
+    "main main"
+    "footer footer";
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 0 1.8fr;
-  grid-auto-columns: 1fr;
-  gap: 0 0;
-  grid-auto-flow: row;
-  grid-template-areas:
-      'header header'
-      'main main';
+  height: 100%;
 }
 
 .header {
   grid-area: header;
   box-sizing: border-box;
 }
-
-.v-list-item__prepend > .v-badge .v-icon, .v-list-item__prepend > .v-icon, .v-list-item__append > .v-badge .v-icon, .v-list-item__append > .v-icon {
+.futzo-page-container > .footer{
+  grid-area: footer;
+  min-height: 0;
+}
+/* Vuetify overrides */
+.v-list-item__prepend > .v-badge .v-icon,
+.v-list-item__prepend > .v-icon,
+.v-list-item__append > .v-badge .v-icon,
+.v-list-item__append > .v-icon {
   opacity: 1 !important;
 }
 
 .v-list-group__items {
   --indent-padding: 1rem;
+
+  > .v-list-item.v-list-item--link.v-list-item--nav {
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+
+    &.v-list-item--active {
+      background: #9155fd !important;
+      color: #fff !important;
+
+      > .v-list-item__overlay {
+        border-top-right-radius: 25px;
+        border-bottom-right-radius: 25px;
+      }
+    }
+  }
 }
 
-.v-list-group__items > .v-list-item.v-list-item--active.v-list-item--link.v-list-item--nav {
-  border-bottom-right-radius: 25px;
-  border-top-right-radius: 25px;
-  background: #9155FD !important;
+.v-list--nav {
+  > .v-list-item {
+    &:hover,
+    &.v-list-item--active {
+      border-top-right-radius: 25px;
+      border-bottom-right-radius: 25px;
+    }
+
+    &.v-list-item--active {
+      background: #9155fd !important;
+      color: #fff !important;
+    }
+  }
 }
 
-.v-list-group__items > .v-list-item.v-list-item--link.v-list-item--nav {
-  border-bottom-right-radius: 25px;
-  border-top-right-radius: 25px;
+/* Active icon color */
+a.v-list-item--active svg #Icon path {
+  stroke: white !important;
 }
 
-.v-list-group__items > .v-list-item.v-list-item--active.v-list-item--link.v-list-item--nav > .v-list-item__overlay {
-  border-bottom-right-radius: 25px;
-  border-top-right-radius: 25px;
-}
-
-.v-list--nav > .v-list-item--active {
-  background: #9155FD !important;
-  color: #fff !important;
-}
-
-.v-list--nav > .v-list-item:hover, .v-list--nav > .v-list-item--active {
-  border-bottom-right-radius: 25px;
-  border-top-right-radius: 25px;
-}
-
-.v-list-group__items > .v-list-item .v-list-item--active {
-  background: #9155FD !important;
-  color: #fff !important;
-}
-
+/* Nuxt icons */
 .nuxt-icon.drawer-icon svg {
   width: 24px;
   height: 24px;
 }
 
+/* Reusable utilities */
 .futzo-rounded {
-  border-radius: 12px !important;
   border: 1px solid #eaecf0 !important;
+  border-radius: 12px !important;
   background: #fff;
+
+  &.v-table {
+    height: 100%;
+  }
 }
 
-.futzo-table > .v-table__wrapper > table > thead > tr > th, .futzo-table > .v-table__wrapper > table > tbody > tr > td {
-  height: 20px !important;
-  padding: 12px 24px !important;
+.futzo-table {
+  > .v-table__wrapper table {
+    th,
+    td {
+      height: 20px !important;
+      padding: 12px 24px !important;
+    }
+  }
 }
 
-a.v-list-item--active > div.v-list-item__prepend > span > svg #Icon > path:nth-child(1),
-a.v-list-item--active > div.v-list-item__prepend > span > svg #Icon > path:nth-child(2) {
-  stroke: white !important;
-}
-
+/* Cards, sheets */
 .v-sheet.custom-v-sheet {
-  border-radius: 12px;
   border: 1px solid #eaecf0;
+  border-radius: 12px;
   background: #fff;
-  box-shadow: 12px 16px -4px rgba(16, 24, 40, 0.08), 0 4px 6px -2px rgba(16, 24, 40, 0.03);
+  box-shadow: 12px 16px -4px rgba(16, 24, 40, 0.08),
+  0 4px 6px -2px rgba(16, 24, 40, 0.03);
 }
 
-.futzo-rounded.v-table {
-  height: 100%;
-}
-
+/* Pagination */
 .futzo-pagination {
   position: relative;
+
+  .v-pagination__prev {
+    position: absolute;
+    left: 2rem;
+  }
+
+  .v-pagination__next {
+    position: absolute;
+    right: 2rem;
+  }
 }
 
-.futzo-pagination > .v-pagination__list > .v-pagination__prev {
-  position: absolute;
-  left: 2rem;
+/* Tables */
+.table-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 1rem 0.5rem;
+  display: flex;
+  flex-direction: column;
 }
 
-.futzo-pagination > .v-pagination__list > .v-pagination__next {
-  position: absolute;
-  right: 2rem;
+.table {
+  grid-area: table;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 12px;
+  border-width: 1px;
+  padding: 0 1rem;
+  min-height: 0;
+  overflow: hidden;
 }
 
 thead {
@@ -137,56 +174,65 @@ tbody > tr.v-data-table__tr:nth-child(even) {
   background: #f9fafb;
 }
 
-.app-bar-secondary-btn {
-  border-radius: 8px;
+/* Buttons */
+.app-bar-secondary-btn,
+.table-action-btn {
   border: 1px solid #d0d5dd !important;
-  background: #fff;
-  box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 5%);
-  color: #344054 !important;
-  font-size: 16px;
-  font-style: normal;
+  border-radius: 8px !important;
+  background: #fff !important;
   font-weight: 600;
   line-height: 24px;
-  max-height: 40px;
-}
-
-.app-bar-secondary-btn__input_text {
-  color: #344054;
-  line-height: 20px;
-  font-weight: 600;
-  font-size: 14px;
-}
-.table-action-btn {
-  margin: 4px 0;
-  border-radius: 8px !important;
-  border: 1px solid #d0d5dd !important;
-  background: #fff !important;
   box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05) !important;
 }
-.v-infinite-scroll__side{
+
+.app-bar-secondary-btn {
+  font-size: 16px;
+  color: #344054 !important;
+  max-height: 40px;
+
+  &__input_text {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    color: #344054;
+  }
+}
+
+.table-action-btn {
+  margin: 4px 0;
+}
+
+/* Infinite scroll */
+.v-infinite-scroll__side {
   padding: 0 !important;
 }
-.table-wrapper {
-  flex: 1 1 auto;
-  min-height: 0;
-  padding: 1rem 0.5rem;
-  display: flex;
-  flex-direction: column;
+.text-breadcrumbs{
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 30px;
+  color: #182230;
 }
-.table {
-  grid-area: table;
-  display: flex;
-  flex-direction: column;
-  background-color: #fff;
-  padding: 0 1rem;
-  border-radius: 12px;
-  border-width: 1px;
-  min-height: 0;
-  overflow: hidden;
+.text-breadcrumb{
+  font-weight: 600;
+  line-height: 44px;
+  font-size: 24px;
+  padding: 0;
+  color: #000000;
 }
-@media (width <= 600px) {
+.text-breadcrumbs.active {
+  color: #9155FD;
+  font-weight: 700;
+}
+.v-breadcrumbs.v-breadcrumbs--density-default{
+  padding:0;
+}
+/* Desktop overrides */
+@media (min-width: 600px) {
   .main {
-    padding: 16px 16px 0 55px ;
-    position: relative;
+    padding: 40px;
+    position: static;
+  }
+  .text-breadcrumb {
+    font-size: 36px;
   }
 }

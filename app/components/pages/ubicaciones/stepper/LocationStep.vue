@@ -157,7 +157,7 @@
         >
         </v-autocomplete
       ></v-col>
-      <v-col cols="5">
+      <v-col lg="5" md="5" cols="12">
         <v-text-field
           active
           readonly
@@ -215,7 +215,7 @@
           </v-chip>
         </v-chip-group>
       </v-col>
-      <v-col cols="7" class="pa-2">
+      <v-col lg="7" md="7" cols="12" class="pa-2">
         <GoogleMap
           :api-key="useRuntimeConfig().public.googleMapsAPIKey"
           :mapId="useRuntimeConfig().public.googleMapId"

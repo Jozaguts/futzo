@@ -20,5 +20,8 @@
     <div class="main">
       <slot name="default" />
     </div>
+    <div class="footer d-lg-none d-md-none">
+      <slot name="footer"></slot>
+    </div>
   </div>
 </template>

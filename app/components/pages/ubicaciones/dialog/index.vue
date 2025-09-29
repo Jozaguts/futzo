@@ -52,7 +52,13 @@
                 density="comfortable"
                 size="large"
                 @click="back"
-                >{{ formSteps.steps[formSteps.current].back_label }}
+              >
+                <span
+                  class="d-inline-block text-truncate text-lg-body-1 text-md-body-1 text-caption"
+                  style="max-width: 120px"
+                >
+                  {{ formSteps.steps[formSteps.current].back_label }}
+                </span>
               </v-btn>
             </v-col>
             <v-col cols="6">
@@ -64,7 +70,13 @@
                 density="comfortable"
                 size="large"
                 @click="next"
-                >{{ formSteps.steps[formSteps.current].next_label }}
+              >
+                <span
+                  class="d-inline-block text-truncate text-lg-body-1 text-md-body-1 text-caption"
+                  style="max-width: 120px"
+                >
+                  {{ formSteps.steps[formSteps.current].next_label }}
+                </span>
               </v-btn>
             </v-col>
           </v-row>

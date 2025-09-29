@@ -10,8 +10,9 @@
     color="white"
     :border="false"
     elevation="0"
+    class="pt-2 pt-lg-0 pt-md-0"
     app
-    :height="mobile ? 50 : 90"
+    :height="mobile ? 40 : 90"
     :extension-height="mobile && extended ? 55 : 0"
     :extended="extended"
   >

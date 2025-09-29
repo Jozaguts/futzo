@@ -14,7 +14,7 @@
   })
 </script>
 <template>
-  <v-item-group mandatory v-model="range" class="mr-md-8 mr-lg-8 mx-2 mx-lg-0 mx-md-0">
+  <v-item-group mandatory v-model="range" class="mr-md-8 mr-lg-8 ml-5 mx-lg-0 mx-md-0">
     <v-item v-for="item in ranges" :key="item.value" :value="item.value" v-slot="{ isSelected, toggle }">
       <v-btn
         @click="toggle"

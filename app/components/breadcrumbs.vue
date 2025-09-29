@@ -135,20 +135,3 @@
     </template>
   </v-breadcrumbs>
 </template>
-<style lang="sass">
-  .text-breadcrumbs
-    font-size: 20px
-    font-weight: 500
-    line-height: 30px
-    color: #182230
-
-  .text-breadcrumb
-    font-size: 36px
-    font-weight: 600
-    line-height: 44px
-    color: #000000
-
-  .text-breadcrumbs.active
-    color: #9155FD
-    font-weight: 700
-</style>

@@ -34,9 +34,9 @@
           </v-main>
         </ClientOnly>
         <AnimatedGradiendButton v-if="!user?.is_operational" />
-        <ClientOnly>
-          <VersionBadge />
-        </ClientOnly>
+        <!--        <ClientOnly>-->
+        <!--          <VersionBadge />-->
+        <!--        </ClientOnly>-->
       </v-app>
     </v-layout>
   </div>

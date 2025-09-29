@@ -27,7 +27,7 @@
     empty-text="No hay más ubicaciones"
     loader-text="Cargando más ubicaciones..."
   >
-    <v-container fluid class="pa-0">
+    <v-container fluid class="pa-lg-0 pa-md-0">
       <v-row no-gutters>
         <v-col cols="12" md="3" lg="3" class="pa-0 my-4" v-for="location in locations" :key="location.id">
           <LocationCard :location="location" />
