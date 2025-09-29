@@ -83,14 +83,11 @@
     })
   }
   const { mobile } = useDisplay()
-  const customHeaders = computed(() => {
-    return mobile.value ? props.headers?.slice(0, 5) : props.headers
-  })
 </script>
 <template>
   <v-data-table
     class="border-sm futzo-rounded"
-    :headers="customHeaders"
+    :headers="headers"
     :items="items"
     :search="search"
     :item-key="itemKey"
