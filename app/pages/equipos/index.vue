@@ -41,7 +41,7 @@
       <ImportDialog />
     </template>
     <template #footer>
-      <v-bottom-navigation horizontal bg-color="primary">
+      <v-bottom-navigation horizontal bg-color="primary" class="d-block d-md-none d-lg-none">
         <v-btn @click="teamStore.dialog = !teamStore.dialog">
           <v-icon>mdi-plus</v-icon>
           Crear Equipo</v-btn
