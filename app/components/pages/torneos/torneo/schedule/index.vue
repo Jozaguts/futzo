@@ -4,7 +4,7 @@
   import Score from './score.vue'
   import { useToast } from '~/composables/useToast'
   import type { RoundStatus } from '~/models/Schedule'
-  import { useDisplay } from 'vuetify/framework'
+  import { useDisplay } from 'vuetify'
 
   const { tournamentId, loading, tournament } = storeToRefs(useTournamentStore())
   const { gameReportDialog, showReScheduleDialog, gameDetailsRequest } = storeToRefs(useGameStore())

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { useDisplay } from 'vuetify/framework'
+  import { useDisplay } from 'vuetify'
 
   const routeName = computed(() => useRoute().name)
   type Breadcrumbs = {

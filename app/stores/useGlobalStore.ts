@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { useDisplay } from 'vuetify/framework';
+import { useDisplay } from 'vuetify';
 
 export const useGlobalStore = defineStore('global', () => {
   const { mobile } = useDisplay();

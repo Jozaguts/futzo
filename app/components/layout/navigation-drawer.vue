@@ -1,6 +1,6 @@
 <script lang="ts" setup>
   import { type ResizeObserverEntry, useResizeObserver } from '@vueuse/core'
-  import { useDisplay } from 'vuetify/framework'
+  import { useDisplay } from 'vuetify'
   import { Icon } from '#components'
   import OnboardingSteps from '~/components/layout/OnboardingSteps.vue'
   import { useOnboardingStore } from '~/stores/useOnboardingStore'

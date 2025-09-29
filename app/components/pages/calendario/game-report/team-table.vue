@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import type { Header } from '~/interfaces'
   import type { GameTeamPlayer, TeamType } from '~/models/Game'
-  import { useDisplay } from 'vuetify/framework'
+  import { useDisplay } from 'vuetify'
 
   type Props = {
     teamType: TeamType
