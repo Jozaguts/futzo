@@ -68,12 +68,6 @@
             ></StatsCard>
           </div>
         </div>
-        <div class="table">
-          <div class="table-wrapper">
-            <h2 class="dashboard subtitle">Últimos equipos inscritos</h2>
-            <LastTeamsTable />
-          </div>
-        </div>
         <div class="next-games">
           <div class="next-game-wrapper">
             <div class="dashboard subtitle-container">
@@ -90,6 +84,12 @@
               :key="game.id"
               :game="game"
             />
+          </div>
+        </div>
+        <div class="table">
+          <div class="table-wrapper">
+            <h2 class="dashboard subtitle">Últimos equipos inscritos</h2>
+            <LastTeamsTable />
           </div>
         </div>
       </div>

@@ -5,7 +5,8 @@
   import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
   import TeamsTable from '~/components/pages/equipos/teams-table.vue'
   import ImportDialog from '~/components/pages/equipos/import-dialog/index.vue'
-
+  import { useDisplay } from 'vuetify'
+  import SearchInput from '~/components/pages/torneos/app-bar-search-input.vue'
   const teamStore = useTeamStore()
   onMounted(() => {
     teamStore.getTeams()
@@ -13,13 +14,19 @@
   definePageMeta({
     middleware: ['sanctum:auth'],
   })
+  const { mobile } = useDisplay()
 </script>
 <template>
   <PageLayout>
     <template #app-bar>
-      <AppBar>
+      <AppBar :extended="mobile">
         <template #buttons>
           <AppBarButtons />
+        </template>
+        <template #extension>
+          <div class="d-flex d-md-none d-lg-none flex-column w-100">
+            <SearchInput class="mx-4" />
+          </div>
         </template>
       </AppBar>
     </template>
@@ -33,5 +40,18 @@
       <CreateTeamDialog />
       <ImportDialog />
     </template>
+    <template #footer>
+      <v-bottom-navigation horizontal bg-color="primary">
+        <v-btn @click="teamStore.dialog = !teamStore.dialog">
+          <v-icon>mdi-plus</v-icon>
+          Crear Equipo</v-btn
+        >
+      </v-bottom-navigation>
+    </template>
   </PageLayout>
 </template>
+<style scoped>
+  .table-wrapper {
+    max-height: 100%;
+  }
+</style>

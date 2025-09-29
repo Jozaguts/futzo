@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { onMounted } from '#imports'
   import AppBar from '~/components/layout/AppBar.vue'
   import TournamentAppBarButtons from '~/components/pages/torneos/tournament-app-bar-buttons.vue'
   import TournamentTable from '~/components/pages/torneos/tournament-table.vue'
@@ -7,14 +6,16 @@
   import TournamentDialog from '~/components/pages/torneos/dialog/index.vue'
   import { useDisplay } from 'vuetify'
   import SearchInput from '~/components/pages/torneos/app-bar-search-input.vue'
+  import { storeToRefs } from '#imports'
+  const { dialog, tournamentId } = storeToRefs(useTournamentStore())
   definePageMeta({
     middleware: ['sanctum:auth'],
   })
-  const { mobile } = useDisplay()
   onMounted(() => {
-    useTournamentStore().tournamentId = undefined
+    tournamentId.value = undefined
     useTournamentStore().loadTournaments()
   })
+  const { mobile } = useDisplay()
 </script>
 <template>
   <PageLayout>
@@ -40,10 +41,8 @@
       <TournamentDialog />
     </template>
     <template #footer>
-      <v-bottom-navigation horizontal bg-color="primary">
-        <v-btn @click="useTournamentStore().dialog = !useTournamentStore().dialog">
-          <v-icon>mdi-plus</v-icon> Crear torneo</v-btn
-        >
+      <v-bottom-navigation bg-color="primary">
+        <v-btn @click="dialog = !dialog"> <v-icon>mdi-plus</v-icon> Crear torneo</v-btn>
       </v-bottom-navigation>
     </template>
   </PageLayout>
