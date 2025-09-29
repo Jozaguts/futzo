@@ -4,6 +4,8 @@
   import AppBarBtn from '~/components/pages/torneos/torneo/schedule/AppBarBtn.vue'
   import NoCalendar from '~/components/pages/torneos/no-calendar.vue'
   import Schedule from '~/components/pages/torneos/torneo/schedule/index.vue'
+  import SearchGame from '~/components/pages/torneos/torneo/schedule/SearchGame.vue'
+  import { useDisplay } from 'vuetify'
 
   definePageMeta({
     middleware: ['check-tournament'],
@@ -14,13 +16,19 @@
   onBeforeUnmount(() => {
     useScheduleStore().$resetScheduleStore()
   })
+  const { mobile } = useDisplay()
 </script>
 <template>
   <PageLayout>
     <template #app-bar>
-      <AppBar>
+      <AppBar :extended="mobile">
         <template #buttons>
           <AppBarBtn />
+        </template>
+        <template #extension>
+          <div class="d-flex d-md-none d-lg-none flex-column w-100">
+            <SearchGame class="mx-4" />
+          </div>
         </template>
       </AppBar>
     </template>

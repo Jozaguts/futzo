@@ -213,7 +213,6 @@
                   </div>
                 </v-col>
                 <v-col v-for="game in item.matches" :key="game.id" cols="12" md="2" lg="4" class="game-container">
-                  <pre>{{ game?.group?.name }}</pre>
                   <div class="game">
                     <div class="team home">
                       <v-avatar :image="game.home.image" size="24" class="image" />
