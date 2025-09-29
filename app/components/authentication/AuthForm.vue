@@ -5,6 +5,7 @@
   import ErrorMessages from '~/components/authentication/components/ErrorMessages.vue'
   import PasswordRules from '~/components/authentication/components/PasswordRules.vue'
   import ForgotPassword from '~/components/authentication/ForgotPassword.vue'
+  import { useDisplay } from 'vuetify'
 
   const {
     name,
@@ -23,6 +24,7 @@
     submitHandler,
   } = useAuth()
   const { forgotPasswordState } = storeToRefs(useAuthStore())
+  const { mobile } = useDisplay()
   const showPassword = ref(false)
   const title = computed(() => (showRegisterForm.value ? 'Crea tu cuenta' : 'Iniciar sesión'))
   const isPhoneNumber = computed(() => {
@@ -73,6 +75,7 @@
         class="futzo-rounded login-card"
         max-width="448"
         min-height="80%"
+        height="100%"
         elevation="0"
       >
         <v-card-item class="justify-center text-center">
