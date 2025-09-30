@@ -14,7 +14,7 @@
   <v-sheet v-if="noSchedules" class="custom-v-sheet d-flex justify-center align-center fill-height">
     <div class="d-flex flex-column align-center">
       <h2 class="card-title">No hay calendario aún</h2>
-      <NoCalendarSvg />
+      <NoCalendarSvg style="width: 100%" />
       <p class="card-sub-title">Crea un calendario para verlo aquí.</p>
       <v-btn color="primary" variant="elevated" class="mt-4 text-body-1" @click="dialogHandler">
         {{ textButton }}

@@ -292,6 +292,6 @@
     <GameReport />
   </v-row>
 </template>
-<style lang="sass">
+<style lang="sass" scoped>
   @use '~/assets/scss/pages/schedule.sass'
 </style>

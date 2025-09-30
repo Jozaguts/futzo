@@ -9,6 +9,8 @@
   import AppBar from '~/components/layout/AppBar.vue'
   import AppBarBtn from '~/components/pages/torneos/torneo/app-bar-btn.vue'
   import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
+  import { useDisplay } from 'vuetify'
+  import MarkAsInput from '~/components/pages/torneos/torneo/mark-as-input.vue'
   const { standings, tournamentId, lastResults, nextGames, groupStanding } = storeToRefs(useTournamentStore())
   const route = useRoute()
   onMounted(() => {
@@ -26,13 +28,19 @@
         })
     }
   })
+  const { mobile } = useDisplay()
 </script>
 <template>
   <PageLayout>
     <template #app-bar>
-      <AppBar>
+      <AppBar :extended="mobile">
         <template #buttons>
           <AppBarBtn />
+        </template>
+        <template #extension>
+          <div class="d-flex d-md-none d-lg-none flex-column w-100">
+            <MarkAsInput class="mx-4" />
+          </div>
         </template>
       </AppBar>
     </template>
@@ -41,7 +49,7 @@
         <div class="primary-zone">
           <PositionsTable :standings="standings" :groupStanding="groupStanding" />
         </div>
-        <div class="secondary-zone">
+        <div class="secondary-zone futzo-rounded">
           <NextGames :nextGames="nextGames" />
         </div>
         <div class="right-up-zone">
@@ -51,7 +59,7 @@
             </template>
           </StatsTableContainer>
         </div>
-        <div class="right-down-zone">
+        <div class="right-down-zone futzo-rounded">
           <NextGamesToday title="Últimos resultados">
             <template #content>
               <LastGames :lastGames="lastResults" />
@@ -63,6 +71,6 @@
     </template>
   </PageLayout>
 </template>
-<style lang="sass">
+<style lang="sass" scoped>
   @use '~/assets/scss/pages/teams-team.sass'
 </style>

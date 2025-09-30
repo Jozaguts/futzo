@@ -1,23 +1,22 @@
 /* Base styles (mobile first) */
 .teams-team-container
   display: grid
-  grid-template-columns: 1fr
-  grid-template-rows: 1fr 1fr 1fr 1fr
+  grid-template-columns: minmax(0, 1fr)
+  grid-template-rows: repeat(4, minmax(0, auto))
   grid-template-areas: "primary-zone" "secondary-zone" "right-up-zone" "right-down-zone"
-  gap: 1em 0
-  max-width: 400px
-  max-height: 100vh
+  gap: 1rem
+  width: 100%
+
 
 .primary-zone,
 .secondary-zone,
 .right-up-zone,
 .right-down-zone
   width: 100%
-  height: 100%
+  height: fit-content
   min-height: fit-content
-  max-height: 380px
-  max-width: 320px
-  padding: 0
+  min-width: 0
+  padding: 1rem
   margin: 0 auto
 
 .primary-zone
@@ -26,29 +25,36 @@
   background: var(--Colors-Base-White, #fff)
   align-self: stretch
   overflow: scroll
-  padding: 1rem 2rem
+  max-width: 100%
+  width: 100%
 
 .secondary-zone
   grid-area: secondary-zone
   display: flex
   flex-direction: column
+  background: var(--Colors-Base-White, #fff)
   align-items: flex-start
-  gap: var(--spacing-md, 8px)
+  //gap: var(--spacing-md, 8px)
   align-self: stretch
   width: 100%
+  padding: 1rem
+  overflow-x: hidden
 
 .right-up-zone
   grid-area: right-up-zone
-  margin-left: 1rem
   max-height: 100%
+  width: 100%
+  background: var(--Colors-Base-White, #fff)
 
 .right-down-zone
   grid-area: right-down-zone
   display: flex
-  margin-left: 1rem
   justify-content: space-between
   align-items: center
   align-self: stretch
+  max-height: 100%
+  width: 100%
+  background: var(--Colors-Base-White, #fff)
 
 .game-container
   flex-direction: column
@@ -68,10 +74,10 @@
 @media (min-width: 768px)
   .teams-team-container
     grid-template-columns: repeat(6, 16.66%)
-    grid-template-rows: repeat(6, 16.66%)
+    grid-template-rows: auto
     grid-template-areas: "primary-zone primary-zone primary-zone primary-zone right-up-zone right-up-zone" "primary-zone primary-zone primary-zone primary-zone right-up-zone right-up-zone" "primary-zone primary-zone primary-zone primary-zone right-up-zone right-up-zone" "primary-zone primary-zone primary-zone primary-zone right-up-zone right-up-zone" "secondary-zone secondary-zone secondary-zone secondary-zone right-down-zone right-down-zone"  "secondary-zone secondary-zone secondary-zone secondary-zone right-down-zone right-down-zone"
-    max-width: 100%
-    max-height: 100vh
+    height: 100%
+    width: calc(100% - 80px)
 
   .primary-zone,
   .secondary-zone,
@@ -79,5 +85,10 @@
   .right-up-zone
     max-width: 100%
     max-height: none
-    padding: 0
+    height: 100%
     margin: 0
+  .primary-zone
+    padding: 1rem
+    overflow-x: hidden
+  .secondary-zone
+    flex-direction: row

@@ -3,6 +3,7 @@
   import Assistance from '~/components/pages/torneos/stats-tables/assistance.vue'
   import YellowCards from '~/components/pages/torneos/stats-tables/yellow-cards.vue'
   import RedCards from '~/components/pages/torneos/stats-tables/red-cards.vue'
+  import { useDisplay } from 'vuetify'
   const route = useRoute()
   const tab = ref('goals')
   const { tournamentStats, tournamentId } = storeToRefs(useTournamentStore())
@@ -17,6 +18,7 @@
         })
     }
   })
+  const { mobile } = useDisplay()
 </script>
 
 <template>
@@ -24,10 +26,30 @@
     <v-row no-gutters>
       <v-col cols="12">
         <v-tabs density="compact" v-model="tab">
-          <v-tab value="goals">Goles</v-tab>
-          <v-tab value="assistance">Asistencias</v-tab>
-          <v-tab value="yellow_cards">Tarjetas amarillas</v-tab>
-          <v-tab value="red_cards">Tarjetas roja</v-tab>
+          <v-tab value="goals" density="compact">
+            <template #default>
+              <span v-if="!mobile">Goles</span>
+              <Icon v-else name="futzo-icon:ball"></Icon>
+            </template>
+          </v-tab>
+          <v-tab value="assistance">
+            <template #default>
+              <span v-if="!mobile">Asistencias</span>
+              <Icon v-else name="futzo-icon:football"></Icon>
+            </template>
+          </v-tab>
+          <v-tab value="yellow_cards">
+            <template #default>
+              <span v-if="!mobile">Tarjetas amarillas</span>
+              <Icon v-else name="futzo-icon:yellow-card"></Icon>
+            </template>
+          </v-tab>
+          <v-tab value="red_cards">
+            <template #default>
+              <span v-if="!mobile"> Tarjetas roja</span>
+              <Icon v-else name="futzo-icon:red-card"></Icon>
+            </template>
+          </v-tab>
         </v-tabs>
         <v-divider />
       </v-col>
@@ -52,5 +74,3 @@
     </v-row>
   </v-container>
 </template>
-
-<style scoped lang="sass"></style>

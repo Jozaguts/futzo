@@ -14,7 +14,7 @@
   })
 </script>
 <template>
-  <v-table class="next-games-table futzo-rounded" :hover="false">
+  <v-table class="next-games-table" :hover="false">
     <template #top>
       <div class="next-games-table__header">
         <h2 class="next-games-table-title">{{ title }}</h2>
@@ -47,10 +47,10 @@
                     <span class="field">{{ game.field.name }}</span>
                   </div>
                   <div class="btn-container">
-                    <nuxt-link class="d-flex align-center text-disabled" disabled>
-                      <span class="btn-text text-disabled" disabled> Ver detalles</span>
+                    <v-btn variant="text" class="d-flex align-center" disabled>
+                      <span class="btn-text text-disabled"> Ver detalles</span>
                       <Icon name="futzo-icon:arrow-right text-disabled" />
-                    </nuxt-link>
+                    </v-btn>
                   </div>
                 </div>
               </td>
@@ -63,6 +63,75 @@
   </v-table>
 </template>
 <style lang="scss" scoped>
+  .next-games-table {
+    width: 100%;
+  }
+  .next-games-table__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
+    width: 100%;
+  }
+  .next-games-table-title {
+    color: var(--Component-colors-Utility-Gray-utility-gray-800, #182230);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+  }
+  .game-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-self: stretch;
+    border: 2px solid var(--colors-gray-light-mode-200, #eee);
+    border-radius: var(--radius-md, 8px);
+    background: var(--Colors-Base-White, #fff);
+    margin-top: 1rem;
+    padding: 1rem 1rem;
+    flex-direction: column;
+  }
+  .v-table .v-table__wrapper > table > tbody > tr > td {
+    padding: 0;
+  }
+  .teams {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex: 0 1 50%;
+    flex-direction: row;
+  }
+  .team-local,
+  .team-away {
+    display: flex;
+    width: 50%;
+    align-items: center;
+    gap: var(--spacing-xl, 16px);
+    flex-direction: column;
+  }
+  .team_name {
+    color: var(--Component-colors-Utility-Gray-utility-gray-700, #344054);
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 20px;
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .logo {
+    display: flex;
+    width: 48px;
+    height: 48px;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    border-radius: 100px;
+  }
   .v-table__wrapper > table {
     width: 100%;
   }
@@ -70,38 +139,6 @@
   .v-table .v-table__wrapper > table > tbody > tr:not(:last-child) > td,
   .v-table .v-table__wrapper > table > tbody > tr:not(:last-child) > th {
     border-bottom: none !important;
-  }
-  .game-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    align-self: stretch;
-    border-radius: var(--radius-md, 8px);
-    border: 2px solid var(--colors-gray-light-mode-200, #eee);
-    background: var(--Colors-Base-White, #fff);
-    margin-top: 1rem;
-    padding: 1rem 1.5rem;
-  }
-
-  .next-games-table {
-    width: 100%;
-    padding: 0 1rem 2rem 1rem;
-  }
-
-  .next-games-table__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    align-self: stretch;
-    padding: 1rem 1rem 0 1rem;
-  }
-
-  .next-games-table-title {
-    color: var(--Component-colors-Utility-Gray-utility-gray-800, #182230);
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 24px;
   }
 
   .next-games-table-link {
@@ -113,61 +150,6 @@
     text-decoration: none;
   }
 
-  .teams-container {
-    display: flex;
-    padding: var(--spacing-xl, 16px) var(--spacing-3xl, 24px);
-    flex-direction: column;
-    align-items: center;
-    gap: var(--spacing-none, 0px);
-    align-self: stretch;
-    border-radius: var(--radius-md, 8px);
-    border: 2px solid var(--colors-gray-light-mode-200, #eee);
-    background: var(--Colors-Base-White, #fff);
-  }
-
-  .teams {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-5xl, 40px);
-  }
-
-  .teams > .team-local {
-    display: flex;
-    width: 130px;
-    align-items: center;
-    gap: var(--spacing-xl, 16px);
-  }
-
-  .team-local > .team_name {
-    color: var(--Component-colors-Utility-Gray-utility-gray-700, #344054);
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 20px;
-  }
-
-  .team-away {
-    display: flex;
-    width: 120px;
-    justify-content: flex-end;
-    align-items: center;
-    gap: var(--spacing-xl, 16px);
-  }
-
-  .logo {
-    display: flex;
-    width: 48px;
-    height: 48px;
-    padding: var(--spacing-md, 8px);
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-    border-radius: 100px;
-    //background: url(<path-to-image>) lightgray 50% / cover no-repeat;
-  }
-
   .vs-container {
     position: relative;
   }
@@ -175,9 +157,8 @@
   .vs-container > .vs {
     color: #000;
     font-size: 12px;
-    font-style: normal;
     font-weight: 700;
-    line-height: 18px; /* 150% */
+    line-height: 18px;
   }
 
   .vs-container::after {
@@ -201,58 +182,27 @@
     left: 50%;
     top: -5px;
   }
-
+  //
   .data {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: var(--spacing-xs, 4px);
+    flex-direction: column;
   }
-
-  .data > .date {
-    color: var(--colors-gray-light-mode-700, #616161);
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px;
-  }
-
-  .data > .hour {
-    display: flex;
-    padding: var(--spacing-none, 0px) 16px;
-    justify-content: center;
-    align-items: center;
-    gap: var(--spacing-md, 8px);
-    border-radius: 100px;
-    color: var(--Colors-Base-Black, #000);
-    text-align: center;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 20px; /* 142.857% */
-  }
-
-  .data > .field {
-    color: var(--colors-gray-light-mode-700, #616161);
-    font-size: 10px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px; /* 180% */
-  }
-
-  .btn-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: var(--spacing-sm, 6px);
-  }
-
-  .btn-text {
-    color: var(--Component-colors-Utility-Gray-utility-gray-600, #475467);
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 20px;
-    margin-right: 0.5rem;
+  @media screen and (width >= 600px) {
+    .game-container {
+      flex-direction: row;
+    }
+    .game-container > .teams {
+      flex-direction: row;
+    }
+    .team-local,
+    .team-away {
+      flex-direction: row;
+    }
+    .game-container > .data {
+      flex-direction: row;
+    }
   }
 </style>

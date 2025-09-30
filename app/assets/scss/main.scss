@@ -23,7 +23,7 @@
 .main {
   grid-area: main;
   box-sizing: border-box;
-  padding: 16px 16px 0 55px; // mobile default
+  padding: 16px 16px 0 71px; // mobile default
   position: relative;
   min-height: 0;
 }
@@ -227,7 +227,7 @@ tbody > tr.v-data-table__tr:nth-child(even) {
   padding:0;
 }
 /* Desktop overrides */
-@media (min-width: 600px) {
+@media (width >= 600px) {
   .main {
     padding: 40px;
     position: static;

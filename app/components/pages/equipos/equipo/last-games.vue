@@ -39,5 +39,5 @@
   </table>
 </template>
 <style lang="scss" scoped>
-  @use 'assets/scss/components/last-game-table';
+  @use '~/assets/scss/components/last-game-table';
 </style>
