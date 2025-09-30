@@ -229,7 +229,7 @@ tbody > tr.v-data-table__tr:nth-child(even) {
 /* Desktop overrides */
 @media (width >= 600px) {
   .main {
-    padding: 40px;
+    padding: 40px 40px 0 40px;
     position: static;
   }
   .text-breadcrumb {

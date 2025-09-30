@@ -16,29 +16,33 @@
   const areThereTeams = computed(() => teams.value?.length > 0)
 </script>
 <template>
-  <Table
-    v-if="players?.length"
-    :headers="headers"
-    :show-index="false"
-    :items="players"
-    itemKey="name"
-    :search.sync="search"
-    v-model:pagination="pagination"
-    :paginate="usePlayerStore().getPlayers"
-    :custom-name="true"
-    :assign-team="assignTeam"
-    :enable-assign-team="areThereTeams"
-  >
-    <template #actions="{ item }">
-      <v-btn
-        size="small"
-        rounded="md"
-        variant="outlined"
-        class="table-action-btn"
-        disabled
-        @click="showPlayerHandler(item as unknown as PlayerResponse)"
-        >Ver Jugador
-      </v-btn>
-    </template>
-  </Table>
+  <div class="table" style="height: calc(100% - 50px)">
+    <div class="table-wrapper">
+      <Table
+        v-if="players?.length"
+        :headers="headers"
+        :show-index="false"
+        :items="players"
+        itemKey="name"
+        :search.sync="search"
+        v-model:pagination="pagination"
+        :paginate="usePlayerStore().getPlayers"
+        :custom-name="true"
+        :assign-team="assignTeam"
+        :enable-assign-team="areThereTeams"
+      >
+        <template #actions="{ item }">
+          <v-btn
+            size="small"
+            rounded="md"
+            variant="outlined"
+            class="table-action-btn"
+            disabled
+            @click="showPlayerHandler(item as unknown as PlayerResponse)"
+            >Ver Jugador
+          </v-btn>
+        </template>
+      </Table>
+    </div>
+  </div>
 </template>
