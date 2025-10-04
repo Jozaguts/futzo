@@ -22,13 +22,20 @@ export function capiContext() {
       const fromLs = localStorage.getItem('_fbp') || '';
       const val = fromCookie || fromUrl || fromLs || '';
       if (fromUrl && fromUrl !== fromLs) localStorage.setItem('_fbp', fromUrl);
+      else if (!fromLs && fromCookie) localStorage.setItem('_fbp', fromCookie);
       return val;
     } catch {
-      return fromCookie || '';
+      const fromLs = localStorage.getItem('_fbp') || '';
+      return fromCookie || fromLs || '';
     }
   })();
 
-  const rawFbc = cookieVal('_fbc') || '';
+  const rawFbc = (() => {
+    if (!isBrowser) return '';
+    const fromCookie = cookieVal('_fbc');
+    const fromLs = localStorage.getItem('_fbc') || '';
+    return fromCookie || fromLs || '';
+  })();
 
   const fbclid = (() => {
     if (!isBrowser) return '';
@@ -45,7 +52,21 @@ export function capiContext() {
   })();
 
   // If there's no _fbc cookie but we have fbclid, construct fbc per Meta format
-  const fbc = rawFbc || (fbclid ? `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}` : '');
+  const fbc = (() => {
+    if (!isBrowser) return '';
+    if (rawFbc) return rawFbc;
+    if (fbclid) {
+      const generated = `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}`;
+      try {
+        localStorage.setItem('_fbc', generated);
+      } catch {}
+      try {
+        document.cookie = `_fbc=${generated}; path=/; SameSite=Lax`;
+      } catch {}
+      return generated;
+    }
+    return '';
+  })();
 
   // Optional: test event code for Meta Test Events
   const test_event_code = (() => {
@@ -63,13 +84,51 @@ export function capiContext() {
   })();
 
   const event_id = (() => {
-    // Prefer crypto.randomUUID if available in browser or runtime
+    if (!isBrowser) return '';
+    const storageKey = 'capi:event_id';
+    const getStored = () => {
+      try {
+        return window.localStorage.getItem(storageKey) || '';
+      } catch {
+        return '';
+      }
+    };
+
     try {
-      const anyCrypto: any = (isBrowser ? (window as any).crypto : (globalThis as any).crypto) || undefined;
-      if (anyCrypto?.randomUUID) return anyCrypto.randomUUID();
+      const params = new URL(window.location.href).searchParams;
+      const fromUrl = params.get('event_id') || '';
+      const fromLs = getStored();
+      const chosen = fromUrl || fromLs || '';
+      if (fromUrl && fromUrl !== fromLs) window.localStorage.setItem(storageKey, fromUrl);
+      if (chosen) {
+        try {
+          window.localStorage.removeItem(storageKey);
+        } catch {}
+        return chosen;
+      }
+    } catch {
+      const stored = getStored();
+      if (stored) {
+        try {
+          window.localStorage.removeItem(storageKey);
+        } catch {}
+        return stored;
+      }
+    }
+
+    const generateFallback = () => {
+      try {
+        const anyCrypto: any = (window as any).crypto || (globalThis as any).crypto;
+        if (anyCrypto?.randomUUID) return anyCrypto.randomUUID();
+      } catch {}
+      return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    };
+
+    const fallback = generateFallback();
+    try {
+      window.localStorage.setItem(storageKey, fallback);
     } catch {}
-    // Fallback: timestamp + random suffix
-    return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    return fallback;
   })();
 
   return { fbp, fbc, fbclid, event_id, test_event_code } as {
