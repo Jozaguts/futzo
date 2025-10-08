@@ -3,6 +3,7 @@
   import type { TeamFormation } from '~/models/Game'
   import type { Formation, Team } from '~/models/Team'
   import type { TeamLineupAvailablePlayers } from '~/models/Player'
+  import { useDisplay } from 'vuetify'
 
   const {
     showComplete,
@@ -42,18 +43,15 @@
     },
   })
   const emits = defineEmits(['updateFormationType', 'leaving', 'reloadPlayers'])
+  const { mobile } = useDisplay()
   const formationDetails = computed(() => {
     return {
-      home: formations?.find(
-        (formation) => formation.name === homeFormation?.name
-      ),
-      away: formations?.find(
-        (formation) => formation.name === awayFormation?.name
-      ),
+      home: formations?.find((formation) => formation.name === homeFormation?.name),
+      away: formations?.find((formation) => formation.name === awayFormation?.name),
     }
   })
   const linesupHeightContainer = computed(() => {
-    return showComplete ? '880px' : '100%'
+    return showComplete ? '880px' : mobile.value ? '300px' : '100%'
   })
   const linesupTeamHeightContainerStyle = computed(() => {
     return showComplete ? '50%' : '100%'
@@ -65,7 +63,7 @@
     <div class="linesup-team-container">
       <div class="heading">
         <v-avatar :image="homeTeam?.image" class="mx-4" size="32"></v-avatar>
-        <span class="mx-2"> {{ homeTeam?.name }}</span>
+        <span class="d-inline-block d-md-block d-lg-block text-truncate"> {{ homeTeam?.name }}</span>
         <span v-if="!!homeFormation" class="formation">
           <v-select
             item-title="name"
@@ -76,15 +74,7 @@
             variant="plain"
             class="lineup-formation-select"
             item-value="id"
-            @update:model-value="
-              (value) =>
-                emits(
-                  'updateFormationType',
-                  true,
-                  Number(homeTeam?.id),
-                  Number(value)
-                )
-            "
+            @update:model-value="(value) => emits('updateFormationType', true, Number(homeTeam?.id), Number(value))"
           >
           </v-select>
         </span>
@@ -110,10 +100,7 @@
           </div>
           <div class="row-lineup">
             <div class="players-row-container">
-              <div
-                class="d-flex justify-center justify-space-around"
-                v-auto-animate
-              >
+              <div class="d-flex justify-center justify-space-around" v-auto-animate>
                 <PlayerDot
                   :isHomeTeam="true"
                   :players="homePlayers"
@@ -121,19 +108,13 @@
                   v-for="(player, index) in homeFormation?.defenses"
                   :key="index"
                   :player="player"
-                  :field_location="
-                    Number(index + 1) +
-                    Number(formationDetails?.home?.goalkeeper ?? 0)
-                  "
+                  :field_location="Number(index + 1) + Number(formationDetails?.home?.goalkeeper ?? 0)"
                 />
               </div>
             </div>
           </div>
           <div class="row-lineup">
-            <div
-              class="d-flex justify-center justify-space-around"
-              v-auto-animate
-            >
+            <div class="d-flex justify-center justify-space-around" v-auto-animate>
               <PlayerDot
                 :isHomeTeam="true"
                 :players="homePlayers"
@@ -150,10 +131,7 @@
             </div>
           </div>
           <div class="row-lineup">
-            <div
-              class="d-flex justify-center justify-space-around"
-              v-auto-animate
-            >
+            <div class="d-flex justify-center justify-space-around" v-auto-animate>
               <PlayerDot
                 :isHomeTeam="true"
                 :players="homePlayers"
@@ -182,10 +160,7 @@
         <div class="zone-4-away"></div>
         <div class="midfield">
           <div class="row-lineup">
-            <div
-              class="d-flex justify-center justify-space-around"
-              v-auto-animate
-            >
+            <div class="d-flex justify-center justify-space-around" v-auto-animate>
               <PlayerDot
                 :isHomeTeam="false"
                 :players="awayPlayers"
@@ -203,10 +178,7 @@
             </div>
           </div>
           <div class="row-lineup">
-            <div
-              class="d-flex justify-center justify-space-around"
-              v-auto-animate
-            >
+            <div class="d-flex justify-center justify-space-around" v-auto-animate>
               <PlayerDot
                 :isHomeTeam="false"
                 :players="awayPlayers"
@@ -224,10 +196,7 @@
           </div>
           <div class="row-lineup">
             <div class="players-row-container">
-              <div
-                class="d-flex justify-center justify-space-around"
-                v-auto-animate
-              >
+              <div class="d-flex justify-center justify-space-around" v-auto-animate>
                 <PlayerDot
                   :isHomeTeam="false"
                   :players="awayPlayers"
@@ -235,10 +204,7 @@
                   v-for="(player, index) in awayFormation?.defenses"
                   :key="index"
                   :player="player"
-                  :field_location="
-                    Number(index + 1) +
-                    Number(formationDetails?.away?.goalkeeper ?? 0)
-                  "
+                  :field_location="Number(index + 1) + Number(formationDetails?.away?.goalkeeper ?? 0)"
                 />
               </div>
             </div>
@@ -271,15 +237,7 @@
             variant="plain"
             class="lineup-formation-select"
             item-value="id"
-            @update:model-value="
-              (value) =>
-                emits(
-                  'updateFormationType',
-                  false,
-                  Number(awayTeam?.id),
-                  Number(value)
-                )
-            "
+            @update:model-value="(value) => emits('updateFormationType', false, Number(awayTeam?.id), Number(value))"
           >
           </v-select>
         </span>
@@ -288,7 +246,7 @@
   </v-sheet>
 </template>
 <style lang="sass">
-  @use 'assets/scss/components/linesup.sass'
+  @use '~/assets/scss/components/linesup.sass'
   .linesup-container
     height: v-bind(linesupHeightContainer)
   .linesup-team-container
