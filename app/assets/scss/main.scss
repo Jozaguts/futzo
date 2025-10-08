@@ -226,11 +226,16 @@ tbody > tr.v-data-table__tr:nth-child(even) {
 .v-breadcrumbs.v-breadcrumbs--density-default{
   padding:0;
 }
+.mobile-fab.opened {
+  transform: rotate(45deg);
+  transition: transform .3s ease-in-out;
+}
+
 /* Desktop overrides */
 @media (width >= 600px) {
   .main {
     padding: 40px 40px 0 40px;
-    position: static;
+    position: relative;
   }
   .text-breadcrumb {
     font-size: 36px;

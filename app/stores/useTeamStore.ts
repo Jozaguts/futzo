@@ -72,6 +72,32 @@ export const useTeamStore = defineStore('teamStore', () => {
   const formations = ref<Formation[]>([] as Formation[]);
   const homePlayers = ref<TeamLineupAvailablePlayers[]>([] as TeamLineupAvailablePlayers[]);
   const awayPlayers = ref<TeamLineupAvailablePlayers[]>([] as TeamLineupAvailablePlayers[]);
+  const showTeamHandler = async (slug: string) => {
+    if (slug) {
+      await useTeamStore()
+        .getTeam(slug)
+        .then((data) => {
+          const { president, coach, ...team } = data as Team;
+          teamId.value = data?.id as number;
+          isEdition.value = true;
+          teamStoreRequest.value = {
+            team: {
+              id: team.id,
+              name: team.name,
+              tournament_id: team.tournament.id,
+              category_id: team.category.id,
+              address: team?.address,
+              colors: team?.colors,
+              description: team?.description,
+              image: team?.image,
+            },
+            president: { ...president, image: president?.image },
+            coach: { ...coach, image: coach?.image },
+          };
+          dialog.value = true;
+        });
+    }
+  };
   const downloadTemplate = async () => {
     try {
       loading.value = true;
@@ -288,5 +314,6 @@ export const useTeamStore = defineStore('teamStore', () => {
     getLastGames,
     initPreRegister,
     initTeamForm,
+    showTeamHandler,
   };
 });

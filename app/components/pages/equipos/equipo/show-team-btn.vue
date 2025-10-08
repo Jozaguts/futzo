@@ -6,34 +6,10 @@
   const loading = ref(false)
   const showTeamHandler = () => {
     loading.value = true
-    const slug = route.params.equipo as string
-    if (slug) {
-      useTeamStore()
-        .getTeam(slug)
-        .then((data: Team) => {
-          const { president, coach, ...team } = data
-          teamId.value = data.id
-          isEdition.value = true
-          teamStoreRequest.value = {
-            team: {
-              id: team.id,
-              name: team.name,
-              tournament_id: team.tournament.id,
-              category_id: team.category.id,
-              address: team?.address,
-              colors: team?.colors,
-              description: team?.description,
-              email: team?.email,
-              image: team?.image,
-              phone: team?.phone,
-            },
-            president: { ...president, image: president?.image },
-            coach: { ...coach, image: coach?.image },
-          }
-          dialog.value = true
-        })
-        .finally(() => (loading.value = false))
-    }
+    const slug = useRoute().params?.equipo as string
+    useTeamStore()
+      .showTeamHandler(slug)
+      .finally(() => (loading.value = false))
   }
 </script>
 <template>

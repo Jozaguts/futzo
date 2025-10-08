@@ -19,6 +19,11 @@
     </div>
     <div class="main">
       <slot name="default" />
+      <div v-if="$vuetify.display.mobile">
+        <div class="position-fixed" style="min-width: 50px; min-height: 50px; z-index: 2000; bottom: 6rem; right: 2rem">
+          <slot name="fab" />
+        </div>
+      </div>
     </div>
     <client-only>
       <div class="footer">

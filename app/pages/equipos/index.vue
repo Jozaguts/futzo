@@ -6,7 +6,7 @@
   import TeamsTable from '~/components/pages/equipos/teams-table.vue'
   import ImportDialog from '~/components/pages/equipos/import-dialog/index.vue'
   import { useDisplay } from 'vuetify'
-  import SearchInput from '~/components/pages/torneos/app-bar-search-input.vue'
+  import SearchInput from '~/components/pages/equipos/app-bar-search-input.vue'
   const teamStore = useTeamStore()
   onMounted(() => {
     teamStore.getTeams()
@@ -20,9 +20,7 @@
   <PageLayout>
     <template #app-bar>
       <AppBar :extended="mobile">
-        <template #buttons>
-          <AppBarButtons />
-        </template>
+        <template #buttons> </template>
         <template #extension>
           <div class="d-flex d-md-none d-lg-none flex-column w-100">
             <SearchInput class="mx-4" />
