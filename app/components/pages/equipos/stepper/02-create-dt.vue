@@ -27,7 +27,7 @@
           }),
         iso_code: number()
           .when('phone', {
-            is: (value) => {
+            is: (value: string) => {
               return !!value
             },
             then: (schema: any) => {
@@ -40,7 +40,17 @@
           .lessThan(999, 'numero de lada invalido'),
       })
     ),
-    initialValues: teamStoreRequest.value.coach,
+    initialValues: {
+      name: teamStoreRequest.value?.coach?.name,
+      email: teamStoreRequest.value?.coach?.email,
+      image: teamStoreRequest.value?.coach?.image,
+      phone: teamStoreRequest.value?.coach?.phone
+        ? teamStoreRequest.value.coach?.phone?.replace(/\s+/g, '').slice(-10)
+        : null,
+      iso_code: teamStoreRequest.value?.coach?.phone
+        ? teamStoreRequest.value?.coach?.phone?.replace(/\s+/g, '').slice(0, -10).replace('+', '')
+        : null,
+    },
   })
   const [name, name_props] = defineField('name', vuetifyConfig)
   const [image, image_props] = defineField('image', vuetifyConfig)
@@ -106,6 +116,7 @@
             style="max-height: 40px"
             max-width="100"
             class="mr-2"
+            active
             v-bind="iso_code_props"
             placeholder="52"
             label="lada"

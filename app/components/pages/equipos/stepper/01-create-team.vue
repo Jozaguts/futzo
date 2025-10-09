@@ -35,7 +35,7 @@
         address: object()
           .shape({
             description: string(),
-            matched_substrings: array().of(string()),
+            matched_substrings: array(),
             place_id: string(),
             reference: string(),
             structured_formatting: object().shape({
@@ -94,11 +94,11 @@
     //@ts-ignore
     return useRoute().name === 'torneos-torneo-equipos-inscripcion'
   })
-  onMounted(() => {
+  onMounted(async () => {
     //@ts-ignore
     if (useRoute().name === 'torneos-torneo-inscripcion') {
       setValues({
-        tournament_id: tournament.value.id,
+        tournament_id: tournament.value.id as number,
         category_id: tournament.value?.category_id,
       })
     }

@@ -27,7 +27,7 @@
           }),
         iso_code: number()
           .when('phone', {
-            is: (value) => {
+            is: (value: string) => {
               return !!value
             },
             then: (schema: any) => {
@@ -40,7 +40,17 @@
           .lessThan(999, 'numero de lada invalido'),
       })
     ),
-    initialValues: teamStoreRequest.value.president,
+    initialValues: {
+      name: teamStoreRequest.value?.president?.name,
+      email: teamStoreRequest.value?.president?.email,
+      image: teamStoreRequest.value?.president?.image,
+      phone: teamStoreRequest.value?.president?.phone
+        ? teamStoreRequest.value.president?.phone?.replace(/\s+/g, '').slice(-10)
+        : null,
+      iso_code: teamStoreRequest.value?.president?.phone
+        ? teamStoreRequest.value?.president?.phone?.replace(/\s+/g, '').slice(0, -10).replace('+', '')
+        : null,
+    },
   })
   const [name, name_props] = defineField('name', vuetifyConfig)
   const [image, image_props] = defineField('image', vuetifyConfig)
@@ -49,6 +59,9 @@
   const [iso_code, iso_code_props] = defineField('iso_code', vuetifyConfig)
   onMounted(() => {
     steps.value.steps[steps.value.current].disable = false
+    if (isEdition.value) {
+      steps.value.steps.createOwner.next_label = 'Editar Equipo'
+    }
     if (teamStoreRequest.value?.president) {
       if (teamStoreRequest.value.president.image) {
         // dragDropImageRef.value?.loadImage()
