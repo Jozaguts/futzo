@@ -1,8 +1,4 @@
 <script lang="ts" setup>
-  import type { Team } from '~/models/Team'
-
-  const route = useRoute()
-  const { teamId, isEdition, dialog, teamStoreRequest } = storeToRefs(useTeamStore())
   const loading = ref(false)
   const showTeamHandler = () => {
     loading.value = true

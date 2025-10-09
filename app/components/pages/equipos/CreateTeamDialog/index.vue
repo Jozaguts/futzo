@@ -2,7 +2,7 @@
   import HeaderCard from '~/components/pages/equipos/CreateTeamDialog/Header.vue'
   import { storeToRefs } from 'pinia'
   import StepperContainer from '~/components/pages/equipos/stepper/index.vue'
-  import type { CurrentStep } from '~/models/team'
+  import type { CurrentStep } from '~/models/Team'
   import { useTeamStore } from '#imports'
 
   const { steps, isEdition, dialog, teamId } = storeToRefs(useTeamStore())

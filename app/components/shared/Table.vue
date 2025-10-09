@@ -97,6 +97,7 @@
     height="100%"
     fixed-header
     sticky
+    :hide-default-header="$vuetify.display.mobile"
     striped="odd"
     :mobile="mobile"
   >
