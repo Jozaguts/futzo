@@ -5,6 +5,7 @@
   import LocationCardContainer from '~/components/pages/ubicaciones/LocationCardContainer.vue'
   import ConfirmDialog from '~/components/shared/confirm-dialog.vue'
   import { useDisplay } from 'vuetify'
+  import { Icon } from '#components'
   definePageMeta({
     middleware: ['sanctum:auth'],
   })
@@ -34,6 +35,7 @@
       await useLocationStore().getLocations()
     }
   })
+  const open = ref(false)
 </script>
 <template>
   <PageLayout>
@@ -81,13 +83,15 @@
         @action-confirmed="deleteLocationHandler"
       />
     </template>
-    <template #footer>
-      <v-bottom-navigation horizontal bg-color="primary" class="d-block d-md-none d-lg-none">
-        <v-btn @click="showStoreLocationDialog">
-          <v-icon>mdi-plus</v-icon>
-          Crear ubicación
-        </v-btn>
-      </v-bottom-navigation>
+    <template #fab>
+      <v-fab color="primary" icon @click="open = !open">
+        <Icon name="futzo-icon:plus" class="mobile-fab" :class="open ? 'opened' : ''" size="32"></Icon>
+        <v-speed-dial v-model="open" location="left center" transition="slide-y-reverse-transition" activator="parent">
+          <v-btn key="1" color="secondary" icon @click="showStoreLocationDialog">
+            <v-icon size="24">mdi-map-marker-plus</v-icon>
+          </v-btn>
+        </v-speed-dial>
+      </v-fab>
     </template>
   </PageLayout>
 </template>

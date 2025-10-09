@@ -1,11 +1,7 @@
 <script lang="ts" setup>
   const { locationDialog, isEdition } = storeToRefs(useLocationStore())
-  const title = isEdition.value
-    ? ' Edita una Ubicación y Campos de Juego'
-    : ' Registrar una Ubicación y Campos de Juego'
-  const subtitle = isEdition.value
-    ? 'En cada ubicación puedes añadir uno o más campos, <br />cada uno con su disponibilidad.'
-    : 'En cada ubicación puedes registrar uno o más campos <br /> cada uno con su disponibilidad.'
+  const title = isEdition.value ? ' Edita una Ubicación' : ' Registrar una Ubicación'
+  const subtitle = 'Configura campos y disponibilidad'
 </script>
 <template>
   <v-card-item class="custom-card-item">
