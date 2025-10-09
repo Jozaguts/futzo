@@ -7,6 +7,7 @@
   import ImportDialog from '~/components/pages/equipos/import-dialog/index.vue'
   import { useDisplay } from 'vuetify'
   import SearchInput from '~/components/pages/equipos/app-bar-search-input.vue'
+  import { Icon } from '#components'
   const teamStore = useTeamStore()
   onMounted(() => {
     teamStore.getTeams()
@@ -15,12 +16,13 @@
     middleware: ['sanctum:auth'],
   })
   const { mobile } = useDisplay()
+  const open = ref(false)
 </script>
 <template>
   <PageLayout>
     <template #app-bar>
       <AppBar :extended="mobile">
-        <template #buttons> </template>
+        <template #buttons> <AppBarButtons /></template>
         <template #extension>
           <div class="d-flex d-md-none d-lg-none flex-column w-100">
             <SearchInput class="mx-4" />
@@ -38,13 +40,15 @@
       <CreateTeamDialog />
       <ImportDialog />
     </template>
-    <template #footer>
-      <v-bottom-navigation horizontal bg-color="primary" class="d-block d-md-none d-lg-none">
-        <v-btn @click="teamStore.dialog = !teamStore.dialog">
-          <v-icon>mdi-plus</v-icon>
-          Crear Equipo</v-btn
-        >
-      </v-bottom-navigation>
+    <template #fab>
+      <v-fab color="primary" icon @click="open = !open">
+        <Icon name="futzo-icon:plus" class="mobile-fab" :class="open ? 'opened' : ''" size="24"></Icon>
+        <v-speed-dial v-model="open" location="left center" transition="slide-y-reverse-transition" activator="parent">
+          <v-btn key="1" color="secondary" icon @click="teamStore.dialog = !teamStore.dialog">
+            <Icon name="fluent:people-team-20-regular" size="24"></Icon>
+          </v-btn>
+        </v-speed-dial>
+      </v-fab>
     </template>
   </PageLayout>
 </template>

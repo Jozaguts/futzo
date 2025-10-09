@@ -7,6 +7,7 @@
   import { useDisplay } from 'vuetify'
   import SearchInput from '~/components/pages/torneos/app-bar-search-input.vue'
   import { storeToRefs } from '#imports'
+  import { Icon } from '#components'
   const { dialog, tournamentId } = storeToRefs(useTournamentStore())
   definePageMeta({
     middleware: ['sanctum:auth'],
@@ -16,6 +17,7 @@
     useTournamentStore().loadTournaments()
   })
   const { mobile } = useDisplay()
+  const open = ref(false)
 </script>
 <template>
   <PageLayout>
@@ -40,10 +42,15 @@
       </div>
       <TournamentDialog />
     </template>
-    <template #footer>
-      <v-bottom-navigation bg-color="primary" class="d-block d-md-none d-lg-none">
-        <v-btn @click="dialog = !dialog"> <v-icon>mdi-plus</v-icon> Crear torneo</v-btn>
-      </v-bottom-navigation>
+    <template #fab>
+      <v-fab color="primary" icon @click="open = !open">
+        <Icon name="futzo-icon:plus" class="mobile-fab" :class="open ? 'opened' : ''" size="24"></Icon>
+        <v-speed-dial v-model="open" location="left center" transition="slide-y-reverse-transition" activator="parent">
+          <v-btn key="1" color="secondary" icon @click="dialog = !dialog">
+            <v-icon size="16">mdi-trophy</v-icon>
+          </v-btn>
+        </v-speed-dial>
+      </v-fab>
     </template>
   </PageLayout>
 </template>

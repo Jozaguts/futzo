@@ -85,10 +85,10 @@
     </template>
     <template #fab>
       <v-fab color="primary" icon @click="open = !open">
-        <Icon name="futzo-icon:plus" class="mobile-fab" :class="open ? 'opened' : ''" size="32"></Icon>
+        <Icon name="futzo-icon:plus" class="mobile-fab" :class="open ? 'opened' : ''" size="24"></Icon>
         <v-speed-dial v-model="open" location="left center" transition="slide-y-reverse-transition" activator="parent">
           <v-btn key="1" color="secondary" icon @click="showStoreLocationDialog">
-            <v-icon size="24">mdi-map-marker-plus</v-icon>
+            <v-icon size="16">mdi-map-marker-plus</v-icon>
           </v-btn>
         </v-speed-dial>
       </v-fab>
