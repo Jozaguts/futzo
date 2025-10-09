@@ -106,7 +106,6 @@
   <vue-date-picker
     @cleared="() => (dates = null)"
     :format="formatDate"
-    :alt-position="customPosition"
     v-bind="{ ...attr }"
     v-model="dates"
     @update:model-value="$emit('update:modelValue', $event)"
