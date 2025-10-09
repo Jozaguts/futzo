@@ -2,10 +2,10 @@
   import HeaderCard from '~/components/pages/equipos/CreateTeamDialog/Header.vue'
   import { storeToRefs } from 'pinia'
   import StepperContainer from '~/components/pages/equipos/stepper/index.vue'
-  import type { CurrentStep } from '~/models/Team'
+  import type { CurrentStep, Team } from '~/models/Team'
   import { useTeamStore } from '#imports'
 
-  const { steps, isEdition, dialog, teamId } = storeToRefs(useTeamStore())
+  const { steps, isEdition, dialog, teamId, team } = storeToRefs(useTeamStore())
   const loading = ref(false)
   const leaveHandler = () => {
     useTeamStore().$storeReset()
@@ -22,6 +22,10 @@
       if (isEdition.value) {
         useTeamStore()
           .updateTeam(teamId.value)
+          .then(async () => {
+            team.value = (await useTeamStore().getTeam(teamId.value)) as Team
+            useRouter().push({ name: 'equipos-equipo', params: { equipo: team.value?.slug } })
+          })
           .finally(() => (loading.value = false))
       } else {
         useTeamStore()
