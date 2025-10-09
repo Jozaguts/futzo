@@ -103,10 +103,10 @@
   })
 </script>
 <template>
-  <!--  // to fix  :alt-position="customPosition" -->
   <vue-date-picker
     @cleared="() => (dates = null)"
     :format="formatDate"
+    :alt-position="customPosition"
     v-bind="{ ...attr }"
     v-model="dates"
     @update:model-value="$emit('update:modelValue', $event)"
@@ -145,9 +145,4 @@
 </template>
 <style lang="scss">
   @use '@/assets/css/vue-datepicker-custom.css';
-
-  .dp__input_wrap > .v-input > .v-input__control > .v-field > .v-field__field > input.v-field__input {
-    padding-top: v-bind(paddingTop);
-    padding-bottom: v-bind(paddingBottom);
-  }
 </style>

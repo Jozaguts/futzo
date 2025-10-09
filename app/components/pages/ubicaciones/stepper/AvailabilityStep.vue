@@ -4,7 +4,7 @@
   import { array, boolean, number, object, string } from 'yup'
   import { useFieldArray } from 'vee-validate'
   const currentStep = ref<number>(1)
-  const { locationStoreRequest, formSteps } = storeToRefs(useLocationStore())
+  const { locationStoreRequest, formSteps, isEdition } = storeToRefs(useLocationStore())
   const { handleSubmit, validate } = useForm<Pick<LocationStoreRequest, 'fields'>>({
     validationSchema: toTypedSchema(
       object().shape({
@@ -60,6 +60,7 @@
       }
     })
   }
+  formSteps.value.steps.availability.next_label = isEdition.value ? 'Editar ubicación' : 'Crear ubicación'
 </script>
 <template>
   <v-container fluid class="pa-0">

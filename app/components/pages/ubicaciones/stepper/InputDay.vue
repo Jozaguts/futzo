@@ -47,22 +47,18 @@
 </script>
 <template>
   <v-row v-auto-animate="{ duration: 300 }">
-    <v-col cols="12" lg="3" md="3">
+    <v-col cols="2" lg="3" md="3" class="switch-container">
+      <p>{{ $vuetify.display.mobile ? props.label.slice(0, 1) : props.label }}</p>
       <v-switch
         :model-value="props.day.enabled"
         @update:model-value="(val: boolean) => $emit('update-enabled', val)"
-        class="mt-1 text-caption"
+        class="mt-1"
         density="compact"
-      >
-        <template #label
-          ><span class="text-caption"> {{ props.label }}</span></template
-        >
-      </v-switch>
+      />
     </v-col>
-
-    <v-col v-if="props.day.enabled" cols="12" lg="9" md="9">
-      <div class="d-flex">
-        <div class="w-100 mx-2">
+    <v-col v-if="props.day.enabled" cols="10" lg="9" md="9" class="select-hours-container">
+      <div class="d-flex w-100">
+        <div class="w-100 mr-2">
           <VueDatePicker
             time-picker
             class="custom-dp-location"
@@ -75,18 +71,21 @@
               <v-text-field
                 :value="value"
                 density="compact"
-                variant="outlined"
+                :variant="$vuetify.display.mobile ? 'underlined' : 'outlined'"
                 rounded="lg"
-                :single-line="true"
                 class="custom-location-input"
                 :error="!value"
+                :active="$vuetify.display.mobile"
               >
-                <template #prepend-inner><span class="text-medium-emphasis">Desde</span></template>
+                <template #label v-if="$vuetify.display.mobile"> Desde </template>
+                <template v-if="!$vuetify.display.mobile" #prepend-inner
+                  ><span class="text-medium-emphasis">Desde</span></template
+                >
               </v-text-field>
             </template>
           </VueDatePicker>
         </div>
-        <div class="w-100 mx-2">
+        <div class="w-100">
           <VueDatePicker
             class="custom-dp-location"
             v-model="endTime"
@@ -100,19 +99,22 @@
                 class="custom-location-input"
                 :value="value"
                 density="compact"
-                variant="outlined"
+                :variant="$vuetify.display.mobile ? 'underlined' : 'outlined'"
                 rounded="lg"
-                :single-line="true"
                 :error="!value"
+                :active="$vuetify.display.mobile"
               >
-                <template #prepend-inner><span class="text-medium-emphasis mr-1">Hasta</span></template>
+                <template class="text-caption" #label v-if="$vuetify.display.mobile"> Hasta </template>
+                <template v-if="!$vuetify.display.mobile" #prepend-inner
+                  ><span class="text-medium-emphasis mr-1">Hasta</span></template
+                >
               </v-text-field>
             </template>
           </VueDatePicker>
         </div>
       </div>
     </v-col>
-    <v-col v-else cols="12" lg="9" md="9">
+    <v-col v-else cols="10" lg="9" md="9">
       <div class="day-disabled">
         <Icon name="material-symbols:dark-mode-outline" size="24" class="icon"></Icon>
         <span class="label">No disponible</span>

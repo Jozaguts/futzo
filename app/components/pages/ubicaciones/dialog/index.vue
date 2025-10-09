@@ -5,6 +5,7 @@
   import type { CurrentStep } from '~/models/Location'
 
   const { locationDialog, formSteps, isEdition } = storeToRefs(useLocationStore())
+  const loading = ref(false)
   const leaveHandler = () => {
     useLocationStore().resetLocationStoreRequest()
     formSteps.value.current = 'location'
@@ -14,10 +15,15 @@
   })
   const next = () => {
     if (formSteps.value.steps[formSteps.value.current].next_step === 'save') {
+      loading.value = true
       if (isEdition.value) {
-        useLocationStore().updateLocation()
+        useLocationStore()
+          .updateLocation()
+          .finally(() => (loading.value = false))
       } else {
-        useLocationStore().storeLocation()
+        useLocationStore()
+          .storeLocation()
+          .finally(() => (loading.value = false))
       }
     } else {
       formSteps.value.current = formSteps.value.steps[formSteps.value.current].next_step as CurrentStep
@@ -63,17 +69,18 @@
             </v-col>
             <v-col cols="6">
               <v-btn
-                :disabled="disabled"
+                :disabled="loading || disabled"
                 variant="elevated"
                 block
                 color="primary"
                 density="comfortable"
                 size="large"
                 @click="next"
+                :loading="loading"
               >
                 <span
                   class="d-inline-block text-truncate text-lg-body-1 text-md-body-1 text-caption"
-                  style="max-width: 120px"
+                  style="max-width: 140px"
                 >
                   {{ formSteps.steps[formSteps.current].next_label }}
                 </span>

@@ -65,3 +65,22 @@
   &.back
     color: #424242de
     margin-right: 8px !important
+.responsive-word
+  overflow: hidden
+  display: inline-block
+  width: 1ch
+  white-space: nowrap
+  transition: width 0.3s ease
+.switch-container
+  display: flex
+  align-items: center
+  flex-direction: column
+.select-hours-container
+  display: flex
+  align-items: center
+  padding-left: 1rem
+  padding-right: 0
+@media screen and (width > 600px)
+  .switch-container
+    flex-direction: row
+    justify-content: space-between
