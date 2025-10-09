@@ -276,6 +276,7 @@ export const useTeamStore = defineStore('teamStore', () => {
     teamStoreRequest.value = {} as TeamStoreRequest;
     isEdition.value = false;
   };
+  const noTeams = computed(() => teams.value?.length === 0);
   return {
     teams,
     team,
@@ -297,13 +298,14 @@ export const useTeamStore = defineStore('teamStore', () => {
     homePlayers,
     awayPlayers,
     lastGames,
+    importTeamsHandler,
+    noTeams,
     $storeReset,
     createTeam,
     getTeams,
     getTeam,
     updateTeam,
     list,
-    importTeamsHandler,
     downloadTemplate,
     searchTeams,
     getNextGames,

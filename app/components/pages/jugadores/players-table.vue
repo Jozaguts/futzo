@@ -3,7 +3,7 @@
   import type { Player, PlayerResponse } from '~/models/Player'
   import type { Team } from '~/models/Team'
 
-  const { players, playerId, pagination, search, showAssignTeam } = storeToRefs(usePlayerStore())
+  const { players, playerId, pagination, search, showAssignTeam, noPlayers } = storeToRefs(usePlayerStore())
   const headers = getHeaders('players')
   const showPlayerHandler = (player: PlayerResponse) => {
     console.log({ player: player })
@@ -16,7 +16,7 @@
   const areThereTeams = computed(() => teams.value?.length > 0)
 </script>
 <template>
-  <div class="table" style="height: calc(100% - 50px)">
+  <div v-if="!noPlayers" class="table" style="height: calc(100% - 50px)">
     <div class="table-wrapper">
       <Table
         v-if="players?.length"
