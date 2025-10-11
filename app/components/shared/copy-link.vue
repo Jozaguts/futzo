@@ -29,8 +29,23 @@
   }
 </script>
 <template>
-  <v-btn density="compact" icon @click="setCopied" variant="text">
-    <Icon size="24" v-if="!copied" name="ic:baseline-attach-file" />
-    <Icon size="24" v-if="copied" name="bi:clipboard-check" />
-  </v-btn>
+  <v-list-item density="compact" @click="setCopied">
+    <template #prepend> <Icon name="mdi-link" size="24"></Icon></template>
+    <v-list-item-title class="pl-1" style="min-width: 130px">
+      Enlace
+      <transition-slide
+        :duration="600"
+        :offset="[-16, 16]"
+        :delay="200"
+        :easing="{
+          enter: 'cubic-bezier(0.6, 0, 0.4, 2)',
+          leave: 'ease-out',
+        }"
+      >
+        <span v-show="copied" class="text-caption text-primary font-weight-bold"
+          >Copiado <Icon size="12" name="mdi-check"
+        /></span>
+      </transition-slide>
+    </v-list-item-title>
+  </v-list-item>
 </template>

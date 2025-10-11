@@ -75,3 +75,7 @@ export const getGroupStanding = async (tournamentId: number, phase_id?: number) 
   }
   return await client(url);
 };
+export const getTournamentRegistrationQRCode = async (tournamentId: number) => {
+  const client = useSanctumClient();
+  return await client<{ image: string }>(`/api/v1/admin/tournaments/${tournamentId}/registration/qr-code/generate`);
+};

@@ -11,13 +11,16 @@
   <v-sheet v-if="noTeams" class="no-teams-v-sheet d-flex justify-center align-center fill-height">
     <div class="d-flex flex-column align-center">
       <h2 class="card-title">No hay equipos aún</h2>
-      <NoTeamsSvg />
+      <NoTeamsSvg class="img-responsive" />
       <p class="card-sub-title">Crea un torneo para verlo aquí.</p>
       <v-btn color="primary" variant="elevated" class="mt-4 text-body-1" @click="toggleDialog"> Crear Equipo </v-btn>
     </div>
   </v-sheet>
 </template>
 <style>
+  .img-responsive {
+    width: 100%;
+  }
   .no-teams-v-sheet {
     border-radius: 12px;
     border: 1px solid #eaecf0;

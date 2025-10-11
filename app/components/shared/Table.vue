@@ -167,9 +167,7 @@
       </v-chip>
     </template>
     <template #item.actions="{ item }">
-      <div>
-        <slot name="actions" :item="item"></slot>
-      </div>
+      <slot name="actions" :item="item"></slot>
     </template>
     <template #item.last_5="{ item }">
       <span v-for="color in last5Handler(item.last_5)" :key="item.id + color.color" class="text-lowercase">
@@ -180,11 +178,6 @@
         </v-tooltip>
       </span>
     </template>
-    <!--    link }}-->
-    <template v-if="showLink" #[`item.link`]="{ item }">
-      <CopyLink :item="item" />
-    </template>
-    <!--    link -->
     <template #bottom>
       <v-divider />
       <v-pagination
