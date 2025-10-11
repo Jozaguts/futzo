@@ -1,7 +1,40 @@
 <script setup lang="ts">
   import getHeaders from '~/utils/headers-table'
+  import type { Tournament } from '~/models/tournament'
+  import { Icon } from '#components'
+  import type { Team } from '~/models/Team'
+  import { getTeamRegistrationQRCode } from '~/http/api/team'
   const { teams, pagination, search } = storeToRefs(useTeamStore())
   const headers = getHeaders('teams')
+  const qr = ref({
+    image: '',
+    isLoading: false,
+    hasError: false,
+    showQrCode: false,
+  })
+  const qrCodeHandler = async (team: Team) => {
+    try {
+      qr.value.hasError = false
+      qr.value.isLoading = true
+      const data = await getTeamRegistrationQRCode(team.id as number)
+      if (data.image) {
+        qr.value.image = data.image
+        qr.value.showQrCode = true
+      }
+    } catch (error) {
+      qr.value.hasError = true
+    } finally {
+      qr.value.isLoading = false
+    }
+  }
+  const downloadQR = () => {
+    const a = document.createElement('a')
+    a.href = qr.value.image
+    a.download = 'futzo_qr.png'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+  }
 </script>
 <template>
   <Table
@@ -13,14 +46,48 @@
     :search.sync="search"
     v-model:pagination="pagination"
     :paginate="useTeamStore().getTeams"
-    :custom-name="true"
-    :show-link="true"
     :item-per-page="15"
   >
+    <template #name="item">
+      <div class="d-flex align-center">
+        <v-btn variant="text" :to="`equipos/${item.slug}`">
+          <template #prepend>
+            <v-avatar :image="item?.image" density="compact" />
+          </template>
+          <span class="d-inline-block text-truncate mx-4" style="max-width: 100px"> {{ item?.name }}</span>
+        </v-btn>
+      </div>
+    </template>
     <template #actions="{ item }">
-      <v-btn size="small" rounded="md" variant="outlined" class="table-action-btn" :to="`/equipos/${item?.slug}`"
-        >Ver Equipo
-      </v-btn>
+      <div class="d-flex flex-column my-2 align-center">
+        <v-menu location="start" density="compact" :close-on-content-click="false">
+          <template v-if="!$vuetify.display.mobile" v-slot:activator="{ props }">
+            <v-btn icon="mdi-dots-vertical" variant="text" v-bind="props"></v-btn>
+          </template>
+          <template v-if="$vuetify.display.mobile" v-slot:activator="{ props }">
+            <v-btn block density="compact" variant="outlined" v-bind="props">Menu</v-btn>
+          </template>
+          <v-list density="compact" nav class="futzo-rounded">
+            <v-list-item @click="() => $router.push(`/equipos/${item?.slug}`)">
+              <template #prepend>
+                <Icon name="fluent:people-team-20-regular" size="24"></Icon>
+              </template>
+              <v-list-item-title class="ml-1">Ver Equipo</v-list-item-title>
+            </v-list-item>
+            <v-list-subheader>Compartir</v-list-subheader>
+            <CopyLink :item="item" />
+            <v-list-item @click="qrCodeHandler(item as Team)" v-auto-animate>
+              <template #prepend>
+                <Icon name="mdi-qrcode"></Icon>
+              </template>
+              <v-list-item-title class="ml-1"> QR </v-list-item-title>
+              <template #append>
+                <Icon v-show="qr.isLoading" name="line-md:downloading-loop" class="text-primary"></Icon>
+              </template>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
     </template>
   </Table>
 </template>

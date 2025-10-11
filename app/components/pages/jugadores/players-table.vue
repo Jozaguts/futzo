@@ -27,7 +27,6 @@
         :search.sync="search"
         v-model:pagination="pagination"
         :paginate="usePlayerStore().getPlayers"
-        :custom-name="true"
         :assign-team="assignTeam"
         :enable-assign-team="areThereTeams"
       >

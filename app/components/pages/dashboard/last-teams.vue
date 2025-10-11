@@ -15,10 +15,20 @@
     :search.sync="search"
     v-model:pagination="pagination"
     :paginate="useTeamStore().getTeams"
-    :custom-name="true"
     :show-footer="false"
     :show-link="true"
-  ></Table>
+  >
+    <template #name="item">
+      <div class="d-flex align-center">
+        <v-btn variant="text" :to="`equipos/${item.slug}`">
+          <template #prepend>
+            <v-avatar :image="item?.image" density="compact" />
+          </template>
+          <span class="d-inline-block text-truncate mx-4" style="max-width: 100px"> {{ item?.name }}</span>
+        </v-btn>
+      </div>
+    </template>
+  </Table>
   <v-empty-state
     v-else
     image="/no-data.svg"

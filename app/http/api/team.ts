@@ -105,3 +105,7 @@ export const searchTeams = async (value: string = '') => {
   const client = useSanctumClient();
   return await client<TeamsPaginatedResponse>(`/api/v1/admin/teams/search?value=${value}`);
 };
+export const getTeamRegistrationQRCode = async (teamId: number) => {
+  const client = useSanctumClient();
+  return await client<{ image: string }>(`/api/v1/admin/teams/${teamId}/registration/qr-code/generate`);
+};

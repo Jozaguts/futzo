@@ -40,7 +40,7 @@ export default function getHeaders(tableName: string): Header[] {
           sortable: true,
           align: 'center',
         },
-        { title: '', value: 'actions', sortable: false },
+        { title: 'Acciones', value: 'actions', sortable: false },
       ];
     case 'tournaments':
       return [

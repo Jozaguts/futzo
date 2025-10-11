@@ -111,6 +111,7 @@
     align-items: center;
     gap: var(--spacing-xl, 16px);
     flex-direction: column;
+    justify-content: center;
   }
   .team_name {
     color: var(--Component-colors-Utility-Gray-utility-gray-700, #344054);

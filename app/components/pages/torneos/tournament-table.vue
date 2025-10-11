@@ -79,8 +79,17 @@
     v-model:pagination="pagination"
     :status-handler="setChipColor"
     :paginate="useTournamentStore().loadTournaments"
-    :show-link="true"
   >
+    <template #name="item">
+      <div class="d-flex align-center">
+        <v-btn variant="text" :to="`torneos/${item.slug}`">
+          <template #prepend>
+            <v-avatar :image="item?.image" density="compact" />
+          </template>
+          <span class="d-inline-block text-truncate mx-4" style="max-width: 100px"> {{ item?.name }}</span>
+        </v-btn>
+      </div>
+    </template>
     <template #actions="{ item }">
       <div class="d-flex flex-column my-2 align-center">
         <v-menu location="start" density="compact" :close-on-content-click="false">

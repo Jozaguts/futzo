@@ -19,6 +19,10 @@
 :root {
   --header-height: 90px; /* ajusta a tu header real */
 }
+a {
+  text-decoration: underline;
+  color: initial;
+}
 /* Base styles (mobile first) */
 .main {
   grid-area: main;

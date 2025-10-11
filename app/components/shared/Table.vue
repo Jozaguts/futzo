@@ -1,6 +1,5 @@
 <script lang="ts" setup>
   import type { Header, IPagination } from '~/interfaces'
-  import CopyLink from '~/components/shared/copy-link.vue'
   import { useDisplay } from 'vuetify'
   const props = defineProps({
     headers: {
@@ -29,10 +28,6 @@
       type: Boolean,
       default: false,
     },
-    customName: {
-      type: Boolean,
-      default: false,
-    },
     showFooter: {
       type: Boolean,
       default: true,
@@ -40,10 +35,6 @@
     paginate: {
       type: Function,
       required: false,
-    },
-    showLink: {
-      type: Boolean,
-      default: false,
     },
     assignTeam: {
       type: Function as PropType<(item: any) => void>,
@@ -116,11 +107,13 @@
       {{ index + 1 }}
     </template>
     <!-- name column-->
-    <template v-if="customName" #[`item.name`]="{ item }">
-      <div class="d-flex align-center">
-        <v-avatar :image="item?.image" density="compact"> </v-avatar>
-        <span class="d-inline-block text-truncate mx-4" style="max-width: 100px"> {{ item?.name }}</span>
-      </div>
+    <template #[`item.name`]="{ item }">
+      <slot name="name" v-bind="item">
+        <div class="d-flex align-center">
+          <v-avatar :image="item?.image" density="compact"> </v-avatar>
+          <span class="d-inline-block text-truncate mx-4" style="max-width: 100px"> {{ item?.name }}</span>
+        </div>
+      </slot>
     </template>
     <template #[`item.president.email`]="{ item }">
       <span class="d-inline-block text-truncate" style="max-width: 100px"> {{ item?.president?.email }}</span>
