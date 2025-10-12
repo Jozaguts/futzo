@@ -30,6 +30,7 @@
     }
   })
   const { mobile } = useDisplay()
+  const page = ref(1)
 </script>
 <template>
   <PageLayout>
@@ -45,7 +46,7 @@
     </template>
     <template #default>
       <div class="dashboard-container">
-        <div class="dashboard-cards-container">
+        <div class="dashboard-cards-container" v-if="!$vuetify.display.mobile">
           <div class="card-1">
             <StatsCard
               title="Equipos totales"
@@ -68,6 +69,49 @@
             ></StatsCard>
           </div>
         </div>
+        <v-data-iterator
+          class="data-iterator-container"
+          v-else
+          :items-per-page="1"
+          :items="[
+            {
+              title: 'Equipos totales',
+              values: teamStats.registeredTeams,
+              isPositive: teamStats.registeredTeams.current > 0,
+            },
+            {
+              title: 'jugadores activos',
+              values: teamStats.activePlayers,
+              isPositive: teamStats.activePlayers.current > 0,
+            },
+            {
+              title: 'juegos finalizados',
+              values: teamStats.completedGames,
+              isPositive: teamStats.completedGames.current > 0,
+            },
+          ]"
+          :page="page"
+        >
+          <template #default="{ items }">
+            <template v-for="(item, i) in items" :key="i">
+              <StatsCard
+                :title="item.raw.title"
+                :values="item.raw.values"
+                :isPositive="item.raw.isPositive"
+              ></StatsCard>
+            </template>
+          </template>
+          <template #footer>
+            <v-pagination
+              density="compact"
+              :length="3"
+              v-model="page"
+              variant="text"
+              elevation="5"
+              class="mt-2"
+            ></v-pagination>
+          </template>
+        </v-data-iterator>
         <div class="next-games">
           <div class="next-game-wrapper">
             <div class="dashboard subtitle-container">
