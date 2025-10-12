@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import getHeaders from '~/utils/headers-table'
-  import type { Tournament } from '~/models/tournament'
   import { Icon } from '#components'
   import type { Team } from '~/models/Team'
   import { getTeamRegistrationQRCode } from '~/http/api/team'
@@ -90,4 +89,14 @@
       </div>
     </template>
   </Table>
+  <v-dialog v-model="qr.showQrCode" max-width="500">
+    <v-card class="futzo-rounded">
+      <v-card-text class="text-center">
+        <v-img :src="qr.image" :aspect-ratio="1" cover></v-img>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn width="200" variant="outlined" @click="downloadQR">Descargar</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
