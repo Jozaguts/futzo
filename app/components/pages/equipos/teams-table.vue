@@ -34,6 +34,11 @@
     a.click()
     document.body.removeChild(a)
   }
+  const clickHandler = (team: Team) => {
+    if (team.slug) {
+      useRouter().push({ name: 'equipos-equipo', params: { slug: team.slug } })
+    }
+  }
 </script>
 <template>
   <Table
@@ -49,7 +54,7 @@
   >
     <template #name="item">
       <div class="d-flex align-center">
-        <v-btn variant="text" :to="`equipos/${item.slug}`">
+        <v-btn variant="text" @click="() => clickHandler(item as Team)">
           <template #prepend>
             <v-avatar :image="item?.image" density="compact" />
           </template>

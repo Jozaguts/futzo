@@ -53,7 +53,6 @@
         qr.value.image = data.image
         qr.value.showQrCode = true
       }
-      console.log(data)
     } catch (error) {
       qr.value.hasError = true
     } finally {
