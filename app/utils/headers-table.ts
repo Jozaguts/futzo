@@ -44,7 +44,7 @@ export default function getHeaders(tableName: string): Header[] {
       ];
     case 'tournaments':
       return [
-        { title: 'Nombre del torneo', value: 'name', sortable: true },
+        { title: 'Torneo', value: 'name', sortable: true },
         { title: 'Categoría', value: 'category.name', sortable: true },
         { title: 'Formato', value: 'format.name', sortable: true },
         { title: 'Inicio', value: 'start_date_to_string', sortable: true },
