@@ -181,11 +181,23 @@
   width: 100%;
   flex: 0 0 auto;
   min-width: 0;
-}
+  min-height: 220px;
 
+}
+.data-iterator-container {
+  border-radius: 12px;
+  border: 1px solid #eaecf0 !important;
+  background: #fff;
+  padding-bottom: .5rem;
+}
 .dashboard-stats-card {
   width: 100%;
   min-width: 0;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  border-radius: 12px 12px 0 0;
 
   &__title {
     color: #101828;
@@ -306,7 +318,6 @@
     grid-area: cards-container;
     flex-direction: row;
     gap: 1rem;
-    min-height: 0;
     overflow: hidden;
   }
 

@@ -165,11 +165,13 @@ a.v-list-item--active svg #Icon path {
   background: #fff;
   border-radius: 12px;
   border-width: 1px;
-  padding: 0 1rem;
+  padding: 0 .5rem;
   min-height: 0;
   overflow: hidden;
 }
-
+.v-data-table__td-value{
+  text-align: start !important;
+}
 thead {
   background: #f9fafb;
 }

@@ -35,7 +35,7 @@
   }
 </script>
 <template>
-  <v-card class="futzo-rounded" max-width="330" min-height="550" flat>
+  <v-card class="futzo-rounded pa-2" max-width="330" min-height="550" flat>
     <CardMenu @click="clickHandler" />
     <v-img :src="`/locations/${location.image}.png`" max-width="330" max-height="250" min-height="250" cover />
     <v-card-item>
