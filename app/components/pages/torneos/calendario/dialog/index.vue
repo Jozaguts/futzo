@@ -72,6 +72,7 @@
               size="large"
               :loading="loading"
               @click="next"
+              class="text-caption text-md-body-1 text-lg-body-1"
               >{{ calendarSteps.steps[calendarSteps.current].next_label }}
             </v-btn>
           </v-col>
