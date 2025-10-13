@@ -9,12 +9,12 @@
 <template>
   <v-container class="pa-0">
     <v-row>
-      <v-col>
+      <v-col class="px-0 pb-0">
         <IndicatorStep :steps="calendarSteps" />
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col class="px-0 pb-0">
         <transition-slide
           group
           :offset="{
