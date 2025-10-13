@@ -15,6 +15,7 @@
     :paginate="useTeamStore().getTeams"
     :show-footer="$vuetify.display.mobile"
     :show-link="true"
+    :items-per-page="$vuetify.display.mobile ? 1 : 15"
   >
     <template #name="item">
       <div class="d-flex align-center">

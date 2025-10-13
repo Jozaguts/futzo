@@ -31,6 +31,7 @@
   })
   const { mobile } = useDisplay()
   const page = ref(1)
+  const nextGamePage = ref(1)
 </script>
 <template>
   <PageLayout>
@@ -121,9 +122,33 @@
             <div v-if="nextGames.length === 0" class="text-center">
               <NoGames />
             </div>
+            <v-data-iterator
+              class="data-iterator-container no-border"
+              v-else-if="$vuetify.display.mobile"
+              :items-per-page="1"
+              :items="nextGames"
+              :page="nextGamePage"
+            >
+              <template #default="{ items }">
+                <template v-for="(item, i) in items" :key="i">
+                  <dashboard-next-games :class="[i === 0 ? 'mt-0' : '']" :game="item.raw" />
+                </template>
+              </template>
+              <template #footer>
+                <v-pagination
+                  density="compact"
+                  :length="nextGames?.length ?? 0"
+                  v-model="nextGamePage"
+                  variant="text"
+                  total-visible="3"
+                  elevation="5"
+                  class="mt-2"
+                ></v-pagination>
+              </template>
+            </v-data-iterator>
             <dashboard-next-games
               :class="[index === 0 ? 'mt-0' : '']"
-              v-else
+              v-else-if="!$vuetify.display.mobile"
               v-for="(game, index) in nextGames"
               :key="game.id"
               :game="game"

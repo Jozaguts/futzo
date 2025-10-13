@@ -78,6 +78,7 @@
     v-model:pagination="pagination"
     :status-handler="setChipColor"
     :paginate="useTournamentStore().loadTournaments"
+    :items-per-page="$vuetify.display.mobile ? 1 : 15"
   >
     <template #name="item">
       <div class="d-flex align-center">

@@ -49,7 +49,7 @@
     :search.sync="search"
     v-model:pagination="pagination"
     :paginate="useTeamStore().getTeams"
-    :item-per-page="15"
+    :items-per-page="$vuetify.display.mobile ? 1 : 15"
   >
     <template #name="item">
       <div class="d-flex align-center">
