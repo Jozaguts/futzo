@@ -21,7 +21,6 @@
       <Table
         v-if="players?.length"
         :headers="headers"
-        :show-index="false"
         :items="players"
         itemKey="name"
         :search.sync="search"

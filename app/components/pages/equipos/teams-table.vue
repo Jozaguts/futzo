@@ -44,7 +44,6 @@
   <Table
     v-if="teams?.length"
     :headers="headers"
-    :show-index="true"
     :items="teams"
     itemKey="name"
     :search.sync="search"

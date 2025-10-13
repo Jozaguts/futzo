@@ -186,9 +186,12 @@
 }
 .data-iterator-container {
   border-radius: 12px;
-  border: 1px solid #eaecf0 !important;
+  border: 1px solid #eaecf0;
   background: #fff;
   padding-bottom: .5rem;
+}
+.data-iterator-container.no-border{
+  border: none;
 }
 .dashboard-stats-card {
   width: 100%;

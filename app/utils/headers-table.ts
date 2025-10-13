@@ -10,7 +10,6 @@ export default function getHeaders(tableName: string): Header[] {
   switch (tableName) {
     case 'teams':
       return [
-        { title: '#', value: 'index', sortable: true },
         { title: 'Equipo', value: 'name', sortable: true },
         { title: 'Torneo', value: 'tournament.name', sortable: true },
         { title: 'Categoría', value: 'category.name', sortable: true },

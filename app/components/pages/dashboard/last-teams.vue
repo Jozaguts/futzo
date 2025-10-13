@@ -1,6 +1,5 @@
 <script lang="ts" setup>
   import getHeaders from '~/utils/headers-table'
-
   const headers = getHeaders('teams')
   await useTeamStore().getTeams()
   const { teams, search, pagination } = storeToRefs(useTeamStore())
@@ -9,13 +8,12 @@
   <Table
     v-if="teams?.length"
     :headers="headers"
-    :show-index="true"
     :items="teams"
     itemKey="name"
     :search.sync="search"
     v-model:pagination="pagination"
     :paginate="useTeamStore().getTeams"
-    :show-footer="false"
+    :show-footer="$vuetify.display.mobile"
     :show-link="true"
   >
     <template #name="item">

@@ -102,10 +102,6 @@
       >
       </v-checkbox-btn>
     </template>
-    <!--index colum-->
-    <template v-if="showIndex" #[`item.index`]="{ index }">
-      {{ index + 1 }}
-    </template>
     <!-- name column-->
     <template #[`item.name`]="{ item }">
       <slot name="name" v-bind="item">
