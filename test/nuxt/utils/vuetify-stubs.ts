@@ -58,6 +58,27 @@ export const vuetifyStubs = {
   'v-stepper-item': passthrough('v-stepper-item'),
   'v-stepper-window': passthrough('v-stepper-window'),
   'v-stepper-window-item': passthrough('v-stepper-window-item'),
+  'v-select': defineComponent({
+    name: 'StubVSelect',
+    props: {
+      modelValue: { type: null, default: null },
+      disabled: { type: Boolean, default: false },
+    },
+    emits: ['update:modelValue'],
+    setup(props, { slots, attrs }) {
+      return () =>
+        h(
+          'div',
+          {
+            ...attrs,
+            class: ['v-select', attrs.class].filter(Boolean),
+            'data-model-value': props.modelValue,
+            'data-disabled': props.disabled,
+          },
+          slots.default ? slots.default() : undefined
+        );
+    },
+  }),
   'v-btn': defineComponent({
     name: 'StubVBtn',
     props: {

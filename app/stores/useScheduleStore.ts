@@ -161,30 +161,69 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
   });
   const requiredMinutesPerRound = computed(() => matchesPerRound.value * matchDurationMins.value);
   const reservedMinutesPerWeek = computed(() => {
-    let total = 0;
-    const md = matchDurationMins.value;
     const fields = scheduleStoreRequest.value.fields_phase || [];
+    let total = 0;
+
+    const clampToRange = (start: number, end: number, range?: { start: number; end: number }) => {
+      let clampedStart = start;
+      let clampedEnd = end;
+      if (range) {
+        if (clampedStart < range.start) clampedStart = range.start;
+        if (clampedEnd > range.end) clampedEnd = range.end;
+      }
+      return clampedEnd > clampedStart ? clampedEnd - clampedStart : 0;
+    };
+
+    const stepFromIntervals = (intervals: any[]): number => {
+      const minutes = intervals
+        .map((interval) => minute(String(interval?.value ?? '')))
+        .filter((value) => Number.isFinite(value))
+        .sort((a, b) => a - b);
+      let minStep: number | undefined;
+      for (let i = 1; i < minutes.length; i++) {
+        const diff = minutes[i] - minutes[i - 1];
+        if (diff > 0 && (minStep === undefined || diff < minStep)) {
+          minStep = diff;
+        }
+      }
+      return minStep ?? 60;
+    };
+
     for (const field of fields) {
-      const av = (field as any).availability || {};
-      for (const key of Object.keys(av)) {
-        const day = av[key];
-        if (!day || typeof day !== 'object' || key === 'isCompleted' || !day.enabled) continue;
-        const selected = (day.intervals || [])
-          .filter((i: any) => i && i.selected && i.value && i.value !== '*')
-          .map((i: any) => minute(String(i.value)))
-          .sort((a: number, b: number) => a - b);
+      const availability = (field as any).availability || {};
+      for (const key of Object.keys(availability)) {
+        if (key === 'isCompleted') continue;
+        const day = availability[key];
+        if (!day || typeof day !== 'object' || !day.enabled) continue;
+
+        const intervals = Array.isArray(day.intervals) ? day.intervals.filter(Boolean) : [];
+        const selectedMinutes = intervals
+          .filter((interval) => interval && interval.selected && interval.value && interval.value !== '*')
+          .map((interval) => minute(String(interval.value)))
+          .filter((value) => Number.isFinite(value))
+          .sort((a, b) => a - b);
+        if (!selectedMinutes.length) continue;
+
+        const step = stepFromIntervals(intervals);
+        const uniqueSelected = [...new Set(selectedMinutes)].sort((a, b) => a - b);
         const range = parseRange(day.available_range);
-        if (selected.length === 0) continue;
-        let start = selected[0];
-        let end = selected[selected.length - 1] + md; // mirror backend behavior (last slot + matchDuration)
-        if (range) {
-          if (start < range.start) start = range.start;
-          if (end > range.end) end = range.end;
+
+        let segmentStart = uniqueSelected[0];
+        let previous = uniqueSelected[0];
+        let segmentEnd = segmentStart + step;
+
+        for (let i = 1; i < uniqueSelected.length; i++) {
+          const current = uniqueSelected[i];
+          if (current === previous + step) {
+            segmentEnd = current + step;
+          } else {
+            total += clampToRange(segmentStart, segmentEnd, range);
+            segmentStart = current;
+            segmentEnd = current + step;
+          }
+          previous = current;
         }
-        if (end > start) {
-          const matches = Math.floor((end - start) / md);
-          total += matches * md;
-        }
+        total += clampToRange(segmentStart, segmentEnd, range);
       }
     }
     return total;

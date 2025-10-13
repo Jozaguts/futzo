@@ -60,7 +60,12 @@ describe('FieldsPhase Stepper (Step 4)', () => {
       },
       {
         global: {
-          stubs: { ...vuetifyStubs, LocationFormStep: LocationFormStepStub, Icon: iconStub },
+          stubs: { ...vuetifyStubs, Icon: iconStub },
+          config: {
+            globalProperties: {
+              $vuetify: { display: { mobile: false } },
+            },
+          },
         },
       }
     );
@@ -71,54 +76,88 @@ describe('FieldsPhase Stepper (Step 4)', () => {
 
     expect(clientMock).toHaveBeenCalledTimes(1);
     expect(scheduleStoreRequest.value.fields_phase.length).toBe(2);
-    expect((wrapper.vm as any).currentStep).toBe(1);
+    expect(scheduleStoreRequest.value.fields_phase[0].availability.isCompleted).toBe(false);
   });
 
-  it('updates field data via emitted update event', async () => {
+  it('selects intervals using start and end selects', async () => {
     const wrapper = await mountComponent();
     await flushPromises();
 
-    await wrapper.find('.location-form-step-stub .update').trigger('click');
+    const startSelect = findSelect(wrapper, 'start-select-1-monday');
+    const endSelect = findSelect(wrapper, 'end-select-1-monday');
+    startSelect.vm.$emit('update:modelValue', '08:00');
+    await flushPromises();
+    endSelect.vm.$emit('update:modelValue', '10:00');
     await flushPromises();
 
-    expect(scheduleStoreRequest.value.fields_phase[0].field_name).toContain('Updated');
+    const mondayIntervals = scheduleStoreRequest.value.fields_phase[0].availability.monday.intervals;
+    expect(mondayIntervals[0].selected).toBe(true);
+    expect(mondayIntervals[1].selected).toBe(true);
+    expect(mondayIntervals[2].selected).toBe(true);
+    expect(mondayIntervals[0].value).toBe('08:00');
+    expect(mondayIntervals[1].value).toBe('09:00');
+    expect(mondayIntervals[2].value).toBe('10:00');
+    expect(endSelect.attributes()['data-model-value']).toBe('10:00');
+    expect(wrapper.text()).not.toContain('La hora de fin debe ser posterior a la hora de inicio');
   });
 
-  it('marks field as completed and advances on next', async () => {
+  it('ignores invalid end selections earlier than start', async () => {
     const wrapper = await mountComponent();
     await flushPromises();
 
-    await wrapper.find('.location-form-step-stub .next').trigger('click');
+    const startSelect = findSelect(wrapper, 'start-select-1-monday');
+    const endSelect = findSelect(wrapper, 'end-select-1-monday');
+    startSelect.vm.$emit('update:modelValue', '08:00');
+    await flushPromises();
+    endSelect.vm.$emit('update:modelValue', '10:00');
     await flushPromises();
 
-    expect(scheduleStoreRequest.value.fields_phase[0].availability.isCompleted).toBe(true);
-    expect((wrapper.vm as any).currentStep).toBe(2);
+    const previousModel = endSelect.attributes()['data-model-value'];
+    endSelect.vm.$emit('update:modelValue', '07:00');
+    await flushPromises();
+
+    expect(endSelect.attributes()['data-model-value']).toBe(previousModel);
   });
 
-  it('navigates back to previous step', async () => {
+  it('clears the selected intervals and toggles availability state', async () => {
     const wrapper = await mountComponent();
     await flushPromises();
 
-    await wrapper.find('.location-form-step-stub .next').trigger('click');
+    const startSelect = findSelect(wrapper, 'start-select-1-monday');
+    const endSelect = findSelect(wrapper, 'end-select-1-monday');
+    startSelect.vm.$emit('update:modelValue', '08:00');
+    await flushPromises();
+    endSelect.vm.$emit('update:modelValue', '10:00');
     await flushPromises();
 
-    const steps = wrapper.findAll('.location-form-step-stub');
-    await steps[1].find('.back').trigger('click');
+    const clearButton = findButton(wrapper, 'clear-select-1-monday');
+    await clearButton.trigger('click');
     await flushPromises();
 
-    expect((wrapper.vm as any).currentStep).toBe(1);
+    expect(wrapper.text()).toContain('No disponible');
+
+    const enableButton = findButton(wrapper, 'enable-select-1-monday');
+    await enableButton.trigger('click');
+    await flushPromises();
+
+    expect(findSelect(wrapper, 'start-select-1-monday')).toBeTruthy();
   });
 });
 
-const buildDay = (label: Day['label'], selected = false): Day => ({
-  enabled: selected,
-  available_range: '08:00 a 12:00',
-  label,
-  intervals: [
-    { value: '08:00', text: '08:00', selected, disabled: false },
-    { value: '09:00', text: '09:00', selected: false, disabled: false },
-  ],
-});
+const buildDay = (label: Day['label'], selected = false): Day => {
+  const day = {
+    enabled: true,
+    available_range: '08:00 a 12:00',
+    label,
+    intervals: [
+      { value: '08:00', text: '08:00', selected, disabled: false },
+      { value: '09:00', text: '09:00', selected: false, disabled: false },
+      { value: '10:00', text: '10:00', selected: false, disabled: false },
+    ],
+    mobile_label: label,
+  } as Day & { mobile_label: string };
+  return day;
+};
 
 const buildField = (id: number, step: number): LocationFieldsRequest => ({
   field_id: id,
@@ -139,18 +178,22 @@ const buildField = (id: number, step: number): LocationFieldsRequest => ({
   },
 });
 
-const LocationFormStepStub = {
-  name: 'LocationFormStepStub',
-  props: {
-    field: { type: Object, required: true },
-    isLastStep: { type: Boolean, default: false },
-  },
-  emits: ['next', 'back', 'update'],
-  template: `
-    <div class="location-form-step-stub">
-      <button class="update" @click="$emit('update', { ...field, field_name: field.field_name + ' Updated' })">update</button>
-      <button class="next" @click="$emit('next', { field_id: field.field_id, name: field.field_name, availability: field.availability, isCompleted: false })">next</button>
-      <button class="back" @click="$emit('back')">back</button>
-    </div>
-  `,
+const findSelect = (wrapper: any, testId: string) => {
+  const select = wrapper
+    .findAllComponents({ name: 'StubVSelect' })
+    .find((component) => component.attributes()['data-testid'] === testId);
+  if (!select) {
+    throw new Error(`Select with data-testid="${testId}" not found`);
+  }
+  return select;
+};
+
+const findButton = (wrapper: any, testId: string) => {
+  const button = wrapper
+    .findAllComponents({ name: 'StubVBtn' })
+    .find((component) => component.attributes()['data-testid'] === testId);
+  if (!button) {
+    throw new Error(`Button with data-testid="${testId}" not found`);
+  }
+  return button;
 };

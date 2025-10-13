@@ -39,6 +39,6 @@
       display: flex
       align-items: center
       max-width: 80%
-      margin: 1rem auto 3rem auto
+      margin: 1rem auto
       position: relative
 </style>
