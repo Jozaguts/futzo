@@ -35,7 +35,6 @@
     document.body.removeChild(a)
   }
   const clickHandler = (team: Team) => {
-    console.log(team)
     if (team.slug) {
       useRouter().push({ name: 'equipos-equipo', params: { equipo: team.slug } })
     }
