@@ -89,9 +89,6 @@
   )
 </script>
 <template>
-  <pre>
-    {{ errors }}
-  </pre>
   <v-container class="container" style="min-height: 480px">
     <BaseInput
       v-model="name"
