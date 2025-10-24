@@ -6,7 +6,7 @@
   const teamStore = useTeamStore()
   const { teamStoreRequest, isEdition, steps } = storeToRefs(teamStore)
   // @ts-ignore
-  const { defineField, meta, values } = useForm<TeamStoreRequest['president']>({
+  const { defineField, meta, values, errors } = useForm<TeamStoreRequest['president']>({
     validationSchema: toTypedSchema(
       object({
         id: number().nullable(),
@@ -80,6 +80,7 @@
           image,
           phone,
         }
+        steps.value.steps[steps.value.current].disable = false
       } else if (!meta.value.valid && meta.value.touched) {
         steps.value.steps[steps.value.current].disable = !meta.value.valid
       }
@@ -88,6 +89,9 @@
   )
 </script>
 <template>
+  <pre>
+    {{ errors }}
+  </pre>
   <v-container class="container" style="min-height: 480px">
     <BaseInput
       v-model="name"

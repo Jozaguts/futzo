@@ -79,6 +79,7 @@
           image,
           phone,
         }
+        steps.value.steps[steps.value.current].disable = false
       } else if (!meta.value.valid && meta.value.touched) {
         steps.value.steps[steps.value.current].disable = !meta.value.valid
       }
