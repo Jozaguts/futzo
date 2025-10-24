@@ -24,10 +24,10 @@
     <v-col cols="12" v-for="(event, index) in events" :key="index">
       <CardEvent :event="event" v-if="event.type === 'yellow_card' || event.type == 'red_card'" />
       <SubstitutionEvent :event="event" v-if="event.type === 'substitution'" />
-      <GoalEvent
-        :event="event"
-        v-if="event.type === 'goal' || event.type === 'penalty_kick' || event.type === 'own_goal'"
-      ></GoalEvent>
+
+      <GoalEvent :event="event" v-if="event.type === 'own_goal'"></GoalEvent>
+      <GoalEvent :event="event" v-if="event.type === 'goal'"></GoalEvent>
+      <GoalEvent :event="event" v-if="event.type === 'penalty_kick'"></GoalEvent>
     </v-col>
     <v-col cols="12">
       <StartGame :time="game.details.raw_time" />

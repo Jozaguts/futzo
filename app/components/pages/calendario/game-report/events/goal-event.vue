@@ -12,6 +12,8 @@
         return 'Penal'
     }
   })
+  const playerPositionName = computed(() => event.player?.position?.name ?? 'Sin posición')
+  const assistedBy = computed(() => event.related_player?.user?.name ?? 'Sin asistencia')
   const textColor = computed(() => {
     const [r, g, b] = event.team?.rgba_color
     const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
@@ -37,7 +39,7 @@
       </div>
       <div class="event-score-container">
         <div class="home-score-container">
-          <div class="home">{{ event.team.name }}</div>
+          <div class="home">{{ event.team?.name }}</div>
           <div class="score">{{ event?.home_goals_at }}</div>
         </div>
         <div class="separator">-</div>
@@ -51,11 +53,11 @@
       <div class="player-details">
         <p class="name">{{ event.player.user.name }}</p>
         <p class="details">
-          <span>{{ event.team.name }}</span> · <span>{{ event.player.position.name }}</span> #<span>{{
+          <span>{{ event.team?.name }}</span> · <span>{{ playerPositionName }}</span> #<span>{{
             event.player.number
           }}</span>
         </p>
-        <p class="details">Asistió: {{ event?.related_player?.user?.name }}</p>
+        <p class="details">Asistió: {{ assistedBy }}</p>
       </div>
       <div class="team-details">
         <v-img :src="event?.team?.image" width="48" height="47" contain rounded="lg" border="sm"> </v-img>
