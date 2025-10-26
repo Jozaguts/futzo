@@ -5,7 +5,6 @@
   const timeFormatted = computed(() => {
     // time like 09:00
     const [hours, minutes] = time.split(':')
-    console.log('Time:', time, 'Hours:', hours, 'Minutes:', minutes)
     // add AM or PM based on hours
     const ampm = Number(hours) >= 12 ? 'PM' : 'AM'
     return `${Number(hours) % 12 || 12}:${minutes} ${ampm}`

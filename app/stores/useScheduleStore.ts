@@ -270,6 +270,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     { value: 'completado', text: 'Completada' },
     { value: 'cancelado', text: 'Cancelada' },
   ]);
+  const hasSchedule = ref(false);
   const $resetScheduleStore = () => {
     calendarSteps.value.current = 'general';
     calendarSteps.value = { ...INIT_CALENDAR_STEPS };
@@ -300,6 +301,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
   };
   const getTournamentSchedules = async () => {
     isLoadingSchedules.value = true;
+
     const client = useSanctumClient();
     let url = `/api/v1/admin/tournaments/${tournamentStore.tournamentId}/schedule?page=${schedulePagination.value.current_page}`;
 
@@ -311,6 +313,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     }
 
     const response = await client(url);
+    hasSchedule.value = response?.hasSchedule ?? false;
     //@ts-ignore
     const newRounds = response.rounds ?? [];
     if (!schedules.value.rounds.length) {
@@ -547,11 +550,14 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
   const fetchScheduleRoundsByStatus = async (filter: string) => {
     schedulePagination.value.current_page = 1;
     schedules.value.rounds = [];
+    isLoadingSchedules.value = true;
     const response = await scheduleAPI.fetchRoundByStatus(
       tournamentStore.tournamentId as number,
       filter,
       schedulePagination.value.current_page
     );
+    isLoadingSchedules.value = false;
+    hasSchedule.value = response.hasSchedule ?? false;
     //@ts-ignore
     schedules.value.rounds = response.rounds ?? [];
   };
@@ -605,6 +611,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     requiredMinutesPerRound,
     reservedMinutesPerWeek,
     hasEnoughCapacity,
+    hasSchedule,
     updateStatusGame,
     getTournamentSchedules,
     fetchSchedule,

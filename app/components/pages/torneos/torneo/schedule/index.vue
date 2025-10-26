@@ -135,11 +135,15 @@ noSchedules
 <template>
   <v-container fluid class="pa-0">
     <v-row :no-gutters="mobile">
-      <v-col cols="12" md="8" lg="8" v-if="noSchedules">
-        <NoCalendar />
-      </v-col>
+      <v-col cols="12" md="8" lg="8" v-if="noSchedules"> <NoCalendar /></v-col>
       <v-col v-else cols="12" md="8" lg="8">
-        <v-infinite-scroll :items="schedules.rounds" @load="load" height="412" class="bg-surface pa-4 futzo-rounded">
+        <v-infinite-scroll
+          :items="schedules.rounds"
+          @load="load"
+          height="412"
+          class="bg-surface pa-4 futzo-rounded"
+          empty-text="No hay mas jornadas"
+        >
           <template v-for="item in schedules.rounds" :key="item.id">
             <v-container fluid>
               <v-row>
