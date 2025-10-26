@@ -3,6 +3,7 @@ import '@mdi/font/css/materialdesignicons.css';
 import theme from '~/../config/vuetify/theme';
 import defaults from '~/../config/vuetify/defaults';
 import { VMaskInput } from 'vuetify/labs/VMaskInput';
+import { VDateInput } from 'vuetify/labs/VDateInput';
 import 'vuetify/styles';
 import { createVuetify } from 'vuetify';
 import * as directives from 'vuetify/directives';
@@ -11,6 +12,7 @@ export default defineNuxtPlugin((app) => {
   const vuetify = createVuetify({
     components: {
       VMaskInput,
+      VDateInput,
     },
     directives,
     ssr: true,

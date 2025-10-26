@@ -33,7 +33,6 @@
       </AppBar>
     </template>
     <template #default>
-      <NoCalendar />
       <LazyPagesTorneosCalendarioDialog />
       <Schedule />
     </template>

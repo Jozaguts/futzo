@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { useDisplay } from 'vuetify';
 
 export const useGlobalStore = defineStore('global', () => {
-  const { mobile } = useDisplay();
+  const { mobile, height } = useDisplay();
 
   const isMobile = computed(() => mobile.value);
   const isLoading = ref(true);

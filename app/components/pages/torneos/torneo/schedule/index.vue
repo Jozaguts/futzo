@@ -2,14 +2,17 @@
   import ReScheduleGame from '~/components/pages/calendario/re-schedule-game.vue'
   import GameReport from '~/components/pages/calendario/game-report/index.vue'
   import Score from './score.vue'
+  import PhaseProgressCard from './phase-progress-card.vue'
+  import BracketSchedulerDialog from './bracket-scheduler-dialog.vue'
   import { useToast } from '~/composables/useToast'
   import type { RoundStatus } from '~/models/Schedule'
   import { useDisplay } from 'vuetify'
+  import NoCalendar from '~/components/pages/torneos/no-calendar.vue'
 
   const { tournamentId, loading, tournament } = storeToRefs(useTournamentStore())
   const { gameReportDialog, showReScheduleDialog, gameDetailsRequest } = storeToRefs(useGameStore())
 
-  const { schedulePagination, isLoadingSchedules, schedules, scheduleRoundStatus, isExporting } =
+  const { schedulePagination, isLoadingSchedules, schedules, scheduleRoundStatus, isExporting, noSchedules } =
     storeToRefs(useScheduleStore())
   const load = async ({ done }: { done: (status: 'ok' | 'empty' | 'error') => void }) => {
     if (schedulePagination.value.current_page > schedulePagination.value.last_page) {
@@ -104,6 +107,7 @@
   }
   onBeforeMount(async () => {
     schedulePagination.value.current_page = 1
+    await useScheduleStore().refreshScheduleSettings()
   })
   onBeforeUnmount(async () => {
     schedulePagination.value.current_page = 1
@@ -122,28 +126,20 @@
     }
   }
   const { mobile } = useDisplay()
+  const showBracketDialog = ref(false)
+  const openBracketDialog = () => {
+    showBracketDialog.value = true
+  }
 </script>
+noSchedules
 <template>
-  <v-row v-if="schedules.rounds.length" :no-gutters="mobile">
-    <v-col cols="12" :class="mobile ? 'mb-6' : ''">
-      <div class="tournament-details">
-        <div class="detail">
-          <p class="text-body-1">Torneo:</p>
-          <span> {{ tournament.name }}</span>
-        </div>
-        <div class="detail">
-          <p class="text-body-1">Categoría:</p>
-          <span>{{ tournament.category.name }}</span>
-        </div>
-        <div class="detail">
-          <p class="text-body-1">Fecha de inicio:</p>
-          <span>{{ tournament.start_date_to_string }}</span>
-        </div>
-      </div>
-    </v-col>
-    <v-col cols="12">
-      <v-sheet class="sheet-tournament-schedule futzo-rounded fill-height pa-4">
-        <v-infinite-scroll :items="schedules.rounds" @load="load" height="700">
+  <v-container fluid class="pa-0">
+    <v-row :no-gutters="mobile">
+      <v-col cols="12" md="8" lg="8" v-if="noSchedules">
+        <NoCalendar />
+      </v-col>
+      <v-col v-else cols="12" md="8" lg="8">
+        <v-infinite-scroll :items="schedules.rounds" @load="load" height="412" class="bg-surface pa-4 futzo-rounded">
           <template v-for="item in schedules.rounds" :key="item.id">
             <v-container fluid>
               <v-row>
@@ -286,11 +282,37 @@
             </v-container>
           </template>
         </v-infinite-scroll>
-      </v-sheet>
-    </v-col>
+      </v-col>
+      <v-col cols="12" md="4" lg="4">
+        <PhaseProgressCard class="mb-6" @open-bracket="openBracketDialog" />
+      </v-col>
+      <!--      </v-row>-->
+      <!--      <v-col cols="12">-->
+      <!--      <div class="tournament-details">-->
+      <!--        <div class="detail">-->
+      <!--          <p class="text-body-1">Torneo:</p>-->
+      <!--          <span> {{ tournament.name }}</span>-->
+      <!--        </div>-->
+      <!--        <div class="detail">-->
+      <!--          <p class="text-body-1">Categoría:</p>-->
+      <!--          <span>{{ tournament.category.name }}</span>-->
+      <!--        </div>-->
+      <!--        <div class="detail">-->
+      <!--          <p class="text-body-1">Fecha de inicio:</p>-->
+      <!--          <span>{{ tournament.start_date_to_string }}</span>-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <!--        <v-sheet class="sheet-tournament-schedule futzo-rounded fill-height pa-4">-->
+      <!--          <v-container>-->
+
+      <!--          </v-container>-->
+      <!--        </v-sheet>-->
+      <!--      </v-col>-->
+    </v-row>
     <ReScheduleGame v-model:show="showReScheduleDialog" />
     <GameReport />
-  </v-row>
+    <BracketSchedulerDialog v-model="showBracketDialog" />
+  </v-container>
 </template>
 <style lang="sass" scoped>
   @use '~/assets/scss/pages/schedule.sass'

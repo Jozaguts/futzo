@@ -53,8 +53,3 @@
     </template>
   </PageLayout>
 </template>
-<style>
-  .table-wrapper {
-    max-height: 100%;
-  }
-</style>

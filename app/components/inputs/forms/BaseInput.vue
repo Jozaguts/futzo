@@ -10,6 +10,8 @@
     props,
     disabled = false,
     type = 'text',
+    variant = 'outlined',
+    readonly = false,
   } = defineProps<{
     placeholder?: string
     label?: string
@@ -17,6 +19,8 @@
     props?: VErrorProps
     disabled?: boolean
     type?: string
+    readonly?: boolean
+    variant?: 'outlined' | 'filled' | 'underlined' | 'plain' | 'solo' | 'solo-filled' | 'solo-inverted'
   }>()
 </script>
 
@@ -33,7 +37,8 @@
         <v-text-field
           :type="type"
           :placeholder="placeholder"
-          outlined
+          :variant="variant"
+          :readonly="readonly"
           :disabled="disabled"
           v-model="model"
           density="compact"

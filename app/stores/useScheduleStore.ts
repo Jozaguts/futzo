@@ -3,6 +3,7 @@ import { FetchError } from 'ofetch';
 import type {
   CalendarStepsForm,
   EliminationPhase,
+  Field,
   FootballType,
   Format,
   FormEliminationPhaseStep,
@@ -21,6 +22,7 @@ import * as scheduleAPI from '~/http/api/schedule';
 import * as tournamentAPI from '~/http/api/tournament';
 import { useTournamentStore } from '~/stores/useTournamentStore';
 import { useApiError, useToast, useSanctumClient } from '#imports';
+import type { BracketPreview, ConfirmBracketMatch } from '~/models/Bracket';
 
 export const useScheduleStore = defineStore('scheduleStore', () => {
   const INIT_CALENDAR_STEPS: CalendarStepsForm = {
@@ -131,6 +133,38 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
   });
   const calendarSteps = ref<CalendarStepsForm>(INIT_CALENDAR_STEPS);
   const isExporting = ref(false);
+  const isAdvancingPhase = ref(false);
+  const isLoadingBracketPreview = ref(false);
+  const bracketPreview = ref<BracketPreview | null>(null);
+  const bracketPreviewPhase = ref<string | null>(null);
+  const isConfirmingBracket = ref(false);
+  const tournamentFields = ref<Field[]>([]);
+  const isLoadingTournamentFields = ref(false);
+  const bracketMatchesDraft = ref<ConfirmBracketMatch[]>([]);
+  const eliminationPhases = computed(
+    () =>
+      scheduleSettings.value?.phases?.filter(
+        (phase) => phase.name !== 'Fase de grupos' && phase.name !== 'Tabla general'
+      ) ?? []
+  );
+  const activePhase = computed(() => scheduleSettings.value?.phases?.find((phase) => phase.is_active) ?? null);
+  const activeEliminationPhase = computed(() => eliminationPhases.value.find((phase) => phase.is_active) ?? null);
+  const upcomingEliminationPhase = computed(
+    () => eliminationPhases.value.find((phase) => !phase.is_completed && !phase.is_active) ?? null
+  );
+  const nextPhase = computed(() => {
+    const phases = scheduleSettings.value?.phases ?? [];
+    const currentIndex = phases.findIndex((phase) => phase.is_active);
+    if (currentIndex === -1) {
+      return null;
+    }
+    for (let i = currentIndex + 1; i < phases.length; i++) {
+      if (!phases[i].is_completed) {
+        return phases[i];
+      }
+    }
+    return null;
+  });
 
   // ---- Capacity helpers (client-side estimation) ----
   const MATCH_GLOBAL_REST = 15;
@@ -319,6 +353,143 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     schedules.value.rounds = [];
     await getTournamentSchedules();
   };
+  const refreshScheduleSettings = async () => {
+    await fetchScheduleSettings();
+  };
+  const loadTournamentFields = async (force = false) => {
+    if (!tournamentStore.tournamentId) {
+      return;
+    }
+    if (tournamentFields.value.length && !force) {
+      return;
+    }
+    isLoadingTournamentFields.value = true;
+    try {
+      const response: { data?: Field[] } = await tournamentAPI.getTournamentFields(
+        tournamentStore.tournamentId as number
+      );
+      tournamentFields.value = response?.data ?? [];
+    } catch (error) {
+      tournamentFields.value = [];
+      const { message } = useApiError(error as FetchError);
+      useToast().toast({
+        type: 'error',
+        msg: 'Campos de juego',
+        description: message,
+      });
+      throw error;
+    } finally {
+      isLoadingTournamentFields.value = false;
+    }
+  };
+  const advanceTournamentPhase = async () => {
+    if (!tournamentStore.tournamentId) {
+      return;
+    }
+    isAdvancingPhase.value = true;
+    try {
+      const response: { message?: string } = await tournamentAPI.advanceTournamentPhase(
+        tournamentStore.tournamentId as number
+      );
+      await refreshScheduleSettings();
+      useToast().toast({
+        type: 'success',
+        msg: 'Fase del torneo',
+        description: response?.message ?? 'La siguiente fase se activó correctamente.',
+      });
+      bracketPreview.value = null;
+      bracketPreviewPhase.value = null;
+    } catch (error) {
+      const { message } = useApiError(error as FetchError);
+      useToast().toast({
+        type: 'error',
+        msg: 'Fase del torneo',
+        description: message,
+      });
+      throw error;
+    } finally {
+      isAdvancingPhase.value = false;
+    }
+  };
+  const resetBracketPreview = () => {
+    bracketPreview.value = null;
+    bracketPreviewPhase.value = null;
+    bracketMatchesDraft.value = [];
+  };
+  const loadEliminationBracketPreview = async (phaseName?: string) => {
+    if (!tournamentStore.tournamentId) {
+      return;
+    }
+    const targetPhase =
+      phaseName ??
+      activeEliminationPhase.value?.name ??
+      upcomingEliminationPhase.value?.name ??
+      eliminationPhases.value[0]?.name;
+    if (!targetPhase) {
+      resetBracketPreview();
+      return;
+    }
+    isLoadingBracketPreview.value = true;
+    try {
+      const data = await tournamentAPI.getBracketPreview(tournamentStore.tournamentId as number, targetPhase);
+      bracketPreview.value = data;
+      bracketPreviewPhase.value = targetPhase;
+      bracketMatchesDraft.value =
+        data.pairs?.map((pair) => ({
+          home_team_id: pair.home.team_id,
+          away_team_id: pair.away.team_id,
+          field_id: tournamentFields.value[0]?.id ?? null,
+          match_date: '',
+          match_time: '',
+          leg: 1,
+        })) ?? [];
+    } catch (error) {
+      resetBracketPreview();
+      const { message } = useApiError(error as FetchError);
+      useToast().toast({
+        type: 'error',
+        msg: 'Llaves de eliminación',
+        description: message,
+      });
+      throw error;
+    } finally {
+      isLoadingBracketPreview.value = false;
+    }
+  };
+  const confirmEliminationBracket = async (payload: {
+    phase: string;
+    matches: ConfirmBracketMatch[];
+    round_trip?: boolean;
+    min_rest_minutes?: number;
+  }) => {
+    if (!tournamentStore.tournamentId) {
+      return;
+    }
+    isConfirmingBracket.value = true;
+    try {
+      await tournamentAPI.confirmBracket(tournamentStore.tournamentId as number, payload);
+      useToast().toast({
+        type: 'success',
+        msg: 'Llaves de eliminación',
+        description: 'Los partidos se programaron correctamente.',
+      });
+      resetBracketPreview();
+      await refreshScheduleSettings();
+      schedulePagination.value.current_page = 1;
+      schedules.value.rounds = [];
+      await getTournamentSchedules();
+    } catch (error) {
+      const { message } = useApiError(error as FetchError);
+      useToast().toast({
+        type: 'error',
+        msg: 'Llaves de eliminación',
+        description: message,
+      });
+      throw error;
+    } finally {
+      isConfirmingBracket.value = false;
+    }
+  };
   const generateSchedule = async () => {
     try {
       await scheduleAPI.generateSchedule(tournamentStore.tournamentId as number, scheduleStoreRequest.value);
@@ -340,11 +511,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       });
     }
   };
-  const settingsSchedule = async (force = false) => {
-    const client = useSanctumClient();
-    const data = await client<ScheduleSettings>(
-      `api/v1/admin/tournaments/${tournamentStore.tournamentId}/schedule/settings`
-    );
+  const applyScheduleSettings = (data: ScheduleSettings) => {
     const generalSchedule = {} as FormGeneralScheduleRequest;
     generalSchedule.tournament_id = tournamentStore.tournamentId as number;
     generalSchedule.tournament_format_id = data.format.id;
@@ -360,11 +527,22 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       tiebreakers: data.tiebreakers,
     };
     scheduleStoreRequest.value.elimination_phase = {
-      teams_to_next_round: 8,
-      elimination_round_trip: false,
+      teams_to_next_round: data?.teams_to_next_round ?? 8,
+      elimination_round_trip: Boolean(data?.elimination_round_trip),
       phases: data.phases,
     };
     scheduleSettings.value = data;
+  };
+  const fetchScheduleSettings = async () => {
+    const client = useSanctumClient();
+    const data = await client<ScheduleSettings>(
+      `api/v1/admin/tournaments/${tournamentStore.tournamentId}/schedule/settings`
+    );
+    applyScheduleSettings(data);
+    return data;
+  };
+  const settingsSchedule = async () => {
+    await fetchScheduleSettings();
   };
   const fetchScheduleRoundsByStatus = async (filter: string) => {
     schedulePagination.value.current_page = 1;
@@ -408,6 +586,19 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     calendarSteps,
     scheduleStoreRequest,
     isExporting,
+    isAdvancingPhase,
+    isLoadingBracketPreview,
+    bracketPreview,
+    bracketPreviewPhase,
+    isConfirmingBracket,
+    tournamentFields,
+    isLoadingTournamentFields,
+    bracketMatchesDraft,
+    eliminationPhases,
+    activePhase,
+    activeEliminationPhase,
+    upcomingEliminationPhase,
+    nextPhase,
     // capacity info
     matchDurationMins,
     matchesPerRound,
@@ -419,6 +610,12 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     fetchSchedule,
     generateSchedule,
     settingsSchedule,
+    refreshScheduleSettings,
+    loadTournamentFields,
+    advanceTournamentPhase,
+    loadEliminationBracketPreview,
+    resetBracketPreview,
+    confirmEliminationBracket,
     $resetScheduleStore,
     fetchScheduleRoundsByStatus,
     exportTournamentRoundScheduleAs,
