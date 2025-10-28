@@ -1,14 +1,27 @@
 <script lang="ts" setup>
   import type { LastGames } from '~/models/Game'
 
-  const { lastGames } = defineProps({
-    lastGames: Array as PropType<LastGames[]>,
+  const props = defineProps({
+    lastGames: {
+      type: Array as PropType<LastGames[]>,
+      default: () => [],
+    },
+    highlightedMatchId: {
+      type: Number,
+      default: null,
+    },
   })
+  const isHighlighted = (gameId: number) => props.highlightedMatchId === gameId
 </script>
 <template>
   <table>
     <tbody>
-      <tr class="next-games-today-table__cell" v-for="game in lastGames" :key="game?.id">
+      <tr
+        class="next-games-today-table__cell"
+        v-for="game in props.lastGames"
+        :key="game?.id"
+        :class="{ 'next-games-today-table__cell--highlight': isHighlighted(game?.id ?? 0) }"
+      >
         <td class="team">
           <img :src="game?.homeTeam?.image" alt="team logo" class="logo" />
           <span class="team_name d-inline-block text-truncate" style="max-width: 120px">
@@ -21,6 +34,7 @@
           <div
             class="result"
             :class="{
+              'result--highlight': isHighlighted(game?.id ?? 0),
               'bg-green': game?.homeTeam?.id === game.winner_team_id,
               'bg-red': game?.awayTeam?.id === game.winner_team_id,
               'bg-black': !game?.winner_team_id,
@@ -40,4 +54,13 @@
 </template>
 <style lang="scss" scoped>
   @use '~/assets/scss/components/last-game-table';
+
+  .next-games-today-table__cell--highlight {
+    border: 2px solid var(--Colors-Primary-primary-600, #53389e);
+    box-shadow: 0 0 0 2px rgba(83, 56, 158, 0.15);
+  }
+
+  .result--highlight {
+    border: 2px solid var(--Colors-Primary-primary-600, #53389e);
+  }
 </style>
