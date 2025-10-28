@@ -11,7 +11,9 @@
   import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
   import { useDisplay } from 'vuetify'
   import MarkAsInput from '~/components/pages/torneos/torneo/mark-as-input.vue'
-  const { standings, tournamentId, lastResults, nextGames, groupStanding } = storeToRefs(useTournamentStore())
+  const { standings, tournamentId, lastResults, nextGames, groupStanding, tournament } = storeToRefs(
+    useTournamentStore()
+  )
   const route = useRoute()
   onMounted(() => {
     if (tournamentId.value) {
@@ -29,6 +31,40 @@
     }
   })
   const { mobile } = useDisplay()
+  const championInfo = computed(() => {
+    if (tournament.value?.status !== 'completado') {
+      return null
+    }
+    const games = Array.isArray(lastResults.value) ? lastResults.value : []
+    const winnerName = tournament.value?.winner
+    const targetMatch = games.find((game: any) => {
+      if (!game || game.status !== 'completado' || !game.winner_team_id) {
+        return false
+      }
+      if (!winnerName) {
+        return true
+      }
+      return game?.homeTeam?.name === winnerName || game?.awayTeam?.name === winnerName
+    })
+    const winnerTeam =
+      targetMatch && targetMatch.homeTeam?.id === targetMatch.winner_team_id
+        ? targetMatch.homeTeam
+        : targetMatch?.awayTeam ?? null
+    const resolvedWinnerName = winnerName ?? winnerTeam?.name ?? null
+    const scoreText =
+      targetMatch && targetMatch.homeTeam && targetMatch.awayTeam
+        ? `${targetMatch.homeTeam.name} ${targetMatch.home_goals} - ${targetMatch.away_goals} ${targetMatch.awayTeam.name}`
+        : null
+    if (!resolvedWinnerName) {
+      return null
+    }
+    return {
+      winner: winnerTeam,
+      winnerName: resolvedWinnerName,
+      scoreText,
+      game: targetMatch ?? null,
+    }
+  })
 </script>
 <template>
   <PageLayout>
@@ -62,7 +98,17 @@
         <div class="right-down-zone futzo-rounded">
           <NextGamesToday title="Últimos resultados">
             <template #content>
-              <LastGames :lastGames="lastResults" />
+              <div v-if="championInfo?.winnerName" class="champion-banner">
+                <span class="champion-banner__label">Campeón</span>
+                <span class="champion-banner__team">{{ championInfo.winnerName }}</span>
+                <span v-if="championInfo?.scoreText" class="champion-banner__score">
+                  {{ championInfo.scoreText }}
+                </span>
+              </div>
+              <LastGames
+                :lastGames="lastResults"
+                :highlighted-match-id="championInfo?.game?.id ?? null"
+              />
             </template>
           </NextGamesToday>
         </div>
@@ -73,4 +119,30 @@
 </template>
 <style lang="sass" scoped>
   @use '~/assets/scss/pages/teams-team.sass'
+
+  .champion-banner
+    display: flex
+    flex-direction: column
+    gap: 4px
+    padding: 12px
+    border-radius: 12px
+    border: 1px solid rgba(83, 56, 158, 0.24)
+    background: rgba(125, 86, 217, 0.08)
+    margin-bottom: 12px
+
+  .champion-banner__label
+    font-size: 11px
+    font-weight: 600
+    text-transform: uppercase
+    letter-spacing: 0.08em
+    color: #53389e
+
+  .champion-banner__team
+    font-size: 16px
+    font-weight: 600
+    color: #182230
+
+  .champion-banner__score
+    font-size: 13px
+    color: #475467
 </style>

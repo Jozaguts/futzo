@@ -17,6 +17,7 @@ import type {
   ScheduleStoreRequest,
   TournamentSchedule,
 } from '~/models/Schedule';
+import type { Tournament } from '~/models/tournament';
 import type { IPagination } from '~/interfaces';
 import * as scheduleAPI from '~/http/api/schedule';
 import * as tournamentAPI from '~/http/api/tournament';
@@ -165,6 +166,25 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     }
     return null;
   });
+  const isFinalPhaseActive = computed(() => activePhase.value?.name === 'Final');
+  const activePhaseMatches = computed(() => {
+    const rounds = schedules.value?.rounds ?? [];
+    return rounds.flatMap((round) => round?.matches ?? []);
+  });
+  const hasActivePhaseMatches = computed(() => activePhaseMatches.value.length > 0);
+  const areActivePhaseMatchesProgrammed = computed(
+    () =>
+      hasActivePhaseMatches.value &&
+      activePhaseMatches.value.every((match) => match.status === 'programado')
+  );
+  const areActivePhaseMatchesCompleted = computed(
+    () =>
+      hasActivePhaseMatches.value &&
+      activePhaseMatches.value.every((match) => match.status === 'completado')
+  );
+  const isActivePhaseConfigurationLocked = computed(
+    () => hasActivePhaseMatches.value && activePhaseMatches.value.some((match) => match.status !== 'programado')
+  );
 
   // ---- Capacity helpers (client-side estimation) ----
   const MATCH_GLOBAL_REST = 15;
@@ -320,7 +340,15 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       schedules.value.rounds = [];
     }
 
-    const existingRound = schedules.value.rounds.find((r) => r.round === newRounds[0].round);
+    if (!Array.isArray(newRounds) || newRounds.length === 0) {
+      const totalRounds = Number(response?.pagination?.total_rounds ?? 0);
+      schedulePagination.value.last_page = totalRounds;
+      schedulePagination.value.current_page = totalRounds + 1;
+      isLoadingSchedules.value = false;
+      return;
+    }
+
+    const existingRound = schedules.value.rounds.find((r) => r.round === newRounds[0]?.round);
     if (existingRound) {
       schedules.value.rounds = schedules.value.rounds.map((round) =>
         round.round === existingRound.round ? newRounds[0] : round
@@ -391,10 +419,32 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     }
     isAdvancingPhase.value = true;
     try {
-      const response: { message?: string } = await tournamentAPI.advanceTournamentPhase(
-        tournamentStore.tournamentId as number
-      );
+      const response: { message?: string; champion?: { team_id?: number; team_name?: string } } =
+        await tournamentAPI.advanceTournamentPhase(
+          tournamentStore.tournamentId as number
+        );
       await refreshScheduleSettings();
+      schedulePagination.value.current_page = 1;
+      schedules.value.rounds = [];
+      try {
+        await getTournamentSchedules();
+      } catch (fetchError) {
+        schedules.value.rounds = [];
+      }
+      if (response?.champion?.team_name) {
+        tournamentStore.tournament.value = {
+          ...tournamentStore.tournament.value,
+          winner: response.champion.team_name,
+          status: 'completado',
+        } as Tournament;
+      }
+      if (tournamentStore.tournamentId) {
+        await Promise.allSettled([
+          tournamentStore.getStandings(),
+          tournamentStore.getLastResults(),
+          tournamentStore.getNextGames(),
+        ]);
+      }
       useToast().toast({
         type: 'success',
         msg: 'Fase del torneo',
@@ -605,6 +655,11 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     activeEliminationPhase,
     upcomingEliminationPhase,
     nextPhase,
+    isFinalPhaseActive,
+    hasActivePhaseMatches,
+    areActivePhaseMatchesProgrammed,
+    areActivePhaseMatchesCompleted,
+    isActivePhaseConfigurationLocked,
     // capacity info
     matchDurationMins,
     matchesPerRound,
