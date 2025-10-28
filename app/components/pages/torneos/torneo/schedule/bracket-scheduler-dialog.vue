@@ -241,27 +241,6 @@
                 >.
               </div>
             </v-alert>
-            <v-row class="mb-4" dense>
-              <v-col cols="12" md="6">
-                <v-switch
-                  v-model="roundTrip"
-                  color="primary"
-                  inset
-                  :label="roundTrip ? 'Ida y vuelta activado' : 'Partido único'"
-                />
-              </v-col>
-              <v-col cols="12" md="6">
-                <v-text-field
-                  v-model.number="minRestMinutes"
-                  type="number"
-                  label="Descanso mínimo entre partidos (min)"
-                  min="60"
-                  max="600"
-                  variant="outlined"
-                  density="comfortable"
-                />
-              </v-col>
-            </v-row>
             <v-divider class="mb-4" />
             <div v-if="matchViewModels.length" class="bracket-grid">
               <v-sheet
@@ -272,7 +251,7 @@
               >
                 <div class="d-flex justify-space-between align-center mb-3">
                   <span class="text-subtitle-2 font-weight-medium">{{ item.pairLabel }}</span>
-                  <v-chip size="small" color="secondary" variant="outlined">{{ item.legLabel }}</v-chip>
+                  <!--                  <v-chip size="small" color="secondary" variant="outlined">{{ item.legLabel }}</v-chip>-->
                 </div>
                 <div class="d-flex align-center justify-space-between mb-4 matchup">
                   <div class="team">
@@ -296,7 +275,7 @@
                   </div>
                 </div>
                 <v-row dense>
-                  <v-col cols="12" md="4">
+                  <v-col cols="12">
                     <v-select
                       :items="fieldItems"
                       label="Campo"
@@ -306,7 +285,7 @@
                       @update:model-value="(value) => updateMatch(index, 'field_id', value as number | null)"
                     />
                   </v-col>
-                  <v-col cols="12" md="4">
+                  <v-col cols="12">
                     <v-date-input
                       :model-value="item.match.match_date"
                       label="Date input"
@@ -317,7 +296,7 @@
                       @update:model-value="(value) => updateMatch(index, 'match_date', value)"
                     ></v-date-input>
                   </v-col>
-                  <v-col cols="12" md="4">
+                  <v-col cols="12">
                     <v-text-field
                       :model-value="item.match.match_time"
                       type="time"
