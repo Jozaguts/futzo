@@ -13,6 +13,11 @@
     activeEliminationPhase,
     upcomingEliminationPhase,
     nextPhase,
+    isFinalPhaseActive,
+    hasActivePhaseMatches,
+    areActivePhaseMatchesProgrammed,
+    areActivePhaseMatchesCompleted,
+    isActivePhaseConfigurationLocked,
   } = storeToRefs(scheduleStore)
 
   const activePhaseName = computed(() => activePhase.value?.name ?? 'No hay fase activa')
@@ -20,12 +25,30 @@
 
   const hasPhases = computed(() => (scheduleSettings.value?.phases?.length ?? 0) > 0)
   const advanceLabel = computed(() => {
-    if (!activePhase.value || !nextPhase.value) {
+    if (!activePhase.value) {
       return 'Avanzar de fase'
     }
-    return `Avanzar a ${nextPhase.value.name}`
+    if (
+      isFinalPhaseActive.value &&
+      hasActivePhaseMatches.value &&
+      (areActivePhaseMatchesProgrammed.value || areActivePhaseMatchesCompleted.value)
+    ) {
+      return 'Finalizar torneo'
+    }
+    if (nextPhase.value) {
+      return `Avanzar a ${nextPhase.value.name}`
+    }
+    return 'Avanzar de fase'
   })
-  const canAdvance = computed(() => Boolean(activePhase.value && nextPhase.value))
+  const canAdvance = computed(() => {
+    if (!activePhase.value) {
+      return false
+    }
+    if (isFinalPhaseActive.value) {
+      return areActivePhaseMatchesCompleted.value
+    }
+    return Boolean(nextPhase.value)
+  })
   const bracketButtonLabel = computed(() => {
     const target = activeEliminationPhase.value ?? upcomingEliminationPhase.value
     return target ? `Configurar ${target.name}` : 'Configurar eliminatoria'
@@ -54,7 +77,7 @@
       <div class="d-flex justify-end w-100">
         <PrimaryBtn
           @click="handleAdvancePhase"
-          text="Avanzar de fase"
+          :text="advanceLabel"
           :show-icon="false"
           :loading="isAdvancingPhase"
           :disabled="!canAdvance || isAdvancingPhase"
@@ -63,7 +86,7 @@
         <PrimaryBtn
           text="Configurar"
           :show-icon="false"
-          :disabled="!activeEliminationPhase"
+          :disabled="!activeEliminationPhase || isActivePhaseConfigurationLocked"
           @click="handleOpenBracket"
           color="secondary"
           variant="outlined"
