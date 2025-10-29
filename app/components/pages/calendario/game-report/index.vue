@@ -25,7 +25,7 @@
 </script>
 <template>
   <Dialog
-    title="Acta partido"
+    title="Acta de partido"
     subtitle="Registra los detalles del partido, incluyendo goles, tarjetas y otros eventos importantes."
     :model-value="gameReportDialog"
     @leaving="onLeaving"

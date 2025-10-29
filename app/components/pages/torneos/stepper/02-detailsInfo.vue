@@ -39,6 +39,7 @@
             return !(value && value.startsWith(' '))
           })
           .nullable(),
+        penalty_draw_enabled: yup.boolean().default(false),
       })
     ),
     initialValues: tournamentStoreRequest.value.details,
@@ -48,6 +49,7 @@
   const [winner, winner_props] = defineField('winner', vuetifyConfig)
   const [description, description_props] = defineField('description', vuetifyConfig)
   const [status, status_props] = defineField('status', vuetifyConfig)
+  const [penalty_draw_enabled, penalty_draw_enabled_props] = defineField('penalty_draw_enabled', vuetifyConfig)
   const search2 = ref('')
   const fields = ref<Field[]>([] as Field[])
   const searchHandler2 = (term: string) => console.log(term)
@@ -117,6 +119,14 @@
           class="rounded-lg"
           placeholder="Una breve descripción del torneo..."
         ></v-textarea>
+      </template>
+    </BaseInput>
+    <BaseInput
+      sublabel="El ganador en penales suma 2 puntos y su rival 1 punto."
+      label="Desempate por penales en empates de fase general"
+    >
+      <template #input>
+        <v-switch color="primary" v-model="penalty_draw_enabled" v-bind="penalty_draw_enabled_props"></v-switch>
       </template>
     </BaseInput>
   </v-container>
