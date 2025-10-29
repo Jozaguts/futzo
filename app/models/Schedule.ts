@@ -133,6 +133,13 @@ export type DatePickerAttributes = {
   'max-date'?: Date;
 };
 
+export type PenaltyShootout = {
+  decided: boolean;
+  winner_team_id: number | null;
+  home_goals: number | null;
+  away_goals: number | null;
+};
+
 export type TournamentSchedule = {
   rounds: Round[];
 };
@@ -152,6 +159,12 @@ export type Match = {
   details: MatchDetails;
   result: string;
   options: MatchOptions[];
+  penalties?: PenaltyShootout;
+  penalty_draw_enabled?: boolean;
+  phase?: {
+    id: number | null;
+    name: string | null;
+  };
   group?: {
     key: string;
     name: string;
@@ -229,6 +242,7 @@ export interface ScheduleSettings {
   teams: number;
   round_trip: boolean;
   elimination_round_trip: boolean;
+  penalty_draw_enabled: boolean;
   format: Format;
   footballType: FootballType;
   locations: Location[];

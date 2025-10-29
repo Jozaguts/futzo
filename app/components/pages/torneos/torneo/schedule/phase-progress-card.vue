@@ -21,7 +21,7 @@
   } = storeToRefs(scheduleStore)
 
   const activePhaseName = computed(() => activePhase.value?.name ?? 'No hay fase activa')
-  const nextPhaseNAme = computed(() => nextPhase.value?.name ?? 'No siguiente hay fase activa')
+  const nextPhaseNAme = computed(() => nextPhase.value?.name ?? 'Ninguna')
 
   const hasPhases = computed(() => (scheduleSettings.value?.phases?.length ?? 0) > 0)
   const advanceLabel = computed(() => {

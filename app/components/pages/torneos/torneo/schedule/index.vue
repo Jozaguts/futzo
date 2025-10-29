@@ -5,7 +5,7 @@
   import PhaseProgressCard from './phase-progress-card.vue'
   import BracketSchedulerDialog from './bracket-scheduler-dialog.vue'
   import { useToast } from '~/composables/useToast'
-  import type { RoundStatus } from '~/models/Schedule'
+  import type { Match, RoundStatus } from '~/models/Schedule'
   import { useDisplay } from 'vuetify'
   import NoCalendar from '~/components/pages/torneos/no-calendar.vue'
 
@@ -14,6 +14,84 @@
 
   const { schedulePagination, isLoadingSchedules, schedules, scheduleRoundStatus, isExporting, noSchedules } =
     storeToRefs(useScheduleStore())
+
+  const eliminationPhaseNames = [
+    'Dieciseisavos de Final',
+    'Octavos de Final',
+    'Cuartos de Final',
+    'Semifinales',
+    'Final',
+  ]
+
+  const ensurePenaltyStructure = (game: Match) => {
+    if (!game.penalties) {
+      game.penalties = {
+        decided: false,
+        home_goals: null,
+        away_goals: null,
+        winner_team_id: null,
+      }
+    }
+  }
+
+  const isEliminationGame = (game: Match) => {
+    return eliminationPhaseNames.includes(game.phase?.name ?? '')
+  }
+
+  const canApplyPenaltyRule = (game: Match) => {
+    return Boolean(tournament.value?.penalty_draw_enabled) && !isEliminationGame(game)
+  }
+
+  const requiresPenalty = (game: Match) => {
+    return canApplyPenaltyRule(game) && game.home.goals === game.away.goals
+  }
+
+  const shouldShowPenaltyInputs = (game: Match, isEditable: boolean) => {
+    return isEditable && (requiresPenalty(game) || Boolean(game.penalties?.decided))
+  }
+
+  const resetPenaltyData = (game: Match) => {
+    ensurePenaltyStructure(game)
+    game.penalties.decided = false
+    game.penalties.home_goals = null
+    game.penalties.away_goals = null
+    game.penalties.winner_team_id = null
+  }
+
+  const penaltyWinnerName = (game: Match) => {
+    if (game.penalties?.winner_team_id === game.home.id) {
+      return game.home.name
+    }
+    if (game.penalties?.winner_team_id === game.away.id) {
+      return game.away.name
+    }
+    return 'Por definir'
+  }
+
+  const buildPenaltyPayload = (game: Match) => {
+    if (!canApplyPenaltyRule(game)) {
+      return null
+    }
+
+    if (!(requiresPenalty(game) || game.penalties?.decided)) {
+      return null
+    }
+
+    const homeGoals = Number(game.penalties?.home_goals)
+    const awayGoals = Number(game.penalties?.away_goals)
+    const winnerId = Number(game.penalties?.winner_team_id)
+
+    if (!Number.isFinite(homeGoals) || !Number.isFinite(awayGoals) || !Number.isFinite(winnerId)) {
+      return null
+    }
+
+    return {
+      decided: true,
+      home_goals: homeGoals,
+      away_goals: awayGoals,
+      winner_team_id: winnerId,
+    }
+  }
   const load = async ({ done }: { done: (status: 'ok' | 'empty' | 'error') => void }) => {
     if (schedulePagination.value.current_page > schedulePagination.value.last_page) {
       done('empty')
@@ -36,12 +114,17 @@
       if (roundId === round.round) {
         round.matches.forEach((game) => {
           if (game.id === gameId) {
+            ensurePenaltyStructure(game)
             if (action === 'up') {
               game[type].goals += 1
             } else {
               if (game[type].goals > 0) {
                 game[type].goals -= 1
               }
+            }
+
+            if (!requiresPenalty(game)) {
+              resetPenaltyData(game)
             }
           }
         })
@@ -52,13 +135,44 @@
     const round = schedules.value.rounds.find((round) => round.round === roundId)
     if (round) {
       round.isEditable = !round.isEditable
+      if (round.isEditable) {
+        round.matches.forEach((game) => ensurePenaltyStructure(game))
+      }
     }
   }
   const saveHandler = (roundId: number) => {
     loading.value = true
     const round = schedules.value.rounds.find((round) => round.round === roundId)
     if (round) {
-      const games = round?.matches.map((game) => {
+      for (const game of round.matches) {
+        ensurePenaltyStructure(game)
+        if (requiresPenalty(game)) {
+          const homeGoals = Number(game.penalties?.home_goals)
+          const awayGoals = Number(game.penalties?.away_goals)
+          const winnerId = game.penalties?.winner_team_id
+
+          const validWinner = [game.home.id, game.away.id].includes(Number(winnerId))
+          const validGoals = Number.isFinite(homeGoals) && Number.isFinite(awayGoals)
+          const consistent = validWinner
+            ? (winnerId === game.home.id && homeGoals > awayGoals) ||
+              (winnerId === game.away.id && awayGoals > homeGoals)
+            : false
+
+          if (!validGoals || !consistent) {
+            useToast().toast({
+              type: 'error',
+              msg: 'Penales requeridos',
+              description: `Completa el marcador de penales y el ganador para ${game.home.name} vs ${game.away.name}.`,
+            })
+            loading.value = false
+            return
+          }
+          game.penalties.decided = true
+        }
+      }
+
+      const games = round.matches.map((game) => {
+        const penalties = buildPenaltyPayload(game)
         return {
           id: game.id,
           home: {
@@ -69,6 +183,7 @@
             id: game.away.id,
             goals: game.away.goals,
           },
+          ...(penalties ? { penalties } : {}),
         }
       })
       const client = useSanctumClient()
@@ -244,6 +359,49 @@ noSchedules
                       />
                       <Icon class="flag" name="futzo-icon:match-polygon" />
                     </div>
+                    <div v-if="shouldShowPenaltyInputs(game, item.isEditable)" class="penalty-container">
+                      <p class="text-body-2 font-weight-medium mb-2">Desempate por penales</p>
+                      <div class="d-flex align-center mb-2">
+                        <div class="d-flex align-center mr-4">
+                          <span class="mr-2 text-body-2">{{ game.home.name }}</span>
+                          <v-text-field
+                            v-model.number="game.penalties.home_goals"
+                            type="number"
+                            min="0"
+                            density="comfortable"
+                            hide-details
+                            class="penalty-input"
+                          ></v-text-field>
+                        </div>
+                        <div class="d-flex align-center">
+                          <span class="mr-2 text-body-2">{{ game.away.name }}</span>
+                          <v-text-field
+                            v-model.number="game.penalties.away_goals"
+                            type="number"
+                            min="0"
+                            density="comfortable"
+                            hide-details
+                            class="penalty-input"
+                          ></v-text-field>
+                        </div>
+                      </div>
+                      <v-radio-group
+                        v-model="game.penalties.winner_team_id"
+                        inline
+                        density="compact"
+                        class="mt-1"
+                      >
+                        <v-radio :value="game.home.id" :label="game.home.name" />
+                        <v-radio :value="game.away.id" :label="game.away.name" class="ml-4" />
+                      </v-radio-group>
+                      <p class="text-caption text-medium-emphasis mt-2">
+                        El ganador suma 2 puntos; el otro equipo suma 1 punto.
+                      </p>
+                    </div>
+                    <div v-else-if="game.penalties?.decided" class="penalty-summary">
+                      Penales: {{ game.penalties.home_goals }} - {{ game.penalties.away_goals }} · Ganador:
+                      {{ penaltyWinnerName(game) }}
+                    </div>
                     <div class="details">
                       <p>
                         {{ game.details.date }}
@@ -320,4 +478,19 @@ noSchedules
 </template>
 <style lang="sass" scoped>
   @use '~/assets/scss/pages/schedule.sass'
+
+  .penalty-container
+    background-color: rgba(var(--v-theme-surface-variant), 0.3)
+    border-radius: 8px
+    padding: 12px
+    margin-bottom: 12px
+
+  .penalty-input
+    max-width: 80px
+
+  .penalty-summary
+    margin-bottom: 12px
+    font-size: .85rem
+    font-weight: 500
+    color: rgba(var(--v-theme-on-surface), 0.65)
 </style>

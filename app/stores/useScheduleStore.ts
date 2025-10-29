@@ -82,6 +82,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     max_teams: 0,
     time_between_games: 0,
     teams: 0,
+    penalty_draw_enabled: false,
     format: {} as Format,
     footballType: {} as FootballType,
     locations: [],
@@ -92,6 +93,19 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     group_phase_option_id: null,
   };
   const tournamentStore = useTournamentStore();
+  const mapRoundsWithPenalties = (rounds: any[] = []) =>
+    rounds.map((round) => ({
+      ...round,
+      matches: (round.matches ?? []).map((match: any) => ({
+        ...match,
+        penalties: {
+          decided: Boolean(match.penalties?.decided),
+          home_goals: match.penalties?.home_goals ?? null,
+          away_goals: match.penalties?.away_goals ?? null,
+          winner_team_id: match.penalties?.winner_team_id ?? null,
+        },
+      })),
+    }));
   const scheduleDialog = ref(false);
   const scheduleParams = ref<{ leagueId: number; tournamentId: number }>();
   const daysToPlay = ref([
@@ -335,7 +349,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     const response = await client(url);
     hasSchedule.value = response?.hasSchedule ?? false;
     //@ts-ignore
-    const newRounds = response.rounds ?? [];
+    const newRounds = mapRoundsWithPenalties(response.rounds ?? []);
     if (!schedules.value.rounds.length) {
       schedules.value.rounds = [];
     }
@@ -365,12 +379,19 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
   const fetchSchedule = async () => {
     isLoadingSchedules.value = true;
     const client = useSanctumClient();
-    //@ts-ignore
-    schedules.value = await client(
+    const response = await client(
       `/api/v1/admin/tournaments/${tournamentStore.tournamentId}/schedule?page=${schedulePagination.value.current_page}`
     ).finally(() => {
       isLoadingSchedules.value = false;
     });
+
+    hasSchedule.value = response?.hasSchedule ?? false;
+
+    //@ts-ignore
+    schedules.value = {
+      ...response,
+      rounds: mapRoundsWithPenalties(response?.rounds ?? []),
+    };
   };
   const updateStatusGame = async (roundId: number, status: RoundStatus, tournamentId: number) => {
     const client = useSanctumClient();
@@ -609,7 +630,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     isLoadingSchedules.value = false;
     hasSchedule.value = response.hasSchedule ?? false;
     //@ts-ignore
-    schedules.value.rounds = response.rounds ?? [];
+    schedules.value.rounds = mapRoundsWithPenalties(response.rounds ?? []);
   };
   const exportTournamentRoundScheduleAs = async (type: 'excel' | 'img', round: number) => {
     isExporting.value = true;

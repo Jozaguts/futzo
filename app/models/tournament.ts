@@ -77,6 +77,7 @@ export interface Tournament {
     id: number;
     name: string;
   };
+  penalty_draw_enabled: boolean;
 }
 
 export interface TournamentForm {
@@ -118,6 +119,7 @@ export interface DetailsInfoForm {
   prize?: string;
   winner?: string;
   status?: string;
+  penalty_draw_enabled: boolean;
 }
 
 export type CalendarStoreRequest = {
@@ -201,6 +203,7 @@ export interface TournamentResponse {
   games_count: null;
   image: string;
   thumbnail: null;
+  penalty_draw_enabled: boolean;
 }
 
 export interface Format {

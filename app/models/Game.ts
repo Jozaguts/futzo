@@ -1,4 +1,4 @@
-import type { Availability, AvailableIntervals } from '~/models/Schedule';
+import type { Availability, AvailableIntervals, PenaltyShootout } from '~/models/Schedule';
 import type { Player, TeamLineupAvailablePlayers } from '~/models/Player';
 import type { User } from '~/models/User';
 
@@ -162,6 +162,12 @@ export type Game = {
   start_date: Date;
   end_date: Date;
   options: Option[];
+  penalties?: PenaltyShootout;
+  penalty_draw_enabled?: boolean;
+  phase?: {
+    id: number | null;
+    name: string | null;
+  };
 };
 
 export type Away = {
