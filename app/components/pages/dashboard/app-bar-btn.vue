@@ -2,7 +2,7 @@
   import type { IStatStage } from '~/interfaces'
   import { useGlobalStore } from '#imports'
   const { range } = storeToRefs(useDashboardStore())
-  const { drawer, rail } = storeToRefs(useGlobalStore())
+
   const ranges: { value: IStatStage; name: string; mobile_text: string }[] = [
     { value: 'lastYear', name: `12 Meses`, mobile_text: '12M' },
     { value: 'lastMonth', name: `30 días`, mobile_text: '30D' },
@@ -16,7 +16,7 @@
   })
 </script>
 <template>
-  <v-item-group mandatory v-model="range" class="mr-md-8 mr-lg-8 ml-5 mx-lg-0 mx-md-0" v-if="rail">
+  <v-item-group mandatory v-model="range" class="mr-md-8 mr-lg-8 ml-5 mx-lg-0 mx-md-0">
     <v-item v-for="item in ranges" :key="item.value" :value="item.value" v-slot="{ isSelected, toggle }">
       <v-btn
         @click="toggle"

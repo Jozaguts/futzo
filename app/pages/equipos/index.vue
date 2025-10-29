@@ -9,6 +9,7 @@
   import SearchInput from '~/components/pages/equipos/app-bar-search-input.vue'
   import { Icon } from '#components'
   const teamStore = useTeamStore()
+  const { noTeams } = storeToRefs(teamStore)
   onMounted(() => {
     teamStore.getTeams()
   })
@@ -32,7 +33,7 @@
     </template>
     <template #default>
       <NoTeams />
-      <div class="table" style="height: 100%">
+      <div v-if="!noTeams" class="table" style="height: 100%">
         <div class="table-wrapper">
           <TeamsTable />
         </div>

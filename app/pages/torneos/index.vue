@@ -8,7 +8,7 @@
   import SearchInput from '~/components/pages/torneos/app-bar-search-input.vue'
   import { storeToRefs } from '#imports'
   import { Icon } from '#components'
-  const { dialog, tournamentId } = storeToRefs(useTournamentStore())
+  const { dialog, tournamentId, noTournaments } = storeToRefs(useTournamentStore())
   definePageMeta({
     middleware: ['sanctum:auth'],
   })
@@ -35,7 +35,7 @@
     </template>
     <template #default>
       <NoTournaments />
-      <div class="table" style="height: 100%">
+      <div v-if="!noTournaments" class="table" style="height: 100%">
         <div class="table-wrapper">
           <TournamentTable />
         </div>

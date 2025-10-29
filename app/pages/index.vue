@@ -6,7 +6,8 @@
   import DashboardNextGames from '~/components/pages/dashboard/dashboard-next-games.vue'
   import NoGames from '~/components/shared/empty-states/NoGames.vue'
   import { useDisplay } from 'vuetify'
-
+  import { useGlobalStore } from '~/stores/useGlobalStore'
+  const { rail } = storeToRefs(useGlobalStore())
   const { teamStats, nextGames } = storeToRefs(useDashboardStore())
   definePageMeta({
     middleware: ['sanctum:auth'],
@@ -38,10 +39,14 @@
     <template #app-bar>
       <AppBar :extended="mobile">
         <template #buttons>
-          <AppBarBtn v-if="!mobile" />
+          <div class="d-none d-lg-block d-md-block">
+            <AppBarBtn />
+          </div>
         </template>
         <template #extension>
-          <AppBarBtn v-if="mobile" />
+          <div class="d-block d-lg-none d-md-none" v-if="rail">
+            <AppBarBtn />
+          </div>
         </template>
       </AppBar>
     </template>
