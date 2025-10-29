@@ -6,7 +6,8 @@
   import { CARDS, GOALS, SUBSTITUTIONS } from '~/utils/constants'
   import { useGame } from '~/composables/useGame'
   import { storeToRefs } from 'pinia'
-  const { game, showFabBtn, gameActionFormRequest } = storeToRefs(useGameStore())
+  const gameStoreInstance = useGameStore()
+  const { game, showFabBtn, gameActionFormRequest } = storeToRefs(gameStoreInstance)
   const { homeTeam, awayTeam, homeFormation, awayFormation, formations, homePlayers, awayPlayers } =
     storeToRefs(useTeamStore())
   const { dialogState, currentComponent, dialogHandler, updateDefaultFormationType } = useGame()
@@ -17,7 +18,7 @@
 
   watch(game, async (newGame) => {
     if (!newGame?.home?.id || !newGame?.away?.id) return
-    const initialize = await useGameStore().initializeGameReport(newGame?.id)
+    const initialize = await gameStoreInstance.initializeGameReport(newGame?.id)
     useTeamStore().initReportHandler(initialize)
   })
   onMounted(() => {
@@ -25,6 +26,7 @@
   })
   onUnmounted(() => {
     game.value = {} as Game
+    gameStoreInstance.resetPenaltyShootout()
   })
 </script>
 <template>

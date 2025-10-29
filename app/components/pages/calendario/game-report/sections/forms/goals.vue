@@ -35,17 +35,6 @@
     { value: 'own_goal', name: 'Gol en contra' },
     { value: 'penalty_kick', name: 'Penal' },
   ]
-  const disabled = computed(() => {
-    return events.value.some((event) => !event.player_id || !event.type || !event.minute)
-  })
-  watch(disabled, () => {
-    if (gameActionFormRequest.value.action === 'goals') {
-      gameActionFormRequest.value.disabled = events.value.some(
-        (event) => !event.player_id || !event.type || !event.minute
-      )
-    }
-  })
-
   onUnmounted(() => {
     events.value = [{ player_id: null, minute: null, type: 'goal', related_player_id: null }]
     gameActionFormRequest.value.disabled = true
@@ -54,6 +43,7 @@
 </script>
 <template>
   <v-container class="positon-relative" v-auto-animate>
+    <!--    here add option to penalties game decition -->
     <v-row v-for="(event, index) in events" :key="index">
       <v-col cols="12" md="3" lg="3">
         <v-autocomplete

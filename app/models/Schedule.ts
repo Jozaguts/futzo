@@ -140,6 +140,18 @@ export type PenaltyShootout = {
   away_goals: number | null;
 };
 
+export type PenaltyAttempt = {
+  id?: number | null;
+  player_id: number | null;
+  team_id: number;
+  score_goal: boolean | null;
+  kicks_number: number | null;
+  player?: {
+    id: number | null;
+    name: string | null;
+  } | null;
+};
+
 export type TournamentSchedule = {
   rounds: Round[];
 };

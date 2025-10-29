@@ -1,12 +1,35 @@
 import { isProxy } from '@vue/reactivity';
 import type { ExportType } from '~/models/tournament';
 
+const TRUE_LITERALS = ['true', '1', 'on'];
+const FALSE_LITERALS = ['false', '0', 'off'];
+
+const coerceBoolean = (value: unknown): boolean | null => {
+  if (typeof value === 'boolean') {
+    return value;
+  }
+
+  if (typeof value === 'number') {
+    if (value === 1) return true;
+    if (value === 0) return false;
+  }
+
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (TRUE_LITERALS.includes(normalized)) return true;
+    if (FALSE_LITERALS.includes(normalized)) return false;
+  }
+
+  return null;
+};
+
 const prepareForm = (requestData: Ref): FormData => {
   const form = new FormData();
   const appendData = (prefix: string, data: any) => {
     for (const key in data) {
-      if (typeof data[key] === 'boolean') {
-        form.append(`${prefix}[${key}]`, data[key] ? '1' : '0');
+      const maybeBoolean = coerceBoolean(data[key]);
+      if (maybeBoolean !== null) {
+        form.append(`${prefix}[${key}]`, maybeBoolean ? '1' : '0');
       } else if (data[key] instanceof File && data[key]) {
         form.append(`${prefix}[${key}]`, data[key]);
       } else if (data[key] instanceof Date && data[key]) {
