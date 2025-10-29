@@ -9,6 +9,8 @@ import type {
   TournamentStatus,
   TournamentStats,
   ExportType,
+  DetailsInfoForm,
+  BasicInfoForm,
 } from '~/models/tournament';
 import type { Game } from '~/models/Game';
 import type { User } from '~/models/User';
@@ -58,8 +60,16 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   const tournaments = ref<Tournament[]>([]);
   const noTournaments = computed(() => !tournaments.value.length);
   const search = ref('');
+  const statusFilters = ref<TournamentStatus[]>([]);
   const calendarDialog = ref(false);
-  const tournamentStoreRequest = ref({} as TournamentStoreRequest);
+  const tournamentStoreRequest = ref<TournamentStoreRequest>({
+    basic: {} as BasicInfoForm,
+    details: {
+      description: '',
+      location_ids: [],
+      penalty_draw_enabled: false,
+    } as DetailsInfoForm,
+  });
   const calendarStoreRequest = ref({} as CalendarStoreRequest);
   const dialog = ref(false);
   const steps = ref<FormSteps>(INIT_STEPS);
@@ -101,7 +111,14 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   const lastResults = ref();
 
   function $reset() {
-    tournamentStoreRequest.value = {} as TournamentStoreRequest;
+    tournamentStoreRequest.value = {
+      basic: {} as BasicInfoForm,
+      details: {
+        description: '',
+        location_ids: [],
+        penalty_draw_enabled: false,
+      } as DetailsInfoForm,
+    };
     steps.value.current = 'basicInfo';
     steps.value = INIT_STEPS;
     isEdition.value = false;
@@ -117,12 +134,30 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   async function loadTournaments() {
     loading.value = true;
     const client = useSanctumClient();
-    const response = await client<{ data: Tournament[]; meta: IPagination }>(
-      `/api/v1/admin/tournaments?per_page=${pagination.value.per_page}&page=${pagination.value.current_page}`
-    ).finally(() => (loading.value = false));
-    tournaments.value = response.data;
-
-    pagination.value = { ...pagination.value, ...response?.meta };
+    const params = new URLSearchParams({
+      per_page: String(pagination.value.per_page),
+      page: String(pagination.value.current_page),
+    });
+    if (search.value) {
+      params.set('search', search.value);
+    }
+    if (statusFilters.value.length) {
+      statusFilters.value.forEach((status) => params.append('status[]', status));
+    }
+    try {
+      const response = await client<{ data: Tournament[]; meta: IPagination }>(
+        `/api/v1/admin/tournaments?${params.toString()}`
+      );
+      tournaments.value = response.data;
+      pagination.value = { ...pagination.value, ...response?.meta };
+    } finally {
+      loading.value = false;
+    }
+  }
+  async function applyStatusFilter(statuses?: TournamentStatus[]) {
+    statusFilters.value = Array.isArray(statuses) ? [...statuses] : [];
+    pagination.value.current_page = 1;
+    await loadTournaments();
   }
 
   async function storeTournament() {
@@ -276,6 +311,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     pagination,
     noTournaments,
     search,
+    statusFilters,
     steps,
     tournamentStoreRequest,
     calendarDialog,
@@ -292,6 +328,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     groupStanding,
     getTournamentLocations,
     loadTournaments,
+    applyStatusFilter,
     storeTournament,
     fetchTournamentsByLeagueId,
     $reset,

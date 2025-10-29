@@ -5,7 +5,9 @@ const prepareForm = (requestData: Ref): FormData => {
   const form = new FormData();
   const appendData = (prefix: string, data: any) => {
     for (const key in data) {
-      if (data[key] instanceof File && data[key]) {
+      if (typeof data[key] === 'boolean') {
+        form.append(`${prefix}[${key}]`, data[key] ? '1' : '0');
+      } else if (data[key] instanceof File && data[key]) {
         form.append(`${prefix}[${key}]`, data[key]);
       } else if (data[key] instanceof Date && data[key]) {
         const date = data[key].toISOString().split('T')[0];
@@ -20,8 +22,9 @@ const prepareForm = (requestData: Ref): FormData => {
 
   for (const key in requestData.value) {
     const data = requestData.value[key];
-    for (let idx in data) {
-      if (!data[idx]) {
+    for (const idx in data) {
+      const value = data[idx];
+      if (value === undefined || value === null || value === '') {
         delete data[idx];
       }
     }
