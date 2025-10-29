@@ -78,12 +78,12 @@
     v-model:pagination="pagination"
     :status-handler="setChipColor"
     :paginate="useTournamentStore().loadTournaments"
-    :items-per-page="$vuetify.display.mobile ? 1 : 15"
+    :items-per-page="$vuetify.display.mobile ? 1 : 10"
   >
     <template #name="item">
       <div class="d-flex align-center">
-        <v-btn variant="text" :to="`torneos/${item.slug}`">
-          <template #prepend>
+        <v-btn variant="text" @click="() => $router.push(`torneos/${item.slug}`)" v-tooltip:top="item?.name">
+          <template #prepend v-if="item?.image">
             <v-avatar :image="item?.image" density="compact" />
           </template>
           <span class="d-inline-block text-truncate mx-4" style="max-width: 100px"> {{ item?.name }}</span>
