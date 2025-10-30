@@ -155,12 +155,18 @@ export type PenaltyAttempt = {
 export type TournamentSchedule = {
   rounds: Round[];
 };
+export type RoundByeTeam = {
+  id: number;
+  name: string;
+  image: string | null;
+};
 export type Round = {
   isEditable: boolean;
   status: RoundStatus;
   round: number;
   date: Date;
   matches: Match[];
+  bye_team?: RoundByeTeam | null;
 };
 
 export type Match = {

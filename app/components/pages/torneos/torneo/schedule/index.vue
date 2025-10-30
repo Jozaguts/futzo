@@ -327,6 +327,11 @@ noSchedules
                     </div>
                   </div>
                 </v-col>
+                <v-col v-if="item.bye_team" cols="12" class="pt-0 pb-4 pl-0">
+                  <v-alert variant="plain" density="compact" border="start" border-color="primary" class="pr-0">
+                    {{ item.bye_team.name }} descansa esta jornada.
+                  </v-alert>
+                </v-col>
                 <v-col v-for="game in item.matches" :key="game.id" cols="12" md="2" lg="4" class="game-container">
                   <div class="game">
                     <div class="team home">
@@ -385,12 +390,7 @@ noSchedules
                           ></v-text-field>
                         </div>
                       </div>
-                      <v-radio-group
-                        v-model="game.penalties.winner_team_id"
-                        inline
-                        density="compact"
-                        class="mt-1"
-                      >
+                      <v-radio-group v-model="game.penalties.winner_team_id" inline density="compact" class="mt-1">
                         <v-radio :value="game.home.id" :label="game.home.name" />
                         <v-radio :value="game.away.id" :label="game.away.name" class="ml-4" />
                       </v-radio-group>
