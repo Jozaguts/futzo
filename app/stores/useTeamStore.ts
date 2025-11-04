@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import type { Formation, FormSteps, Team, TeamStoreRequest } from '~/models/Team';
+import type { Formation, FormSteps, Team, TeamStoreRequest, HomePreferences } from '~/models/Team';
 import type { IPagination } from '~/interfaces';
 import * as teamAPI from '~/http/api/team';
 import prepareForm, { parseBlobResponse } from '~/utils/prepareFormData';
@@ -72,6 +72,17 @@ export const useTeamStore = defineStore('teamStore', () => {
   const formations = ref<Formation[]>([] as Formation[]);
   const homePlayers = ref<TeamLineupAvailablePlayers[]>([] as TeamLineupAvailablePlayers[]);
   const awayPlayers = ref<TeamLineupAvailablePlayers[]>([] as TeamLineupAvailablePlayers[]);
+  const formatTime = (value?: string | null): string | null => {
+    if (!value) {
+      return null;
+    }
+    const [hours, minutes] = value.split(':');
+    if (hours === undefined || minutes === undefined) {
+      return null;
+    }
+    return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+  };
+
   const showTeamHandler = async (slug: string) => {
     if (slug) {
       await useTeamStore()
@@ -80,13 +91,16 @@ export const useTeamStore = defineStore('teamStore', () => {
           const { president, coach, ...team } = data as Team;
           teamId.value = data?.id as number;
           isEdition.value = true;
+          const homePreferences: Partial<HomePreferences> = team.home_preferences ?? {};
           teamStoreRequest.value = {
             team: {
               id: team.id,
               name: team.name,
               tournament_id: team.tournament.id,
               category_id: team.category.id,
-              address: team?.address,
+              home_location_id: homePreferences.location_id ?? null,
+              home_day_of_week: homePreferences.day_of_week ?? null,
+              home_start_time: formatTime(homePreferences.start_time ?? null),
               colors: team?.colors,
               description: team?.description,
               image: team?.image,

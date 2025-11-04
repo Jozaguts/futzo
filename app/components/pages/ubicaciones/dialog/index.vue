@@ -5,6 +5,7 @@
   import type { CurrentStep } from '~/models/Location'
 
   const { locationDialog, formSteps, isEdition } = storeToRefs(useLocationStore())
+  const emits = defineEmits(['done'])
   const loading = ref(false)
   const leaveHandler = () => {
     useLocationStore().resetLocationStoreRequest()
@@ -23,7 +24,10 @@
       } else {
         useLocationStore()
           .storeLocation()
-          .finally(() => (loading.value = false))
+          .finally(() => {
+            loading.value = false
+            emits('done')
+          })
       }
     } else {
       formSteps.value.current = formSteps.value.steps[formSteps.value.current].next_step as CurrentStep

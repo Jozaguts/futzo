@@ -3,17 +3,19 @@
   import CategorySelectComponent from '~/components/inputs/CategoriesSelect.vue'
   import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
   import ColorsComponent from '~/components/pages/equipos/colors-component.vue'
-  import { usePlaceSearch } from '~/utils/googleSearch'
+  import VueDatePicker from '@vuepic/vue-datepicker'
   import { useForm } from 'vee-validate'
   import type { TeamStoreRequest } from '~/models/Team'
-  import { array, mixed, number, object, string } from 'yup'
+  import { mixed, number, object, string } from 'yup'
   import { vuetifyConfig } from '~/utils/constants'
   import type { Tournament } from '~/models/tournament'
+  import type { Field } from '~/models/Location'
+  import { useLeaguesStore } from '~/stores/useLeaguesStore'
 
-  let locationsFind = ref([])
+  const leagueLocations = ref<Field[]>([])
   const { tournaments, tournament } = storeToRefs(useTournamentStore())
   const { teamStoreRequest, isEdition, steps } = storeToRefs(useTeamStore())
-  const { search } = usePlaceSearch()
+  const { getLeagueLocations } = useLeaguesStore()
   const { t } = useI18n()
   // @ts-ignore
   const { defineField, meta, values, resetForm, setValues } = useForm<TeamStoreRequest['team']>({
@@ -32,21 +34,19 @@
             return value?.type?.includes('image/') || typeof value === 'string'
           }),
         category_id: number().required(t('forms.required')),
-        address: object()
-          .shape({
-            description: string(),
-            matched_substrings: array(),
-            place_id: string(),
-            reference: string(),
-            structured_formatting: object().shape({
-              main_text: string(),
-              secondary_text: string(),
-              main_text_matched_substrings: array().of(object().shape({ fg: array() })),
-              terms: array().of(string()),
-              types: array().of(string()),
-            }),
-          })
-          .nullable(),
+        home_location_id: number().nullable(),
+        home_day_of_week: number()
+          .nullable()
+          .when('home_location_id', {
+            is: (value: number | null) => value !== null && value !== undefined,
+            then: (schema) => schema.required(t('forms.required')),
+          }),
+        home_start_time: string()
+          .nullable()
+          .when('home_location_id', {
+            is: (value: number | null) => value !== null && value !== undefined,
+            then: (schema) => schema.required(t('forms.required')),
+          }),
         colors: object()
           .shape({
             home: object().shape({
@@ -63,22 +63,81 @@
         tournament_id: number().required(t('forms.required')),
       })
     ),
-    initialValues: teamStoreRequest.value.team,
+    initialValues: {
+      home_location_id: null,
+      home_day_of_week: null,
+      home_start_time: null,
+      ...teamStoreRequest.value.team,
+    },
   })
   const [id, id_props] = defineField('id', vuetifyConfig)
   const [name, name_props] = defineField('name', vuetifyConfig)
-  const [address, address_props] = defineField('address', vuetifyConfig)
+  const [home_location_id, home_location_id_props] = defineField('home_location_id', vuetifyConfig)
+  const [home_day_of_week, home_day_of_week_props] = defineField('home_day_of_week', vuetifyConfig)
+  const [home_start_time, home_start_time_props] = defineField('home_start_time', vuetifyConfig)
   const [image, image_props] = defineField('image', vuetifyConfig)
   const [category_id, category_id_props] = defineField('category_id', vuetifyConfig)
   const [tournament_id, tournament_id_props] = defineField('tournament_id', vuetifyConfig)
   const [description, description_props] = defineField('description', vuetifyConfig)
   const [colors, colors_props] = defineField('colors', vuetifyConfig)
-  const searchHandler = async (place: string) => {
-    const response = await search(place)
-    if (response) {
-      locationsFind.value = response
+  const isLocationSelected = computed(() => home_location_id.value !== null && home_location_id.value !== undefined)
+  const dayOptions = [
+    { label: 'Domingo', value: 0 },
+    { label: 'Lunes', value: 1 },
+    { label: 'Martes', value: 2 },
+    { label: 'Miércoles', value: 3 },
+    { label: 'Jueves', value: 4 },
+    { label: 'Viernes', value: 5 },
+    { label: 'Sábado', value: 6 },
+  ]
+  const timeFieldErrors = computed(() => (home_start_time_props as any)['error-messages'])
+  const homeStartTimeProxy = computed({
+    get: () => {
+      if (!home_start_time.value) {
+        return null
+      }
+      const [hours, minutes] = home_start_time.value.split(':')
+      if (hours === undefined || minutes === undefined) {
+        return null
+      }
+      const date = new Date()
+      date.setHours(Number(hours), Number(minutes), 0, 0)
+      return date
+    },
+    set: (val: any) => {
+      if (!val) {
+        home_start_time.value = null
+        return
+      }
+      if (val instanceof Date) {
+        const hours = String(val.getHours()).padStart(2, '0')
+        const minutes = String(val.getMinutes()).padStart(2, '0')
+        home_start_time.value = `${hours}:${minutes}`
+        return
+      }
+      if (typeof val === 'object' && val !== null && 'hours' in val && 'minutes' in val) {
+        const hours = String((val as { hours: number }).hours).padStart(2, '0')
+        const minutes = String((val as { minutes: number }).minutes).padStart(2, '0')
+        home_start_time.value = `${hours}:${minutes}`
+        return
+      }
+      if (typeof val === 'string') {
+        const [hours, minutes] = val.split(':')
+        if (hours !== undefined && minutes !== undefined) {
+          home_start_time.value = `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`
+        }
+      }
+    },
+  })
+  watch(
+    () => home_location_id.value,
+    (value) => {
+      if (!value) {
+        home_day_of_week.value = null
+        home_start_time.value = null
+      }
     }
-  }
+  )
   const categoryHandler = (value?: number) => {
     if (!value) {
       return
@@ -95,9 +154,16 @@
     return useRoute().name === 'torneos-torneo-equipos-inscripcion'
   })
   onMounted(async () => {
+    try {
+      const locations = await getLeagueLocations()
+      leagueLocations.value = locations ?? []
+    } catch (error) {
+      leagueLocations.value = []
+    }
     //@ts-ignore
     if (useRoute().name === 'torneos-torneo-inscripcion') {
       setValues({
+        ...values.value,
         tournament_id: tournament.value.id as number,
         category_id: tournament.value?.category_id,
       })
@@ -148,35 +214,59 @@
         <DragDropImage v-model="image" :error-messages="image_props" />
       </template>
     </BaseInput>
-    <BaseInput label="Dirección" sublabel="Opcional">
+    <BaseInput label="Sede" sublabel="Opcional">
       <template #input>
-        <v-autocomplete
-          v-model="address"
-          :items="locationsFind"
-          outlined
-          return-object
-          hide-selected
-          clear-on-select
+        <v-select
+          v-model="home_location_id"
+          :items="leagueLocations"
+          item-title="name"
+          item-value="id"
           clearable
+          outlined
           density="compact"
-          no-filter
-          v-bind="address_props"
-          @update:search="searchHandler($event)"
+          v-bind="home_location_id_props"
+          placeholder="Selecciona una sede"
+        ></v-select>
+      </template>
+    </BaseInput>
+    <BaseInput label="Día de juego" sublabel="Opcional">
+      <template #input>
+        <v-select
+          v-model="home_day_of_week"
+          :items="dayOptions"
+          item-title="label"
+          item-value="value"
+          clearable
+          outlined
+          density="compact"
+          :disabled="!isLocationSelected"
+          v-bind="home_day_of_week_props"
+          placeholder="Selecciona un día"
+        ></v-select>
+      </template>
+    </BaseInput>
+    <BaseInput label="Horario de juego" sublabel="Opcional">
+      <template #input>
+        <VueDatePicker
+          v-model="homeStartTimeProxy"
+          time-picker
+          :is-24="true"
+          :disabled="!isLocationSelected"
+          :minutes-increment="5"
         >
-          <template v-slot:item="{ props, item }">
-            <v-list-item
-              v-bind="props"
-              two-line
-              :title="item.value.structured_formatting.main_text"
-              :subtitle="item.value.structured_formatting.secondary_text"
-            ></v-list-item>
+          <template #dp-input="{ value }">
+            <v-text-field
+              :value="value"
+              placeholder="HH:MM"
+              density="compact"
+              variant="outlined"
+              :disabled="!isLocationSelected"
+              :error-messages="timeFieldErrors"
+              readonly
+            ></v-text-field>
           </template>
-          <template v-slot:selection="{ item }">
-            <v-list-item>
-              <v-list-item-title v-text="item.value.structured_formatting.main_text"></v-list-item-title>
-            </v-list-item>
-          </template>
-        </v-autocomplete>
+        </VueDatePicker>
+        <input type="hidden" v-model="home_start_time" v-bind="home_start_time_props" />
       </template>
     </BaseInput>
     <BaseInput label="Colores del equipo" sublabel="Opcional">
