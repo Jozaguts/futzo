@@ -25,15 +25,12 @@
         start_date: date().required(),
         game_time: number().required(),
         time_between_games: number().required(),
-        locations: array()
-          .of(
-            object().shape({
-              id: number().required(),
-              name: string().required(),
-            })
-          )
-          .min(1, 'selecciona una ubicación')
-          .required(),
+        locations: array().of(
+          object().shape({
+            id: number().required(),
+            name: string().required(),
+          })
+        ),
       })
     ),
     validateOnMount: true,
@@ -166,7 +163,7 @@
       sublabel="minutos"
       :props="{ ...time_between_games_props, min: 0 }"
     />
-    <BaseInput label="Ubicaciones">
+    <BaseInput label="Sedes del torneo">
       <template #input>
         <SelectLocation :locations="scheduleSettings.locations" v-model="locations"></SelectLocation>
         <div v-auto-animate>

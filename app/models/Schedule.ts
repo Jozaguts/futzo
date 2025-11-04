@@ -61,7 +61,7 @@ export type FormGeneralScheduleRequest = {
   start_date: string | Date;
   game_time: number;
   time_between_games: number;
-  locations: FormGeneralLocation[];
+  locations?: FormGeneralLocation[];
 };
 export type FormGeneralLocation = {
   id: number;
