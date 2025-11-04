@@ -7,7 +7,7 @@
   const { calendarSteps } = storeToRefs(useScheduleStore())
 </script>
 <template>
-  <v-container class="pa-0">
+  <v-container style="overflow-x: hidden">
     <v-row>
       <v-col class="px-0 pb-0">
         <IndicatorStep :steps="calendarSteps" />
@@ -25,7 +25,7 @@
           <General v-if="calendarSteps.current === 'general'" :key="calendarSteps.current" />
           <Rules v-if="calendarSteps.current === 'rules'" :key="calendarSteps.current" />
           <Elimination v-if="calendarSteps.current === 'elimination'" :key="calendarSteps.current" />
-          <Fields r v-if="calendarSteps.current === 'fields'" :key="calendarSteps.current" />
+          <Fields v-if="calendarSteps.current === 'fields'" :key="calendarSteps.current" />
         </transition-slide>
       </v-col>
     </v-row>

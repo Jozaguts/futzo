@@ -12,9 +12,13 @@ import type {
   GroupConfigurationOptions,
   LocationFieldsRequest,
   RoundStatus,
+  ScheduleRegenerationAnalysis,
+  ScheduleRegenerationLogSummary,
+  ScheduleRegenerationResult,
   ScheduleRoundStatus,
   ScheduleSettings,
   ScheduleStoreRequest,
+  ScheduleTeamSummary,
   TournamentSchedule,
 } from '~/models/Schedule';
 import type { Tournament } from '~/models/tournament';
@@ -91,6 +95,9 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     group_configuration_options: [] as GroupConfigurationOptions[],
     group_phase: null,
     group_phase_option_id: null,
+    teams_without_games: [] as ScheduleTeamSummary[],
+    pending_manual_matches: 0,
+    last_regeneration: null,
   };
   const tournamentStore = useTournamentStore();
   const mapRoundsWithPenalties = (rounds: any[] = []) =>
@@ -130,6 +137,16 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
   });
   const noSchedules = computed(() => schedules.value?.rounds?.length === 0);
   const isLoadingSchedules = ref(false);
+  const pendingManualMatches = ref(0);
+  const lastRegeneration = ref<ScheduleRegenerationLogSummary | null>(null);
+  const regeneratedFromRound = ref<number | null>(null);
+  const regenerationAnalysis = ref<ScheduleRegenerationAnalysis | null>(null);
+  const regenerationResult = ref<ScheduleRegenerationResult | null>(null);
+  const regenerationBanner = ref<{ type: 'success' | 'warning'; message: string } | null>(null);
+  const isAnalyzingRegeneration = ref(false);
+  const isConfirmingRegeneration = ref(false);
+  const teamsWithoutGames = computed<ScheduleTeamSummary[]>(() => scheduleSettings.value?.teams_without_games ?? []);
+  const hasPendingManualMatches = computed(() => pendingManualMatches.value > 0);
   const schedulePagination = ref<IPagination & { filterBy?: RoundStatus | string; search?: string }>({
     current_page: 1,
     per_page: 10,
@@ -332,6 +349,14 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       elimination_phase: {} as FormEliminationPhaseStep,
       fields_phase: [] as LocationFieldsRequest[],
     };
+    pendingManualMatches.value = 0;
+    lastRegeneration.value = null;
+    regeneratedFromRound.value = null;
+    regenerationAnalysis.value = null;
+    regenerationResult.value = null;
+    regenerationBanner.value = null;
+    isAnalyzingRegeneration.value = false;
+    isConfirmingRegeneration.value = false;
   };
   const getTournamentSchedules = async () => {
     isLoadingSchedules.value = true;
@@ -347,6 +372,20 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     }
 
     const response = await client(url);
+    if (response && typeof response.pending_manual_matches === 'number') {
+      pendingManualMatches.value = Number(response.pending_manual_matches);
+    }
+    if (response && Object.prototype.hasOwnProperty.call(response, 'regeneration')) {
+      lastRegeneration.value = response?.regeneration ?? null;
+      regeneratedFromRound.value = response?.regeneration?.cutoff_round ?? null;
+    }
+    if (response && typeof response.pending_manual_matches === 'number') {
+      pendingManualMatches.value = Number(response.pending_manual_matches);
+    }
+    if (response && Object.prototype.hasOwnProperty.call(response, 'regeneration')) {
+      lastRegeneration.value = response?.regeneration ?? null;
+      regeneratedFromRound.value = response?.regeneration?.cutoff_round ?? null;
+    }
     hasSchedule.value = response?.hasSchedule ?? false;
     //@ts-ignore
     const newRounds = mapRoundsWithPenalties(response.rounds ?? []);
@@ -433,6 +472,86 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     } finally {
       isLoadingTournamentFields.value = false;
     }
+  };
+  const analyzeScheduleRegeneration = async () => {
+    if (!tournamentStore.tournamentId) {
+      return null;
+    }
+    isAnalyzingRegeneration.value = true;
+    try {
+      const analysis = await tournamentAPI.analyzeScheduleRegeneration(
+        tournamentStore.tournamentId as number
+      );
+      regenerationAnalysis.value = analysis;
+      return analysis;
+    } catch (error) {
+      const { message } = useApiError(error as FetchError);
+      useToast().toast({
+        type: 'error',
+        msg: 'Regenerar calendario',
+        description: message,
+      });
+      throw error;
+    } finally {
+      isAnalyzingRegeneration.value = false;
+    }
+  };
+  const confirmScheduleRegeneration = async () => {
+    if (!tournamentStore.tournamentId) {
+      return null;
+    }
+    isConfirmingRegeneration.value = true;
+    try {
+      const response = await tournamentAPI.confirmScheduleRegeneration(
+        tournamentStore.tournamentId as number
+      );
+      regenerationResult.value = response;
+      if (response?.analysis) {
+        regenerationAnalysis.value = response.analysis;
+      }
+      pendingManualMatches.value = Number(
+        response?.pending_manual_matches ?? pendingManualMatches.value ?? 0
+      );
+      const bannerType = response?.mode === 'partial' ? 'warning' : 'success';
+      regenerationBanner.value = {
+        type: bannerType,
+        message: response?.message ?? 'El calendario se regeneró correctamente.',
+      };
+      regeneratedFromRound.value = response?.mode === 'partial'
+        ? response?.cutoff_round ?? null
+        : null;
+      await refreshScheduleSettings();
+      schedulePagination.value.current_page = 1;
+      schedules.value.rounds = [];
+      try {
+        await getTournamentSchedules();
+      } catch (fetchError) {
+        schedules.value.rounds = [];
+      }
+      useToast().toast({
+        type: bannerType,
+        msg: 'Calendario',
+        description: response?.message ?? 'El calendario se regeneró correctamente.',
+      });
+      return response;
+    } catch (error) {
+      const { message } = useApiError(error as FetchError);
+      useToast().toast({
+        type: 'error',
+        msg: 'Regenerar calendario',
+        description: message,
+      });
+      throw error;
+    } finally {
+      isConfirmingRegeneration.value = false;
+    }
+  };
+  const clearRegenerationBanner = () => {
+    regenerationBanner.value = null;
+  };
+  const resetRegenerationState = () => {
+    regenerationAnalysis.value = null;
+    regenerationResult.value = null;
   };
   const advanceTournamentPhase = async () => {
     if (!tournamentStore.tournamentId) {
@@ -606,6 +725,9 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       phases: data.phases,
     };
     scheduleSettings.value = data;
+    pendingManualMatches.value = data?.pending_manual_matches ?? 0;
+    lastRegeneration.value = data?.last_regeneration ?? null;
+    regeneratedFromRound.value = data?.last_regeneration?.cutoff_round ?? null;
   };
   const fetchScheduleSettings = async () => {
     const client = useSanctumClient();
@@ -658,10 +780,20 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     noSchedules,
     schedulePagination,
     scheduleSettings,
+    teamsWithoutGames,
+    pendingManualMatches,
+    hasPendingManualMatches,
+    lastRegeneration,
+    regeneratedFromRound,
     isLoadingSchedules,
     scheduleRoundStatus,
     calendarSteps,
     scheduleStoreRequest,
+    regenerationAnalysis,
+    regenerationResult,
+    regenerationBanner,
+    isAnalyzingRegeneration,
+    isConfirmingRegeneration,
     isExporting,
     isAdvancingPhase,
     isLoadingBracketPreview,
@@ -695,6 +827,10 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     settingsSchedule,
     refreshScheduleSettings,
     loadTournamentFields,
+    analyzeScheduleRegeneration,
+    confirmScheduleRegeneration,
+    clearRegenerationBanner,
+    resetRegenerationState,
     advanceTournamentPhase,
     loadEliminationBracketPreview,
     resetBracketPreview,

@@ -428,7 +428,21 @@ function getSchemaByName(name: string) {
           return value?.type?.includes('image/') || typeof value === 'string';
         });
       schemaFields.category_id = yup.number().required(t('forms.required'));
-      schemaFields.address = yup.object({});
+      schemaFields.home_location_id = yup.number().nullable();
+      schemaFields.home_day_of_week = yup
+        .number()
+        .nullable()
+        .when('home_location_id', {
+          is: (value: number | null) => value !== null && value !== undefined,
+          then: (schema) => schema.required(t('forms.required')),
+        });
+      schemaFields.home_start_time = yup
+        .string()
+        .nullable()
+        .when('home_location_id', {
+          is: (value: number | null) => value !== null && value !== undefined,
+          then: (schema) => schema.required(t('forms.required')),
+        });
       schemaFields.colors = yup.object({}).nullable();
       schemaFields.description = yupString().nullable();
       schemaFields.email = yupString().email().nullable();
@@ -473,7 +487,21 @@ function getSchemaByName(name: string) {
           return value?.type?.includes('image/') || typeof value === 'string';
         });
       schemaFields.category_id = yup.number().required(t('forms.required'));
-      schemaFields.address = yup.object({});
+      schemaFields.home_location_id = yup.number().nullable();
+      schemaFields.home_day_of_week = yup
+        .number()
+        .nullable()
+        .when('home_location_id', {
+          is: (value: number | null) => value !== null && value !== undefined,
+          then: (schema) => schema.required(t('forms.required')),
+        });
+      schemaFields.home_start_time = yup
+        .string()
+        .nullable()
+        .when('home_location_id', {
+          is: (value: number | null) => value !== null && value !== undefined,
+          then: (schema) => schema.required(t('forms.required')),
+        });
       schemaFields.colors = yup.object({}).required(t('forms.required'));
       schemaFields.description = yupString().nullable();
       schemaFields.email = yupString().email().nullable();

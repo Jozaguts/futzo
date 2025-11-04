@@ -45,9 +45,6 @@ export type FormLabelStep = 'Crea un equipo' | 'Crea el DT' | 'Crea el president
 export type CreateTeamForm = {
   id?: number;
   name: string;
-  // phone: string;
-  // email: string;
-  address: object;
   category_id: number;
   tournament_id: number;
   image: HTMLImageElement | File | string;
@@ -61,8 +58,12 @@ export type CreateTeamForm = {
       secondary: string;
     };
   };
-  description: string;
+  description: string | null;
+  home_location_id: number | null;
+  home_day_of_week: number | null;
+  home_start_time: string | null;
 };
+
 export type CreateDtForm = {
   id?: number;
   name: string;
@@ -89,44 +90,17 @@ export interface TeamStoreRequest {
 export type Team = {
   id: number;
   name: string;
-  phone: string;
-  email: string;
-  address: Address;
   slug: string;
   category: Category;
   tournament: Tournament;
   image: string;
   colors: Colors;
-  description: string;
+  description: string | null;
   president: User;
   coach: User;
+  home_preferences: HomePreferences;
+  default_home?: HomePreferences | null;
 };
-export interface Address {
-  terms: Term[];
-  types: string[];
-  place_id: string;
-  reference: string;
-  description: string;
-  matched_substrings: MatchedSubstrings;
-  structured_formatting: StructuredFormatting;
-}
-
-export interface MatchedSubstrings {
-  length: number;
-  offset: number;
-}
-
-export interface StructuredFormatting {
-  main_text: string;
-  secondary_text: string;
-  main_text_matched_substrings: MatchedSubstrings;
-}
-
-export interface Term {
-  value: string;
-  offset: number;
-}
-
 export interface Category {
   id: number;
   name: string;
@@ -150,6 +124,14 @@ export interface User {
   phone: string;
   image: string;
   league_id: number;
+}
+
+export interface HomePreferences {
+  location_id: number | null;
+  location: { id: number; name: string } | null;
+  day_of_week: number | null;
+  day_label: string | null;
+  start_time: string | null;
 }
 
 export interface Colors {

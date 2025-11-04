@@ -75,9 +75,11 @@
   })
   const { fields, update } = useFieldArray<LocationFieldsRequest>('fields_phase')
   const currentStep = ref(1)
+  const loading = ref(false)
   const instance = getCurrentInstance()
   const isMobileDisplay = computed(() => Boolean(instance?.proxy?.$vuetify?.display?.mobile))
   onMounted(async () => {
+    loading.value = true
     const locationIds = scheduleStoreRequest.value.general.locations.map((location) => location.id)
     const client = useSanctumClient()
     const data = await client<LocationFieldsRequest[]>(
@@ -85,6 +87,7 @@
     )
     resetForm({ values: { fields_phase: data as LocationFieldsRequest[] } })
     scheduleStoreRequest.value.fields_phase = data as LocationFieldsRequest[]
+    loading.value = false
   })
 
   const hours = (mins: number) => (mins / 60).toFixed(1)
@@ -164,8 +167,7 @@
         }
       }
       const isRangeSelection = startIndex !== -1 && endIndex !== -1
-      const shouldSelect =
-        isRangeSelection && index >= startIndex && index <= endIndex && !interval.disabled
+      const shouldSelect = isRangeSelection && index >= startIndex && index <= endIndex && !interval.disabled
       return {
         ...interval,
         selected: shouldSelect,
@@ -179,7 +181,7 @@
           ? true
           : options.forceEnable === false
             ? false
-              : nextIntervals.some((interval) => interval.selected),
+            : nextIntervals.some((interval) => interval.selected),
     }
     update(fieldIndex, {
       ...targetField,
@@ -259,7 +261,7 @@
 </script>
 <template>
   <v-container>
-    <v-row>
+    <v-row v-if="fields?.length > 0">
       <v-col class="pa-0 pa-lg-4 pa-md-4">
         <v-alert type="info" class="mb-4">
           <div>
@@ -376,5 +378,11 @@
         </v-stepper>
       </v-col>
     </v-row>
+    <v-empty-state
+      v-else-if="!loading"
+      headline="Sin sedes del torneo"
+      title="No hay sedes asignadas"
+      text="Usaremos las sedes de los equipos al generar el calendario."
+    />
   </v-container>
 </template>

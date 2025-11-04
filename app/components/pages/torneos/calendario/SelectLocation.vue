@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import type { Location } from '~/models/Schedule'
+  import DialogLocation from '~/components/pages/ubicaciones/dialog/index.vue'
 
   const props = defineProps({
     multiple: {
@@ -20,8 +21,7 @@
     },
   })
   const search = ref('')
-  const { locations } = storeToRefs(useLocationStore())
-  const { scheduleStoreRequest } = storeToRefs(useTournamentStore())
+  const { locations, locationDialog } = storeToRefs(useLocationStore())
 
   const searchHandler = useDebounceFn((place: string) => {
     useLocationStore().getLocations(place)
@@ -31,14 +31,14 @@
       searchHandler(search.value)
     }
   })
-  const items = computed(() => locations.value ?? [])
+  const items = ref(props.locations ?? [])
   const model = defineModel()
 </script>
 <template>
   <v-select
     v-model="model"
     max-width="400px"
-    :items="props.locations"
+    :items="items"
     :multiple="true"
     :chips="props.chips"
     :closable-chips="props.closableChips"
@@ -49,19 +49,11 @@
   >
     <template #prepend-item>
       <div>
-        <div class="select-search">
-          <v-text-field
-            prepend-inner-icon="mdi-magnify"
-            variant="plain"
-            class="search-input"
-            v-model="search"
-            placeholder="Buscar ubicación"
-          >
-          </v-text-field>
-        </div>
         <div class="create-location">
           <Icon name="futzo-icon:black-plus" size="24"></Icon>
-          <span class="create-location__text">Crear nueva ubicación</span>
+          <span @click="() => (locationDialog = !locationDialog)" class="create-location__text"
+            >Crear nueva ubicación</span
+          >
         </div>
       </div>
     </template>

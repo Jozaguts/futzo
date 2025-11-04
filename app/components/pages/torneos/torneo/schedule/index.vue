@@ -12,8 +12,19 @@
   const { tournamentId, loading, tournament } = storeToRefs(useTournamentStore())
   const { gameReportDialog, showReScheduleDialog, gameDetailsRequest } = storeToRefs(useGameStore())
 
-  const { schedulePagination, isLoadingSchedules, schedules, scheduleRoundStatus, isExporting, noSchedules } =
-    storeToRefs(useScheduleStore())
+  const scheduleStore = useScheduleStore()
+  const {
+    schedulePagination,
+    isLoadingSchedules,
+    schedules,
+    scheduleRoundStatus,
+    isExporting,
+    noSchedules,
+    regenerationBanner,
+    regeneratedFromRound,
+    hasPendingManualMatches,
+    pendingManualMatches,
+  } = storeToRefs(scheduleStore)
 
   const eliminationPhaseNames = [
     'Dieciseisavos de Final',
@@ -22,6 +33,24 @@
     'Semifinales',
     'Final',
   ]
+  const pendingManualAlertMessage = computed(() => {
+    const total = pendingManualMatches.value ?? 0
+    const suffix = total === 1 ? '' : 's'
+    return `Hay ${total} partido${suffix} pendientes de programación manual.`
+  })
+  const showPendingManualAlert = computed(() => hasPendingManualMatches.value)
+  const handleDismissBanner = () => {
+    scheduleStore.clearRegenerationBanner()
+  }
+  const shouldShowRegeneratedSeparator = (round: number) =>
+    regeneratedFromRound.value !== null && round === regeneratedFromRound.value
+  const isPendingManualMatch = (game: Match) => {
+    return !game.details || !game.details.raw_date || !game.details.field?.id
+  }
+  const showOnlyPendingManual = ref(false)
+  const togglePendingFilter = () => {
+    showOnlyPendingManual.value = !showOnlyPendingManual.value
+  }
 
   const ensurePenaltyStructure = (game: Match) => {
     if (!game.penalties) {
@@ -227,12 +256,19 @@
   onBeforeUnmount(async () => {
     schedulePagination.value.current_page = 1
   })
-  const openModal = (type: 'GameReport' | 'ReScheduleGame', _gameId: number, fieldId: number, date: string) => {
+  const openModal = (
+    type: 'GameReport' | 'ReScheduleGame',
+    _gameId: number,
+    fieldId: number | null,
+    date: string | null
+  ) => {
+    const safeFieldId = fieldId ?? 0
+    const safeDate = date ?? ''
     gameDetailsRequest.value = {
       id: gameDetailsRequest.value?.id,
       game_id: _gameId,
-      field_id: fieldId,
-      date,
+      field_id: safeFieldId,
+      date: safeDate,
     }
     if (type === 'GameReport') {
       gameReportDialog.value = true
@@ -246,9 +282,36 @@
     showBracketDialog.value = true
   }
 </script>
-noSchedules
 <template>
   <v-container fluid class="pa-0">
+    <v-alert
+      v-if="regenerationBanner"
+      :type="regenerationBanner.type === 'warning' ? 'warning' : 'success'"
+      variant="tonal"
+      border="start"
+      density="comfortable"
+      class="mb-4"
+      closable
+      @click:close="handleDismissBanner"
+    >
+      {{ regenerationBanner.message }}
+    </v-alert>
+    <v-alert
+      v-if="showPendingManualAlert"
+      type="warning"
+      variant="outlined"
+      border="start"
+      density="comfortable"
+      class="mb-4"
+      icon="mdi-calendar-clock"
+    >
+      <div class="d-flex justify-space-between align-center flex-wrap" style="gap: 8px">
+        <span>{{ pendingManualAlertMessage }}</span>
+        <v-btn variant="text" size="small" color="warning" @click="togglePendingFilter">
+          {{ showOnlyPendingManual ? 'Ver todos' : 'Ver pendientes' }}
+        </v-btn>
+      </div>
+    </v-alert>
     <v-row :no-gutters="mobile">
       <v-col cols="12" md="8" lg="8" v-if="noSchedules"> <NoCalendar /></v-col>
       <v-col v-else cols="12" md="8" lg="8">
@@ -262,6 +325,11 @@ noSchedules
           <template v-for="item in schedules.rounds" :key="item.id">
             <v-container fluid>
               <v-row>
+                <v-col v-if="shouldShowRegeneratedSeparator(item.round)" cols="12" class="pt-0 pb-4">
+                  <v-alert variant="tonal" type="info" density="comfortable" border="start" icon="mdi-calendar-refresh">
+                    📅 A partir de aquí, se muestran los partidos regenerados por registro tardío.
+                  </v-alert>
+                </v-col>
                 <v-col cols="12" class="pa-0">
                   <div class="title-container">
                     <p class="title">
@@ -332,7 +400,15 @@ noSchedules
                     {{ item.bye_team.name }} descansa esta jornada.
                   </v-alert>
                 </v-col>
-                <v-col v-for="game in item.matches" :key="game.id" cols="12" md="2" lg="4" class="game-container">
+                <v-col
+                  v-for="game in item.matches"
+                  :key="game.id"
+                  v-if="!showOnlyPendingManual || isPendingManualMatch(game)"
+                  cols="12"
+                  md="2"
+                  lg="4"
+                  class="game-container"
+                >
                   <div class="game">
                     <div class="team home">
                       <v-avatar :image="game.home.image" size="24" class="image" />
@@ -402,13 +478,24 @@ noSchedules
                       Penales: {{ game.penalties.home_goals }} - {{ game.penalties.away_goals }} · Ganador:
                       {{ penaltyWinnerName(game) }}
                     </div>
-                    <div class="details">
-                      <p>
-                        {{ game.details.date }}
-                        <span>{{ game.details?.raw_time }}</span>
-                      </p>
-                      <p>{{ game.details?.location.name }}</p>
-                      <p>{{ game.details?.field.name }}</p>
+                    <div class="details" :class="{ 'details--pending': isPendingManualMatch(game) }">
+                      <template v-if="!isPendingManualMatch(game)">
+                        <p>
+                          {{ game.details?.date }}
+                          <span>{{ game.details?.raw_time }}</span>
+                        </p>
+                        <p>{{ game.details?.location?.name }}</p>
+                        <p>{{ game.details?.field?.name }}</p>
+                      </template>
+                      <template v-else>
+                        <p class="text-body-2 font-weight-medium text-warning d-flex align-center mb-2">
+                          <Icon name="mdi-alert" class="mr-2" />
+                          Partido pendiente de programación
+                        </p>
+                        <p class="text-body-2 text-medium-emphasis">
+                          Define fecha, hora y campo para habilitar la publicación.
+                        </p>
+                      </template>
                       <div class="d-flex justify-space-between w-75 align-center">
                         <v-btn
                           icon
@@ -422,7 +509,14 @@ noSchedules
                             (game.status as RoundStatus) === 'completado' ||
                             (game.status as RoundStatus) === 'cancelado'
                           "
-                          @click="openModal('ReScheduleGame', game.id, game.details.field.id, game.details.raw_date)"
+                          @click="
+                            openModal(
+                              'ReScheduleGame',
+                              game.id,
+                              game.details?.field?.id ?? null,
+                              game.details?.raw_date ?? null
+                            )
+                          "
                         >
                           <Icon name="ant-design:schedule-twotone" size="25"></Icon>
                         </v-btn>
@@ -432,7 +526,15 @@ noSchedules
                           variant="text"
                           density="compact"
                           :ripple="true"
-                          @click="openModal('GameReport', game.id, game.details.field.id, game.details.raw_date)"
+                          :disabled="isPendingManualMatch(game)"
+                          @click="
+                            openModal(
+                              'GameReport',
+                              game.id,
+                              game.details?.field?.id ?? null,
+                              game.details?.raw_date ?? null
+                            )
+                          "
                         >
                           <Icon name="carbon:result-draft" size="25"></Icon>
                         </v-btn>
@@ -493,4 +595,9 @@ noSchedules
     font-size: .85rem
     font-weight: 500
     color: rgba(var(--v-theme-on-surface), 0.65)
+
+  .details--pending
+    background-color: rgba(var(--v-theme-warning), 0.12)
+    border-radius: 8px
+    padding: 12px
 </style>

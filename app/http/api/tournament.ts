@@ -1,8 +1,15 @@
 import { useSanctumClient } from '#imports';
-import type { ExportType, PreRegisterTournamentResponse, Tournament, TournamentStats } from '~/models/tournament';
+import type {
+  ExportType,
+  PreRegisterTournamentResponse,
+  Tournament,
+  TournamentLocationStoreRequest,
+  TournamentStats,
+} from '~/models/tournament';
 import type { Game } from '~/models/Game';
 import { parseBlobResponse } from '~/utils/prepareFormData';
 import type { BracketPreview, ConfirmBracketPayload } from '~/models/Bracket';
+import type { ScheduleRegenerationAnalysis, ScheduleRegenerationResult } from '~/models/Schedule';
 
 export const exportTournamentRoundScheduleAs = async (type: ExportType, tournamentId: number, round: any) => {
   const client = useSanctumClient();
@@ -109,4 +116,18 @@ export const confirmBracket = async (tournamentId: number, payload: ConfirmBrack
 export const getTournamentFields = async (tournamentId: number) => {
   const client = useSanctumClient();
   return await client(`/api/v1/admin/tournaments/${tournamentId}/fields`);
+};
+
+export const analyzeScheduleRegeneration = async (tournamentId: number) => {
+  const client = useSanctumClient();
+  return await client<ScheduleRegenerationAnalysis>(`/api/v1/admin/tournaments/${tournamentId}/regenerate-calendar`, {
+    method: 'POST',
+  });
+};
+
+export const confirmScheduleRegeneration = async (tournamentId: number) => {
+  const client = useSanctumClient();
+  return await client<ScheduleRegenerationResult>(`/api/v1/admin/tournaments/${tournamentId}/confirm-regeneration`, {
+    method: 'POST',
+  });
 };

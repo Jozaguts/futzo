@@ -163,9 +163,17 @@
       sublabel="minutos"
       :props="{ ...time_between_games_props, min: 0 }"
     />
-    <BaseInput label="Sedes del torneo">
+    <BaseInput
+      label="Sedes del torneo"
+      sublabel="Sedes predeterminadas opcional"
+      v-if="scheduleSettings?.locations?.length > 0"
+    >
       <template #input>
         <SelectLocation :locations="scheduleSettings.locations" v-model="locations"></SelectLocation>
+        <small class="text-caption"
+          >Si algún equipo no tiene su propia sede, sus partidos se programarán automáticamente en las sede
+          seleccionada.
+        </small>
         <div v-auto-animate>
           <small v-if="!!locations_props['error-messages']" class="text-red ml-4">{{
             locations_props['error-messages'][0]

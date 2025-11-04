@@ -206,10 +206,11 @@ export type HourAvailableInterval = {
 export type MatchDetails = {
   date: string;
   time: string;
-  field: Field;
-  location: Field;
-  referee: string;
+  field: Field | null;
+  location: Field | null;
+  referee: string | null;
   raw_date: string;
+  raw_time?: string;
 };
 export type Field = {
   id: number;
@@ -247,6 +248,19 @@ export type Pivot = {
   team_id: number;
 };
 
+export type ScheduleTeamSummary = {
+  id: number;
+  name: string;
+  image: string | null;
+};
+
+export interface ScheduleRegenerationLogSummary {
+  mode: 'full' | 'partial' | string;
+  cutoff_round: number | null;
+  executed_at: string | null;
+  matches_created: number | null;
+}
+
 export type DatePosition = 1 | 2;
 
 export interface ScheduleSettings {
@@ -269,6 +283,9 @@ export interface ScheduleSettings {
   group_configuration_options: GroupConfigurationOptions[];
   group_phase: string | null;
   group_phase_option_id: null | string;
+  teams_without_games: ScheduleTeamSummary[];
+  pending_manual_matches: number;
+  last_regeneration: ScheduleRegenerationLogSummary | null;
 }
 export type GroupConfigurationOptions = {
   id: string;
@@ -427,3 +444,20 @@ export type ScheduleRoundStatus = {
   text: RoundStatusText;
   value: RoundStatus;
 };
+
+export interface ScheduleRegenerationAnalysis {
+  mode: 'full' | 'partial';
+  cutoff_round: number | null;
+  completed_rounds: number;
+  total_rounds: number;
+  pending_manual_matches: number;
+  explanation: string;
+}
+
+export interface ScheduleRegenerationResult extends ScheduleRegenerationAnalysis {
+  matches_created: number;
+  message: string;
+  pending_manual_matches: number;
+  log_id?: number;
+  analysis?: ScheduleRegenerationAnalysis | null;
+}
