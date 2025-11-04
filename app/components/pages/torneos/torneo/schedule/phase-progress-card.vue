@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { storeToRefs } from '#imports'
+  import { storeToRefs, watch } from '#imports'
 
   const emits = defineEmits<{
     (event: 'open-bracket'): void
@@ -26,7 +26,7 @@
     isConfirmingRegeneration,
     lastRegeneration,
   } = storeToRefs(scheduleStore)
-
+  const { tournament } = storeToRefs(useTournamentStore())
   const activePhaseName = computed(() => activePhase.value?.name ?? 'No hay fase activa')
   const nextPhaseNAme = computed(() => nextPhase.value?.name ?? 'Ninguna')
 
@@ -86,9 +86,7 @@
         : 'completa'
     const matchesCreated = lastRegeneration.value.matches_created
     const matchesLabel =
-      typeof matchesCreated === 'number'
-        ? `${matchesCreated} partido${matchesCreated === 1 ? '' : 's'}`
-        : null
+      typeof matchesCreated === 'number' ? `${matchesCreated} partido${matchesCreated === 1 ? '' : 's'}` : null
     if (executed && matchesLabel) {
       return `${executed} · ${modeLabel} · ${matchesLabel}`
     }
@@ -100,7 +98,7 @@
   const pendingManualMatchesLabel = computed(() => {
     const total = pendingManualMatches.value ?? 0
     const suffix = total === 1 ? '' : 's'
-    return `Hay ${total} partido${suffix} pendientes de programación manual.`
+    return `Partido${suffix} pendientes de programación.`
   })
   const handleAdvancePhase = async () => {
     if (!canAdvance.value) {
@@ -139,52 +137,35 @@
   <v-card v-if="hasPhases" class="futzo-rounded phase-progress-card">
     <v-card-title>Detalles del torneo </v-card-title>
     <v-divider></v-divider>
+    <v-alert v-if="hasPendingManualMatches" type="warning" variant="tonal" border="start" density="compact">
+      {{ pendingManualMatchesLabel }}
+    </v-alert>
     <v-card-text>
       <BaseLabelInput id="fase" label="Fase activa" readonly v-model="activePhaseName" />
       <BaseLabelInput id="next-fase" label="Siguiente fase" readonly v-model="nextPhaseNAme" />
+      <v-divider class="my-3" />
+      <BaseInput label="Fecha de inicio">
+        <template #input>
+          <BaseCalendarInput v-model:start_date="tournament.start_date" :multiCalendar="false" />
+        </template>
+      </BaseInput>
       <div v-if="teamsWithoutGames.length" class="mt-4">
         <p class="text-subtitle-2 font-weight-medium mb-2">Equipos sin partidos programados</p>
         <div class="d-flex flex-wrap" style="gap: 8px">
-          <v-chip
-            v-for="team in teamsWithoutGames"
-            :key="team.id"
-            size="small"
-            color="primary"
-            variant="tonal"
-          >
+          <v-chip v-for="team in teamsWithoutGames" :key="team.id" size="small" color="primary" variant="tonal">
             {{ team.name }}
           </v-chip>
         </div>
       </div>
-      <v-alert
-        v-if="hasPendingManualMatches"
-        type="warning"
-        variant="tonal"
-        border="start"
-        density="comfortable"
-        class="mt-4"
-      >
-        {{ pendingManualMatchesLabel }}
-      </v-alert>
       <div v-if="lastRegenerationSummary" class="mt-4 text-caption text-medium-emphasis">
         Última regeneración: {{ lastRegenerationSummary }}
       </div>
     </v-card-text>
     <v-card-actions>
       <div class="d-flex w-100 justify-space-between flex-wrap" style="gap: 8px">
-        <div class="d-flex align-center flex-wrap" style="gap: 8px">
+        <div class="d-flex" style="gap: 8px">
           <PrimaryBtn
-            text="Regenerar calendario"
-            :show-icon="false"
-            color="secondary"
-            variant="outlined"
-            @click="handleOpenRegenerationDialog"
-            :loading="isAnalyzingRegeneration"
-            :disabled="!hasRegenerationAction || isAnalyzingRegeneration || isConfirmingRegeneration"
-          ></PrimaryBtn>
-        </div>
-        <div class="d-flex justify-end flex-wrap" style="gap: 8px">
-          <PrimaryBtn
+            density="compact"
             @click="handleAdvancePhase"
             :text="advanceLabel"
             :show-icon="false"
@@ -193,11 +174,22 @@
           ></PrimaryBtn>
           <PrimaryBtn
             text="Configurar"
+            density="compact"
             :show-icon="false"
             :disabled="!activeEliminationPhase || isActivePhaseConfigurationLocked"
             @click="handleOpenBracket"
             color="secondary"
             variant="outlined"
+          ></PrimaryBtn>
+          <PrimaryBtn
+            text="Regenerar"
+            density="compact"
+            :show-icon="false"
+            color="secondary"
+            variant="outlined"
+            @click="handleOpenRegenerationDialog"
+            :loading="isAnalyzingRegeneration"
+            :disabled="!hasRegenerationAction || isAnalyzingRegeneration || isConfirmingRegeneration"
           ></PrimaryBtn>
         </div>
       </div>
@@ -207,11 +199,13 @@
     v-model="showRegenerationDialog"
     max-width="520"
     :persistent="isConfirmingRegeneration"
-    @update:model-value="(value) => {
-      if (!value) {
-        handleCloseRegenerationDialog()
+    @update:model-value="
+      (value) => {
+        if (!value) {
+          handleCloseRegenerationDialog()
+        }
       }
-    }"
+    "
   >
     <v-card>
       <v-card-title class="font-weight-bold">Regenerar calendario</v-card-title>
@@ -229,23 +223,21 @@
             <li v-if="regenerationAnalysis.cutoff_round">
               Los nuevos partidos iniciarán desde la jornada {{ regenerationAnalysis.cutoff_round }}.
             </li>
-            <li>
-              Los partidos generados se crearán sin fecha ni campo asignados para programarlos manualmente.
-            </li>
+            <li>Los partidos generados se crearán sin fecha ni campo asignados para programarlos manualmente.</li>
             <li v-if="teamsWithoutGames.length">
-              {{ teamsWithoutGames.length }} equipo{{ teamsWithoutGames.length === 1 ? '' : 's' }} sin partidos asignados.
+              {{ teamsWithoutGames.length }} equipo{{ teamsWithoutGames.length === 1 ? '' : 's' }} sin partidos
+              asignados.
             </li>
             <li v-if="regenerationAnalysis.pending_manual_matches">
               Actualmente hay {{ regenerationAnalysis.pending_manual_matches }} partido{{
                 regenerationAnalysis.pending_manual_matches === 1 ? '' : 's'
-              }} pendientes de programación.
+              }}
+              pendientes de programación.
             </li>
           </ul>
         </div>
         <div v-else class="py-4">
-          <p class="text-body-2 mb-0">
-            No fue posible obtener el análisis del calendario. Intenta nuevamente.
-          </p>
+          <p class="text-body-2 mb-0">No fue posible obtener el análisis del calendario. Intenta nuevamente.</p>
         </div>
       </v-card-text>
       <v-card-actions class="justify-end">

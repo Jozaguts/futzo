@@ -186,7 +186,7 @@
             ? (winnerId === game.home.id && homeGoals > awayGoals) ||
               (winnerId === game.away.id && awayGoals > homeGoals)
             : false
-
+          console.log({ homeGoals, awayGoals, winnerId, validWinner, validGoals, consistent })
           if (!validGoals || !consistent) {
             useToast().toast({
               type: 'error',
@@ -295,22 +295,6 @@
       @click:close="handleDismissBanner"
     >
       {{ regenerationBanner.message }}
-    </v-alert>
-    <v-alert
-      v-if="showPendingManualAlert"
-      type="warning"
-      variant="outlined"
-      border="start"
-      density="comfortable"
-      class="mb-4"
-      icon="mdi-calendar-clock"
-    >
-      <div class="d-flex justify-space-between align-center flex-wrap" style="gap: 8px">
-        <span>{{ pendingManualAlertMessage }}</span>
-        <v-btn variant="text" size="small" color="warning" @click="togglePendingFilter">
-          {{ showOnlyPendingManual ? 'Ver todos' : 'Ver pendientes' }}
-        </v-btn>
-      </div>
     </v-alert>
     <v-row :no-gutters="mobile">
       <v-col cols="12" md="8" lg="8" v-if="noSchedules"> <NoCalendar /></v-col>
@@ -487,15 +471,6 @@
                         <p>{{ game.details?.location?.name }}</p>
                         <p>{{ game.details?.field?.name }}</p>
                       </template>
-                      <template v-else>
-                        <p class="text-body-2 font-weight-medium text-warning d-flex align-center mb-2">
-                          <Icon name="mdi-alert" class="mr-2" />
-                          Partido pendiente de programación
-                        </p>
-                        <p class="text-body-2 text-medium-emphasis">
-                          Define fecha, hora y campo para habilitar la publicación.
-                        </p>
-                      </template>
                       <div class="d-flex justify-space-between w-75 align-center">
                         <v-btn
                           icon
@@ -550,28 +525,6 @@
       <v-col cols="12" md="4" lg="4">
         <PhaseProgressCard class="mb-6" @open-bracket="openBracketDialog" />
       </v-col>
-      <!--      </v-row>-->
-      <!--      <v-col cols="12">-->
-      <!--      <div class="tournament-details">-->
-      <!--        <div class="detail">-->
-      <!--          <p class="text-body-1">Torneo:</p>-->
-      <!--          <span> {{ tournament.name }}</span>-->
-      <!--        </div>-->
-      <!--        <div class="detail">-->
-      <!--          <p class="text-body-1">Categoría:</p>-->
-      <!--          <span>{{ tournament.category.name }}</span>-->
-      <!--        </div>-->
-      <!--        <div class="detail">-->
-      <!--          <p class="text-body-1">Fecha de inicio:</p>-->
-      <!--          <span>{{ tournament.start_date_to_string }}</span>-->
-      <!--        </div>-->
-      <!--      </div>-->
-      <!--        <v-sheet class="sheet-tournament-schedule futzo-rounded fill-height pa-4">-->
-      <!--          <v-container>-->
-
-      <!--          </v-container>-->
-      <!--        </v-sheet>-->
-      <!--      </v-col>-->
     </v-row>
     <ReScheduleGame v-model:show="showReScheduleDialog" />
     <GameReport />

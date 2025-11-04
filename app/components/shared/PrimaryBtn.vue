@@ -7,6 +7,7 @@
     disabled?: boolean
     loading?: boolean
     color?: string
+    density?: 'comfortable' | 'normal' | 'compact'
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -17,6 +18,7 @@
     disabled: false,
     loading: false,
     color: 'primary',
+    density: 'normal',
   })
   const emits = defineEmits(['click'])
 </script>
@@ -28,6 +30,7 @@
     :loading="props.loading"
     :color="props.color"
     :disabled="props.disabled"
+    :density="props.density"
     @click="emits('click')"
   >
     <template #prepend v-if="props.showIcon">
