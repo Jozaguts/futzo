@@ -131,6 +131,7 @@ export type DatePickerAttributes = {
   'v-model'?: Ref<Date> | Ref<[Date, Date]>;
   range?: boolean;
   'max-date'?: Date;
+  disabled?: boolean;
 };
 
 export type PenaltyShootout = {
@@ -267,6 +268,7 @@ export interface ScheduleSettings {
   tournament_id: number | null;
   start_date: Date | string;
   end_date: null;
+  can_update_start_date: boolean;
   game_time: number;
   min_teams: number;
   max_teams: number;
@@ -445,6 +447,11 @@ export type ScheduleRoundStatus = {
   value: RoundStatus;
 };
 
+export interface ScheduleRegenerationPayload {
+  start_date?: string | null;
+  round_trip?: boolean | null;
+}
+
 export interface ScheduleRegenerationAnalysis {
   mode: 'full' | 'partial';
   cutoff_round: number | null;
@@ -452,6 +459,12 @@ export interface ScheduleRegenerationAnalysis {
   total_rounds: number;
   pending_manual_matches: number;
   explanation: string;
+  round_trip_selected?: boolean;
+  round_trip_message?: string | null;
+  matches_per_round?: number | null;
+  projected_rounds?: number | null;
+  total_matches?: number | null;
+  has_bye?: boolean;
 }
 
 export interface ScheduleRegenerationResult extends ScheduleRegenerationAnalysis {

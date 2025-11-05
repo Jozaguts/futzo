@@ -13,6 +13,7 @@ import type {
   LocationFieldsRequest,
   RoundStatus,
   ScheduleRegenerationAnalysis,
+  ScheduleRegenerationPayload,
   ScheduleRegenerationLogSummary,
   ScheduleRegenerationResult,
   ScheduleRoundStatus,
@@ -79,6 +80,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     tournament_id: null,
     start_date: new Date(),
     end_date: null,
+    can_update_start_date: true,
     round_trip: false,
     elimination_round_trip: true,
     game_time: 0,
@@ -473,14 +475,15 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       isLoadingTournamentFields.value = false;
     }
   };
-  const analyzeScheduleRegeneration = async () => {
+  const analyzeScheduleRegeneration = async (payload?: ScheduleRegenerationPayload) => {
     if (!tournamentStore.tournamentId) {
       return null;
     }
     isAnalyzingRegeneration.value = true;
     try {
       const analysis = await tournamentAPI.analyzeScheduleRegeneration(
-        tournamentStore.tournamentId as number
+        tournamentStore.tournamentId as number,
+        payload
       );
       regenerationAnalysis.value = analysis;
       return analysis;
@@ -496,14 +499,15 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       isAnalyzingRegeneration.value = false;
     }
   };
-  const confirmScheduleRegeneration = async () => {
+  const confirmScheduleRegeneration = async (payload?: ScheduleRegenerationPayload) => {
     if (!tournamentStore.tournamentId) {
       return null;
     }
     isConfirmingRegeneration.value = true;
     try {
       const response = await tournamentAPI.confirmScheduleRegeneration(
-        tournamentStore.tournamentId as number
+        tournamentStore.tournamentId as number,
+        payload
       );
       regenerationResult.value = response;
       if (response?.analysis) {

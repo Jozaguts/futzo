@@ -9,7 +9,11 @@ import type {
 import type { Game } from '~/models/Game';
 import { parseBlobResponse } from '~/utils/prepareFormData';
 import type { BracketPreview, ConfirmBracketPayload } from '~/models/Bracket';
-import type { ScheduleRegenerationAnalysis, ScheduleRegenerationResult } from '~/models/Schedule';
+import type {
+  ScheduleRegenerationAnalysis,
+  ScheduleRegenerationPayload,
+  ScheduleRegenerationResult,
+} from '~/models/Schedule';
 
 export const exportTournamentRoundScheduleAs = async (type: ExportType, tournamentId: number, round: any) => {
   const client = useSanctumClient();
@@ -118,16 +122,32 @@ export const getTournamentFields = async (tournamentId: number) => {
   return await client(`/api/v1/admin/tournaments/${tournamentId}/fields`);
 };
 
-export const analyzeScheduleRegeneration = async (tournamentId: number) => {
+export const analyzeScheduleRegeneration = async (
+  tournamentId: number,
+  payload?: ScheduleRegenerationPayload
+) => {
   const client = useSanctumClient();
-  return await client<ScheduleRegenerationAnalysis>(`/api/v1/admin/tournaments/${tournamentId}/regenerate-calendar`, {
-    method: 'POST',
-  });
+  const options: Record<string, unknown> = { method: 'POST' };
+  if (payload && Object.keys(payload).length > 0) {
+    options.body = payload;
+  }
+  return await client<ScheduleRegenerationAnalysis>(
+    `/api/v1/admin/tournaments/${tournamentId}/regenerate-calendar`,
+    options
+  );
 };
 
-export const confirmScheduleRegeneration = async (tournamentId: number) => {
+export const confirmScheduleRegeneration = async (
+  tournamentId: number,
+  payload?: ScheduleRegenerationPayload
+) => {
   const client = useSanctumClient();
-  return await client<ScheduleRegenerationResult>(`/api/v1/admin/tournaments/${tournamentId}/confirm-regeneration`, {
-    method: 'POST',
-  });
+  const options: Record<string, unknown> = { method: 'POST' };
+  if (payload && Object.keys(payload).length > 0) {
+    options.body = payload;
+  }
+  return await client<ScheduleRegenerationResult>(
+    `/api/v1/admin/tournaments/${tournamentId}/confirm-regeneration`,
+    options
+  );
 };
