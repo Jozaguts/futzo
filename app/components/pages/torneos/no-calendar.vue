@@ -30,11 +30,9 @@
   })
   const generalPhaseActive = computed(() => currentPhaseName.value === 'Tabla general')
   const eliminationPhaseNames = ['Octavos de Final', 'Cuartos de Final', 'Semifinales', 'Final']
-  const isDirectEliminationPhaseActive = computed(() =>
-    eliminationPhaseNames.includes(currentPhaseName.value ?? '')
-  )
+  const isDirectEliminationPhaseActive = computed(() => eliminationPhaseNames.includes(currentPhaseName.value ?? ''))
   const showCreateButton = computed(
-    () => !isTournamentCompletedWithChampion.value && !hasSchedule.value && generalPhaseActive.value
+    () => (!isTournamentCompletedWithChampion.value && generalPhaseActive.value) || !hasSchedule.value
   )
   const foundedTextLabel = computed(() => {
     if (isTournamentCompletedWithChampion.value) {
