@@ -13,7 +13,7 @@ export default function getHeaders(tableName: string): Header[] {
         { title: 'Equipo', value: 'name', sortable: true },
         { title: 'Torneo', value: 'tournament.name', sortable: true },
         { title: 'Categoría', value: 'category.name', sortable: true },
-        { title: 'Sede', value: 'category.name', sortable: true },
+        { title: 'Sede', value: 'home_preferences', sortable: false },
         // {title: 'Cancha', value: 'field', sortable: true},
         {
           title: 'Delegado/Presidente',

@@ -91,6 +91,20 @@ export const updateGameTeamFormationType = async (team_id: number, game_id: numb
     body: JSON.stringify({ formation_id }),
   });
 };
+export const updateHomePreferences = async (
+  teamId: number,
+  payload: {
+    home_location_id: number | null;
+    home_day_of_week: number | null;
+    home_start_time: string | null;
+  }
+) => {
+  const client = useSanctumClient();
+  return await client<Team>(`/api/v1/admin/teams/${teamId}/home-preferences`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  });
+};
 export const initPreRegister = async (slug: string) => {
   const client = useSanctumClient();
   return await client<PreRegisterTeamResponse>(`/api/v1/public/teams/${slug}/registrations/catalogs`);

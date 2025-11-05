@@ -1,6 +1,8 @@
 <script lang="ts" setup>
   import type { Header, IPagination } from '~/interfaces'
   import { useDisplay } from 'vuetify'
+  import type { Team } from '~/models/Team'
+  import { Icon } from '#components'
   const props = defineProps({
     headers: {
       type: Array as PropType<Header[]>,
@@ -74,6 +76,7 @@
     })
   }
   const { mobile } = useDisplay()
+  const emits = defineEmits(['openAssignModal'])
 </script>
 <template>
   <v-data-table
@@ -122,6 +125,46 @@
     </template>
     <template #[`item.image`]="{ item }">
       <v-avatar size="50" :image="item.image"></v-avatar>
+    </template>
+    <template #item.home_preferences="{ item }">
+      <div class="d-flex align-center gap-2">
+        <div v-if="item?.home_preferences?.location">
+          <div class="text-body-2 font-weight-medium">{{ item?.home_preferences?.location?.name }}</div>
+          <div
+            class="text-caption text-medium-emphasis"
+            v-if="item?.home_preferences?.day_label || item?.home_preferences?.start_time"
+          >
+            <span v-if="item?.home_preferences?.day_label">{{ item?.home_preferences?.day_label }}</span>
+            <span v-if="item?.home_preferences?.day_label && item?.home_preferences?.start_time">&nbsp;·&nbsp;</span>
+            <span v-if="item?.home_preferences?.start_time">{{ item?.home_preferences?.start_time }} hrs</span>
+          </div>
+        </div>
+        <v-btn
+          v-if="item?.home_preferences?.location"
+          icon
+          size="small"
+          variant="text"
+          color="primary"
+          @click="emits('openAssignModal', item as Team)"
+        >
+          <Icon name="mdi-pencil" size="18" />
+        </v-btn>
+        <div v-else class="d-flex flex-column">
+          <v-btn
+            size="small"
+            variant="outlined"
+            density="comfortable"
+            color="primary"
+            @click="emits('openAssignModal', item as Team)"
+          >
+            Asignar sede
+          </v-btn>
+          <div class="mt-2">
+            <span v-if="item?.home_preferences?.day_label && item?.home_preferences?.start_time">&nbsp;·&nbsp;</span>
+            <span v-if="item?.home_preferences?.start_time">{{ item?.home_preferences?.start_time }} hrs</span>
+          </div>
+        </div>
+      </div>
     </template>
     <template #[`item.birthdate`]="{ item }">
       <v-tooltip :text="item.birthdate.date">
