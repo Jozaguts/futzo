@@ -43,6 +43,10 @@
       type: Object as PropType<VErrorProps>,
       required: false,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   })
   const { getDate, formatDate, customPosition, selectDate, dp } = useCalendar()
   const emits = defineEmits(['start_date_updated', 'end_date_updated', 'update:modelValue'])
@@ -60,6 +64,9 @@
       menu: 'border rounded-lg',
       calendarCell: 'dp-custom-cell',
     },
+  }
+  if (props.disabled) {
+    attr.disabled = true
   }
   if (props.multiCalendar) {
     attr['multi-calendars'] = { solo: true }
@@ -109,9 +116,16 @@
     v-bind="{ ...attr }"
     v-model="dates"
     @update:model-value="$emit('update:modelValue', $event)"
+    :disabled="disabled"
   >
     <template #dp-input="{ value }">
-      <v-text-field :value="value" density="compact" variant="outlined" v-bind="props.errorMessages"></v-text-field>
+      <v-text-field
+        :value="value"
+        density="compact"
+        variant="outlined"
+        v-bind="props.errorMessages"
+        :disabled="disabled"
+      ></v-text-field>
     </template>
     <template v-if="multiCalendar" #action-preview="{ value }">
       <div class="d-flex w-100 justify-between align-center">
