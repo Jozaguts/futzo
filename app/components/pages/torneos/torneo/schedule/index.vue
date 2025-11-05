@@ -302,7 +302,7 @@
         <v-infinite-scroll
           :items="schedules.rounds"
           @load="load"
-          height="412"
+          height="80vh"
           class="bg-surface pa-4 futzo-rounded"
           empty-text="No hay mas jornadas"
         >
@@ -426,33 +426,34 @@
                     </div>
                     <div v-if="shouldShowPenaltyInputs(game, item.isEditable)" class="penalty-container">
                       <p class="text-body-2 font-weight-medium mb-2">Desempate por penales</p>
-                      <div class="d-flex align-center mb-2">
-                        <div class="d-flex align-center mr-4">
+                      <div class="d-flex flex-column mb-2">
+                        <div class="d-flex justify-space-between">
                           <span class="mr-2 text-body-2">{{ game.home.name }}</span>
                           <v-text-field
                             v-model.number="game.penalties.home_goals"
                             type="number"
                             min="0"
-                            density="comfortable"
+                            density="compact"
                             hide-details
                             class="penalty-input"
                           ></v-text-field>
                         </div>
-                        <div class="d-flex align-center">
+                        <div class="d-flex justify-space-between">
                           <span class="mr-2 text-body-2">{{ game.away.name }}</span>
                           <v-text-field
                             v-model.number="game.penalties.away_goals"
                             type="number"
                             min="0"
-                            density="comfortable"
+                            density="compact"
                             hide-details
                             class="penalty-input"
                           ></v-text-field>
                         </div>
                       </div>
-                      <v-radio-group v-model="game.penalties.winner_team_id" inline density="compact" class="mt-1">
+                      <p class="text-body-2 font-weight-medium mb-2">Ganador</p>
+                      <v-radio-group v-model="game.penalties.winner_team_id" density="compact" class="mt-1">
                         <v-radio :value="game.home.id" :label="game.home.name" />
-                        <v-radio :value="game.away.id" :label="game.away.name" class="ml-4" />
+                        <v-radio :value="game.away.id" :label="game.away.name" />
                       </v-radio-group>
                       <p class="text-caption text-medium-emphasis mt-2">
                         El ganador suma 2 puntos; el otro equipo suma 1 punto.
