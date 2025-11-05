@@ -1,4 +1,10 @@
-import type { Availability, AvailableIntervals, PenaltyAttempt, PenaltyShootout } from '~/models/Schedule';
+import type {
+  Availability,
+  AvailableIntervals,
+  HourAvailableInterval,
+  PenaltyAttempt,
+  PenaltyShootout,
+} from '~/models/Schedule';
 import type { Player, TeamLineupAvailablePlayers } from '~/models/Player';
 import type { User } from '~/models/User';
 
@@ -148,7 +154,8 @@ export type GameDetailsRequest = {
   game_id: number;
   date: string;
   day?: string;
-  selected_time?: string;
+  selected_time?: HourAvailableInterval | null;
+  location_id?: number | null;
 };
 
 export type Game = {

@@ -272,6 +272,10 @@ export const useGameStore = defineStore('gameStore', () => {
       .then((data) => {
         game.value = data as Game;
         hydratePenaltyShootout(game.value);
+        const locationId = game.value?.details?.location?.id ?? null;
+        if (locationId !== null) {
+          gameDetailsRequest.value.location_id = locationId;
+        }
         if (game.value?.options?.length) {
           gameDetailsRequest.value.day = game.value.options[0].available_intervals.day;
         }

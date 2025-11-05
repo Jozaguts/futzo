@@ -260,15 +260,18 @@
     type: 'GameReport' | 'ReScheduleGame',
     _gameId: number,
     fieldId: number | null,
-    date: string | null
+    date: string | null,
+    locationId: number | null
   ) => {
     const safeFieldId = fieldId ?? 0
     const safeDate = date ?? ''
+    const safeLocationId = locationId ?? null
     gameDetailsRequest.value = {
       id: gameDetailsRequest.value?.id,
       game_id: _gameId,
       field_id: safeFieldId,
       date: safeDate,
+      location_id: safeLocationId,
     }
     if (type === 'GameReport') {
       gameReportDialog.value = true
@@ -490,7 +493,8 @@
                               'ReScheduleGame',
                               game.id,
                               game.details?.field?.id ?? null,
-                              game.details?.raw_date ?? null
+                              game.details?.raw_date ?? null,
+                              game.details?.location?.id ?? null
                             )
                           "
                         >
@@ -508,7 +512,8 @@
                               'GameReport',
                               game.id,
                               game.details?.field?.id ?? null,
-                              game.details?.raw_date ?? null
+                              game.details?.raw_date ?? null,
+                              game.details?.location?.id ?? null
                             )
                           "
                         >

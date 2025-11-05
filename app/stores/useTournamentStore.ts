@@ -125,10 +125,22 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     tournamentId.value = undefined;
   }
 
-  async function tournamentFields($tournamentId: number) {
+  type TournamentFieldsResponse = {
+    data: Field[];
+    meta?: {
+      fields_source?: 'tournament' | 'league' | null;
+    };
+  };
+  async function tournamentFields($tournamentId: number, locationId?: number | null) {
     const client = useSanctumClient();
-    const { data } = await client<{ data: Field[] }>(`api/v1/admin/tournaments/${$tournamentId}/fields`);
-    return data;
+    const response = await client<TournamentFieldsResponse>(`api/v1/admin/tournaments/${$tournamentId}/fields`, {
+      query: locationId ? { location_id: locationId } : undefined,
+    });
+
+    return {
+      data: response.data ?? [],
+      meta: response.meta ?? {},
+    };
   }
 
   async function loadTournaments() {
