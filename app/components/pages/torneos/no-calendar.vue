@@ -1,8 +1,15 @@
 <script lang="ts" setup>
   import NoCalendarSvg from '~/components/pages/torneos/NoCalendarSvg.vue'
 
-  const { scheduleDialog, isLoadingSchedules, noSchedules, schedulePagination, hasSchedule } =
-    storeToRefs(useScheduleStore())
+  const {
+    scheduleDialog,
+    isLoadingSchedules,
+    noSchedules,
+    schedulePagination,
+    hasSchedule,
+    scheduleSettings,
+    activePhase,
+  } = storeToRefs(useScheduleStore())
   const { tournament } = storeToRefs(useTournamentStore())
   const isTournamentCompletedWithChampion = computed(
     () => tournament.value?.status === 'completado' && Boolean(tournament.value?.winner)
@@ -14,9 +21,28 @@
     await useScheduleStore().settingsSchedule()
     scheduleDialog.value = !scheduleDialog.value
   }
+  const currentPhaseName = computed(() => {
+    const explicit = activePhase.value?.name
+    if (explicit) {
+      return explicit
+    }
+    return scheduleSettings.value?.phases?.find((phase) => phase.is_active)?.name ?? null
+  })
+  const generalPhaseActive = computed(() => currentPhaseName.value === 'Tabla general')
+  const eliminationPhaseNames = ['Octavos de Final', 'Cuartos de Final', 'Semifinales', 'Final']
+  const isDirectEliminationPhaseActive = computed(() =>
+    eliminationPhaseNames.includes(currentPhaseName.value ?? '')
+  )
+  const showCreateButton = computed(
+    () => !isTournamentCompletedWithChampion.value && !hasSchedule.value && generalPhaseActive.value
+  )
   const foundedTextLabel = computed(() => {
     if (isTournamentCompletedWithChampion.value) {
       return 'Torneo finalizado'
+    }
+    if (isDirectEliminationPhaseActive.value) {
+      const phaseLabel = currentPhaseName.value ?? 'la fase actual'
+      return `Configura los partidos de la siguiente fase para generar el calendario de la fase "${phaseLabel}".`
     }
     switch (schedulePagination.value.filterBy) {
       case 'cancelado':
@@ -39,7 +65,6 @@
     }
     return `Campeón: ${tournament.value?.winner}`
   })
-  const showCreateButton = computed(() => !isTournamentCompletedWithChampion.value && !hasSchedule.value)
 </script>
 <template>
   <v-sheet class="custom-v-sheet d-flex justify-center align-center fill-height">
