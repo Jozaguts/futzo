@@ -33,7 +33,6 @@
   const rebuildMatches = (enableRoundTrip: boolean) => {
     const pairs = bracketPreview.value?.pairs ?? []
     const existing = [...bracketMatchesDraft.value]
-    const firstField = tournamentFields.value[0]?.id ?? null
     const nextMatches: ConfirmBracketMatch[] = []
 
     pairs.forEach((pair) => {
@@ -44,7 +43,7 @@
       nextMatches.push({
         home_team_id: pair.home.team_id,
         away_team_id: pair.away.team_id,
-        field_id: legOne?.field_id ?? firstField,
+        field_id: legOne?.field_id ?? null,
         match_date: legOne?.match_date ?? '',
         match_time: legOne?.match_time ?? '',
         leg: 1,
@@ -60,7 +59,7 @@
         nextMatches.push({
           home_team_id: pair.away.team_id,
           away_team_id: pair.home.team_id,
-          field_id: legTwo?.field_id ?? firstField,
+          field_id: legTwo?.field_id ?? null,
           match_date: legTwo?.match_date ?? '',
           match_time: legTwo?.match_time ?? '',
           leg: 2,
@@ -152,27 +151,60 @@
     return models
   })
 
-  const fieldItems = computed(() =>
-    (tournamentFields.value ?? []).map((field) => ({
-      title: field.name,
-      value: field.id,
-    }))
-  )
+  const fieldItems = computed(() => {
+    const items =
+      tournamentFields.value?.map((field) => ({
+        title: field.name,
+        value: field.id,
+      })) ?? []
+    return [{ title: 'Sin campo asignado', value: null }, ...items]
+  })
 
   const isReadyToConfirm = computed(
     () =>
       bracketMatchesDraft.value.length > 0 &&
       bracketMatchesDraft.value.every(
-        (match) => Boolean(match.field_id) && Boolean(match.match_date) && Boolean(match.match_time)
+        (match) => Boolean(match.match_date?.toString().trim()) && Boolean(match.match_time?.toString().trim())
       )
   )
+
+  const normalizeMatchDate = (value: unknown): string => {
+    if (!value) {
+      return ''
+    }
+    if (value instanceof Date) {
+      return value.toISOString().split('T')[0]
+    }
+    if (typeof value === 'string') {
+      const parsed = new Date(value)
+      if (!Number.isNaN(parsed.getTime())) {
+        return parsed.toISOString().split('T')[0]
+      }
+      return value
+    }
+    return ''
+  }
+
+  const normalizeMatchTime = (value: unknown): string => {
+    if (!value) {
+      return ''
+    }
+    return String(value).trim()
+  }
 
   const updateMatch = <K extends keyof ConfirmBracketMatch>(index: number, key: K, value: ConfirmBracketMatch[K]) => {
     const current = bracketMatchesDraft.value[index]
     if (!current) return
+    let nextValue: ConfirmBracketMatch[K] = value
+    if (key === 'match_date') {
+      nextValue = normalizeMatchDate(value) as ConfirmBracketMatch[K]
+    }
+    if (key === 'match_time') {
+      nextValue = normalizeMatchTime(value) as ConfirmBracketMatch[K]
+    }
     bracketMatchesDraft.value[index] = {
       ...current,
-      [key]: value,
+      [key]: nextValue,
     }
   }
 
@@ -184,15 +216,15 @@
       toast.toast({
         type: 'error',
         msg: 'Llaves de eliminación',
-        description: 'Completa campo, fecha y hora para cada partido.',
+        description: 'Completa fecha y hora para cada partido.',
       })
       return
     }
     const matches = bracketMatchesDraft.value.map((match) => ({
       ...match,
-      field_id: match.field_id as number,
-      match_date: match.match_date,
-      match_time: match.match_time,
+      field_id: match.field_id ?? null,
+      match_date: normalizeMatchDate(match.match_date),
+      match_time: normalizeMatchTime(match.match_time),
     }))
     await scheduleStore.confirmEliminationBracket({
       phase: bracketPreviewPhase.value ?? bracketPreview.value.phase,
@@ -282,7 +314,10 @@
                       variant="outlined"
                       density="comfortable"
                       :model-value="item.match.field_id"
-                      @update:model-value="(value) => updateMatch(index, 'field_id', value as number | null)"
+                      clearable
+                      @update:model-value="
+                        (value) => updateMatch(index, 'field_id', value === null || value === undefined ? null : (value as number))
+                      "
                     />
                   </v-col>
                   <v-col cols="12">
