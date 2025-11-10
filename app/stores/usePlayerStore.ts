@@ -99,8 +99,28 @@ export const usePlayerStore = defineStore('playerStore', () => {
       loading.value = false;
     }
   };
-  const updatePlayer = async (id: number) => {
-    console.log(id);
+  const updatePlayer = async (id: number, payload: Record<string, any>) => {
+    if (!id || !Object.keys(payload).length) {
+      return null;
+    }
+    try {
+      const response = await playerAPI.updatePlayer(id, payload);
+      player.value = response.data;
+      toast({
+        type: 'success',
+        msg: 'Jugador actualizado',
+        description: 'Los cambios se han guardado correctamente.',
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        type: 'error',
+        msg: 'No pudimos guardar los cambios',
+        description: error?.data?.message ?? 'Inténtalo nuevamente en unos minutos.',
+      });
+      throw error;
+    }
   };
   const createPlayer = async () => {
     const form = prepareForm(playerStoreRequest);

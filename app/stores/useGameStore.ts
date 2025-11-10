@@ -170,7 +170,18 @@ export const useGameStore = defineStore('gameStore', () => {
     ],
   });
   const hasIncompleteGoalEvent = (events: GameEvent[]) =>
-    events.some((event) => !event.player_id || !event.type || event.minute === null || event.minute === undefined);
+    events.some((event) => {
+      const hasPlayer = Boolean(event.player_id);
+      const hasMinute = event.minute !== null && event.minute !== undefined;
+      const hasAssist = Boolean(event.related_player_id);
+      const hasUserInput = hasPlayer || hasMinute || hasAssist;
+
+      if (!hasUserInput) {
+        return false;
+      }
+
+      return !hasPlayer || !event.type || !hasMinute;
+    });
   const isPenaltyDataValid = computed(() => {
     if (!game.value?.penalty_draw_enabled) {
       return true;

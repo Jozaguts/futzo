@@ -47,6 +47,8 @@
   const router = useRouter()
   const playerStore = usePlayerStore()
   const { player } = storeToRefs(playerStore)
+  const positionsStore = usePositionsStore()
+  const { positions } = storeToRefs(positionsStore)
   const loading = ref(true)
 
   const fetchPlayer = async () => {
@@ -67,6 +69,17 @@
       }
     }
   )
+
+  const ensurePositionsLoaded = async () => {
+    if (positions.value.length) {
+      return
+    }
+    try {
+      await positionsStore.fetchPositions()
+    } catch (error) {
+      console.error('Error al cargar posiciones', error)
+    }
+  }
 
   const currentPlayer = computed<PlayerExtended | null>(() => {
     return player.value ? (player.value as PlayerExtended) : null
@@ -188,18 +201,82 @@
 
   const positionLabel = computed(() => currentPlayer.value?.position?.name ?? 'Posición sin asignar')
 
-  const detailSections = computed(() => [
+  const createDefaultEditableFields = () => ({
+    name: '',
+    last_name: '',
+    birthdate: '',
+    nationality: '',
+    team_name: '',
+    category_name: '',
+    position_id: null as number | null,
+    number: '',
+    height: '',
+    weight: '',
+    dominant_foot: '',
+    medical_notes: '',
+    email: '',
+    phone: '',
+    notes: '',
+  })
+
+  type EditableFields = ReturnType<typeof createDefaultEditableFields>
+
+  type DetailSectionItem = {
+    label: string
+    field: keyof EditableFields
+    fullWidth?: boolean
+    displayFormatter?: (value: string | number | null | undefined) => string
+    type?: 'text' | 'select'
+    inputType?: string
+    readonly?: boolean
+    updatable?: boolean
+  }
+
+  type DetailSectionConfig = {
+    id: string
+    title: string
+    description: string
+    items: DetailSectionItem[]
+  }
+
+  const getPositionLabelById = (value: string | number | null | undefined) => {
+    if (value === null || value === undefined || value === '') {
+      return 'Sin registro'
+    }
+    const normalizedValue = typeof value === 'string' ? Number(value) : value
+    const match = positions.value.find((position) => position.id === normalizedValue)
+    return match?.name ?? 'Sin registro'
+  }
+
+  const detailSections: DetailSectionConfig[] = [
     {
       id: 'basic',
       title: 'Información básica',
       description: 'Datos generales proporcionados durante el registro.',
       items: [
-        { label: 'Nombre(s)', value: formatText(currentPlayer.value?.name) },
-        { label: 'Apellido(s)', value: formatText(currentPlayer.value?.last_name) },
-        { label: 'Fecha de nacimiento', value: formatDate(currentPlayer.value?.birthdate ?? null) },
-        { label: 'Nacionalidad', value: formatText(currentPlayer.value?.nationality) },
-        { label: 'Equipo actual', value: playerTeams.value[0]?.name ?? 'Sin registro' },
-        { label: 'Categoría', value: teamCategoryLabel.value || 'Sin registro' },
+        { label: 'Nombre(s)', field: 'name' },
+        { label: 'Apellido(s)', field: 'last_name' },
+        {
+          label: 'Fecha de nacimiento',
+          field: 'birthdate',
+          inputType: 'date',
+          displayFormatter: (value) => formatDate(value as string),
+        },
+        { label: 'Nacionalidad', field: 'nationality' },
+        {
+          label: 'Equipo actual',
+          field: 'team_name',
+          readonly: true,
+          updatable: false,
+          displayFormatter: (value) => formatText(value),
+        },
+        {
+          label: 'Categoría',
+          field: 'category_name',
+          readonly: true,
+          updatable: false,
+          displayFormatter: (value) => formatText(value),
+        },
       ],
     },
     {
@@ -207,12 +284,17 @@
       title: 'Detalles del jugador',
       description: 'Información deportiva y física del jugador.',
       items: [
-        { label: 'Posición', value: positionLabel.value },
-        { label: 'Dorsal', value: formatText(currentPlayer.value?.number) },
-        { label: 'Altura', value: formatText(currentPlayer.value?.height, 'cm') },
-        { label: 'Peso', value: formatText(currentPlayer.value?.weight, 'kg') },
-        { label: 'Pierna dominante', value: formatText(currentPlayer.value?.dominant_foot) },
-        { label: 'Notas médicas', value: formatText(currentPlayer.value?.medical_notes), fullWidth: true },
+        {
+          label: 'Posición',
+          field: 'position_id',
+          type: 'select',
+          displayFormatter: (value) => getPositionLabelById(value),
+        },
+        { label: 'Dorsal', field: 'number' },
+        { label: 'Altura', field: 'height', displayFormatter: (value) => formatText(value, 'cm') },
+        { label: 'Peso', field: 'weight', displayFormatter: (value) => formatText(value, 'kg') },
+        { label: 'Pierna dominante', field: 'dominant_foot' },
+        { label: 'Notas médicas', field: 'medical_notes', fullWidth: true },
       ],
     },
     {
@@ -220,15 +302,161 @@
       title: 'Información de contacto',
       description: 'Datos de comunicación registrados.',
       items: [
-        {
-          label: 'Correo electrónico',
-          value: formatText(currentPlayer.value?.email ?? currentPlayer.value?.user?.email),
-        },
-        { label: 'Teléfono', value: phoneValue.value },
-        { label: 'Notas adicionales', value: formatText(currentPlayer.value?.notes), fullWidth: true },
+        { label: 'Correo electrónico', field: 'email' },
+        { label: 'Teléfono', field: 'phone' },
+        { label: 'Notas adicionales', field: 'notes', fullWidth: true },
       ],
     },
-  ])
+  ]
+
+  const editableFields = ref<EditableFields>(createDefaultEditableFields())
+  type SectionState = Record<string, boolean>
+  const buildSectionState = () =>
+    detailSections.reduce((state, section) => {
+      state[section.id] = false
+      return state
+    }, {} as SectionState)
+  const sectionEditState = ref<SectionState>(buildSectionState())
+  const sectionSavingState = ref<SectionState>(buildSectionState())
+  const persistedFields = ref<EditableFields>(createDefaultEditableFields())
+  const cloneFields = (fields: EditableFields): EditableFields => JSON.parse(JSON.stringify(fields))
+
+  const initializeEditableFields = () => {
+    const playerData = currentPlayer.value
+    const defaults = createDefaultEditableFields()
+    if (!playerData) {
+      editableFields.value = defaults
+      sectionEditState.value = buildSectionState()
+      sectionSavingState.value = buildSectionState()
+      persistedFields.value = cloneFields(defaults)
+      return
+    }
+
+    const primaryTeam = playerTeams.value[0]
+    const formattedPhone = phoneValue.value === 'Sin registro' ? '' : phoneValue.value
+
+    editableFields.value = {
+      ...defaults,
+      name: playerData.name ?? '',
+      last_name: playerData.last_name ?? '',
+      birthdate: playerData.birthdate ? dayjs(playerData.birthdate).format('YYYY-MM-DD') : '',
+      nationality: playerData.nationality ?? '',
+      team_name: primaryTeam?.name ?? '',
+      category_name: teamCategoryLabel.value || '',
+      position_id: playerData.position?.id ?? null,
+      number: playerData.number ? String(playerData.number) : '',
+      height: playerData.height ? String(playerData.height) : '',
+      weight: playerData.weight ? String(playerData.weight) : '',
+      dominant_foot: playerData.dominant_foot ?? '',
+      medical_notes: playerData.medical_notes ?? '',
+      email: playerData.email ?? '',
+      phone: formattedPhone,
+      notes: playerData.notes ?? '',
+    }
+
+    sectionEditState.value = buildSectionState()
+    sectionSavingState.value = buildSectionState()
+    persistedFields.value = cloneFields(editableFields.value)
+  }
+
+  watch(
+    currentPlayer,
+    () => {
+      initializeEditableFields()
+    },
+    { immediate: true }
+  )
+
+  const isSectionEditing = (sectionId: string) => Boolean(sectionEditState.value[sectionId])
+  const isSectionSaving = (sectionId: string) => Boolean(sectionSavingState.value[sectionId])
+  const isItemEditable = (sectionId: string, item: DetailSectionItem) =>
+    item.readonly !== true && isSectionEditing(sectionId)
+  const numericFieldSet = new Set<keyof EditableFields>(['number', 'height', 'weight'] as (keyof EditableFields)[])
+  const normalizeFieldValue = (field: keyof EditableFields, value: any) => {
+    if (value === '' || value === undefined) {
+      return null
+    }
+    if (field === 'position_id') {
+      return value === null ? null : Number(value)
+    }
+    if (numericFieldSet.has(field)) {
+      const numericValue = Number(value)
+      return Number.isFinite(numericValue) ? numericValue : null
+    }
+    if (typeof value === 'string') {
+      const trimmed = value.trim()
+      return trimmed === '' ? null : trimmed
+    }
+    return value ?? null
+  }
+  const buildSectionPayload = (sectionId: string) => {
+    const section = detailSections.find((section) => section.id === sectionId)
+    if (!section) {
+      return {}
+    }
+    return section.items.reduce(
+      (payload, item) => {
+        if (item.updatable === false) {
+          return payload
+        }
+        const field = item.field
+        const nextValue = normalizeFieldValue(field, editableFields.value[field])
+        const previousValue = normalizeFieldValue(field, persistedFields.value[field])
+        if (nextValue !== previousValue) {
+          payload[field] = nextValue
+        }
+        return payload
+      },
+      {} as Record<string, any>
+    )
+  }
+  const saveSectionChanges = async (sectionId: string) => {
+    const payload = buildSectionPayload(sectionId)
+    if (!Object.keys(payload).length || !currentPlayer.value?.id) {
+      sectionEditState.value[sectionId] = false
+      return
+    }
+    sectionSavingState.value[sectionId] = true
+    try {
+      await playerStore.updatePlayer(currentPlayer.value.id, payload)
+      persistedFields.value = cloneFields(editableFields.value)
+      sectionEditState.value[sectionId] = false
+    } catch (error) {
+      console.error(error)
+    } finally {
+      sectionSavingState.value[sectionId] = false
+    }
+  }
+  const toggleSectionEditing = async (sectionId: string) => {
+    if (isSectionSaving(sectionId)) {
+      return
+    }
+    if (isSectionEditing(sectionId)) {
+      await saveSectionChanges(sectionId)
+      return
+    }
+    sectionEditState.value[sectionId] = true
+  }
+  const getFieldDisplayValue = (sectionId: string, item: DetailSectionItem) => {
+    const rawValue = editableFields.value[item.field] ?? ''
+    if (isItemEditable(sectionId, item)) {
+      return rawValue ?? ''
+    }
+    if (item.displayFormatter) {
+      return item.displayFormatter(rawValue)
+    }
+    if (!rawValue || `${rawValue}`.toString().trim() === '') {
+      return 'Sin registro'
+    }
+    return String(rawValue)
+  }
+  const handleFieldInput = (field: DetailSectionItem['field'], value: string | number | null) => {
+    if (field === 'position_id') {
+      editableFields.value[field] = value === null || value === '' ? null : Number(value)
+      return
+    }
+    editableFields.value[field] = (value ?? '') as EditableFields[typeof field]
+  }
 
   const goBack = () => {
     router.push('/jugadores')
@@ -241,7 +469,7 @@
 
   const isEmptyState = computed(() => !loading.value && !isCurrentPlayer.value)
   onMounted(async () => {
-    await fetchPlayer()
+    await Promise.all([fetchPlayer(), ensurePositionsLoaded()])
   })
 </script>
 
@@ -276,7 +504,9 @@
                 </v-avatar>
                 <div>
                   <p class="text-overline text-medium-emphasis mb-1">Ficha del jugador</p>
-                  <h2 class="text-h5 mb-1">{{ playerFullName || 'Sin nombre registrado' }}</h2>
+                  <h2 class="text-h5 mb-1 text-truncate d-inline-block w-lg-100 w-md-100 w-75">
+                    {{ playerFullName || 'Sin nombre registrado' }}
+                  </h2>
                   <p class="text-body-2 text-medium-emphasis mb-2">
                     {{ positionLabel }}
                     <template v-if="playerTeams.length && playerTeams[0]?.name">
@@ -310,11 +540,24 @@
               class="detail-card futzo-rounded"
               variant="flat"
             >
-              <div class="detail-card__header">
+              <div class="detail-card__header d-flex align-start justify-space-between flex-wrap gap-2">
                 <div>
                   <h3 class="text-subtitle-1 mb-1">{{ section.title }}</h3>
                   <p class="text-body-2 text-medium-emphasis">{{ section.description }}</p>
                 </div>
+                <v-btn
+                  size="small"
+                  active
+                  color="primary"
+                  variant="text"
+                  :prepend-icon="isSectionEditing(section.id) ? 'mdi-check' : 'mdi-pencil'"
+                  :loading="isSectionSaving(section.id)"
+                  :disabled="isSectionSaving(section.id)"
+                  class="ml-auto"
+                  @click="toggleSectionEditing(section.id)"
+                >
+                  {{ isSectionEditing(section.id) ? 'Listo' : 'Editar' }}
+                </v-btn>
               </div>
               <div class="detail-card__grid">
                 <div
@@ -323,8 +566,35 @@
                   class="detail-item"
                   :class="{ 'detail-item--full': item.fullWidth }"
                 >
-                  <p class="detail-item__label">{{ item.label }}</p>
-                  <p class="detail-item__value text-body-1">{{ item.value }}</p>
+                  <v-select
+                    v-if="item.type === 'select'"
+                    :label="item.label"
+                    :items="positions"
+                    item-title="name"
+                    item-value="id"
+                    active
+                    :model-value="editableFields[item.field]"
+                    @update:model-value="(value) => handleFieldInput(item.field, value)"
+                    density="comfortable"
+                    hide-details
+                    :variant="isItemEditable(section.id, item) ? 'outlined' : 'plain'"
+                    :readonly="!isItemEditable(section.id, item)"
+                    :placeholder="isItemEditable(section.id, item) ? 'Selecciona una opción' : 'Sin registro'"
+                    class="detail-item__input"
+                  />
+                  <v-text-field
+                    v-else
+                    active
+                    :label="item.label"
+                    :model-value="getFieldDisplayValue(section.id, item)"
+                    :type="item.inputType || 'text'"
+                    @update:model-value="(value) => handleFieldInput(item.field, value)"
+                    density="comfortable"
+                    hide-details
+                    :variant="isItemEditable(section.id, item) ? 'outlined' : 'plain'"
+                    :readonly="!isItemEditable(section.id, item)"
+                    class="detail-item__input"
+                  />
                 </div>
               </div>
             </v-card>

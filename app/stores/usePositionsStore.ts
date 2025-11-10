@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { onMounted } from 'vue';
 import type { Position } from '~/models/Position';
 
 export const usePositionsStore = defineStore('positionsStore', () => {
@@ -9,11 +10,12 @@ export const usePositionsStore = defineStore('positionsStore', () => {
     positions.value = await client('api/v1/admin/positions');
   };
   onMounted(async () => {
-    if (useRoute().name !== 'equipos-equipo-jugadores-inscripcion') {
+    if (!positions.value.length) {
       await fetchPositions();
     }
   });
   return {
     positions,
+    fetchPositions,
   };
 });

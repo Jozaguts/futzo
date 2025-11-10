@@ -21,22 +21,25 @@
 .player-hero
   padding: 1.5rem
   display: flex
+  align-items: flex-start
   flex-wrap: wrap
-  align-items: center
   gap: 1.25rem
 
   &__info
     display: flex
-    align-items: center
+    flex-direction: column
+    align-items: flex-start
     gap: 1rem
-    flex: 1
-    min-width: 240px
+    flex: 1 1 100%
+    min-width: 0
 
   &__meta
     display: flex
-    justify-content: flex-end
+    flex-direction: column
+    justify-content: flex-start
+    align-items: flex-start
     gap: 1rem
-    flex-wrap: wrap
+    flex-wrap: nowrap
 
     &-item
       min-width: 120px
@@ -52,6 +55,20 @@
         display: block
         font-weight: 600
         font-size: 1.125rem
+
+  @media (min-width: 600px)
+    flex-direction: row
+    align-items: center
+    flex-wrap: nowrap
+    &__info
+      flex-direction: row
+      align-items: center
+      min-width: 240px
+
+    &__meta
+      flex-direction: row
+      justify-content: flex-end
+      align-items: flex-start
 
 .detail-card
   padding: 1.5rem
