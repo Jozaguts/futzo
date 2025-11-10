@@ -7,6 +7,7 @@
     href: string
     disabled: boolean
   }
+  const { player } = storeToRefs(usePlayerStore())
 
   const breadcrumbs = computed((): Breadcrumbs[] => {
     switch (routeName.value) {
@@ -86,6 +87,23 @@
             disabled: false,
           },
         ]
+      case 'jugadores-jugador': {
+        const playerName = player.value
+          ? `${player.value?.name ?? ''} ${player.value?.last_name ?? ''}`.trim() || 'Detalle del jugador'
+          : `Jugador #${useRoute().params.jugador}`
+        return [
+          {
+            title: 'Jugadores',
+            href: '/jugadores',
+            disabled: false,
+          },
+          {
+            title: playerName,
+            href: useRoute().fullPath,
+            disabled: true,
+          },
+        ]
+      }
       case 'ubicaciones':
         return [
           {

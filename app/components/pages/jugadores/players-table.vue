@@ -1,12 +1,14 @@
 <script lang="ts" setup>
   import getHeaders from '~/utils/headers-table'
-  import type { Player, PlayerResponse } from '~/models/Player'
+  import type { Player } from '~/models/Player'
   import type { Team } from '~/models/Team'
 
   const { players, playerId, pagination, search, showAssignTeam, noPlayers } = storeToRefs(usePlayerStore())
   const headers = getHeaders('players')
-  const showPlayerHandler = (player: PlayerResponse) => {
-    console.log({ player: player })
+  const router = useRouter()
+  const showPlayerHandler = (player: Player) => {
+    if (!player?.id) return
+    router.push({ name: 'jugadores-jugador', params: { jugador: player.id } })
   }
   const assignTeam = (item: Player) => {
     playerId.value = item.id
@@ -35,8 +37,7 @@
             rounded="md"
             variant="outlined"
             class="table-action-btn"
-            disabled
-            @click="showPlayerHandler(item as unknown as PlayerResponse)"
+            @click="showPlayerHandler(item as Player)"
             >Ver Jugador
           </v-btn>
         </template>
