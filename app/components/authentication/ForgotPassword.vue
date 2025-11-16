@@ -14,7 +14,7 @@
   const emits = defineEmits(['backToLogin'])
 </script>
 <template>
-  <v-card v-if="showForgotPassword" class="pa-2" max-width="100%" min-width="500" elevation="0" color="background">
+  <v-card v-if="showForgotPassword" class="pa-2" elevation="0" color="background">
     <transition-expand :offset="[100, 200]" mode="out-in">
       <ForgotPasswordCard v-if="forgotPasswordState.step === 'reset-password'" @back-to-login="emits('backToLogin')" />
       <OtpCard v-if="forgotPasswordState.step === 'verify-code'" />
