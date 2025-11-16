@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import SearchCountry from '~/components/authentication/components/SearchCountry.vue'
-import { object, string } from 'yup'
-import { useForm } from 'vee-validate'
-import { phoneRegex } from '~/utils/constants'
-import { sendVerificationCode } from '~/http/api/auth'
+  import SearchCountry from '~/components/authentication/components/SearchCountry.vue'
+  import { object, string } from 'yup'
+  import { useForm } from 'vee-validate'
+  import { phoneRegex } from '~/utils/constants'
+  import { sendVerificationCode } from '~/http/api/auth'
 
-const { forgotPasswordState } = storeToRefs(useAuthStore())
+  const { forgotPasswordState } = storeToRefs(useAuthStore())
   const emits = defineEmits(['backToLogin'])
 
   const { handleSubmit, defineField, errors, meta } = useForm({
@@ -61,10 +61,13 @@ const { forgotPasswordState } = storeToRefs(useAuthStore())
 </script>
 <template>
   <div>
-    <v-card-item class="justify-center text-center mb-2">
+    <v-card-item class="justify-center text-center mb-2 px-0">
       <Logo width="165" class="mx-auto" />
-      <v-card-title class="text-black text-h5">¿Olvidaste tu contraseña?</v-card-title>
-      <v-card-subtitle>No te preocupes, te enviaremos instrucciones para restablecerla</v-card-subtitle>
+      <v-card-title class="text-black text-lg-h5 text-md-h5 text-body-1">¿Olvidaste tu contraseña?</v-card-title>
+      <v-card-subtitle class="text-body-caption"
+        >No te preocupes, te enviaremos instrucciones <br v-if="$vuetify.display.mobile" />
+        para restablecerla</v-card-subtitle
+      >
     </v-card-item>
     <v-card-text class="d-flex flex-column">
       <div class="mb-4">
