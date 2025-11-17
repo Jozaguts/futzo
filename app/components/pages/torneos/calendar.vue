@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-  import VueDatePicker from '@vuepic/vue-datepicker'
-  import '@vuepic/vue-datepicker/dist/main.css'
   import { formatDate } from '~/utils/dateCalendarValidation'
 
   const dates = defineModel<Date[]>('dates')

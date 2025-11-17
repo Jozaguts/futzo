@@ -2,7 +2,7 @@
   import type { All } from '~/models/Location'
   import type { PropType } from 'vue'
   import '@vuepic/vue-datepicker/dist/main.css'
-  import VueDatePicker from '@vuepic/vue-datepicker'
+  import { VueDatePicker } from '@vuepic/vue-datepicker'
   type OnUpdateDay = (val: All) => void
   const props = defineProps<{ day?: All; label: string; onUpdateDay: OnUpdateDay; id: string; clearable?: boolean }>()
   function toHHmm(val: any): string {

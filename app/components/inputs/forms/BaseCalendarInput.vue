@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-  import VueDatePicker from '@vuepic/vue-datepicker'
+  import { VueDatePicker, type RootPropsWithDefaults } from '@vuepic/vue-datepicker'
   import '@vuepic/vue-datepicker/dist/main.css'
+  import { es } from 'date-fns/locale'
   import useCalendar from '~/composables/useCalendar'
-  import type { DatePickerAttributes } from '~/models/Schedule'
   import { isDate } from 'date-fns'
   type VErrorProps = {
     'error-messages': string[]
   }
   const startDate = defineModel<Date | string>('start_date')
   const endDate = defineModel<Date | string>('end_date')
-  const dates = ref<Date | Date[]>()
+  const dates = ref<Date | Date[]>(new Date())
   const props = defineProps({
     paddingBottom: {
       type: String,
@@ -48,14 +48,17 @@
       default: false,
     },
   })
-  const { getDate, formatDate, customPosition, selectDate, dp } = useCalendar()
+  const { getDate, formatDate, selectDate, dp } = useCalendar()
   const emits = defineEmits(['start_date_updated', 'end_date_updated', 'update:modelValue'])
-  const attr: DatePickerAttributes = {
-    position: 'left',
-    locale: 'es',
+  const attr: RootPropsWithDefaults = {
+    locale: es,
     teleport: true,
-    'hide-input-icon': true,
-    'enable-time-picker': false,
+    inputAttrs: {
+      hideInputIcon: true,
+    },
+    timeConfig: {
+      enableTimePicker: false,
+    },
     'month-name-format': 'long',
     ref: dp,
     placeholder: 'Selecciona las fechas del torneo',
@@ -69,15 +72,15 @@
     attr.disabled = true
   }
   if (props.multiCalendar) {
-    attr['multi-calendars'] = { solo: true }
+    attr['multiCalendars'] = { solo: true }
     attr.ui.menu += ' calendar-custom-width'
     attr.range = true
   }
   if (props.minDate) {
-    attr['min-date'] = new Date()
+    attr['minDate'] = new Date()
   }
   if (props.maxDate) {
-    attr['max-date'] = props.maxDate
+    attr['maxDate'] = props.maxDate
   }
   watch(
     dates,
@@ -110,8 +113,8 @@
   })
 </script>
 <template>
-  <vue-date-picker
-    @cleared="() => (dates = null)"
+  <VueDatePicker
+    @cleared="() => (dates = undefined)"
     :format="formatDate"
     v-bind="{ ...attr }"
     v-model="dates"
@@ -154,7 +157,7 @@
         </div>
       </div>
     </template>
-  </vue-date-picker>
+  </VueDatePicker>
 </template>
 <style lang="scss">
   @use '@/assets/css/vue-datepicker-custom.css';

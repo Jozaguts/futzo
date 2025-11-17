@@ -3,7 +3,7 @@
   import CategorySelectComponent from '~/components/inputs/CategoriesSelect.vue'
   import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
   import ColorsComponent from '~/components/pages/equipos/colors-component.vue'
-  import VueDatePicker from '@vuepic/vue-datepicker'
+  import { VueDatePicker } from '@vuepic/vue-datepicker'
   import { useForm } from 'vee-validate'
   import type { TeamStoreRequest } from '~/models/Team'
   import { mixed, number, object, string } from 'yup'

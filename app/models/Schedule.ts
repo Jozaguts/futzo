@@ -1,5 +1,3 @@
-import type { IntervalValue } from '~/models/Location';
-
 export type EliminationRules = {
   round_trip: boolean;
   away_goals: boolean;
@@ -20,10 +18,6 @@ export interface EliminationPayload {
     option_id: string | null;
   };
 }
-export type TournamentRules = {
-  disabledPhases: (phase: EliminationPhase, totalTeams: number) => boolean;
-  teamsToNextRound: (phases: EliminationPhase[], totalTeams: number) => string | number;
-};
 
 export type CalendarLabelStep = 'General' | 'Reglas' | 'Fase de Eliminación' | 'Campos de juego';
 export type CurrentCalendarStep = 'general' | 'rules' | 'elimination' | 'fields';
@@ -112,28 +106,6 @@ export type Tiebreaker = {
   created_at?: Date;
   updated_at?: Date;
 };
-export type DatePickerAttributes = {
-  position: 'left' | 'right';
-  locale: 'es' | 'en';
-  'min-date'?: Date;
-  teleport: boolean;
-  'hide-input-icon': boolean;
-  'enable-time-picker': boolean;
-  'month-name-format': string;
-  ref: Ref;
-  placeholder: string;
-  ui: {
-    input: string;
-    menu: string;
-    calendarCell: string;
-  };
-  'multi-calendars'?: { solo?: boolean };
-  'v-model'?: Ref<Date> | Ref<[Date, Date]>;
-  range?: boolean;
-  'max-date'?: Date;
-  disabled?: boolean;
-};
-
 export type PenaltyShootout = {
   decided: boolean;
   winner_team_id: number | null;
@@ -382,11 +354,6 @@ export type Day = {
   available_range: AvailableRange;
   intervals: Interval[];
   label: Label;
-};
-export type DayHandlerType = {
-  weekday: WeekDay;
-  day: Day;
-  intervalHoursSelected: Interval[];
 };
 
 export type Interval = {

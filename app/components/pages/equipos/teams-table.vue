@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import VueDatePicker from '@vuepic/vue-datepicker'
   import getHeaders from '~/utils/headers-table'
   import { Icon } from '#components'
   import type { Team } from '~/models/Team'
