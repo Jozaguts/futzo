@@ -23,6 +23,7 @@ export interface User {
   subscribed: boolean;
   plan: {
     billing_period: string;
+    product: { sku: string; name: string; description: string };
   };
 }
 export type OnboardingStep = {

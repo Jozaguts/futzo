@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import Navigation from '~/components/layout/navigation-drawer.vue'
   import { Toaster } from 'vue-sonner'
+  import StripeElementsDrawer from '~/components/pages/configuration/plans/StripeElementsDrawer.vue'
   const show = ref(false)
   const { rail, isMobile, toastDuration } = storeToRefs(useGlobalStore())
   const { user } = storeToRefs(useAuthStore())
@@ -13,9 +14,7 @@
     }
     return rail.value ? '56px' : '256px'
   })
-  const isNotConfigurationPage = computed(() => {
-    return useRoute().name !== 'configuracion'
-  })
+  const { stripeDialog } = storeToRefs(useAuthStore())
 </script>
 <template>
   <div>
@@ -31,8 +30,20 @@
           <Navigation />
           <v-main v-show="show" class="v-main" app>
             <slot></slot>
+            <StripeElementsDrawer
+              v-model:dialog="stripeDialog.open"
+              :plan-sku="stripeDialog.sku"
+              :plan-name="stripeDialog.name"
+              :period="stripeDialog.period"
+              @success="
+                async () => {
+                  await useSanctumAuth().refreshIdentity()
+                }
+              "
+            />
           </v-main>
         </ClientOnly>
+
         <AnimatedGradiendButton v-if="!user?.is_operational" />
       </v-app>
     </v-layout>

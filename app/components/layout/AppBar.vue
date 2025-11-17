@@ -3,21 +3,33 @@
   import { useDisplay } from 'vuetify'
 
   const { mobile } = useDisplay()
-  const { extended = true } = defineProps<{ extended?: boolean }>()
+  type Props = {
+    extended?: boolean
+    height?: number
+    density?: 'default' | 'compact' | 'prominent' | 'comfortable'
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    extended: true,
+    height: 90,
+    density: 'default',
+  })
 </script>
 <template>
   <v-app-bar
+    :density="props.density"
     color="white"
     :border="false"
     elevation="0"
     class="pt-2 pt-lg-0 pt-md-0"
     app
-    :height="mobile ? 40 : 90"
-    :extension-height="mobile && extended ? 55 : 0"
-    :extended="extended"
+    :height="mobile ? 40 : props.height"
+    :extension-height="mobile && props.extended ? 55 : 0"
+    :extended="props.extended"
   >
     <template #title>
-      <breadcrumbs />
+      <slot name="title">
+        <breadcrumbs />
+      </slot>
     </template>
     <template #append>
       <slot name="buttons"></slot>

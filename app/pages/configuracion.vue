@@ -4,8 +4,9 @@
   import Plans from '~/components/pages/configuration/plans/index.vue'
   import { useToast } from '~/composables/useToast'
   import StripeElementsDrawer from '~/components/pages/configuration/plans/StripeElementsDrawer.vue'
+  import AppBar from '~/components/layout/AppBar.vue'
   const user = computed(() => useAuthStore().user)
-  const { stripeDialog } = storeToRefs(useAuthStore())
+
   const tab = ref(!user?.value?.is_operational ? 3 : 1)
   definePageMeta({
     middleware: ['sanctum:auth'],
@@ -22,46 +23,52 @@
   })
 </script>
 <template>
-  <v-sheet height="100%" color="white" class="pa-10 full-height configuration-v-sheet">
-    <v-card variant="text">
-      <v-card-item class="mb-12">
-        <template #prepend>
-          <Avatar />
+  <PageLayout>
+    <template #app-bar>
+      <AppBar :extended="false" :density="$vuetify.display.mobile ? 'prominent' : 'default'">
+        <template #title>
+          <div class="d-flex ml-4">
+            <Avatar />
+            <div class="d-flex flex-column">
+              <v-card-title class="card-title ml-2"> {{ user?.name }}</v-card-title>
+              <v-card-subtitle class="card-subtitle ml-2">{{ user?.email }} </v-card-subtitle>
+            </div>
+          </div>
         </template>
-        <v-card-title class="card-title ml-2"> {{ user?.name }}</v-card-title>
-        <v-card-subtitle class="card-subtitle ml-2">{{ user?.email }} </v-card-subtitle>
-      </v-card-item>
-      <v-card-text>
-        <v-tabs v-model="tab">
-          <v-tab :value="1"> Datos personales</v-tab>
-          <v-tab :value="2"> Contraseña</v-tab>
-          <v-tab :value="3">Suscripción</v-tab>
-        </v-tabs>
-        <v-tabs-window v-model="tab">
-          <v-tabs-window-item :value="1" :key="1">
-            <personal-data-card />
-          </v-tabs-window-item>
-          <v-tabs-window-item :value="2" :key="2">
-            <lazy-pages-configuration-password-data-card />
-          </v-tabs-window-item>
-          <v-tabs-window-item :value="3" :key="3">
-            <Plans />
-          </v-tabs-window-item>
-        </v-tabs-window>
-      </v-card-text>
-    </v-card>
-    <StripeElementsDrawer
-      v-model="stripeDialog.open"
-      :plan-sku="stripeDialog.sku"
-      :plan-name="stripeDialog.name"
-      :period="stripeDialog.period"
-      @success="
-        async () => {
-          await useSanctumAuth().refreshIdentity()
-        }
-      "
-    />
-  </v-sheet>
+      </AppBar>
+    </template>
+    <template #default>
+      <v-container class="pa-0" fluid>
+        <v-row>
+          <v-col cols="12">
+            <v-tabs
+              :fixed-tabs="$vuetify.display.mobile"
+              v-model="tab"
+              slider-transition="fade"
+              slider-transition-duration="900"
+            >
+              <v-tab :value="1"> Datos personales</v-tab>
+              <v-tab :value="2"> Contraseña</v-tab>
+              <v-tab :value="3">Suscripción</v-tab>
+            </v-tabs>
+          </v-col>
+          <v-col>
+            <v-tabs-window v-model="tab">
+              <v-tabs-window-item :value="1" :key="1">
+                <personal-data-card />
+              </v-tabs-window-item>
+              <v-tabs-window-item :value="2" :key="2">
+                <lazy-pages-configuration-password-data-card />
+              </v-tabs-window-item>
+              <v-tabs-window-item :value="3" :key="3">
+                <Plans />
+              </v-tabs-window-item>
+            </v-tabs-window>
+          </v-col>
+        </v-row>
+      </v-container>
+    </template>
+  </PageLayout>
 </template>
 <style lang="sass">
   @use "~/assets/scss/pages/configuration"

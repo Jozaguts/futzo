@@ -1,14 +1,37 @@
 <script setup lang="ts">
   import type { UpdateUserPasswordForm, User } from '~/models/User'
-
-  const { fields, handleSubmit } = useSchemas('edit-password')
+  import { mixed, object, string, ref as yupRef } from 'yup'
+  import { vuetifyConfig } from '~/utils/constants'
+  import PasswordField from '~/components/shared/PasswordField.vue'
   const user = computed(() => useAuthStore().user as User)
   const states = reactive({
     showPassword: false,
     showNewPassword: false,
     showNewPasswordConfirmation: false,
   })
-
+  const { defineField, meta, values, handleSubmit, resetForm } = useForm<{
+    password: string
+    new_password: string
+    new_password_confirmation: string
+  }>({
+    validationSchema: toTypedSchema(
+      object({
+        password: string().required('Campo requerido'),
+        new_password: string()
+          .min(8, 'La nueva contraseña debe tener al menos 8 caracteres')
+          .required('Campo requerido'),
+        new_password_confirmation: string()
+          .oneOf([yupRef('new_password')], 'Las contraseñas no coinciden')
+          .required('Campo requerido'),
+      })
+    ),
+  })
+  const [password, password_props] = defineField('password', vuetifyConfig)
+  const [new_password, new_password_props] = defineField('new_password', vuetifyConfig)
+  const [new_password_confirmation, new_password_confirmation_props] = defineField(
+    'new_password_confirmation',
+    vuetifyConfig
+  )
   const submit = handleSubmit((values) => {
     const updateUserPasswordForm: UpdateUserPasswordForm = {
       id: user.value.id,
@@ -20,109 +43,30 @@
   })
 </script>
 <template>
-  <v-card class="secondary-card" variant="text">
-    <v-card-item class="secondary-card-item">
-      <v-card-text class="secondary-card__title">Contraseña</v-card-text>
-      <v-card-subtitle class="secondary-card__subtitle">
-        Por favor ingresa tu contraseña actual para cambiar su contraseña.</v-card-subtitle
-      >
-    </v-card-item>
+  <v-card class="secondary-card futzo-rounded pa-lg-8 pa-md-8 pa-4" max-width="600">
+    <v-card-title class="secondary-card__title">Contraseña</v-card-title>
+    <v-card-subtitle class="secondary-card__subtitle"> Ingresa tu contraseña actual para actualizarla.</v-card-subtitle>
     <v-card-text>
       <v-form class="user-data-configuration-form" @submit.prevent="submit">
-        <v-row class="row-border-bottom" no-gutters>
-          <v-col cols="3">
-            <p class="label-form">Contraseña actual</p>
-          </v-col>
-          <v-col cols="4">
-            <v-text-field
-              :type="states.showPassword ? 'text' : 'password'"
-              v-model="fields.password.fieldValue"
-              variant="plain"
-              class="user-data-configuration-form__input"
-            >
-              <template #append>
-                <v-icon
-                  v-if="states.showPassword"
-                  @click="states.showPassword = !states.showPassword"
-                  class="icon-password"
-                >
-                  mdi-eye-off-outline</v-icon
-                >
-                <v-icon v-else @click="states.showPassword = !states.showPassword" class="icon-password"
-                  >mdi-eye-outline</v-icon
-                >
-              </template>
-            </v-text-field>
-            <small class="text-error">{{ fields.password.fieldPropsValue['error-messages'][0] }}</small>
-          </v-col>
-        </v-row>
-        <v-row class="row-border-bottom" no-gutters>
-          <v-col cols="3">
-            <p class="label-form">Nueva contraseña</p>
-          </v-col>
-          <v-col cols="4">
-            <v-text-field
-              :type="states.showNewPassword ? 'text' : 'password'"
-              v-model="fields.new_password.fieldValue"
-              variant="plain"
-              class="user-data-configuration-form__input"
-            >
-              <template #append>
-                <v-icon
-                  v-if="states.showNewPassword"
-                  @click="states.showNewPassword = !states.showNewPassword"
-                  class="icon-password"
-                  >mdi-eye-off-outline</v-icon
-                >
-                <v-icon v-else @click="states.showNewPassword = !states.showNewPassword" class="icon-password"
-                  >mdi-eye-outline</v-icon
-                >
-              </template>
-            </v-text-field>
-            <small class="text-error">{{ fields.new_password.fieldPropsValue['error-messages'][0] }}</small>
-          </v-col>
-        </v-row>
-        <v-row class="row-border-bottom" no-gutters>
-          <v-col cols="3">
-            <p class="label-form">Confirma tu nueva contraseña</p>
-          </v-col>
-          <v-col cols="4">
-            <v-text-field
-              :type="states.showNewPasswordConfirmation ? 'text' : 'password'"
-              v-model="fields.new_password_confirmation.fieldValue"
-              variant="plain"
-              class="user-data-configuration-form__input"
-            >
-              <template #append>
-                <v-icon
-                  v-if="states.showNewPasswordConfirmation"
-                  @click="states.showNewPasswordConfirmation = !states.showNewPasswordConfirmation"
-                  class="icon-password"
-                  >mdi-eye-off-outline</v-icon
-                >
-                <v-icon
-                  v-else
-                  @click="states.showNewPasswordConfirmation = !states.showNewPasswordConfirmation"
-                  class="icon-password"
-                  >mdi-eye-outline</v-icon
-                >
-              </template>
-            </v-text-field>
-            <small class="text-error">{{
-              fields.new_password_confirmation.fieldPropsValue['error-messages'][0]
-            }}</small>
-          </v-col>
-        </v-row>
-        <v-row no-gutters>
-          <v-col cols="4" offset="3">
-            <div class="d-flex justify-end align-center pt-4">
-              <v-btn type="submit" class="user-data-configuration-form__button" color="primary" dark>
-                Guardar cambios
-              </v-btn>
-            </div>
-          </v-col>
-        </v-row>
+        <BaseInput label="Contraseña actual">
+          <template #input>
+            <PasswordField v-model="password" />
+          </template>
+        </BaseInput>
+        <BaseInput label="Nueva contraseña">
+          <template #input>
+            <PasswordField v-model="new_password" />
+          </template>
+        </BaseInput>
+        <BaseInput label="Confirma tu nueva contraseña">
+          <template #input>
+            <PasswordField v-model="new_password_confirmation" />
+          </template>
+        </BaseInput>
       </v-form>
     </v-card-text>
+    <v-card-actions>
+      <v-btn type="submit" variant="elevated" color="primary" block> Guardar cambios </v-btn>
+    </v-card-actions>
   </v-card>
 </template>

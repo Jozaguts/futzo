@@ -45,8 +45,8 @@
   }
 </script>
 <template>
-  <v-container>
-    <v-row v-if="!isSubscribed && !!productPrices">
+  <v-container fluid>
+    <v-row v-if="!isSubscribed">
       <v-col cols="12" lg="2" md="2">
         <div class="d-flex flex-column futzo-rounded pa-4">
           <v-btn :variant="isYearly ? 'flat' : 'text'" @click="() => (type = 'yearly')" class="mb-2">Anual</v-btn>
@@ -54,24 +54,24 @@
         </div>
       </v-col>
       <v-col cols="12" lg="10" md="10">
-        <div class="d-flex ga-8 justify-center">
+        <div class="d-flex ga-8 justify-center flex-md-nowrap flex-lg-nowrap flex-wrap">
           <PlanCard
             :isMonthlyPrice="isMonthly"
             :plan="productPrices?.kickoff"
-            :features="features.kickoff"
+            :features="features.kickoff ?? []"
             @checkout="handleCheckout"
           />
           <PlanCard
             :isMonthlyPrice="isMonthly"
             :plan="productPrices?.pro_play"
             :prioritary="true"
-            :features="features.pro_play"
+            :features="features.pro_play ?? []"
             @checkout="handleCheckout"
           />
           <PlanCard
             :isMonthlyPrice="isMonthly"
             :plan="productPrices?.elite_league"
-            :features="features.elite_league"
+            :features="features.elite_league ?? []"
             @checkout="handleCheckout"
           />
         </div>
@@ -84,11 +84,11 @@
           :prioritary="true"
           badge="Tu plan actual"
           :subscribed="true"
-          :features="features[user?.plan?.product?.sku as keyof ProductPrices]"
+          :features="features[(user?.plan?.product?.sku as keyof ProductPrices) ?? []]"
           :plan="
             {
-              sku: user?.plan?.product.sku as string,
-              name: user?.plan?.product?.name as string,
+              sku: user?.plan?.product.sku,
+              name: user?.plan?.product?.name,
               cta: 'Ver detalles',
               currency: {} as Currency,
               price: '',

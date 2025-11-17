@@ -6,7 +6,7 @@
   const teamStore = useTeamStore()
   const { teamStoreRequest, isEdition, steps } = storeToRefs(teamStore)
   // @ts-ignore
-  const { defineField, meta, values, errors } = useForm<TeamStoreRequest['president']>({
+  const { defineField, meta, values } = useForm<TeamStoreRequest['president']>({
     validationSchema: toTypedSchema(
       object({
         id: number().nullable(),

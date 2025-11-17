@@ -41,9 +41,7 @@
         msg: subscribed ? 'Portal de facturación' : 'Checkout',
         description:
           error?.data?.message ||
-          (subscribed
-            ? 'No pudimos abrir el portal de facturación.'
-            : 'No pudimos iniciar el pago. Intenta de nuevo.'),
+          (subscribed ? 'No pudimos abrir el portal de facturación.' : 'No pudimos iniciar el pago. Intenta de nuevo.'),
       })
     }
   }
@@ -60,7 +58,7 @@
   })
 </script>
 <template>
-  <v-card class="pa-8 futzo-rounded" min-width="280" :elevation="prioritary ? 10 : 2">
+  <v-card class="pa-8 futzo-rounded" min-width="280" max-width="400" :elevation="prioritary ? 10 : 2">
     <div class="position-relative" v-if="prioritary">
       <v-chip class="float-end position-absolute top-0 right-0" color="primary" variant="flat" size="small">{{
         badge

@@ -1,23 +1,15 @@
 <script setup lang="ts">
   import { createSubscriptionIntent } from '~/http/api/stripe'
   const props = defineProps<{
-    modelValue: boolean
     planSku?: string
     period?: 'month' | 'year'
     planName?: string
   }>()
+  const dialog = defineModel<boolean>('dialog')
   const emit = defineEmits(['update:modelValue', 'success'])
-  import type { Stripe } from '@stripe/stripe-js'
   const { toast } = useToast()
-  // Provided by @unlok-co/nuxt-stripe
-  const { stripe, isLoading } = useClientStripe<{ stripe: Stripe; isLoading: boolean }>()
+  const { stripe, isLoading } = useClientStripe()
 
-  const open = computed({
-    get: () => props.modelValue,
-    set: (v: boolean) => emit('update:modelValue', v),
-  })
-
-  const loading = ref(false)
   const clientSecret = ref<string | null>(null)
   let elements: any = null
   let paymentElement: any = null
@@ -26,7 +18,7 @@
 
   const mountElements = async () => {
     if (!clientSecret.value) return
-    if (!open.value) return
+    if (!dialog.value) return
     if (!stripe.value) return
     await nextTick()
     const host = document.querySelector('#payment-element') as HTMLElement | null
@@ -55,18 +47,18 @@
 
   const ensureIntent = async () => {
     if (!props.planSku || !props.period) return
-    loading.value = true
+    isLoading.value = true
     try {
       const res = await createSubscriptionIntent(props.planSku, props.period, user.value?.email || undefined)
       clientSecret.value = res.client_secret
       // mostrar contenedor antes de montar
-      loading.value = false
+      isLoading.value = false
       await nextTick()
       await mountElements()
     } catch (e: any) {
       console.log(e)
       errorMessage.value = e?.data?.message || 'No fue posible iniciar el pago.'
-      loading.value = false
+      isLoading.value = false
     } finally {
     }
   }
@@ -79,11 +71,11 @@
     }
   }
 
-  watch(open, onOpenChanged)
+  watch(dialog, onOpenChanged)
   watch(
     stripe,
     async (s) => {
-      if (s && open.value && clientSecret.value && !paymentElement) {
+      if (s && dialog.value && clientSecret.value && !paymentElement) {
         await nextTick()
         await mountElements()
       }
@@ -105,7 +97,7 @@
         await useSanctumAuth().refreshIdentity()
         toast({ type: 'success', msg: '¡Pago confirmado!', description: 'Tu suscripción está activa.' })
         emit('success')
-        open.value = false
+        dialog.value = false
         return
       }
       errorMessage.value = 'El pago no se pudo completar todavía. Intenta de nuevo.'
@@ -118,27 +110,27 @@
 </script>
 
 <template>
-  <v-navigation-drawer v-model="open" location="right" temporary width="480" class="stripe-drawer">
+  <v-navigation-drawer v-model="dialog" location="right" class="stripe-drawer" v-if="dialog">
     <div class="d-flex align-center justify-space-between pa-4">
       <div>
         <div class="text-subtitle-1 font-weight-medium">Completar pago</div>
         <div class="text-caption text-medium-emphasis" v-if="planName">{{ planName }}</div>
       </div>
-      <v-btn size="small" variant="text" icon="mdi-close" @click="open = false" />
+      <v-btn size="small" variant="text" icon="mdi-close" @click="dialog = false" />
     </div>
     <v-divider />
     <div class="pa-4">
-      <div v-if="loading && !isLoading" class="text-medium-emphasis mt-4">
+      <div v-if="isLoading" class="text-medium-emphasis mt-4">
         <v-skeleton-loader type="heading, actions "></v-skeleton-loader>
       </div>
-      <form id="payment-form">
-        <div id="payment-element" />
+      <form v-if="!errorMessage" id="payment-form">
+        <div v-if="!errorMessage" id="payment-element" />
       </form>
       <v-alert v-if="errorMessage" type="error" class="mt-4" density="comfortable">{{ errorMessage }}</v-alert>
     </div>
     <template #append>
       <div class="pa-4 d-flex ga-2">
-        <v-btn variant="text" @click="open = false">Cancelar</v-btn>
+        <v-btn variant="text" @click="dialog = false">Cancelar</v-btn>
         <v-btn color="primary" :loading="confirming" :disabled="!clientSecret" @click="confirm">Pagar</v-btn>
       </div>
     </template>
