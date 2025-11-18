@@ -86,7 +86,7 @@
           <span class="d-block font-weight-normal text-body-2">
             💸 Ahorra
             <span class="font-weight-bold">
-              {{ plan?.currency?.symbol }}{{ plan?.annual_saving }}{{ plan.currency?.iso_code }}/año
+              {{ plan?.currency?.symbol }}{{ plan?.annual_saving }}{{ plan?.currency?.iso_code }}/año
             </span></span
           >
         </div>
