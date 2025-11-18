@@ -39,8 +39,11 @@
     initialValues: {
       name: user.value?.name,
       email: user.value?.email,
-      phone: user.value?.phone ? user.value?.phone?.replace(/\s+/g, '').slice(-10) : undefined,
-      iso_code: user.value?.phone ? user.value?.phone?.replace(/\s+/g, '').slice(0, -10).replace('+', '') : undefined,
+      phone: user.value?.phone ? user.value?.phone?.replace(/\s+/g, '').slice(-10) : '',
+      iso_code:
+        user.value?.phone.length <= 10
+          ? 52
+          : (user.value?.phone?.replace(/\s+/g, '').slice(0, -10).replace('+', '') as unknown as number),
     },
   })
   const [name, name_props] = defineField('name', vuetifyConfig)
@@ -78,6 +81,7 @@
                 label="lada"
                 single-line
                 prefix="+"
+                active
                 v-model="iso_code"
                 density="compact"
                 control-variant="hidden"
