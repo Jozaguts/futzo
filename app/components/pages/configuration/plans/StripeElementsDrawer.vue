@@ -13,7 +13,11 @@
   const clientSecret = ref<string | null>(null)
   let elements: any = null
   let paymentElement: any = null
-  const errorMessage = ref('')
+  const state = ref({
+    message: '',
+    type: '',
+    data: '',
+  })
   const { user } = storeToRefs(useAuthStore())
 
   const mountElements = async () => {
@@ -42,7 +46,9 @@
     paymentElement = null
     elements = null
     clientSecret.value = null
-    errorMessage.value = ''
+    state.value.message = ''
+    state.value.type = ''
+    state.value.data = ''
   }
 
   const ensureIntent = async () => {
@@ -56,8 +62,14 @@
       await nextTick()
       await mountElements()
     } catch (e: any) {
-      console.log(e)
-      errorMessage.value = e?.data?.message || 'No fue posible iniciar el pago.'
+      console.log(e.data)
+      switch (e.data) {
+        case 'already_has_subscription':
+          state.value.type = 'info'
+          state.value.data = e.data.billing_portal_url
+          break
+      }
+      state.value.message = e?.data?.message || 'No fue posible iniciar el pago.'
       isLoading.value = false
     } finally {
     }
@@ -90,7 +102,7 @@
     try {
       const { error, paymentIntent } = await stripe.value.confirmPayment({ elements, redirect: 'if_required' })
       if (error) {
-        errorMessage.value = error.message || 'No pudimos procesar tu pago.'
+        state.value.message = error.message || 'No pudimos procesar tu pago.'
         return
       }
       if (paymentIntent?.status === 'succeeded' || paymentIntent?.status === 'requires_capture') {
@@ -100,9 +112,11 @@
         dialog.value = false
         return
       }
-      errorMessage.value = 'El pago no se pudo completar todavía. Intenta de nuevo.'
+      state.value.message = 'El pago no se pudo completar todavía. Intenta de nuevo.'
+      state.value.type = 'error'
     } catch (e: any) {
-      errorMessage.value = e?.message || 'Error al confirmar el pago.'
+      state.value.message = e?.message || 'Error al confirmar el pago.'
+      state.value.type = 'error'
     } finally {
       confirming.value = false
     }
@@ -110,7 +124,7 @@
 </script>
 
 <template>
-  <v-navigation-drawer v-model="dialog" location="right" class="stripe-drawer" v-if="dialog">
+  <v-navigation-drawer v-model="dialog" location="right" class="stripe-drawer futzo-rounded" v-if="dialog" width="400">
     <div class="d-flex align-center justify-space-between pa-4">
       <div>
         <div class="text-subtitle-1 font-weight-medium">Completar pago</div>
@@ -123,10 +137,15 @@
       <div v-if="isLoading" class="text-medium-emphasis mt-4">
         <v-skeleton-loader type="heading, actions "></v-skeleton-loader>
       </div>
-      <form v-if="!errorMessage" id="payment-form">
-        <div v-if="!errorMessage" id="payment-element" />
+      <form v-if="!state.message" id="payment-form">
+        <div v-if="!state.message" id="payment-element" />
       </form>
-      <v-alert v-if="errorMessage" type="error" class="mt-4" density="comfortable">{{ errorMessage }}</v-alert>
+      <v-card>
+        <v-card-title>
+          {{ state.message }}
+          <!--          <v-alert v-if="state.message" :type="state.type" class="mt-4" density="comfortable">{{ state.message }}</v-alert>-->
+        </v-card-title>
+      </v-card>
     </div>
     <template #append>
       <div class="pa-4 d-flex ga-2">
