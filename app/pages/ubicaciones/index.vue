@@ -54,7 +54,6 @@
               :disabled="false"
               text="Crear ubicación"
               icon="futzo-icon:plus"
-              variant="tonal"
               class="mr-8"
               @click="showStoreLocationDialog"
             ></PrimaryBtn>

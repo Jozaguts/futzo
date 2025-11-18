@@ -11,9 +11,8 @@
   import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
   import { useDisplay } from 'vuetify'
   import MarkAsInput from '~/components/pages/torneos/torneo/mark-as-input.vue'
-  const { standings, tournamentId, lastResults, nextGames, groupStanding, tournament } = storeToRefs(
-    useTournamentStore()
-  )
+  const { standings, tournamentId, lastResults, nextGames, groupStanding, tournament } =
+    storeToRefs(useTournamentStore())
   const route = useRoute()
   onMounted(() => {
     if (tournamentId.value) {
@@ -49,7 +48,7 @@
     const winnerTeam =
       targetMatch && targetMatch.homeTeam?.id === targetMatch.winner_team_id
         ? targetMatch.homeTeam
-        : targetMatch?.awayTeam ?? null
+        : (targetMatch?.awayTeam ?? null)
     const resolvedWinnerName = winnerName ?? winnerTeam?.name ?? null
     const scoreText =
       targetMatch && targetMatch.homeTeam && targetMatch.awayTeam
@@ -89,6 +88,14 @@
           <NextGames :nextGames="nextGames" />
         </div>
         <div class="right-up-zone">
+          <v-card class="futzo-rounded mb-4">
+            <v-card-title> Historial </v-card-title>
+            <v-slide-group show-arrows>
+              <v-slide-group-item v-for="n in 25" :key="n" v-slot="{ isSelected, toggle }">
+                <SecondaryBtn class="ma-2" @click="toggle" :text="'Options' + n"> </SecondaryBtn>
+              </v-slide-group-item>
+            </v-slide-group>
+          </v-card>
           <StatsTableContainer title="Líderes de estadísticas">
             <template #content>
               <StatsTable />
@@ -105,10 +112,7 @@
                   {{ championInfo.scoreText }}
                 </span>
               </div>
-              <LastGames
-                :lastGames="lastResults"
-                :highlighted-match-id="championInfo?.game?.id ?? null"
-              />
+              <LastGames :lastGames="lastResults" :highlighted-match-id="championInfo?.game?.id ?? null" />
             </template>
           </NextGamesToday>
         </div>
