@@ -2,6 +2,7 @@ import type { User } from '~/models/User';
 
 export default defineNuxtRouteMiddleware(async (to) => {
   if (import.meta.server) return;
+  // if (to.name !== 'configuracion' && to.name !== 'bienvenido' && to.name !== 'verificar') {
   const userRef = useSanctumUser<User>();
   const isLogin = !!userRef.value?.email || !!userRef.value?.phone;
   if (!isLogin) return;
@@ -36,4 +37,5 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (!onboarding.state.all_done && !onboarding.canAccessPath(to.path)) {
     return navigateTo('/');
   }
+  // }
 });
