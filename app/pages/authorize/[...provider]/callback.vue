@@ -13,14 +13,15 @@
 
   onMounted(() => {
     const route = useRoute()
-    const provider = route.params.provider[0]
-
+    const provider = route?.params?.provider[0]
+    console.log(provider)
+    console.log(route.query?.code)
+    console.log(route.query)
+    console.log(route.params)
+    console.log(route)
     if (provider === 'google' || provider === 'facebook') {
       const client = useSanctumClient()
-      console.log(route.query?.code)
-      console.log(route.query)
-      console.log(route.params)
-      console.log(route)
+
       client(`/auth/${provider}/callback`, {
         credentials: 'include',
         params: { code: route.query.code },
