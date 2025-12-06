@@ -19,7 +19,7 @@
         .then(() => {
           if (isAuthenticated.value) {
             console.log('user authenticated')
-            useRouter().push('/')
+            useRouter().push('/dashboard')
           } else {
             console.log('user not authenticated')
           }
