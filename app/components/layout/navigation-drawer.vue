@@ -16,7 +16,7 @@
     }
   }
   const links = reactive([
-    { icon: 'futzo-icon:home', title: 'Dashboard', to: '/', class: 'mr-2 drawer-icon filled' },
+    { icon: 'futzo-icon:home', title: 'Dashboard', to: '/dashboard', class: 'mr-2 drawer-icon filled' },
     {
       icon: 'futzo-icon:location',
       title: 'Ubicaciones',

@@ -35,7 +35,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   } catch {} // No romper navegación; como fallback deja pasar o redirige a login si quieres
 
   if (!onboarding.state.all_done && !onboarding.canAccessPath(to.path)) {
-    return navigateTo('/');
+    return navigateTo('/dashboard');
   }
   // }
 });

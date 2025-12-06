@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import { useProductPrices } from '~/composables/useProductPrices'
+  import PlanCard from '~/components/pages/PlanCard.vue'
 
   definePageMeta({
     layout: 'blank',
@@ -33,7 +34,6 @@
     ],
   })
   const imgSrc = '/futzo/logos/logo-17.png'
-  const { kickoffPlan } = useProductPrices()
   const { $buildAppUrl } = useNuxtApp() as any
   const url = ref('')
 
@@ -42,7 +42,7 @@
       url.value = $buildAppUrl(value.url)
     }
   }
-
+  const { priceMode, setPriceMode, loading, kickoffPlan, proPlayPlan, eliteLeaguePlan, load } = useProductPrices()
   watch(
     kickoffPlan,
     (newVal) => {
@@ -51,8 +51,9 @@
     { deep: true }
   )
 
-  onMounted(() => {
+  onMounted(async () => {
     updateUrl(kickoffPlan.value)
+    await load()
   })
 </script>
 <template>
@@ -104,7 +105,7 @@
                 </li>
                 <li class="nav-item">
                   <nuxt-link
-                    class="nav-link scroll bg-white futzo-rounded px-3 py-2 ma-6 text-primary font-weight-bold"
+                    class="nav-link bg-white futzo-rounded px-3 py-2 ma-6 text-primary font-weight-bold"
                     to="/login"
                     >Ingresar</nuxt-link
                   >
@@ -289,7 +290,11 @@
                   <li class="py-1">
                     <!-- List Box -->
                     <div class="list-box media">
-                      <span class="icon align-self-center"><i class="fas fa-check"></i></span>
+                      <span class="icon align-self-center">
+                        <client-only>
+                          <i class="fas fa-check"></i>
+                        </client-only>
+                      </span>
                       <span class="media-body pl-2"
                         >Registro y administración completa de equipos, jugadores y cuerpo técnico, con información
                         detallada y precisa. Además, genera URLs únicas para que equipos y jugadores se registren
@@ -300,7 +305,11 @@
                   <li class="py-1">
                     <!-- List Box -->
                     <div class="list-box media">
-                      <span class="icon align-self-center"><i class="fas fa-check"></i></span>
+                      <span class="icon align-self-center">
+                        <client-only>
+                          <i class="fas fa-check"></i>
+                        </client-only>
+                      </span>
                       <span class="media-body pl-2"
                         >Automatización de calendarios de partidos: Creación automática de calendarios considerando
                         disponibilidad de estadios y preferencias de equipos.</span
@@ -310,7 +319,11 @@
                   <li class="py-1">
                     <!-- List Box -->
                     <div class="list-box media">
-                      <span class="icon align-self-center"><i class="fas fa-check"></i></span>
+                      <span class="icon align-self-center">
+                        <client-only>
+                          <i class="fas fa-check"></i>
+                        </client-only>
+                      </span>
                       <span class="media-body pl-2"
                         >Estadísticas detalladas y análisis: Recopilación y presentación de estadísticas de juegos y
                         rendimiento de equipos y jugadores</span
@@ -320,13 +333,25 @@
                 </ul>
                 <div class="icon-box d-flex mt-3 mb-3">
                   <div class="service-icon">
-                    <span><i class="fas fa-bell"></i></span>
+                    <span>
+                      <client-only>
+                        <i class="fas fa-bell"></i>
+                      </client-only>
+                    </span>
                   </div>
                   <div class="service-icon mx-3">
-                    <span><i class="fas fa-calendar-alt"></i></span>
+                    <span>
+                      <client-only>
+                        <i class="fas fa-calendar-alt"></i>
+                      </client-only>
+                    </span>
                   </div>
                   <div class="service-icon">
-                    <span><i class="fas fa-users-cog"></i></span>
+                    <span>
+                      <client-only>
+                        <i class="fas fa-users-cog"></i>
+                      </client-only>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -431,10 +456,537 @@
           </div>
         </div>
       </section>
+      <section class="section work-area bg-overlay overflow-hidden ptb_100">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-12 col-lg-6">
+              <!-- Work Content -->
+              <div class="work-content text-center">
+                <h2 class="text-white">¿Cómo funciona Futzo.io?</h2>
+                <p class="text-white my-3 mt-sm-4 mb-sm-5">
+                  Sigue estos pasos para empezar a disfrutar de sus beneficios.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-4">
+              <!-- Single Work -->
+              <div class="single-work text-center p-3">
+                <!-- Work Icon -->
+                <div class="work-icon">
+                  <client-only>
+                    <Icon name="futzo-icon:register" filled class="work-icon" size="32"></Icon>
+                  </client-only>
+                </div>
+                <h3 class="text-white py-3">Regístrate y crea tu cuenta</h3>
+                <p class="text-white">
+                  Inscríbete en Futzo.io rápidamente. Con solo registrarte, tendrás acceso a todas las funciones que
+                  necesitas para administrar tu liga.
+                </p>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <!-- Single Work -->
+              <div class="single-work text-center p-3">
+                <!-- Work Icon -->
+                <div class="work-icon">
+                  <client-only>
+                    <Icon name="futzo-icon:settings" filled class="work-icon" size="32"></Icon>
+                  </client-only>
+                </div>
+                <h3 class="text-white py-3">Inicia tu liga</h3>
+                <p class="text-white">
+                  Empieza configurando tu liga: define sus reglas, horarios, y otros detalles importantes para que esté
+                  lista para el juego.
+                </p>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <!-- Single Work -->
+              <div class="single-work text-center p-3">
+                <!-- Work Icon -->
+                <div class="work-icon">
+                  <Icon name="futzo-icon:eos-icons-config-map" filled class="work-icon" size="32"></Icon>
+                </div>
+                <h3 class="text-white py-3">Configura y gestiona tu liga</h3>
+                <p class="text-white">
+                  Agrega equipos y jugadores fácilmente. Asigna roles y organiza todos los aspectos de tu liga, todo
+                  desde un solo lugar, para que la administración sea más sencilla y eficiente.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="screenshots" class="section screenshots-area ptb_100 bg-gray overflow-hidden ptb_100">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-7">
+              <!-- Section Heading -->
+              <div class="section-heading text-center">
+                <h2 class="text-capitalize">Interfaz Simple y Atractiva</h2>
+                <p class="d-none d-sm-block mt-4">
+                  Futzo.io ofrece una interfaz clara y organizada, diseñada para facilitar la gestión eficiente de tu
+                  liga de fútbol. Navega fácilmente por todas las funciones clave.
+                </p>
+                <p class="d-block d-sm-none mt-4">
+                  Futzo te facilita gestionar tu liga con una interfaz intuitiva y visualmente atractiva.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <!-- App Screenshot Slider Area -->
+              <client-only>
+                <div class="app-screenshots d-flex">
+                  <!-- Single Screenshot Item -->
+                  <div class="single-screenshot">
+                    <img src="assets/images/slider1-resized.png" alt="pagina de registro" width="250" height="444" />
+                  </div>
+                  <!-- Single Screenshot Item -->
+                  <div class="single-screenshot">
+                    <img
+                      src="assets/images/slider2-resized.png"
+                      alt="estadísticas de tu liga"
+                      width="250"
+                      height="444"
+                    />
+                  </div>
+                  <!-- Single Screenshot Item -->
+                  <div class="single-screenshot">
+                    <img
+                      src="assets/images/image4 - laptop - teams-resized.png"
+                      alt="Calendario de partidos"
+                      width="250"
+                      height="501"
+                    />
+                  </div>
+                  <div class="single-screenshot">
+                    <img
+                      src="assets/images/slider2-resized.png"
+                      alt="Registros de jugadores"
+                      width="250"
+                      height="444"
+                    />
+                  </div>
+                  <div class="single-screenshot">
+                    <img src="assets/images/slider1-resized.png" alt="pagina de registro" width="250" height="444" />
+                  </div>
+                  <div class="single-screenshot">
+                    <img
+                      src="assets/images/slider2-resized.png"
+                      alt="Registros de jugadores"
+                      width="250"
+                      height="444"
+                    />
+                  </div>
+                </div>
+              </client-only>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="pricing" class="section price-plan-area overflow-hidden bg-white ptb_100">
+        <div v-if="!loading" class="container">
+          <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-7">
+              <!-- Section Heading -->
+              <div class="section-heading text-center">
+                <h2>Elige tu plan después de tu prueba gratis</h2>
+                <p class="d-none d-sm-block mt-4">
+                  Comienza hoy con tu <strong>trial gratis de 7 días</strong>. Al finalizar, selecciona el plan que
+                  mejor se adapte al tamaño de tu liga.
+                </p>
+                <p class="d-block d-sm-none mt-4">
+                  Gestión eficiente de tu liga de fútbol con las herramientas avanzadas de Futzo.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-center pb-2">
+            <div class="col-12 col-md-6">
+              <ul class="nav nav-pills nav-justified align-items-center">
+                <li class="nav-item mx-2 mb-2">
+                  <button
+                    @click="() => setPriceMode('annually_price')"
+                    type="button"
+                    class="btn btn-block custom-btn"
+                    :class="{ active: priceMode === 'annually_price' }"
+                  >
+                    Anual <span v-if="kickoffPlan?.annual_saving"></span>
+                  </button>
+                </li>
+                <li class="nav-item mx-2 mb-2">
+                  <button
+                    @click="() => setPriceMode('monthly_price')"
+                    type="button"
+                    class="btn btn-block custom-btn"
+                    :class="{ active: priceMode === 'monthly_price' }"
+                  >
+                    Mensual
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-12">
+              <div class="row price-plan-wrapper">
+                <!-- Kickoff -->
+                <div class="col-12 col-md-4">
+                  <PlanCard
+                    :title="kickoffPlan?.name"
+                    img_path="/images/logo-08.png"
+                    :price="kickoffPlan?.price"
+                    :symbol="kickoffPlan?.currency?.symbol"
+                    :iso_code="kickoffPlan?.currency?.iso_code"
+                    :annually_price="kickoffPlan?.annually_price"
+                    :annual_saving="kickoffPlan?.annual_saving"
+                    cta="Empieza gratis 7 días"
+                    :url="kickoffPlan?.url"
+                    :features="[
+                      'Administra todos tus torneos desde un solo lugar',
+                      'Calendario automático en segundos (adiós Excel)',
+                      'Resultados y estadísticas en tiempo real',
+                    ]"
+                    :mode="priceMode"
+                  />
+                </div>
+
+                <!-- ProPlay (recomendado) -->
+                <div class="col-12 col-md-4">
+                  <PlanCard
+                    :title="proPlayPlan?.name"
+                    img_path="/images/logo-07.png"
+                    :price="proPlayPlan?.price"
+                    :symbol="proPlayPlan?.currency?.symbol"
+                    :iso_code="proPlayPlan?.currency?.iso_code"
+                    :annually_price="proPlayPlan?.annually_price"
+                    :annual_saving="proPlayPlan?.annual_saving"
+                    cta="Empieza gratis 7 días"
+                    :url="proPlayPlan?.url"
+                    :features="[
+                      'Todo lo de Kickoff',
+                      'Registro automático con links únicos',
+                      'Personaliza colores y logo de tu liga',
+                      'Soporte estándar',
+                    ]"
+                    :mode="priceMode"
+                    featured
+                    badge="Más elegido"
+                  />
+                </div>
+
+                <!-- EliteLeague -->
+                <div class="col-12 col-md-4 mt-4 mt-md-0">
+                  <PlanCard
+                    :title="eliteLeaguePlan?.name"
+                    img_path="/images/logo-08.png"
+                    :price="eliteLeaguePlan?.price"
+                    :symbol="eliteLeaguePlan?.currency?.symbol"
+                    :iso_code="eliteLeaguePlan?.currency?.iso_code"
+                    :annually_price="eliteLeaguePlan?.annually_price"
+                    :annual_saving="eliteLeaguePlan?.annual_saving"
+                    cta="Empieza gratis 7 días"
+                    :url="eliteLeaguePlan?.url"
+                    :features="[
+                      'Todo lo de ProPlay',
+                      'Soporte prioritario',
+                      'Acceso anticipado a nuevas funciones',
+                      'Comunicación directa con jugadores y entrenadores',
+                    ]"
+                    :mode="priceMode"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Confianza -->
+          <div class="row justify-content-center pt-5 text-center">
+            <div class="col-12 col-md-10">
+              <p class="text-body pt-2 fw-6">Cambia o cancela tu plan en cualquier momento.</p>
+              <p class="text-body fw-2">Tu progreso y configuración se conservan cuando pasas del trial a un plan.</p>
+              <p class="text-body fw-2">
+                ¿Dudas? <a href="#faq">Consulta las preguntas frecuentes</a> o escríbenos por chat.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section faq-area ptb_100 bg-white" id="faq">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-7">
+              <!-- Section Heading -->
+              <div class="section-heading text-center">
+                <h2 class="text-capitalize">¿Tienes Preguntas?</h2>
+                <p class="d-none d-sm-block mt-4">
+                  Si tienes alguna pregunta sobre Futzo.io, consulta nuestras preguntas frecuentes. Hemos reunido las
+                  dudas más comunes para que puedas resolverlas rápidamente.
+                </p>
+                <p class="d-block d-sm-none mt-4">
+                  Consulta nuestras preguntas frecuentes para resolver tus dudas sobre Futzo.io de manera rápida.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-12">
+              <!-- FAQ Content -->
+              <div class="faq-content">
+                <!-- sApp Accordion -->
+                <div class="accordion" id="sApp-accordion">
+                  <div class="row justify-content-center">
+                    <div class="col-12 col-md-10 col-lg-8">
+                      <!-- Single Accordion Item -->
+                      <div class="card border-top-0 border-left-0 border-right-0 border-bottom">
+                        <!-- Card Header -->
+                        <div class="card-header bg-inherit border-0 p-0">
+                          <h2 class="mb-0">
+                            <button
+                              class="btn px-0 py-3"
+                              type="button"
+                              data-toggle="collapse"
+                              data-target="#collapseOne"
+                            >
+                              ¿Qué es Futzo.io y cómo puede ayudarme en la gestión de mi liga de fútbol?
+                            </button>
+                          </h2>
+                        </div>
+                        <div id="collapseOne" class="collapse show" data-parent="#sApp-accordion">
+                          <!-- Card Body -->
+                          <div class="card-body px-0 py-3">
+                            Futzo.io es una plataforma integral diseñada para optimizar la administración de ligas de
+                            fútbol, haciéndola más eficiente y menos complicada. Desde la programación automatizada de
+                            partidos hasta la gestión de equipos, Futzo.io centraliza todas las funciones clave en un
+                            solo lugar. Una de sus características destacadas es la automatización del proceso de
+                            inscripción: Futzo.io genera URLs únicas para que cada equipo y jugador se registren de
+                            forma autónoma, reduciendo significativamente el esfuerzo administrativo. Además, facilita
+                            la comunicación directa con los jugadores, asegurando que todo el proceso sea fluido y sin
+                            complicaciones.
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Single Accordion Item -->
+                      <div class="card border-top-0 border-left-0 border-right-0 border-bottom">
+                        <!-- Card Header -->
+                        <div class="card-header bg-inherit border-0 p-0">
+                          <h2 class="mb-0">
+                            <button
+                              class="btn collapsed px-0 py-3"
+                              type="button"
+                              data-toggle="collapse"
+                              data-target="#collapseTwo"
+                            >
+                              ¿Necesito instalar algún software para usar Futzo.io?
+                            </button>
+                          </h2>
+                        </div>
+                        <div id="collapseTwo" class="collapse" data-parent="#sApp-accordion">
+                          <!-- Card Body -->
+                          <div class="card-body px-0 py-3">
+                            No, Futzo.io es una plataforma basada en la web. Solo necesitas registrarte y acceder desde
+                            cualquier dispositivo con conexión a internet. No requiere instalación, lo que te permite
+                            empezar a usarla de inmediato.
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Single Accordion Item -->
+                      <div class="card border-top-0 border-left-0 border-right-0 border-bottom">
+                        <!-- Card Header -->
+                        <div class="card-header bg-inherit border-0 p-0">
+                          <h2 class="mb-0">
+                            <button
+                              class="btn collapsed px-0 py-3"
+                              type="button"
+                              data-toggle="collapse"
+                              data-target="#collapseThree"
+                            >
+                              ¿Puedo gestionar múltiples torneos al mismo tiempo con Futzo.io?
+                            </button>
+                          </h2>
+                        </div>
+                        <div id="collapseThree" class="collapse" data-parent="#sApp-accordion">
+                          <!-- Card Body -->
+                          <div class="card-body px-0 py-3">
+                            Sí, Futzo.io te permite organizar y administrar múltiples torneos simultáneamente. La
+                            plataforma está diseñada para manejar la complejidad de gestionar varios torneos sin perder
+                            de vista los detalles importantes.
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Single Accordion Item -->
+                      <div class="card border-top-0 border-left-0 border-right-0 border-bottom">
+                        <!-- Card Header -->
+                        <div class="card-header bg-inherit border-0 p-0">
+                          <h2 class="mb-0">
+                            <button
+                              class="btn collapsed px-0 py-3"
+                              type="button"
+                              data-toggle="collapse"
+                              data-target="#collapseFour"
+                            >
+                              ¿Qué tipo de soporte técnico ofrece Futzo.io?
+                            </button>
+                          </h2>
+                        </div>
+                        <div id="collapseFour" class="collapse" data-parent="#sApp-accordion">
+                          <!-- Card Body -->
+                          <div class="card-body px-0 py-3">
+                            Futzo.io ofrece soporte técnico 24/7 para todos sus usuarios. Nuestro equipo está disponible
+                            para ayudarte con cualquier problema técnico o consulta que puedas tener, asegurando que
+                            siempre tengas acceso a la asistencia que necesitas.
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Single Accordion Item -->
+                      <div class="card border-top-0 border-left-0 border-right-0 border-bottom">
+                        <!-- Card Header -->
+                        <div class="card-header bg-inherit border-0 p-0">
+                          <h2 class="mb-0">
+                            <button
+                              class="btn collapsed px-0 py-3"
+                              type="button"
+                              data-toggle="collapse"
+                              data-target="#collapseFive"
+                            >
+                              ¿Es seguro almacenar los datos de mi liga en Futzo.io?
+                            </button>
+                          </h2>
+                        </div>
+                        <div id="collapseFive" class="collapse" data-parent="#sApp-accordion">
+                          <!-- Card Body -->
+                          <div class="card-body px-0 py-3">
+                            Absolutamente. Futzo.io utiliza tecnologías de encriptación avanzadas y copias de seguridad
+                            diarias para garantizar que todos tus datos estén seguros y protegidos. La privacidad y
+                            seguridad de tu información son nuestras prioridades.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div id="scrollUp" title="Scroll To Top">
+        <client-only>
+          <i class="fas fa-arrow-up"></i>
+        </client-only>
+      </div>
+    </template>
+    <template #footer>
+      <div>
+        <div class="height-emulator d-none d-lg-block"></div>
+        <div class="footer-area bg-gray">
+          <!-- Footer Top -->
+          <div class="footer-top ptb_100">
+            <div class="container">
+              <div class="row">
+                <div class="col-12 col-sm-6 col-lg-3">
+                  <!-- Footer Items -->
+                  <div class="footer-items">
+                    <!-- Logo -->
+                    <a class="navbar-brand" href="#">
+                      <img
+                        class="logo"
+                        src="assets/images/logo-07.png"
+                        alt="futzo plataforma admintrativa de ligas deportivas"
+                        width="140"
+                        height="169"
+                      />
+                    </a>
+                    <p class="mt-2 mb-3"></p>
+                    <!-- Social Icons -->
+                    <div class="social-icons d-flex">
+                      <a class="facebook" href="https://www.facebook.com/futzo.io" aria-label="Visit Futzo on Facebook">
+                        <Icon name="fa7-brands:facebook" class="mx-auto my-auto" size="42"></Icon>
+                      </a>
+                      <a
+                        class="bg-danger"
+                        href="https://www.instagram.com/futzo.io/"
+                        aria-label="Visit Futzo on Instagram"
+                      >
+                        <Icon name="fa7-brands:instagram" class="mx-auto my-auto" size="42"></Icon>
+                      </a>
+                      <a
+                        class="bg-danger"
+                        href="https://www.youtube.com/@futzo-oficial"
+                        aria-label="Visit Futzo on Youtube"
+                      >
+                        <Icon name="fa7-brands:youtube" class="mx-auto my-auto" size="42"></Icon>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-sm-3 col-lg-3">
+                  <!-- Footer Items -->
+                  <div class="footer-items">
+                    <!-- Footer Title -->
+                    <h3 class="footer-title mb-2">Enlaces útiles</h3>
+                    <ul>
+                      <li class="py-2"><a href="#home">Home</a></li>
+                      <li class="py-2"><a href="#features">Características</a></li>
+                      <li class="py-2"><a href="#screenshots">Imágenes</a></li>
+                      <li class="py-2"><a href="#faq">Preguntas frecuentes</a></li>
+                      <li class="py-2">
+                        <nuxt-link to="/politica-de-privacidad">Política de privacidad</nuxt-link>
+                      </li>
+                      <li class="py-2">
+                        <nuxt-link to="/terminos-de-servicio">Términos de servicio</nuxt-link>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-lg-6">
+                  <!-- Footer Items -->
+                  <div class="footer-items">
+                    <!-- Footer Title -->
+                    <h3 class="footer-title mb-2">Sobre Futzo.io</h3>
+                    <p class="mb-3">
+                      Futzo.io es una plataforma diseñada para facilitar la administración de ligas deportivas. Ayudamos
+                      a organizadores, árbitros y dueños de equipos a crear torneos, registrar jugadores, gestionar
+                      calendarios y generar estadísticas fácilmente desde un solo lugar.
+                    </p>
+                    <p class="mb-3">Con Futzo.io, llevar el control de tu liga es simple, rápido y profesional.</p>
+                    <p><span>📍</span> Con sede en Puerto Vallarta, Jalisco, México</p>
+                    <p><span>📞</span> Contacto: +52 322 327 8118</p>
+                    <p><span>📧</span> Email: contacto@futzo.io</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--          Footer Bottom-->
+          <div class="footer-bottom">
+            <div class="container">
+              <div class="row">
+                <div class="col-12">
+                  <!-- Copyright Area -->
+                  <div
+                    class="copyright-area d-flex flex-wrap justify-content-center justify-content-sm-between text-center py-4"
+                  >
+                    <!-- Copyright Left -->
+                    <div class="copyright-left">
+                      &copy; Copyrights {{ new Date().getFullYear() }} Futzo.io todos los derechos reservados.
+                    </div>
+                    <!-- Copyright Right -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </template>
   </PageLayout>
 </template>
-<style>
+<style scoped>
   @import '~/assets/css/style.css';
   @import '~/assets/css/responsive.css';
   a.text-primary:hover,

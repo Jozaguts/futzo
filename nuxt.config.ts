@@ -141,10 +141,10 @@ export default defineNuxtConfig({
     },
     redirect: {
       keepRequestedRoute: false, // Keep requested route in the URL for later redirect
-      onLogin: '/', // Redirect to this page after successful login
-      onLogout: '/login', // Redirect to this page after successful logout
-      onAuthOnly: '/login', // Redirect to this page if user is not authenticated
-      onGuestOnly: '/', // Redirect to this page if user is authenticated
+      onLogin: '/dashboard', // Redirect to this page after successful login
+      onLogout: '/', // Redirect to this page after successful logout
+      onAuthOnly: '/', // Redirect to this page if user is not authenticated
+      onGuestOnly: '/dashboard', // Redirect to this page if user is authenticated
     },
     globalMiddleware: {
       enabled: false,

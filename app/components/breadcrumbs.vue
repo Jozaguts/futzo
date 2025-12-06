@@ -11,12 +11,12 @@
 
   const breadcrumbs = computed((): Breadcrumbs[] => {
     switch (routeName.value) {
-      case 'index':
+      case 'dashboard':
         return [
           {
             title: useAuthStore().user?.league?.name as string,
             disabled: false,
-            href: '/',
+            href: '/dashboard',
           },
         ]
       case 'torneos':
