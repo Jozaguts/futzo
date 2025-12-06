@@ -57,7 +57,7 @@
         .catch((error) => console.error(error))
         .then(() => {
           if (isAuthenticated.value) {
-            useRouter().push({ name: 'index' })
+            useRouter().push({ name: 'dashboard' })
           }
         })
     }
