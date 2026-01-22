@@ -4,34 +4,61 @@
     href?: string
   }
   const { href = '#', text = 'Contacto y soporte' } = defineProps<Props>()
-  const menu = ref(false)
+  const { showSupportButton, openMessageSupportBox } = storeToRefs(useGlobalStore())
 </script>
 <template>
-  <v-menu v-model="menu" :close-on-content-click="false" location="top right">
-    <template v-slot:activator="{ props }">
-      <v-btn class="buy-now-button" :href="href" rel="noopener noreferrer" v-bind="props">
-        {{ text }} <Icon name="mdi:send" class="mx-2"></Icon>
-      </v-btn>
-    </template>
-    <v-card class="futzo-rounded mx-4" variant="outlined" density="compact" v-if="!$vuetify.mobile">
-      <v-card-title class="text-body-1">Contacto y soporte</v-card-title>
-      <v-card-subtitle class="text-wrap"
-        >¿Te atoraste o tienes un problema? Escríbenos y te ayudamos lo antes posible.</v-card-subtitle
-      >
-      <v-card-text>
-        <v-textarea
-          rows="8"
-          placeholder="Cuéntanos qué pasó (qué estabas haciendo, en qué pantalla, y si te salió algún error). Si puedes, agrega el nombre de tu liga o torneo."
-          style="min-height: 100%; max-height: 210px"
-        ></v-textarea>
-      </v-card-text>
-      <v-card-actions>
-        <PrimaryBtn text="Enviar Mensaje" icon="mdi:send" block class="pa-4" icon-position="right"></PrimaryBtn>
-      </v-card-actions>
-    </v-card>
-  </v-menu>
+  <div class="position-relative">
+    <v-menu
+      v-model="openMessageSupportBox"
+      v-if="showSupportButton"
+      :close-on-content-click="false"
+      location="top left"
+    >
+      <template v-slot:activator="{ props }">
+        <v-btn class="buy-now-button" v-bind="props">
+          <div v-auto-animate>
+            <span v-show="!openMessageSupportBox">{{ text }}</span>
+          </div>
+          <Icon name="mdi:send" class="mx-2"></Icon>
+          <template #append>
+            <v-btn
+              @click.stop="showSupportButton = !showSupportButton"
+              icon="mdi-close"
+              size="small"
+              variant="outlined"
+              density="compact"
+              class="position-absolute"
+              style="top: -30px"
+            ></v-btn>
+          </template>
+        </v-btn>
+      </template>
+      <v-card max-width="300" class="futzo-rounded" variant="outlined" density="compact">
+        <v-card-title class="text-body-1">Contacto y soporte</v-card-title>
+        <v-card-subtitle class="text-wrap"
+          >¿Te atoraste o tienes un problema? Escríbenos y te ayudamos lo antes posible.</v-card-subtitle
+        >
+        <v-card-text>
+          <v-textarea
+            class="text-area"
+            placeholder="Cuéntanos qué pasó Si puedes, agrega el nombre de tu liga o torneo."
+            style="min-height: 100%; max-height: 210px"
+          ></v-textarea>
+          <small class="text-wrap"
+            >Respondemos al correo o número con el que te registraste. Si usaste teléfono, revisa WhatsApp.</small
+          >
+        </v-card-text>
+        <v-card-actions>
+          <PrimaryBtn text="Enviar Mensaje" icon="mdi:send" block class="pa-4" icon-position="right"></PrimaryBtn>
+        </v-card-actions>
+      </v-card>
+    </v-menu>
+  </div>
 </template>
-<style scoped>
+<style>
+  .text-area > .v-input__control > .v-field > .v-field__field > textarea {
+    padding-top: 10px;
+  }
   @keyframes gradient-animation {
     0% {
       background-position: 0 50%;
@@ -74,7 +101,7 @@
   .buy-now-button {
     position: fixed;
     z-index: 900;
-    inset-block-end: 5%;
-    inset-inline-end: 79px;
+    inset-block-end: 2%;
+    inset-inline-end: 32px;
   }
 </style>

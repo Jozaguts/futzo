@@ -4,7 +4,8 @@
   import { Icon } from '#components'
   import OnboardingSteps from '~/components/layout/OnboardingSteps.vue'
   import { useOnboardingStore } from '~/stores/useOnboardingStore'
-  const { drawer, drawerWidth, isMobile, rail } = storeToRefs(useGlobalStore())
+  const { drawer, drawerWidth, isMobile, rail, showSupportButton, openMessageSupportBox } =
+    storeToRefs(useGlobalStore())
   const onboarding = useOnboardingStore()
   const drawerRef = ref()
   const authStore = useAuthStore()
@@ -68,6 +69,11 @@
     },
     { immediate: true }
   )
+  const showSupportHandler = () => {
+    rail.value = true
+    showSupportButton.value = true
+    openMessageSupportBox.value = true
+  }
 </script>
 
 <template>
@@ -76,9 +82,10 @@
     :mobile="false"
     v-model="drawer"
     :rail="rail"
+    @click.stop="rail = false"
     rail-width="56"
-    @click="rail = false"
     app
+    style="min-height: 100vh"
   >
     <template #prepend>
       <v-list-item nav ref="drawerRef">
@@ -112,7 +119,18 @@
     </template>
     <template #append>
       <div>
-        <v-list density="compact" nav>
+        <v-list density="compact" nav v-auto-animate>
+          <v-list-item
+            nav
+            density="compact"
+            key="help"
+            :disabled="false"
+            title="Contacto y soporte"
+            prepend-icon="mdi-send"
+            @click.stop="showSupportHandler"
+            v-if="!showSupportButton"
+          >
+          </v-list-item>
           <v-list-item
             nav
             density="compact"

@@ -7,7 +7,7 @@
     disabled?: boolean
     loading?: boolean
     color?: string
-    density?: 'comfortable' | 'normal' | 'compact'
+    density?: 'comfortable' | 'default' | 'compact'
     iconPosition?: 'left' | 'right'
   }
 
@@ -19,7 +19,7 @@
     disabled: false,
     loading: false,
     color: 'primary',
-    density: 'normal',
+    density: 'default',
     iconPosition: 'left',
   })
   const emits = defineEmits(['click'])

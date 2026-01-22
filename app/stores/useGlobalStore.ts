@@ -12,6 +12,8 @@ export const useGlobalStore = defineStore('global', () => {
   const showFooter = ref(true);
   const toastDuration = ref(5000);
   const toastId = ref();
+  const showSupportButton = ref(true);
+  const openMessageSupportBox = ref(false);
 
   const drawer = ref(true);
 
@@ -25,5 +27,7 @@ export const useGlobalStore = defineStore('global', () => {
     showFooter,
     toastDuration,
     toastId,
+    showSupportButton,
+    openMessageSupportBox,
   };
 });

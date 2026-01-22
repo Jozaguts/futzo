@@ -20,6 +20,10 @@
   --header-height: 90px; /* ajusta a tu header real */
   --radius-2xl: 16px;
 }
+main {
+  max-height: 100vh;
+  overflow: hidden;
+}
 a {
   text-decoration: underline;
   color: initial;
@@ -31,6 +35,8 @@ a {
   padding: 16px 16px 0 71px; // mobile default
   position: relative;
   min-height: 0;
+  max-height: 100vh;
+  overflow-y: scroll;
 }
 
 .futzo-page-container {
@@ -243,6 +249,8 @@ tbody > tr.v-data-table__tr:nth-child(even) {
   .main {
     padding: 40px 40px 0 40px;
     position: relative;
+    max-height: 100vh;
+    overflow-y: scroll;
   }
   .text-breadcrumb {
     font-size: 36px;
