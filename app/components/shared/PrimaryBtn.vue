@@ -8,6 +8,7 @@
     loading?: boolean
     color?: string
     density?: 'comfortable' | 'normal' | 'compact'
+    iconPosition?: 'left' | 'right'
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -19,6 +20,7 @@
     loading: false,
     color: 'primary',
     density: 'normal',
+    iconPosition: 'left',
   })
   const emits = defineEmits(['click'])
 </script>
@@ -33,7 +35,10 @@
     :density="props.density"
     @click="emits('click')"
   >
-    <template #prepend v-if="props.showIcon">
+    <template #prepend v-if="props.showIcon && props.iconPosition === 'left'">
+      <Icon v-if="props.showIcon" :name="props.icon" />
+    </template>
+    <template #append v-if="props.showIcon && props.iconPosition === 'right'">
       <Icon v-if="props.showIcon" :name="props.icon" />
     </template>
     {{ text }}

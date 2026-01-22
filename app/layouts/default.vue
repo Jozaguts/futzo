@@ -44,7 +44,7 @@
           </v-main>
         </ClientOnly>
 
-        <AnimatedGradiendButton v-if="!user?.is_operational" />
+        <AnimatedGradiendButton text="Contacto y soporte" />
       </v-app>
     </v-layout>
   </div>
