@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-  const props = defineProps({
+  const { styles } = defineProps({
     styles: {
       type: String,
-      default: 'mt-10',
+      default: 'main',
     },
   })
   const { rail, isMobile } = storeToRefs(useGlobalStore())
@@ -17,7 +17,7 @@
     <div class="header">
       <slot name="app-bar" />
     </div>
-    <div class="main">
+    <div :class="styles">
       <slot name="default" />
       <div v-if="$vuetify.display.mobile">
         <div class="position-fixed" style="min-width: 50px; min-height: 50px; z-index: 2000; bottom: 6rem; right: 2rem">

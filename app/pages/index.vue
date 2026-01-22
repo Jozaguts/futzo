@@ -3,36 +3,12 @@
   import PlanCard from '~/components/pages/PlanCard.vue'
 
   definePageMeta({
-    layout: 'blank',
+    layout: 'legacy',
     bodyAttrs: {
       class: 'd-none',
     },
   })
-  useHead({
-    link: [{ rel: 'stylesheet', href: 'https://assets.calendly.com/assets/external/widget.css' }],
-    script: [
-      { src: 'https://futzo.s3.us-east-2.amazonaws.com/assets/js/jquery-3.3.1.min.js', tagPosition: 'bodyClose' },
-      { src: 'https://futzo.s3.us-east-2.amazonaws.com/assets/js/popper.min.js', tagPosition: 'bodyClose' },
-      { src: 'https://futzo.s3.us-east-2.amazonaws.com/assets/js/bootstrap.min.js', tagPosition: 'bodyClose' },
-      { src: 'https://futzo.s3.us-east-2.amazonaws.com/assets/js/plugins.min.js', tagPosition: 'bodyClose' },
-      { src: 'https://futzo.s3.us-east-2.amazonaws.com/assets/js/scripts.js', tagPosition: 'bodyClose' },
-      { src: 'https://assets.calendly.com/assets/external/widget.js', tagPosition: 'bodyClose', async: true },
-    ],
-    meta: [
-      { name: 'description', content: 'Futzo.io es una plataforma para organizar y administrar ligas deportivas.' },
-      { property: 'og:site_name', content: 'Futzo.io' },
-      { property: 'og:title', content: 'Futzo.io - Gestiona tu liga como un profesional' },
-      {
-        property: 'og:description',
-        content:
-          'Crea torneos, registra equipos y jugadores, genera calendarios y estadísticas desde una plataforma intuitiva.',
-      },
-      { property: 'og:image', content: 'https://futzo.io/images/futzo.png' },
-      { property: 'og:url', content: 'https://futzo.io' },
-      { property: 'og:site_name', content: 'Futzo.io' },
-      { property: 'og:type', content: 'website' },
-    ],
-  })
+
   const imgSrc = '/futzo/logos/logo-17.png'
   const { $buildAppUrl } = useNuxtApp() as any
   const url = ref('')
@@ -55,9 +31,12 @@
     updateUrl(kickoffPlan.value)
     await load()
   })
+  const { isAuthenticated } = useSanctumAuth()
+  const textButton = computed(() => (isAuthenticated?.value ? 'Ir al Dashboard' : 'Comenzar'))
+  const mainRoute = computed(() => (isAuthenticated?.value ? '/dashboard' : '/login'))
 </script>
 <template>
-  <PageLayout class-="pa-0">
+  <PageLayout styles="main pa-0">
     <template #default>
       <header class="navbar navbar-sticky navbar-expand-lg navbar-dark">
         <div class="container position-relative">
@@ -106,8 +85,8 @@
                 <li class="nav-item">
                   <nuxt-link
                     class="nav-link bg-white futzo-rounded px-3 py-2 ma-6 text-primary font-weight-bold"
-                    to="/login"
-                    >Ingresar</nuxt-link
+                    :to="mainRoute"
+                    >{{ textButton }}</nuxt-link
                   >
                 </li>
               </ul>
@@ -993,9 +972,6 @@
   .btn-primary:hover {
     color: white !important;
     background-color: #9155fd !important;
-  }
-  .main {
-    padding: 0 !important;
   }
   .hero {
     max-width: 1100px;
