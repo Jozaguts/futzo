@@ -4,8 +4,8 @@
   import { vuetifyConfig } from '~/utils/constants'
 
   const user = computed(() => useAuthStore().user as User)
-  const { defineField, meta, values, handleSubmit, resetForm } = useForm<
-    Pick<User, 'email' | 'phone' | 'name'> & { iso_code: number }
+  const { defineField, handleSubmit, errors, meta } = useForm<
+    Pick<User, 'email' | 'phone' | 'name' | 'contact_method'> & { iso_code: number }
   >({
     validationSchema: toTypedSchema(
       object({
@@ -21,6 +21,7 @@
           .notRequired()
           .matches(/^(\+52)?(\d{10})$/, 'Número de teléfono no es válido'),
         email: string().email().nullable(),
+        contact_method: string(),
         iso_code: number()
           .when('phone', {
             is: (value: string) => {
@@ -39,6 +40,7 @@
     initialValues: {
       name: user.value?.name,
       email: user.value?.email,
+      contact_method: user.value?.contact_method ?? 'email',
       phone: user.value?.phone ? user.value?.phone?.replace(/\s+/g, '').slice(-10) : '',
       iso_code:
         user.value?.phone.length <= 10
@@ -50,12 +52,14 @@
   const [email, email_props] = defineField('email', vuetifyConfig)
   const [phone, phone_props] = defineField('phone', vuetifyConfig)
   const [iso_code, iso_code_props] = defineField('iso_code', vuetifyConfig)
+  const [contact_method, contact_method_props] = defineField('contact_method', vuetifyConfig)
   const submit = handleSubmit((values) => {
     const updateUserForm: UpdateUserForm = {
       id: user.value.id,
       name: values.name,
       phone: values.phone,
       email: values.email,
+      contact_method: values.contact_method,
     }
     useAuthStore().updateUser(updateUserForm)
   })
@@ -67,8 +71,8 @@
       <v-card-subtitle class="secondary-card__subtitle">Revisa y actualiza tu información. </v-card-subtitle>
     </v-card-item>
     <v-card-text>
-      <v-form class="user-data-configuration-form" @submit.prevent="submit">
-        <BaseInput v-model="name" :props="name_props" label="Nombre completo"> </BaseInput>
+      <v-form class="user-data-configuration-form">
+        <BaseInput v-model="name" :props="name_props" label="Nombre completo" />
         <BaseInput label="Teléfono" sublabel="Opcional">
           <template #input>
             <div class="d-flex">
@@ -106,10 +110,29 @@
           label="Correo electrónico"
           type="email"
         ></BaseInput>
+        <BaseInput label="Método de contacto">
+          <template #input>
+            <v-select
+              v-model="contact_method"
+              :item-props="(item) => ({ title: item.title, subtitle: item.subtitle })"
+              :items="[
+                { value: 'email', title: 'Correo electrónico', subtitle: '' },
+                { value: 'phone', title: 'Teléfono', subtitle: 'SMS/WhatsApp' },
+              ]"
+              item-value="value"
+              item-title="tile"
+              variant="outlined"
+              density="compact"
+              iyrm
+              placeholder="Selecciona un método de contacto"
+              v-bind="contact_method_props"
+            ></v-select>
+          </template>
+        </BaseInput>
       </v-form>
     </v-card-text>
     <v-card-actions>
-      <v-btn type="submit" variant="elevated" color="primary" block> Guardar cambios </v-btn>
+      <v-btn @click="submit" type="button" variant="elevated" color="primary" block> Guardar cambios </v-btn>
     </v-card-actions>
   </v-card>
 </template>

@@ -1,3 +1,9 @@
+export type SupportTicketForm = {
+  subject: 'support' | 'bug' | 'feature';
+  message: string;
+  tournament_id?: number | null;
+};
+
 export type AuthForm = {
   remember?: boolean | null | undefined;
   name?: string | null | undefined;
@@ -25,6 +31,7 @@ export interface User {
     billing_period: string;
     product: { sku: string; name: string; description: string };
   };
+  contact_method: 'phone' | 'email';
 }
 export type OnboardingStep = {
   id: string;
@@ -46,6 +53,7 @@ export interface UpdateUserForm {
   name: string;
   email: string;
   phone: string;
+  contact_method: 'phone' | 'email';
 }
 
 export interface UpdateUserPasswordForm {

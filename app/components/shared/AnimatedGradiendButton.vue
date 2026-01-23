@@ -1,59 +1,107 @@
 <script lang="ts" setup>
+  import ContactForm from '~/components/shared/ContactForm.vue'
   interface Props {
     text?: string
     href?: string
   }
   const { href = '#', text = 'Contacto y soporte' } = defineProps<Props>()
   const { showSupportButton, openMessageSupportBox } = storeToRefs(useGlobalStore())
+  const tab = ref('contact-support')
+  const years = [
+    {
+      color: 'cyan',
+      year: '1960',
+    },
+    {
+      color: 'green',
+      year: '1970',
+    },
+    {
+      color: 'pink',
+      year: '1980',
+    },
+    {
+      color: 'amber',
+      year: '1990',
+    },
+    {
+      color: 'orange',
+      year: '2000',
+    },
+  ]
 </script>
 <template>
-  <div class="position-relative">
-    <v-menu
-      v-model="openMessageSupportBox"
-      v-if="showSupportButton"
-      :close-on-content-click="false"
-      location="top left"
-    >
-      <template v-slot:activator="{ props }">
-        <v-btn class="buy-now-button" v-bind="props">
-          <div v-auto-animate>
-            <span v-show="!openMessageSupportBox">{{ text }}</span>
-          </div>
-          <Icon name="mdi:send" class="mx-2"></Icon>
-          <template #append>
-            <v-btn
-              @click.stop="showSupportButton = !showSupportButton"
-              icon="mdi-close"
-              size="small"
-              variant="outlined"
-              density="compact"
-              class="position-absolute"
-              style="top: -30px"
-            ></v-btn>
-          </template>
-        </v-btn>
-      </template>
-      <v-card max-width="300" class="futzo-rounded" variant="outlined" density="compact">
-        <v-card-title class="text-body-1">Contacto y soporte</v-card-title>
-        <v-card-subtitle class="text-wrap"
-          >¿Te atoraste o tienes un problema? Escríbenos y te ayudamos lo antes posible.</v-card-subtitle
-        >
-        <v-card-text>
-          <v-textarea
-            class="text-area"
-            placeholder="Cuéntanos qué pasó Si puedes, agrega el nombre de tu liga o torneo."
-            style="min-height: 100%; max-height: 210px"
-          ></v-textarea>
-          <small class="text-wrap"
-            >Respondemos al correo o número con el que te registraste. Si usaste teléfono, revisa WhatsApp.</small
-          >
-        </v-card-text>
-        <v-card-actions>
-          <PrimaryBtn text="Enviar Mensaje" icon="mdi:send" block class="pa-4" icon-position="right"></PrimaryBtn>
-        </v-card-actions>
-      </v-card>
-    </v-menu>
-  </div>
+  <client-only>
+    <div class="position-relative">
+      <v-menu
+        v-model="openMessageSupportBox"
+        v-if="showSupportButton"
+        :close-on-content-click="false"
+        location="top left"
+        offset="-48px, 16px"
+      >
+        <template v-slot:activator="{ props }">
+          <v-btn class="buy-now-button" v-bind="props">
+            <div v-auto-animate>
+              <span v-show="!openMessageSupportBox">{{ text }}</span>
+            </div>
+            <Icon name="mdi:send" class="mx-2"></Icon>
+            <template #append>
+              <v-btn
+                @click.stop="showSupportButton = !showSupportButton"
+                icon="mdi-close"
+                size="small"
+                variant="outlined"
+                density="compact"
+                class="position-absolute"
+                style="top: -30px"
+              ></v-btn>
+            </template>
+          </v-btn>
+        </template>
+        <v-card max-width="380" class="futzo-rounded" variant="outlined" density="compact">
+          <v-card-item>
+            <v-tabs color="primary" v-model="tab">
+              <v-tab value="contact-support"> Contacto y soporte </v-tab>
+              <v-tab value="history"> Historial </v-tab>
+            </v-tabs>
+          </v-card-item>
+          <v-card-text>
+            <v-tabs-window v-model="tab">
+              <v-tabs-window-item value="contact-support">
+                <ContactForm @submitted="openMessageSupportBox = false" />
+              </v-tabs-window-item>
+              <v-tabs-window-item value="history">
+                <v-sheet
+                  min-height="100%"
+                  max-height="400px"
+                  min-width="100%"
+                  max-width="350px"
+                  class="px-2 overflow-y-auto"
+                >
+                  <v-timeline align="start">
+                    <v-timeline-item v-for="(year, i) in years" :key="i" :dot-color="year.color" size="small">
+                      <template v-slot:opposite>
+                        <div :class="`pt-1 headline font-weight-bold text-${year.color}`" v-text="year.year"></div>
+                      </template>
+                      <div>
+                        <h2 :class="`mt-n1 headline font-weight-light mb-4 text-${year.color}`">Lorem ipsum</h2>
+                        <div>
+                          Lorem ipsum dolor sit amet, no nam oblique veritus. Commune scaevola imperdiet nec ut, sed
+                          euismod convenire principes at. Est et nobis iisque percipit, an vim zril disputando
+                          voluptatibus, vix an salutandi sententiae.
+                        </div>
+                      </div>
+                    </v-timeline-item>
+                  </v-timeline>
+                </v-sheet>
+              </v-tabs-window-item>
+            </v-tabs-window>
+          </v-card-text>
+        </v-card>
+      </v-menu>
+    </div>
+  </client-only>
 </template>
 <style>
   .text-area > .v-input__control > .v-field > .v-field__field > textarea {

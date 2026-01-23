@@ -1,21 +1,25 @@
 import type { League, LeagueType } from '~/models/league';
 import { defineStore } from 'pinia';
 import type { Field } from '~/models/Location';
+import leagueAPI from '~/http/api/league';
+import type { Tournament } from '~/models/tournament';
 
 export const useLeaguesStore = defineStore('leaguesStore', () => {
   const leagues = ref<League[]>([]);
   const footballTypes = ref<LeagueType[]>([]);
+  const leagueTournaments = ref<Tournament[]>([]);
   const fetchLeagues = async () => {
-    const client = useSanctumClient();
-    leagues.value = await client('/api/v1/admin/leagues');
+    leagues.value = await leagueAPI.fetchLeagues();
   };
   const getFootballTypes = async () => {
-    const client = useSanctumClient();
-    footballTypes.value = await client('/api/v1/admin/leagues/football/types');
+    footballTypes.value = await leagueAPI.getFootballTypes();
   };
   const getLeagueLocations = async () => {
-    const client = useSanctumClient();
-    return await client<Field[]>('/api/v1/admin/leagues/locations');
+    return await leagueAPI.getLeagueLocations();
+  };
+  const getLeagueTournaments = async (leagueId: number) => {
+    const response = await leagueAPI.getLeagueTournaments(leagueId);
+    leagueTournaments.value = response.data ?? ([] as Tournament[]);
   };
   onBeforeMount(async () => {
     await useLeaguesStore().fetchLeagues();
@@ -26,9 +30,11 @@ export const useLeaguesStore = defineStore('leaguesStore', () => {
   });
   return {
     leagues,
+    footballTypes,
+    leagueTournaments,
     getFootballTypes,
     fetchLeagues,
-    footballTypes,
     getLeagueLocations,
+    getLeagueTournaments,
   };
 });
