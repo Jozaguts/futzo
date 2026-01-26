@@ -32,6 +32,7 @@ export interface User {
     product: { sku: string; name: string; description: string };
   };
   contact_method: 'phone' | 'email';
+  opened_tickets_count: number;
 }
 export type OnboardingStep = {
   id: string;
