@@ -35,3 +35,7 @@ export type PublicMessage = {
   created_at: Date;
   updated_at: Date;
 };
+export type ResponseTicket = {
+  ticket_id: string;
+  response_message: string;
+};

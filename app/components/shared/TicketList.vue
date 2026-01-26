@@ -1,21 +1,80 @@
 <script setup lang="ts">
-  import { fetchTickets } from '~/http/api/support'
-  import type { Tickets } from '~/models/Support'
+  import { object, string } from 'yup'
+  import { fetchTickets, responseTicket } from '~/http/api/support'
+  import type { ResponseTicket, Tickets } from '~/models/Support'
   const { user } = storeToRefs(useAuthStore())
   const tickets = ref<Tickets>({} as Tickets)
-  watch(
-    () => user.value,
-    async (newUser) => {
-      if (newUser?.opened_tickets_count && newUser?.opened_tickets_count > 0) {
-        tickets.value = await fetchTickets()
-      }
-    },
-    { immediate: true }
-  )
+  const loading = ref(false)
+  const { defineField, handleSubmit } = useForm<ResponseTicket>({
+    validationSchema: toTypedSchema(
+      object({
+        ticket_id: string().required('Campo requerido'),
+        response_message: string().min(10, 'El mensaje debe tener al menos 10 caracteres').required('Campo requerido'),
+      })
+    ),
+  })
+  const [ticket_id, ticket_id_props] = defineField('ticket_id', vuetifyConfig)
+  const [response_message, response_message_props] = defineField('response_message', vuetifyConfig)
+  const init = async () => {
+    tickets.value = await fetchTickets()
+  }
+  const responseTicketHandler = handleSubmit(async (values) => {
+    loading.value = true
+    try {
+      await responseTicket(values)
+      useToast().toast({
+        type: 'success',
+        msg: 'Respuesta enviada',
+        description: 'Tu respuesta ha sido enviada correctamente',
+      })
+      await init()
+      ticket_id.value = ''
+    } catch (e) {
+      console.log(e)
+      useToast().toast({
+        type: 'error',
+        msg: 'Error al enviar la respuesta',
+        description: 'Ha ocurrido un error al enviar tu respuesta, por favor intenta de nuevo',
+      })
+    } finally {
+      loading.value = false
+    }
+  })
+  onMounted(async () => {
+    await init()
+    if (tickets.value.data.length === 0) {
+      useToast().toast({
+        type: 'info',
+        msg: 'No tienes tickets abiertos',
+        description: 'No tienes tickets abiertos, por favor crea uno para comunicarte con el equipo de soporte',
+      })
+      user.value.opened_tickets_count = 0
+    } else {
+      ticket_id.value = tickets.value.data[0]?.id as string
+    }
+  })
 </script>
 
 <template>
-  <v-card v-for="ticket in tickets.data" :key="ticket.id" class="mb-4">
+  <div v-if="loading || !tickets.data.length" class="text-center my-4">
+    <v-empty-state
+      size="120"
+      headline="Todo en orden"
+      title="No tienes tickets abiertos"
+      text="Si necesitas ayuda, crea un ticket y te respondemos lo antes posible."
+      image="/futzo/logos/circular/logo-22.png"
+    ></v-empty-state>
+  </div>
+  <v-card
+    v-else
+    v-for="ticket in tickets.data"
+    :key="ticket.id"
+    min-height="600px"
+    max-height="600px"
+    min-width="100%"
+    max-width="400px"
+    class="mb-4 flex-column d-flex"
+  >
     <v-card-item>
       <v-card-title
         ><div class="d-flex">
@@ -24,7 +83,7 @@
         </div>
       </v-card-title>
       <v-card-subtitle> Creado {{ ticket.created_at }} </v-card-subtitle>
-      <div class="py-4 d-flex align-center">
+      <div class="d-flex align-center">
         <Icon :name="`mdi-${ticket.contact_method === 'email' ? 'email-outline' : 'phone-outline'}`" size="20"></Icon>
         <p class="text-body-1 mx-2">{{ ticket.contact_value }}</p>
         <span class="mx-2">|</span>
@@ -32,8 +91,13 @@
         <p class="text-body-1 mx-2">{{ ticket.messages_count }}</p>
       </div>
     </v-card-item>
-    <v-card-text>
-      <v-timeline side="end">
+    <v-card-text style="overflow-y: auto; scrollbar-width: thin">
+      <v-timeline
+        side="end"
+        style="max-height: 300px; overflow-y: scroll; scrollbar-width: thin"
+        class="pr-2"
+        v-auto-animate
+      >
         <v-timeline-item
           v-for="message in ticket.public_messages"
           :key="message.id"
@@ -59,20 +123,33 @@
           </v-card>
         </v-timeline-item>
       </v-timeline>
-      <div class="d-flex align-center my-2">
+      <div class="d-flex align-center my-2" v-if="ticket.status !== 'answered'">
         <span class="pulse pulsate-fwd bg-green-lighten-2 mx-2"></span>
         <span>Esperando respuesta del equipo de soporte</span>
       </div>
     </v-card-text>
+    <v-spacer />
     <v-card-actions>
       <div class="d-flex flex-column w-100">
-        <v-textarea variant="outlined" class="my-4"> </v-textarea>
+        <v-textarea
+          variant="outlined"
+          class="mb-4"
+          v-bind="response_message_props"
+          v-model="response_message"
+          density="compact"
+          placeholder="Cuéntanos qué pasó Si puedes, agrega el nombre de tu liga o torneo."
+          rows="8"
+          :disabled="ticket.status === 'open' || ticket.status === 'pending'"
+        >
+        </v-textarea>
         <PrimaryBtn
           block
           text="Enviar mensaje"
           icon="mdi-send"
           iconPosition="right"
-          :disabled="ticket.status === 'open'"
+          :disabled="ticket.status === 'open' || ticket.status === 'pending'"
+          v-bind="ticket_id_props"
+          @click="responseTicketHandler"
         />
       </div>
     </v-card-actions>

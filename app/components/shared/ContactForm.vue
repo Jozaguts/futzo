@@ -39,6 +39,11 @@
       })
       emits('submitted')
     } catch (e) {
+      useToast().toast({
+        msg: 'Error al enviar el mensaje',
+        description: e?.data?.message ?? 'Ha ocurrido un error al enviar tu mensaje, por favor intenta de nuevo.',
+        type: 'error',
+      })
     } finally {
       loading.value = false
     }
@@ -55,48 +60,53 @@
 </script>
 
 <template>
-  <v-sheet min-height="100%" max-height="400px" min-width="100%" max-width="350px" class="px-2">
-    <div>
+  <v-card min-height="600px" max-height="600px" min-width="100%" max-width="400px" class="mb-4 flex-column d-flex">
+    <v-card-item>
       <span class="subheading">Asunto: </span>
       <v-chip-group density="compact" v-model="subject" v-bind="subject_props">
         <v-chip variant="outlined" color="primary" density="compact" value="bug">Bug</v-chip>
         <v-chip variant="outlined" color="primary" density="compact" value="feature">Mejora</v-chip>
         <v-chip variant="outlined" color="primary" density="compact" value="support">Soporte</v-chip>
       </v-chip-group>
-    </div>
-    <v-select
-      label="torneo (opcional)"
-      clearable
-      :items="leagueTournaments"
-      no-data-text="No cuentas con torneos"
-      v-model="tournament_id"
-      density="compact"
-      class="my-4"
-      item-title="name"
-      item-value="id"
-      v-bind="tournament_id_props"
-    ></v-select>
-    <v-textarea
-      class="text-area"
-      v-model="message"
-      v-bind="message_props"
-      placeholder="Cuéntanos qué pasó Si puedes, agrega el nombre de tu liga o torneo."
-      style="min-height: 100%; max-height: 210px"
-    ></v-textarea>
-    <small class="text-wrap"
-      >Respondemos al correo o número con el que te registraste. Si usaste teléfono, revisa WhatsApp.</small
-    >
-    <PrimaryBtn
-      text="Enviar Mensaje"
-      icon="mdi:send"
-      block
-      class="pa-4 my-2"
-      icon-position="right"
-      @click="submit"
-      :loading="loading"
-      :disabled="!meta.valid || loading"
-    ></PrimaryBtn>
-  </v-sheet>
+    </v-card-item>
+    <v-card-text style="overflow-y: auto; scrollbar-width: thin" max-width="400" min-width="100%">
+      <v-select
+        label="torneo (opcional)"
+        clearable
+        :items="leagueTournaments"
+        no-data-text="No cuentas con torneos"
+        v-model="tournament_id"
+        density="compact"
+        class="my-4"
+        item-title="name"
+        item-value="id"
+        v-bind="tournament_id_props"
+      ></v-select>
+      <v-textarea
+        class="text-area"
+        v-model="message"
+        v-bind="message_props"
+        rows="10"
+        placeholder="Cuéntanos qué pasó Si puedes, agrega el nombre de tu liga o torneo."
+        style="height: 100%; max-height: 100%; scrollbar-width: thin"
+      ></v-textarea>
+      <small class="text-wrap"
+        >Respondemos al correo o número con el que te registraste. Si usaste teléfono, revisa WhatsApp.</small
+      >
+    </v-card-text>
+    <v-card-actions>
+      <PrimaryBtn
+        text="Enviar Mensaje"
+        icon="mdi:send"
+        block
+        class="pa-4 my-2"
+        icon-position="right"
+        @click="submit"
+        :loading="loading"
+        :disabled="!meta.valid || loading"
+      ></PrimaryBtn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <style scoped></style>

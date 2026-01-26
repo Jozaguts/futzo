@@ -9,28 +9,6 @@
   const { showSupportButton, openMessageSupportBox } = storeToRefs(useGlobalStore())
   const { user } = storeToRefs(useAuthStore())
   const tab = ref(user?.value?.opened_tickets_count ? 'history' : 'contact-support')
-  const years = [
-    {
-      color: 'cyan',
-      year: '1960',
-    },
-    {
-      color: 'green',
-      year: '1970',
-    },
-    {
-      color: 'pink',
-      year: '1980',
-    },
-    {
-      color: 'amber',
-      year: '1990',
-    },
-    {
-      color: 'orange',
-      year: '2000',
-    },
-  ]
 </script>
 <template>
   <client-only>
@@ -61,7 +39,14 @@
             </template>
           </v-btn>
         </template>
-        <v-card max-width="380" class="futzo-rounded" variant="outlined" density="compact">
+        <v-card
+          max-width="400px"
+          min-width="100%"
+          min-height="100%"
+          class="futzo-rounded"
+          variant="outlined"
+          density="compact"
+        >
           <v-card-item>
             <v-tabs color="primary" v-model="tab">
               <v-tab value="contact-support" :disabled="!!user?.opened_tickets_count"> Contacto y soporte </v-tab>
@@ -70,10 +55,10 @@
           </v-card-item>
           <v-card-text>
             <v-tabs-window v-model="tab">
-              <v-tabs-window-item value="contact-support">
+              <v-tabs-window-item value="contact-support" height="100%">
                 <ContactForm @submitted="openMessageSupportBox = false" />
               </v-tabs-window-item>
-              <v-tabs-window-item value="history">
+              <v-tabs-window-item value="history" height="100%">
                 <TicketList />
               </v-tabs-window-item>
             </v-tabs-window>
