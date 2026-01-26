@@ -91,7 +91,7 @@
         <p class="text-body-1 mx-2">{{ ticket.messages_count }}</p>
       </div>
     </v-card-item>
-    <v-card-text style="overflow-y: auto; scrollbar-width: thin">
+    <v-card-text>
       <v-timeline
         side="end"
         style="max-height: 300px; overflow-y: scroll; scrollbar-width: thin"
