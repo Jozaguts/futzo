@@ -3,12 +3,12 @@
   import { useForm } from 'vee-validate'
   import { ref } from 'vue'
   import type { SupportTicketForm } from '~/models/User'
-  import { createTicket } from '~/http/api/auth'
+  import { createTicket } from '~/http/api/support'
   import { useToast } from '#imports'
   const emits = defineEmits<{
     (e: 'submitted'): void
   }>()
-  const { defineField, handleSubmit, errors, meta } = useForm<SupportTicketForm>({
+  const { defineField, handleSubmit, meta } = useForm<SupportTicketForm>({
     validationSchema: toTypedSchema(
       object({
         subject: string().required('Campo requerido'),
@@ -22,7 +22,6 @@
       message: '',
     },
   })
-  const { openMessageSupportBox } = storeToRefs(useGlobalStore())
   const { leagueTournaments } = storeToRefs(useLeaguesStore())
   const { user } = storeToRefs(useAuthStore())
   const [tournament_id, tournament_id_props] = defineField('tournament_id', vuetifyConfig)

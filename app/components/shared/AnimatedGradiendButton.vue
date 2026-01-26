@@ -1,12 +1,14 @@
 <script lang="ts" setup>
   import ContactForm from '~/components/shared/ContactForm.vue'
+  import TicketList from '~/components/shared/TicketList.vue'
   interface Props {
     text?: string
     href?: string
   }
   const { href = '#', text = 'Contacto y soporte' } = defineProps<Props>()
   const { showSupportButton, openMessageSupportBox } = storeToRefs(useGlobalStore())
-  const tab = ref('contact-support')
+  const { user } = storeToRefs(useAuthStore())
+  const tab = ref(user?.value?.opened_tickets_count ? 'history' : 'contact-support')
   const years = [
     {
       color: 'cyan',
@@ -62,7 +64,7 @@
         <v-card max-width="380" class="futzo-rounded" variant="outlined" density="compact">
           <v-card-item>
             <v-tabs color="primary" v-model="tab">
-              <v-tab value="contact-support"> Contacto y soporte </v-tab>
+              <v-tab value="contact-support" :disabled="!!user?.opened_tickets_count"> Contacto y soporte </v-tab>
               <v-tab value="history"> Historial </v-tab>
             </v-tabs>
           </v-card-item>
@@ -72,29 +74,7 @@
                 <ContactForm @submitted="openMessageSupportBox = false" />
               </v-tabs-window-item>
               <v-tabs-window-item value="history">
-                <v-sheet
-                  min-height="100%"
-                  max-height="400px"
-                  min-width="100%"
-                  max-width="350px"
-                  class="px-2 overflow-y-auto"
-                >
-                  <v-timeline align="start">
-                    <v-timeline-item v-for="(year, i) in years" :key="i" :dot-color="year.color" size="small">
-                      <template v-slot:opposite>
-                        <div :class="`pt-1 headline font-weight-bold text-${year.color}`" v-text="year.year"></div>
-                      </template>
-                      <div>
-                        <h2 :class="`mt-n1 headline font-weight-light mb-4 text-${year.color}`">Lorem ipsum</h2>
-                        <div>
-                          Lorem ipsum dolor sit amet, no nam oblique veritus. Commune scaevola imperdiet nec ut, sed
-                          euismod convenire principes at. Est et nobis iisque percipit, an vim zril disputando
-                          voluptatibus, vix an salutandi sententiae.
-                        </div>
-                      </div>
-                    </v-timeline-item>
-                  </v-timeline>
-                </v-sheet>
+                <TicketList />
               </v-tabs-window-item>
             </v-tabs-window>
           </v-card-text>
