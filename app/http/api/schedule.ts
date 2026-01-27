@@ -42,3 +42,10 @@ export const getScheduleRoundDetails = async (tournamentId: number, round: numbe
   const client = useSanctumClient();
   return await client<ScheduleRoundDetails>(`/api/v1/admin/tournaments/${tournamentId}/schedule/rounds/${round}`);
 };
+export const updateScheduleRoundDetails = async (tournamentId: number, round: number, data: any) => {
+  const client = useSanctumClient();
+  return await client(`/api/v1/admin/tournaments/${tournamentId}/schedule/rounds/${round}/lock`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+};

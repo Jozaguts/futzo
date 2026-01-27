@@ -5,11 +5,11 @@
   import PhaseProgressCard from './phase-progress-card.vue'
   import BracketSchedulerDialog from './bracket-scheduler-dialog.vue'
   import { useToast } from '~/composables/useToast'
-  import type { Match, RoundStatus, ScheduleRoundDetails } from '~/models/Schedule'
+  import type { Match, MatchAway, RoundStatus, ScheduleRoundDetails } from '~/models/Schedule'
   import { useDisplay } from 'vuetify'
   import NoCalendar from '~/components/pages/torneos/no-calendar.vue'
   import RegeneateRoundModalComponent from '~/components/pages/calendario/RegeneateRoundModalComponent.vue'
-  import { getScheduleRoundDetails } from '~/http/api/schedule'
+  import { getScheduleRoundDetails, updateScheduleRoundDetails } from '~/http/api/schedule'
   const { tournamentId, loading, tournament } = storeToRefs(useTournamentStore())
   const { gameReportDialog, showReScheduleDialog, gameDetailsRequest } = storeToRefs(useGameStore())
   const scheduleStore = useScheduleStore()
@@ -23,6 +23,7 @@
     regenerationBanner,
     regeneratedFromRound,
     regenerateRoundDialog,
+    scheduleSettings,
   } = storeToRefs(scheduleStore)
   const roundState = ref<{ round: number | null; fetching: boolean; data: ScheduleRoundDetails }>({
     round: null,
@@ -280,9 +281,72 @@
   }
 
   const showRoundModalEdit = async (round: number) => {
+    roundState.value.fetching = true
     regenerateRoundDialog.value = true
     roundState.value.round = round
     roundState.value.data = await getScheduleRoundDetails(tournamentId.value as number, round)
+    roundState.value.fetching = false
+  }
+
+  const handleRoundSave = async (payload: { matches: Match[]; restingTeam: MatchAway | null }) => {
+    if (!tournamentId.value || !roundState.value.round) {
+      return
+    }
+
+    if (roundState.value.round !== 1) {
+      useToast().toast({
+        type: 'error',
+        msg: 'Jornada no válida',
+        description: 'Por ahora solo se puede guardar la Jornada 1.',
+      })
+      return
+    }
+
+    const totalTeams = Number(scheduleSettings.value?.teams ?? tournament.value?.teams?.length ?? 0)
+    const requiresBye = totalTeams % 2 === 1
+    const byeTeamId = payload.restingTeam?.id ?? null
+
+    if (requiresBye && !byeTeamId) {
+      useToast().toast({
+        type: 'error',
+        msg: 'Equipo en descanso requerido',
+        description: 'El torneo tiene número impar de equipos. Selecciona el equipo que descansa.',
+      })
+      return
+    }
+
+    const matchesPayload = payload.matches.map((match) => ({
+      home_team_id: match.home.id,
+      away_team_id: match.away.id,
+    }))
+
+    const updatePayload: { matches: { home_team_id: number; away_team_id: number }[]; bye_team_id?: number | null } =
+      {
+        matches: matchesPayload,
+      }
+
+    if (requiresBye || byeTeamId) {
+      updatePayload.bye_team_id = byeTeamId
+    }
+
+    try {
+      roundState.value.fetching = true
+      await updateScheduleRoundDetails(tournamentId.value as number, roundState.value.round, updatePayload)
+      useToast().toast({
+        type: 'success',
+        msg: 'Jornada actualizada',
+        description: 'Los cambios se guardaron correctamente.',
+      })
+      roundState.value.data = await getScheduleRoundDetails(tournamentId.value as number, roundState.value.round)
+    } catch (error) {
+      useToast().toast({
+        type: 'error',
+        msg: 'Error al guardar',
+        description: 'No se pudieron guardar los cambios. Intenta nuevamente.',
+      })
+    } finally {
+      roundState.value.fetching = false
+    }
   }
 </script>
 <template>
@@ -542,6 +606,7 @@
       v-model="regenerateRoundDialog"
       :data="roundState.data"
       :is-fetching="roundState.fetching"
+      @save="handleRoundSave"
     />
   </v-container>
 </template>
