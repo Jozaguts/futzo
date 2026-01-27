@@ -38,7 +38,7 @@
   </section>
   <v-empty-state
     v-else
-    size="200"
+    size="110"
     :title="content.title"
     :text="content.text"
     :action-text="content.actionText"

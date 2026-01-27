@@ -128,6 +128,8 @@
 
   .live-games-table > .v-table__wrapper {
     overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: thin;
   }
 
   .live-games-table__title {

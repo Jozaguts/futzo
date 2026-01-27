@@ -63,7 +63,7 @@
       </div>
     </template>
     <template #wrapper>
-      <div class="v-table__wrapper">
+      <div class="v-table__wrapper" style="overflow-x: auto">
         <Table
           v-if="tableType === 'general'"
           :headers="headers"
