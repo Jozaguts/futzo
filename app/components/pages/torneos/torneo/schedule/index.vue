@@ -5,13 +5,13 @@
   import PhaseProgressCard from './phase-progress-card.vue'
   import BracketSchedulerDialog from './bracket-scheduler-dialog.vue'
   import { useToast } from '~/composables/useToast'
-  import type { Match, RoundStatus } from '~/models/Schedule'
+  import type { Match, RoundStatus, ScheduleRoundDetails } from '~/models/Schedule'
   import { useDisplay } from 'vuetify'
   import NoCalendar from '~/components/pages/torneos/no-calendar.vue'
-
+  import RegeneateRoundModalComponent from '~/components/pages/calendario/RegeneateRoundModalComponent.vue'
+  import { getScheduleRoundDetails } from '~/http/api/schedule'
   const { tournamentId, loading, tournament } = storeToRefs(useTournamentStore())
   const { gameReportDialog, showReScheduleDialog, gameDetailsRequest } = storeToRefs(useGameStore())
-
   const scheduleStore = useScheduleStore()
   const {
     schedulePagination,
@@ -22,10 +22,13 @@
     noSchedules,
     regenerationBanner,
     regeneratedFromRound,
-    hasPendingManualMatches,
-    pendingManualMatches,
+    regenerateRoundDialog,
   } = storeToRefs(scheduleStore)
-
+  const roundState = ref<{ round: number | null; fetching: boolean; data: ScheduleRoundDetails }>({
+    round: null,
+    fetching: false,
+    data: {} as ScheduleRoundDetails,
+  })
   const eliminationPhaseNames = [
     'Dieciseisavos de Final',
     'Octavos de Final',
@@ -33,12 +36,6 @@
     'Semifinales',
     'Final',
   ]
-  const pendingManualAlertMessage = computed(() => {
-    const total = pendingManualMatches.value ?? 0
-    const suffix = total === 1 ? '' : 's'
-    return `Hay ${total} partido${suffix} pendientes de programación manual.`
-  })
-  const showPendingManualAlert = computed(() => hasPendingManualMatches.value)
   const handleDismissBanner = () => {
     scheduleStore.clearRegenerationBanner()
   }
@@ -48,9 +45,6 @@
     return !game.details || !game.details.raw_date || !game.details.field?.id
   }
   const showOnlyPendingManual = ref(false)
-  const togglePendingFilter = () => {
-    showOnlyPendingManual.value = !showOnlyPendingManual.value
-  }
 
   const ensurePenaltyStructure = (game: Match) => {
     if (!game.penalties) {
@@ -284,6 +278,12 @@
   const openBracketDialog = () => {
     showBracketDialog.value = true
   }
+
+  const showRoundModalEdit = async (round: number) => {
+    regenerateRoundDialog.value = true
+    roundState.value.round = round
+    roundState.value.data = await getScheduleRoundDetails(tournamentId.value as number, round)
+  }
 </script>
 <template>
   <v-container fluid class="pa-0">
@@ -357,6 +357,9 @@
                           <v-list-subheader>Actualizar</v-list-subheader>
                           <v-list-item @click="editRound(item.round)">
                             <v-list-item-title>Resultados </v-list-item-title>
+                          </v-list-item>
+                          <v-list-item @click="showRoundModalEdit(item.round)">
+                            <v-list-item-title>Jornada</v-list-item-title>
                           </v-list-item>
                           <v-list-subheader>Marcar Jornada como </v-list-subheader>
                           <v-list-item
@@ -535,6 +538,11 @@
     <ReScheduleGame v-model:show="showReScheduleDialog" />
     <GameReport />
     <BracketSchedulerDialog v-model="showBracketDialog" />
+    <RegeneateRoundModalComponent
+      v-model="regenerateRoundDialog"
+      :data="roundState.data"
+      :is-fetching="roundState.fetching"
+    />
   </v-container>
 </template>
 <style lang="sass" scoped>

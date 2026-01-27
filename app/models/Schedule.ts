@@ -1,3 +1,12 @@
+export type ScheduleRoundDetails = {
+  round: number;
+  status: string;
+  isEditable: boolean;
+  date: Date;
+  matches: Match[];
+  bye_team: MatchAway;
+};
+
 export type EliminationRules = {
   round_trip: boolean;
   away_goals: boolean;

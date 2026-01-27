@@ -1,5 +1,5 @@
 import { useSanctumClient } from '#imports';
-import type { ScheduleStoreRequest } from '~/models/Schedule';
+import type { ScheduleRoundDetails, ScheduleStoreRequest } from '~/models/Schedule';
 
 export const fetchRoundByStatus = async (tournamentId: number, filter: string, page: number) => {
   const client = useSanctumClient();
@@ -36,4 +36,9 @@ export const generateSchedule = async (tournamentId: number, data: ScheduleStore
     method: 'POST',
     body: JSON.stringify(data),
   });
+};
+
+export const getScheduleRoundDetails = async (tournamentId: number, round: number) => {
+  const client = useSanctumClient();
+  return await client<ScheduleRoundDetails>(`/api/v1/admin/tournaments/${tournamentId}/schedule/rounds/${round}`);
 };
