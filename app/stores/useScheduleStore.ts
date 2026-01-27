@@ -206,14 +206,10 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
   });
   const hasActivePhaseMatches = computed(() => activePhaseMatches.value.length > 0);
   const areActivePhaseMatchesProgrammed = computed(
-    () =>
-      hasActivePhaseMatches.value &&
-      activePhaseMatches.value.every((match) => match.status === 'programado')
+    () => hasActivePhaseMatches.value && activePhaseMatches.value.every((match) => match.status === 'programado')
   );
   const areActivePhaseMatchesCompleted = computed(
-    () =>
-      hasActivePhaseMatches.value &&
-      activePhaseMatches.value.every((match) => match.status === 'completado')
+    () => hasActivePhaseMatches.value && activePhaseMatches.value.every((match) => match.status === 'completado')
   );
   const isActivePhaseConfigurationLocked = computed(
     () => hasActivePhaseMatches.value && activePhaseMatches.value.some((match) => match.status !== 'programado')
@@ -235,13 +231,31 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     //@ts-ignore
     return { start: minute(parts[0].trim()), end: minute(parts[1].trim()) };
   };
-  const matchDurationMins = computed(
-    () =>
-      Number(scheduleSettings.value.game_time || 0) +
-      Number(scheduleSettings.value.time_between_games || 0) +
-      MATCH_GLOBAL_REST +
-      MATCH_UNEXPECTED_BUFFER
-  );
+  const isShortFormat = computed(() => {
+    const footballTypeId = Number(
+      scheduleStoreRequest.value.general?.football_type_id ?? scheduleSettings.value.footballType?.id ?? 0
+    );
+    if (footballTypeId === 2 || footballTypeId === 3) {
+      return true;
+    }
+    const name = String(scheduleSettings.value.footballType?.name ?? '').toLowerCase();
+    const maxPlayers = Number(scheduleSettings.value.footballType?.max_players_per_team ?? 0);
+    return /futb[oó]l\s*7|fut7|futsal|f[uú]tbol sala/.test(name) || maxPlayers === 7;
+  });
+  const matchDurationMins = computed(() => {
+    const baseGameTime = Number(
+      scheduleStoreRequest.value.general?.game_time ?? scheduleSettings.value.game_time ?? 0
+    );
+    const betweenGames = Number(
+      scheduleStoreRequest.value.general?.time_between_games ?? scheduleSettings.value.time_between_games ?? 0
+    );
+    const normalizedGameTime = baseGameTime > 0 ? baseGameTime : isShortFormat.value ? 60 : 0;
+
+    if (isShortFormat.value) {
+      return normalizedGameTime + betweenGames;
+    }
+    return normalizedGameTime + betweenGames + MATCH_GLOBAL_REST + MATCH_UNEXPECTED_BUFFER;
+  });
   const matchesPerRound = computed(() => {
     const teams = Number(scheduleSettings.value.teams || scheduleStoreRequest.value.general?.total_teams || 0);
     return teams > 1 ? Math.floor(teams / 2) : 0;
@@ -481,10 +495,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     }
     isAnalyzingRegeneration.value = true;
     try {
-      const analysis = await tournamentAPI.analyzeScheduleRegeneration(
-        tournamentStore.tournamentId as number,
-        payload
-      );
+      const analysis = await tournamentAPI.analyzeScheduleRegeneration(tournamentStore.tournamentId as number, payload);
       regenerationAnalysis.value = analysis;
       return analysis;
     } catch (error) {
@@ -505,25 +516,18 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     }
     isConfirmingRegeneration.value = true;
     try {
-      const response = await tournamentAPI.confirmScheduleRegeneration(
-        tournamentStore.tournamentId as number,
-        payload
-      );
+      const response = await tournamentAPI.confirmScheduleRegeneration(tournamentStore.tournamentId as number, payload);
       regenerationResult.value = response;
       if (response?.analysis) {
         regenerationAnalysis.value = response.analysis;
       }
-      pendingManualMatches.value = Number(
-        response?.pending_manual_matches ?? pendingManualMatches.value ?? 0
-      );
+      pendingManualMatches.value = Number(response?.pending_manual_matches ?? pendingManualMatches.value ?? 0);
       const bannerType = response?.mode === 'partial' ? 'warning' : 'success';
       regenerationBanner.value = {
         type: bannerType,
         message: response?.message ?? 'El calendario se regeneró correctamente.',
       };
-      regeneratedFromRound.value = response?.mode === 'partial'
-        ? response?.cutoff_round ?? null
-        : null;
+      regeneratedFromRound.value = response?.mode === 'partial' ? (response?.cutoff_round ?? null) : null;
       await refreshScheduleSettings();
       schedulePagination.value.current_page = 1;
       schedules.value.rounds = [];
@@ -564,9 +568,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     isAdvancingPhase.value = true;
     try {
       const response: { message?: string; champion?: { team_id?: number; team_name?: string } } =
-        await tournamentAPI.advanceTournamentPhase(
-          tournamentStore.tournamentId as number
-        );
+        await tournamentAPI.advanceTournamentPhase(tournamentStore.tournamentId as number);
       await refreshScheduleSettings();
       schedulePagination.value.current_page = 1;
       schedules.value.rounds = [];
@@ -824,6 +826,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     reservedMinutesPerWeek,
     hasEnoughCapacity,
     hasSchedule,
+    regenerateRoundDialog,
     updateStatusGame,
     getTournamentSchedules,
     fetchSchedule,
