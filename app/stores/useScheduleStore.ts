@@ -115,6 +115,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
         },
       })),
     }));
+  const regenerateRoundDialog = ref(false);
   const scheduleDialog = ref(false);
   const scheduleParams = ref<{ leagueId: number; tournamentId: number }>();
   const daysToPlay = ref([

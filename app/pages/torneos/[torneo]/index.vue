@@ -88,14 +88,14 @@
           <NextGames :nextGames="nextGames" />
         </div>
         <div class="right-up-zone">
-          <v-card class="futzo-rounded mb-4">
-            <v-card-title> Historial </v-card-title>
-            <v-slide-group show-arrows>
-              <v-slide-group-item v-for="n in 25" :key="n" v-slot="{ isSelected, toggle }">
-                <SecondaryBtn class="ma-2" @click="toggle" :text="'Options' + n"> </SecondaryBtn>
-              </v-slide-group-item>
-            </v-slide-group>
-          </v-card>
+          <!--          <v-card class="futzo-rounded mb-4">-->
+          <!--            <v-card-title> Historial </v-card-title>-->
+          <!--            <v-slide-group show-arrows>-->
+          <!--              <v-slide-group-item v-for="n in 25" :key="n" v-slot="{ isSelected, toggle }">-->
+          <!--                <SecondaryBtn class="ma-2" @click="toggle" :text="'Options' + n"> </SecondaryBtn>-->
+          <!--              </v-slide-group-item>-->
+          <!--            </v-slide-group>-->
+          <!--          </v-card>-->
           <StatsTableContainer title="Líderes de estadísticas">
             <template #content>
               <StatsTable />
