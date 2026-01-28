@@ -15,6 +15,10 @@ import type {
   ScheduleRegenerationResult,
 } from '~/models/Schedule';
 
+export const getTournamentPublicDetails = async (slug: string) => {
+  const client = useSanctumClient();
+  return await client(`/api/v1/public/tournaments/${slug}/details`);
+};
 export const exportTournamentRoundScheduleAs = async (type: ExportType, tournamentId: number, round: any) => {
   const client = useSanctumClient();
   const blob = await client<Blob>(`/api/v1/admin/tournaments/${tournamentId}/schedule/rounds/${round}/export`, {
@@ -122,10 +126,7 @@ export const getTournamentFields = async (tournamentId: number) => {
   return await client(`/api/v1/admin/tournaments/${tournamentId}/fields`);
 };
 
-export const analyzeScheduleRegeneration = async (
-  tournamentId: number,
-  payload?: ScheduleRegenerationPayload
-) => {
+export const analyzeScheduleRegeneration = async (tournamentId: number, payload?: ScheduleRegenerationPayload) => {
   const client = useSanctumClient();
   const options: Record<string, unknown> = { method: 'POST' };
   if (payload && Object.keys(payload).length > 0) {
@@ -137,10 +138,7 @@ export const analyzeScheduleRegeneration = async (
   );
 };
 
-export const confirmScheduleRegeneration = async (
-  tournamentId: number,
-  payload?: ScheduleRegenerationPayload
-) => {
+export const confirmScheduleRegeneration = async (tournamentId: number, payload?: ScheduleRegenerationPayload) => {
   const client = useSanctumClient();
   const options: Record<string, unknown> = { method: 'POST' };
   if (payload && Object.keys(payload).length > 0) {
