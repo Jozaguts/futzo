@@ -15,55 +15,7 @@
     <template #wrapper>
       <div class="v-table__wrapper content">
         <slot name="content">
-          <table>
-            <tbody>
-              <tr class="next-games-today-table__cell">
-                <td class="team">
-                  <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
-                  <span class="team_name">Equipo 1</span>
-                </td>
-                <td class="data">
-                  <span class="date">24/06/2024</span>
-                  <span class="result">10:00</span>
-                  <span class="field">Campo 1</span>
-                </td>
-                <td class="team">
-                  <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
-                  <span class="team_name">Equipo 1</span>
-                </td>
-              </tr>
-              <tr class="next-games-today-table__cell">
-                <td class="team">
-                  <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
-                  <span class="team_name">Equipo 1</span>
-                </td>
-                <td class="data">
-                  <span class="date">24/06/2024</span>
-                  <span class="result">10:00</span>
-                  <span class="field">Campo 1</span>
-                </td>
-                <td class="team">
-                  <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
-                  <span class="team_name">Equipo 1</span>
-                </td>
-              </tr>
-              <tr class="next-games-today-table__cell">
-                <td class="team">
-                  <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
-                  <span class="team_name">Equipo 1</span>
-                </td>
-                <td class="data">
-                  <span class="date">24/06/2024</span>
-                  <span class="result">10:00</span>
-                  <span class="field">Campo 1</span>
-                </td>
-                <td class="team">
-                  <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
-                  <span class="team_name">Equipo 1</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <v-skeleton-loader v-if="!data" type="table" class="mb-6" />
         </slot>
       </div>
     </template>

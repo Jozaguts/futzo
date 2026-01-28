@@ -16,7 +16,7 @@
 <template>
   <v-table class="next-games-table" :hover="false">
     <template #top>
-      <div class="next-games-table__header">
+      <div class="next-games-table__header pa-4">
         <h2 class="next-games-table-title">{{ title }}</h2>
         <v-btn variant="text" :disabled="disabled" to="/" class="next-games-table-link">Ver todos</v-btn>
       </div>
@@ -49,7 +49,7 @@
                   <div class="btn-container">
                     <v-btn variant="text" class="d-flex align-center" disabled>
                       <span class="btn-text text-disabled"> Ver detalles</span>
-                      <Icon name="futzo-icon:arrow-right text-disabled" />
+                      <Icon name="futzo-icon:arrow-right" class="text-disabled" />
                     </v-btn>
                   </div>
                 </div>

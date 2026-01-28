@@ -3,8 +3,9 @@
 
   type Props = {
     title?: string
+    showExport?: boolean
   }
-  const { title = 'Tabla de posiciones' } = defineProps<Props>()
+  const { title = 'Tabla de posiciones', showExport = true } = defineProps<Props>()
   const loading = ref(false)
   const items: ExportListItem[] = [
     { value: 'excel', text: 'Excel', icon: 'futzo-icon:file-type-excel' },
@@ -23,7 +24,7 @@
       <div class="d-flex justify-center align-center w-100">
         <h2 class="live-games-table__title mr-auto">{{ title }}</h2>
         <v-menu
-          v-if="title === 'Líderes de estadísticas'"
+          v-if="showExport && title === 'Líderes de estadísticas'"
           location="start"
           transition="slide-x-transition"
           :close-on-content-click="false"
@@ -47,69 +48,7 @@
     <template #wrapper>
       <div class="v-table__wrapper content">
         <slot name="content">
-          <table>
-            <tbody>
-              <slot name="table-body">
-                <tr class="live-games-table__cell">
-                  <td class="team">
-                    <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
-                    <span class="team_name">Equipo 1</span>
-                  </td>
-                  <td class="data">
-                    <div class="live">
-                      <Icon name="futzo-icon:ellipse-red"></Icon>
-                      <span>Live</span>
-                    </div>
-                    <div class="result">
-                      <div class="text">1:3</div>
-                    </div>
-                  </td>
-                  <td class="team">
-                    <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
-                    <span class="team_name">Equipo 1</span>
-                  </td>
-                </tr>
-                <tr class="live-games-table__cell">
-                  <td class="team">
-                    <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
-                    <span class="team_name">Equipo 1</span>
-                  </td>
-                  <td class="data">
-                    <div class="live">
-                      <Icon name="futzo-icon:ellipse-red"></Icon>
-                      <span>Live</span>
-                    </div>
-                    <div class="result">
-                      <div class="text">1:3</div>
-                    </div>
-                  </td>
-                  <td class="team">
-                    <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
-                    <span class="team_name">Equipo 1</span>
-                  </td>
-                </tr>
-                <tr class="live-games-table__cell">
-                  <td class="team">
-                    <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
-                    <span class="team_name">Equipo 1</span>
-                  </td>
-                  <td class="data">
-                    <div class="live">
-                      <Icon name="futzo-icon:ellipse-red"></Icon>
-                      <span>Live</span>
-                    </div>
-                    <div class="result">
-                      <div class="text">1:3</div>
-                    </div>
-                  </td>
-                  <td class="team">
-                    <img src="https://placehold.co/50x50" alt="team logo" class="logo" />
-                    <span class="team_name">Equipo 1</span>
-                  </td>
-                </tr>
-              </slot>
-            </tbody>
-          </table>
+          <v-skeleton-loader v-if="loading" type="table" class="mb-6" />
         </slot>
       </div>
     </template>

@@ -1,10 +1,16 @@
 <script setup lang="ts">
   import getHeaders from '~/utils/headers-table'
   import type { ExportListItem } from '~/models/tournament'
-  const { standings, groupStanding } = defineProps<{
-    standings: any
-    groupStanding: any
-  }>()
+  const { standings, groupStanding, showMenu } = withDefaults(
+    defineProps<{
+      standings: any
+      groupStanding: any
+      showMenu?: boolean
+    }>(),
+    {
+      showMenu: true,
+    }
+  )
   const headers = getHeaders('standings')
   const items: ExportListItem[] = [
     { value: 'excel', text: 'Excel', icon: 'futzo-icon:file-type-excel' },
@@ -28,7 +34,7 @@
       <div class="d-flex align-center">
         <h2 class="positions-table-title mt-0 mr-2">Tabla de posiciones</h2>
         <v-spacer />
-        <v-menu location="start" transition="slide-x-transition" :close-on-content-click="false">
+        <v-menu v-if="showMenu" location="start" transition="slide-x-transition" :close-on-content-click="false">
           <template v-slot:activator="{ props }">
             <v-btn icon="mdi-dots-vertical" variant="plain" v-bind="props" :ripple="false" />
           </template>
