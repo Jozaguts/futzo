@@ -26,6 +26,7 @@
     loadMore: loadSchedule,
     reset: resetSchedule,
   } = usePublicTournamentSchedule(slug)
+  const hasStandings = computed(() => Boolean(data.value?.standings?.length))
   watch(
     () => slug.value,
     () => {
@@ -76,7 +77,7 @@
                   <v-card-text>
                     <client-only>
                       <e-data-table
-                        v-if="data"
+                        v-if="data && hasStandings"
                         :headers="publicTournamentStandingsHeaders"
                         :items="data.standings"
                         hide-footer
@@ -94,6 +95,12 @@
                       </e-data-table>
 
                       <v-skeleton-loader v-else-if="loading" type="table" class="mb-6" />
+                      <v-empty-state
+                        v-else
+                        title="Tabla de posiciones no disponible"
+                        text="La tabla aún no está lista. Vuelve más tarde."
+                        image="/junior-soccer.svg"
+                      />
                     </client-only>
                   </v-card-text>
                 </v-card>
@@ -165,6 +172,7 @@
     grid-template-areas:
       't-table'
       't-stats';
+    align-items: stretch;
   }
   .t-next-games {
     grid-area: t-next-games;
@@ -180,6 +188,15 @@
   .t-table {
     grid-area: t-table;
   }
+  .t-table,
+  .t-stats {
+    min-height: 520px;
+  }
+  .t-table > .v-card,
+  .t-stats > .v-card,
+  .t-stats > .next-games-today-table {
+    height: 100%;
+  }
   @media (width > 600px) {
     .t-container {
       display: grid;
@@ -189,6 +206,10 @@
       grid-template-areas:
         't-table t-stats'
         't-table t-stats';
+    }
+    .t-table,
+    .t-stats {
+      min-height: 560px;
     }
   }
 </style>

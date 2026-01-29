@@ -12,18 +12,30 @@
   }>()
 
   const emit = defineEmits<{
-    (event: 'update-game', payload: { action: 'up' | 'down'; gameId: number; type: 'home' | 'away'; roundId: number }): void
-    (event: 'open-modal', payload: {
-      type: 'GameReport' | 'ReScheduleGame'
-      gameId: number
-      fieldId: number | null
-      date: string | null
-      locationId: number | null
-    }): void
+    (
+      event: 'update-game',
+      payload: { action: 'up' | 'down'; gameId: number; type: 'home' | 'away'; roundId: number }
+    ): void
+    (
+      event: 'open-modal',
+      payload: {
+        type: 'GameReport' | 'ReScheduleGame'
+        gameId: number
+        fieldId: number | null
+        date: string | null
+        locationId: number | null
+      }
+    ): void
   }>()
 
   const isPendingManualMatch = computed(() => {
     return !props.game.details || !props.game.details.raw_date || !props.game.details.field?.id
+  })
+
+  const winnerSide = computed<'home' | 'away' | null>(() => {
+    if (props.game.home.goals > props.game.away.goals) return 'home'
+    if (props.game.away.goals > props.game.home.goals) return 'away'
+    return null
   })
 
   const onUpdateGame = (action: 'up' | 'down', gameId: number, type: 'home' | 'away', roundId: number) => {
@@ -54,6 +66,7 @@
         type="home"
         :value="game.home.goals"
       />
+      <Icon v-if="winnerSide === 'home'" class="flag bg-primary" name="futzo-icon:match-polygon" />
     </div>
     <div class="team away">
       <v-avatar class="image" size="24" :image="game.away.image" />
@@ -66,7 +79,7 @@
         @update:game="onUpdateGame"
         type="away"
       />
-      <Icon class="flag" name="futzo-icon:match-polygon" />
+      <Icon v-if="winnerSide === 'away'" class="flag bg-primary" name="futzo-icon:match-polygon" />
     </div>
     <div v-if="shouldShowPenaltyInputs(game, isEditable)" class="penalty-container">
       <p class="text-body-2 font-weight-medium mb-2">Desempate por penales</p>
