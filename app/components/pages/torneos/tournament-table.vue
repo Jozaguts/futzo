@@ -100,25 +100,26 @@
             <v-btn block density="compact" variant="outlined" v-bind="props">Menu</v-btn>
           </template>
           <v-list density="compact" nav class="futzo-rounded">
+            <v-list-subheader>Ver</v-list-subheader>
             <v-list-item @click="scheduleHandler(item as Tournament)">
               <template #prepend>
                 <Icon name="futzo-icon:calendar" size="24"></Icon>
               </template>
-              <v-list-item-title class="ml-1">Ver calendario</v-list-item-title>
+              <v-list-item-title class="ml-1">Calendario</v-list-item-title>
             </v-list-item>
             <v-list-item @click="handleShowTournament(item as Tournament)">
               <template #prepend>
                 <Icon name="mdi-trophy" size="24"></Icon>
               </template>
-              <v-list-item-title class="ml-1">Ver Torneo</v-list-item-title>
+              <v-list-item-title class="ml-1">Torneo</v-list-item-title>
             </v-list-item>
             <v-list-subheader>Compartir</v-list-subheader>
-            <CopyLink :item="item" />
+            <CopyLink :item="item" text="Enlace de inscripción" />
             <v-list-item @click="qrCodeHandler(item as Tournament)" v-auto-animate>
               <template #prepend>
                 <Icon name="mdi-qrcode"></Icon>
               </template>
-              <v-list-item-title class="ml-1"> QR </v-list-item-title>
+              <v-list-item-title class="ml-1"> QR de inscripción </v-list-item-title>
               <template #append>
                 <Icon v-show="qr.isLoading" name="line-md:downloading-loop" class="text-primary"></Icon>
               </template>

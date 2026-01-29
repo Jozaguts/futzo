@@ -4,6 +4,11 @@
       type: Object,
       required: true,
     },
+    text: {
+      type: String,
+      required: false,
+      default: 'Enlace',
+    },
   })
   const copied = ref(false)
   const copyText = async (text: string) => {
@@ -32,7 +37,7 @@
   <v-list-item density="compact" @click="setCopied">
     <template #prepend> <Icon name="mdi-link" size="24"></Icon></template>
     <v-list-item-title class="pl-1" style="min-width: 130px">
-      Enlace
+      {{ text }}
       <transition-slide
         :duration="600"
         :offset="[-16, 16]"
