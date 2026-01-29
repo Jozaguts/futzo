@@ -16,8 +16,7 @@
         <div>
           <div class="text-h5 font-weight-bold">{{ header.name }}</div>
           <div class="d-flex align-center ga-2 mt-1">
-            <v-chip size="small" variant="tonal" color="primary">{{ header.status }}</v-chip>
-            <span class="text-body-2 text-medium-emphasis">{{ header.phase }}</span>
+            <v-chip size="small" variant="tonal" color="primary">{{ header.tournamentName }}</v-chip>
           </div>
         </div>
       </div>

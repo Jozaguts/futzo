@@ -127,6 +127,9 @@
         <p>{{ game.details?.location?.name }}</p>
         <p>{{ game.details?.field?.name }}</p>
       </template>
+      <template v-else>
+        <p class="text-body-2 font-weight-medium mb-2">Horario por confirmar.</p>
+      </template>
       <div v-if="!public" class="d-flex justify-space-between w-75 align-center">
         <v-btn
           icon

@@ -8,6 +8,7 @@
   import ScheduleRoundsInfiniteScroll from '~/components/pages/torneos/torneo/schedule/ScheduleRoundsInfiniteScroll.vue'
   import { usePublicTournamentSchedule } from '~/composables/usePublicTournamentSchedule'
   import { publicTournamentStandingsHeaders } from '~/utils/publicTournamentStandingsHeaders'
+  import { Icon } from '#components'
   definePageMeta({
     layout: 'blank',
     sanctum: {
@@ -46,6 +47,20 @@
       }
     }
   )
+  const last5Handler = (last_5: string) => {
+    return last_5.split('').map((value: string) => {
+      switch (value) {
+        case '-':
+          return { icon: 'mdi:checkbox-blank-circle-outline', color: 'gray', label: 'No jugó' }
+        case 'W':
+          return { icon: 'mdi:checkbox-marked-circle', color: 'green', label: 'Ganó' }
+        case 'L':
+          return { icon: 'mdi:close-circle', color: 'red', label: 'Perdió' }
+        case 'D':
+          return { icon: 'ic:outline-remove-circle', color: 'gray', label: 'Empate' }
+      }
+    })
+  }
 </script>
 
 <template>
@@ -78,6 +93,8 @@
                     <client-only>
                       <e-data-table
                         v-if="data && hasStandings"
+                        header-text-direction="center"
+                        body-text-direction="center"
                         :headers="publicTournamentStandingsHeaders"
                         :items="data.standings"
                         hide-footer
@@ -91,6 +108,22 @@
                               {{ values.team.name }}
                             </span>
                           </div>
+                        </template>
+                        <template #item-last_5="item">
+                          <span v-for="color in last5Handler(item.last_5)" :key="item.id" class="text-lowercase">
+                            <v-tooltip :text="color?.label" location="bottom">
+                              <template v-slot:activator="{ props }">
+                                <Icon
+                                  v-bind="props"
+                                  :name="color?.icon"
+                                  :class="`text-${color?.color}`"
+                                  :size="$vuetify.mobile ? 15 : 20"
+                                  class="cursor-pointer"
+                                />
+                              </template>
+                            </v-tooltip>
+                          </span>
+                          {{ values }}
                         </template>
                       </e-data-table>
 
@@ -106,6 +139,11 @@
                 </v-card>
               </div>
               <div class="t-stats">
+                <NextGamesToday title="Últimos resultados">
+                  <template #content>
+                    <LastGames v-if="data" :last-games="data.lastResults" />
+                  </template>
+                </NextGamesToday>
                 <StatsTableContainer title="Líderes de estadísticas" :show-export="false">
                   <template #content>
                     <PublicStatsTabs
@@ -117,11 +155,6 @@
                     />
                   </template>
                 </StatsTableContainer>
-                <NextGamesToday title="Últimos resultados">
-                  <template #content>
-                    <LastGames v-if="data" :last-games="data.lastResults" />
-                  </template>
-                </NextGamesToday>
               </div>
             </div>
           </v-window-item>

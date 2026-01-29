@@ -3,7 +3,7 @@ import type { PlayerStats } from '~/models/tournament';
 
 export type PublicTournamentHeader = {
   name: string;
-  phase: string;
+  tournamentName: string;
   startDate: string;
   location: string;
   teams: number;
