@@ -1,18 +1,20 @@
 <script setup lang="ts">
   import type { PublicTournamentHeader } from '~/models/PublicTournament'
+  const { isAuthenticated } = useSanctumAuth()
 
   defineProps<{
     header: PublicTournamentHeader
   }>()
+  const route = computed(() => {
+    return isAuthenticated.value ? '/dashboard' : '/'
+  })
 </script>
 
 <template>
   <v-card class="pa-6 futzo-rounded" variant="outlined">
     <div class="d-flex flex-column flex-md-row align-center justify-space-between ga-4">
       <div class="d-flex align-center ga-4">
-        <v-avatar size="64" class="header-icon">
-          <Icon name="mdi-trophy" size="30" class="text-primary" />
-        </v-avatar>
+        <v-avatar image="/images/futzo-icon.png" size="64" @click="$router.push(route)"> </v-avatar>
         <div>
           <div class="text-h5 font-weight-bold">{{ header.name }}</div>
           <div class="d-flex align-center ga-2 mt-1">
@@ -33,10 +35,3 @@
     </div>
   </v-card>
 </template>
-
-<style scoped>
-  .header-icon {
-    background: rgba(var(--v-theme-primary), 0.12);
-    border: 2px solid rgba(var(--v-theme-primary), 0.35);
-  }
-</style>
