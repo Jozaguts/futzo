@@ -14,10 +14,15 @@ import type {
   ScheduleRegenerationPayload,
   ScheduleRegenerationResult,
 } from '~/models/Schedule';
+import type { PublicTournamentStatusData } from '~/models/PublicTournament';
 
+export const getTournamentPublicSchedule = async (slug: string, page: number, perPage: number = 3) => {
+  const client = useSanctumClient();
+  return await client(`api/v1/public/tournaments/${slug}/schedule?page=${page}&perPage=${perPage}`);
+};
 export const getTournamentPublicDetails = async (slug: string) => {
   const client = useSanctumClient();
-  return await client(`/api/v1/public/tournaments/${slug}/details`);
+  return await client<PublicTournamentStatusData>(`/api/v1/public/tournaments/${slug}/details`);
 };
 export const exportTournamentRoundScheduleAs = async (type: ExportType, tournamentId: number, round: any) => {
   const client = useSanctumClient();

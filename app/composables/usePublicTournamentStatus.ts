@@ -16,10 +16,6 @@ export const usePublicTournamentStatus = (slug: string | Ref<string>) => {
         throw new Error('Slug vacío');
       }
       data.value = await getTournamentPublicDetails(slugValue);
-
-      // data.value = publicTournamentDummy;
-      // TODO: GET /api/v1/public/tournaments/{slug}/schedule
-      // Response: [{ round, date, matches: [{ id, homeTeam, homeShort, homeScore, awayTeam, awayShort, awayScore, time, venue, played }] }]
     } catch (err) {
       error.value = 'No pudimos cargar el torneo.';
       data.value = publicTournamentDummy;
@@ -27,7 +23,6 @@ export const usePublicTournamentStatus = (slug: string | Ref<string>) => {
       loading.value = false;
     }
   };
-
   return {
     data,
     loading,

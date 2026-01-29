@@ -26,7 +26,7 @@
 </script>
 
 <template>
-  <v-menu location="bottom" transition="slide-x-transition" :close-on-content-click="false">
+  <v-menu v-if="!public" location="bottom" transition="slide-x-transition" :close-on-content-click="false">
     <template #activator="{ props: menuProps }">
       <v-btn icon="mdi-dots-vertical" variant="text" v-bind="menuProps" />
     </template>

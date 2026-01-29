@@ -1,3 +1,6 @@
+import type { LastGames, NextGames, Team as GameTeam } from '~/models/Game';
+import type { PlayerStats } from '~/models/tournament';
+
 export type PublicTournamentHeader = {
   name: string;
   phase: string;
@@ -7,9 +10,6 @@ export type PublicTournamentHeader = {
   status: string;
   format: string;
 };
-
-import type { LastGames, NextGames, Team as GameTeam } from '~/models/Game';
-import type { PlayerStats } from '~/models/tournament';
 
 export type PublicStandingRow = {
   rank: number;
@@ -37,25 +37,6 @@ export type PublicStats = {
   red_cards: PlayerStats[];
 };
 
-export type PublicScheduleMatch = {
-  id: number;
-  homeTeam: string;
-  homeShort: string;
-  homeScore: number | null;
-  awayTeam: string;
-  awayShort: string;
-  awayScore: number | null;
-  time: string;
-  venue: string;
-  played: boolean;
-};
-
-export type PublicScheduleRound = {
-  round: number;
-  date: string;
-  matches: PublicScheduleMatch[];
-};
-
 export type PublicTournamentStatusData = {
   header: PublicTournamentHeader;
   standings: PublicStandingRow[];
@@ -63,5 +44,4 @@ export type PublicTournamentStatusData = {
   upcomingMatches: NextGames;
   lastResults: LastGames[];
   stats: PublicStats;
-  schedule: PublicScheduleRound[];
 };
