@@ -10,8 +10,8 @@
     type="Tarjetas amarillas"
     :data="playerStats"
     :content="{
-      title: 'Ranking de jugadores',
-      text: 'No hay tarjetas amarillas registradas en este torneo.',
+      title: 'Lideres en tarjetas amarillas',
+      text: 'No hay tarjetas amarillas o jugadores registrados en este torneo.',
       actioText: 'Actualizar datos',
     }"
   />

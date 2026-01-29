@@ -65,7 +65,6 @@
           <v-tabs v-model="tab" color="primary">
             <v-tab value="general">Vista General</v-tab>
             <v-tab value="calendario">Calendario</v-tab>
-            <v-tab value="estadisticas">Estadísticas</v-tab>
           </v-tabs>
         </v-card>
         <v-window v-model="tab" class="mt-6">
@@ -119,7 +118,6 @@
               </div>
             </div>
           </v-window-item>
-
           <v-window-item value="calendario">
             <v-alert v-if="scheduleError" type="warning" variant="tonal" class="mb-4">
               {{ scheduleError }}
@@ -132,8 +130,6 @@
               @load="loadSchedule"
             />
           </v-window-item>
-
-          <v-window-item value="estadisticas"> </v-window-item>
         </v-window>
       </v-container>
     </template>

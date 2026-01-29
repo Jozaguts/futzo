@@ -10,8 +10,8 @@
     type="Asistencias"
     :data="playerStats"
     :content="{
-      title: 'Ranking de jugadores',
-      text: 'No hay asistencias registradas en este torneo.',
+      title: 'Lideres de asistencias',
+      text: 'No hay asistencias o jugadores registrados en este torneo.',
       actioText: 'Actualizar datos',
     }"
   />

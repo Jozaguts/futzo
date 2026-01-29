@@ -1,14 +1,13 @@
 import type { Round, TournamentSchedule } from '~/models/Schedule';
 import { getTournamentPublicSchedule } from '~/http/api/tournament';
 
-const PAGE_SIZE = 1;
-
 export const usePublicTournamentSchedule = (slug: string | Ref<string>) => {
   const rounds = ref<Round[]>([]);
   const loading = ref(false);
   const error = ref<string | null>(null);
   const page = ref(1);
   const hasMore = ref(true);
+  const pendingLoad = ref(false);
 
   const reset = () => {
     rounds.value = [];
@@ -18,12 +17,17 @@ export const usePublicTournamentSchedule = (slug: string | Ref<string>) => {
   };
 
   const fetchSchedulePage = async (slugValue: string, targetPage: number): Promise<TournamentSchedule> => {
+    // TODO: GET /api/v1/public/tournaments/{slug}/schedule?page={page}
+    // Response: { rounds: Round[] }
+    // Round: { round, date, status, matches: Match[] }
     const { rounds } = await getTournamentPublicSchedule(slugValue, targetPage);
     return { rounds };
   };
 
   const loadMore = async ({ done }: { done: (status: 'ok' | 'empty' | 'error') => void }) => {
     if (loading.value) {
+      pendingLoad.value = true;
+      done('ok');
       return;
     }
     if (!hasMore.value) {
@@ -51,6 +55,10 @@ export const usePublicTournamentSchedule = (slug: string | Ref<string>) => {
       done('error');
     } finally {
       loading.value = false;
+      if (pendingLoad.value && hasMore.value) {
+        pendingLoad.value = false;
+        loadMore({ done: () => {} });
+      }
     }
   };
 

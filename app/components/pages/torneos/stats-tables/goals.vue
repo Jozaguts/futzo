@@ -10,8 +10,8 @@
     type="Goles"
     :data="playerStats"
     :content="{
-      title: 'Ranking de jugadores',
-      text: 'No hay goles registrados en este torneo.',
+      title: 'Lideres goleadores',
+      text: 'No hay goles o jugadores registrados registrados en este torneo.',
       actioText: 'Actualizar datos',
     }"
   />

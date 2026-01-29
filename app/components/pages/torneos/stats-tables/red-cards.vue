@@ -10,8 +10,8 @@
     type="Tarjetas rojas"
     :data="playerStats"
     :content="{
-      title: 'Ranking de jugadores',
-      text: 'No hay tarjetas rojas registradas en este torneo.',
+      title: 'Lideres en tarjetas rojas',
+      text: 'No hay tarjetas rojas o jugadores registrados en este torneo.',
       actioText: 'Actualizar datos',
     }"
   />
