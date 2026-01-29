@@ -92,12 +92,7 @@
       </div>
     </v-card-item>
     <v-card-text>
-      <v-timeline
-        side="end"
-        style="max-height: 300px; overflow-y: scroll; scrollbar-width: thin"
-        class="pr-2"
-        v-auto-animate
-      >
+      <v-timeline side="end" style="max-height: 300px; overflow-y: scroll" class="pr-2" v-auto-animate>
         <v-timeline-item
           v-for="message in ticket.public_messages"
           :key="message.id"

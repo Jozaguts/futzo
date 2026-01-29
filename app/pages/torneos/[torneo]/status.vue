@@ -8,6 +8,8 @@
   import ScheduleRoundsInfiniteScroll from '~/components/pages/torneos/torneo/schedule/ScheduleRoundsInfiniteScroll.vue'
   import { usePublicTournamentSchedule } from '~/composables/usePublicTournamentSchedule'
   import { publicTournamentStandingsHeaders } from '~/utils/publicTournamentStandingsHeaders'
+  import Vue3EasyDataTable from 'vue3-easy-data-table'
+  import 'vue3-easy-data-table/dist/style.css'
   import { Icon } from '#components'
   definePageMeta({
     layout: 'blank',
@@ -83,7 +85,7 @@
             <v-tab value="calendario">Calendario</v-tab>
           </v-tabs>
         </v-card>
-        <v-window v-model="tab" class="mt-6">
+        <v-window v-model="tab" class="mt-4">
           <v-window-item value="general">
             <div class="t-container">
               <div class="t-table">
@@ -91,7 +93,7 @@
                   <v-card-title>Tabla de posiciones</v-card-title>
                   <v-card-text>
                     <client-only>
-                      <e-data-table
+                      <Vue3EasyDataTable
                         v-if="data && hasStandings"
                         header-text-direction="center"
                         body-text-direction="center"
@@ -117,15 +119,14 @@
                                   v-bind="props"
                                   :name="color?.icon"
                                   :class="`text-${color?.color}`"
-                                  :size="$vuetify.mobile ? 15 : 20"
+                                  :size="16"
                                   class="cursor-pointer"
                                 />
                               </template>
                             </v-tooltip>
                           </span>
-                          {{ values }}
                         </template>
-                      </e-data-table>
+                      </Vue3EasyDataTable>
 
                       <v-skeleton-loader v-else-if="loading" type="table" class="mb-6" />
                       <v-empty-state

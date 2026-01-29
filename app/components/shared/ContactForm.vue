@@ -69,7 +69,7 @@
         <v-chip variant="outlined" color="primary" density="compact" value="support">Soporte</v-chip>
       </v-chip-group>
     </v-card-item>
-    <v-card-text style="overflow-y: auto; scrollbar-width: thin" max-width="400" min-width="100%">
+    <v-card-text style="overflow-y: auto" max-width="400" min-width="100%">
       <v-select
         label="torneo (opcional)"
         clearable
@@ -88,7 +88,7 @@
         v-bind="message_props"
         rows="10"
         placeholder="Cuéntanos qué pasó Si puedes, agrega el nombre de tu liga o torneo."
-        style="height: 100%; max-height: 100%; scrollbar-width: thin"
+        style="height: 100%; max-height: 100%"
       ></v-textarea>
       <small class="text-wrap"
         >Respondemos al correo o número con el que te registraste. Si usaste teléfono, revisa WhatsApp.</small

@@ -5,7 +5,8 @@
   <PrimaryBtn
     variant="elevated"
     icon="futzo-icon:calendar-white"
-    text="Ver calendario"
+    text="Calendario"
+    iconPosition="right"
     :disabled="route.name === 'torneos-torneo-calendario'"
     @click="
       $router.push({

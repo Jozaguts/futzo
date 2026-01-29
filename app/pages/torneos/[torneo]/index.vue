@@ -69,13 +69,11 @@
   <PageLayout>
     <template #app-bar>
       <AppBar :extended="mobile">
-        <template #buttons>
+        <template #buttons v-if="!mobile">
           <AppBarBtn />
         </template>
         <template #extension>
-          <div class="d-flex d-md-none d-lg-none flex-column w-100">
-            <MarkAsInput class="mx-4" />
-          </div>
+          <AppBarBtn />
         </template>
       </AppBar>
     </template>
