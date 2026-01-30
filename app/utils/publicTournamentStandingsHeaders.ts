@@ -1,5 +1,5 @@
 export const publicTournamentStandingsHeaders = [
-  { text: 'EQUIPO', value: 'team.name', fixed: true, width: 200 },
+  { text: 'EQUIPO', value: 'team.name', fixed: true, width: 120 },
   { text: 'PJ', value: 'matches_played' },
   { text: 'PG', value: 'wins' },
   { text: 'PE', value: 'draws' },

@@ -114,3 +114,17 @@ export default function getHeaders(tableName: string): Header[] {
       throw new Error('Table not found');
   }
 }
+export function last5Handler(last_5: string) {
+  return last_5.split('').map((value: string) => {
+    switch (value) {
+      case '-':
+        return { icon: 'mdi:checkbox-blank-circle-outline', color: 'gray', label: 'No jugó' };
+      case 'W':
+        return { icon: 'mdi:checkbox-marked-circle', color: 'green', label: 'Ganó' };
+      case 'L':
+        return { icon: 'mdi:close-circle', color: 'red', label: 'Perdió' };
+      case 'D':
+        return { icon: 'ic:outline-remove-circle', color: 'gray', label: 'Empate' };
+    }
+  });
+}

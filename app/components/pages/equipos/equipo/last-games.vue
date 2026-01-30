@@ -24,13 +24,15 @@
       >
         <td class="team">
           <img :src="game?.homeTeam?.image" alt="team logo" class="logo" />
-          <span class="team_name d-inline-block text-truncate" style="max-width: 120px">
+          <span class="team_name d-inline-block text-truncate" style="max-width: 100px">
             {{ game?.homeTeam?.name }}</span
           >
         </td>
 
         <td class="data">
-          <small>{{ game.date }}</small>
+          <div>
+            <small class="team_name d-inline-block text-truncate" style="max-width: 100px">{{ game.date }}</small>
+          </div>
           <div
             class="result"
             :class="{
@@ -46,7 +48,7 @@
         </td>
         <td class="team">
           <img :src="game.awayTeam.image" alt="team logo" class="logo" />
-          <span class="team_name d-inline-block text-truncate" style="max-width: 120px">{{ game?.awayTeam.name }}</span>
+          <span class="team_name d-inline-block text-truncate" style="max-width: 100px">{{ game?.awayTeam.name }}</span>
         </td>
       </tr>
     </tbody>

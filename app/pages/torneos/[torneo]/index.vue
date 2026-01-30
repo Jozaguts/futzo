@@ -9,14 +9,24 @@
   import AppBar from '~/components/layout/AppBar.vue'
   import AppBarBtn from '~/components/pages/torneos/torneo/app-bar-btn.vue'
   import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
+  import Vue3EasyDataTable from 'vue3-easy-data-table'
+  import 'vue3-easy-data-table/dist/style.css'
   import { useDisplay } from 'vuetify'
-  import MarkAsInput from '~/components/pages/torneos/torneo/mark-as-input.vue'
+  import { publicTournamentStandingsHeaders } from '~/utils/publicTournamentStandingsHeaders'
+  import { Icon } from '#components'
+  import { last5Handler } from '~/utils/headers-table'
   const { standings, tournamentId, lastResults, nextGames, groupStanding, tournament } =
     storeToRefs(useTournamentStore())
+  const loading = ref(false)
   const route = useRoute()
   onMounted(() => {
     if (tournamentId.value) {
-      useTournamentStore().getStandings()
+      loading.value = true
+      useTournamentStore()
+        .getStandings()
+        .then(() => {
+          loading.value = false
+        })
       useTournamentStore().getLastResults()
       useTournamentStore().getNextGames()
     } else {
@@ -26,6 +36,9 @@
           useTournamentStore().getStandings()
           useTournamentStore().getLastResults()
           useTournamentStore().getNextGames()
+        })
+        .finally(() => {
+          loading.value = false
         })
     }
   })
@@ -80,20 +93,59 @@
     <template #default>
       <div class="teams-team-container">
         <div class="primary-zone">
-          <PositionsTable :standings="standings" :groupStanding="groupStanding" />
+          <client-only>
+            <v-card class="futzo-rounded" height="100%">
+              <v-card-title>Tabla de posiciones</v-card-title>
+              <v-card-text>
+                <Vue3EasyDataTable
+                  v-if="standings.length"
+                  header-text-direction="center"
+                  body-text-direction="center"
+                  :headers="publicTournamentStandingsHeaders"
+                  :items="standings"
+                  hide-footer
+                  :rows-per-page="20"
+                  alternating
+                >
+                  <template #item-team.name="values">
+                    <div class="d-flex">
+                      <span class="mr-2">{{ values.rank }}</span>
+                      <span>
+                        {{ values.team.name }}
+                      </span>
+                    </div>
+                  </template>
+                  <template #item-last_5="item">
+                    <span v-for="color in last5Handler(item.last_5)" :key="item.id" class="text-lowercase">
+                      <v-tooltip :text="color?.label" location="bottom">
+                        <template v-slot:activator="{ props }">
+                          <Icon
+                            v-bind="props"
+                            :name="color?.icon"
+                            :class="`text-${color?.color}`"
+                            :size="16"
+                            class="cursor-pointer"
+                          />
+                        </template>
+                      </v-tooltip>
+                    </span>
+                  </template>
+                </Vue3EasyDataTable>
+                <v-skeleton-loader v-else-if="loading" type="table" class="mb-6" />
+                <v-empty-state
+                  v-else
+                  title="Tabla de posiciones no disponible"
+                  text="La tabla aún no está lista. Vuelve más tarde."
+                  image="/junior-soccer.svg"
+                />
+              </v-card-text>
+            </v-card>
+          </client-only>
         </div>
         <div class="secondary-zone futzo-rounded">
           <NextGames :nextGames="nextGames" />
         </div>
         <div class="right-up-zone">
-          <!--          <v-card class="futzo-rounded mb-4">-->
-          <!--            <v-card-title> Historial </v-card-title>-->
-          <!--            <v-slide-group show-arrows>-->
-          <!--              <v-slide-group-item v-for="n in 25" :key="n" v-slot="{ isSelected, toggle }">-->
-          <!--                <SecondaryBtn class="ma-2" @click="toggle" :text="'Options' + n"> </SecondaryBtn>-->
-          <!--              </v-slide-group-item>-->
-          <!--            </v-slide-group>-->
-          <!--          </v-card>-->
           <StatsTableContainer title="Líderes de estadísticas">
             <template #content>
               <StatsTable />

@@ -8,7 +8,7 @@
   })
 </script>
 <template>
-  <v-table class="next-games-today-table futzo-rounded" density="comfortable">
+  <v-table class="next-games-today-table futzo-rounded px-2" density="comfortable">
     <template #top>
       <h2 class="next-games-today-table__title">{{ title }}</h2>
     </template>
