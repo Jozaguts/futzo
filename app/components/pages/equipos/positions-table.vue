@@ -1,16 +1,11 @@
 <script setup lang="ts">
   import getHeaders from '~/utils/headers-table'
   import type { ExportListItem } from '~/models/tournament'
-  const { standings, groupStanding, showMenu } = withDefaults(
-    defineProps<{
-      standings: any
-      groupStanding: any
-      showMenu?: boolean
-    }>(),
-    {
-      showMenu: true,
-    }
-  )
+  const { standings, groupStanding, showMenu } = defineProps<{
+    standings: any
+    groupStanding: any
+    showMenu?: boolean
+  }>()
   const headers = getHeaders('standings')
   const items: ExportListItem[] = [
     { value: 'excel', text: 'Excel', icon: 'futzo-icon:file-type-excel' },
