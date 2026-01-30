@@ -9,6 +9,7 @@
   import { usePublicTournamentSchedule } from '~/composables/usePublicTournamentSchedule'
   import { publicTournamentStandingsHeaders } from '~/utils/publicTournamentStandingsHeaders'
   import { getBySlug, getTournamentScheduleQRCode } from '~/http/api/tournament'
+  import { useDisplay } from 'vuetify'
   import Vue3EasyDataTable from 'vue3-easy-data-table'
   import 'vue3-easy-data-table/dist/style.css'
   import { Icon } from '#components'
@@ -28,6 +29,7 @@
     isLoading: false,
     hasError: false,
   })
+  const { mobile } = useDisplay()
   const user = useSanctumUser()
   const isAdmin = computed(() => {
     const roles = user.value?.roles || []
@@ -286,14 +288,16 @@
         </div>
       </v-footer>
     </template>
-    <template v-if="isAdmin" #fab>
+    <template v-if="isAdmin && mobile" #fab>
       <v-fab color="primary" icon @click="open = !open">
-        <Icon name="futzo-icon:plus" class="mobile-fab" :class="open ? 'opened' : ''" size="24"></Icon>
+        <v-progress-circular v-if="qr.isLoading" indeterminate size="18" width="2" color="white" />
+        <Icon v-else name="futzo-icon:plus" class="mobile-fab" :class="open ? 'opened' : ''" size="24"></Icon>
         <v-speed-dial v-model="open" location="left center" transition="slide-y-reverse-transition" activator="parent">
-          <v-btn key="1" color="secondary" icon :loading="qr.isLoading" @click="qrCodeHandler">
-            <v-icon size="16">mdi-qrcode</v-icon>
+          <v-btn key="1" color="secondary" icon :disabled="qr.isLoading" @click="qrCodeHandler">
+            <v-progress-circular v-if="qr.isLoading" indeterminate size="18" width="2" />
+            <v-icon v-else size="16">mdi-qrcode</v-icon>
           </v-btn>
-          <v-btn key="2" color="secondary" icon @click="copyPublicLink">
+          <v-btn key="2" color="secondary" icon :disabled="qr.isLoading" @click="copyPublicLink">
             <v-icon size="16">mdi-link</v-icon>
           </v-btn>
         </v-speed-dial>
