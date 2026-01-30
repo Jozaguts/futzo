@@ -29,7 +29,10 @@
     hasError: false,
   })
   const user = useSanctumUser()
-  const isAuthenticated = computed(() => Boolean(user.value))
+  const isAdmin = computed(() => {
+    const roles = user.value?.roles || []
+    return roles.some((role) => role.toLowerCase().includes('admin'))
+  })
   const { toast } = useToast()
   const runtimeConfig = useRuntimeConfig()
   const publicBaseUrl = computed(() => runtimeConfig.public.baseUrl || useRequestURL().origin)
@@ -55,7 +58,7 @@
     { immediate: true }
   )
   watch(
-    () => isAuthenticated.value,
+    () => isAdmin.value,
     async (authed) => {
       if (!authed || adminTournamentId.value) return
       try {
@@ -140,6 +143,14 @@
     a.click()
     a.remove()
   }
+
+  const handleShare = async (value: 'link' | 'qr') => {
+    if (value === 'link') {
+      await copyPublicLink()
+      return
+    }
+    await qrCodeHandler()
+  }
 </script>
 
 <template>
@@ -148,7 +159,13 @@
       <v-container class="bg-white pa-0" fluid>
         <v-row>
           <v-col>
-            <TournamentHeader v-if="data" :header="data.header" />
+            <TournamentHeader
+              v-if="data"
+              :header="data.header"
+              :show-share="isAdmin"
+              :share-loading="qr.isLoading"
+              @share="handleShare"
+            />
             <v-skeleton-loader v-else-if="loading" type="card" />
           </v-col>
         </v-row>
@@ -269,7 +286,7 @@
         </div>
       </v-footer>
     </template>
-    <template v-if="isAuthenticated" #fab>
+    <template v-if="isAdmin" #fab>
       <v-fab color="primary" icon @click="open = !open">
         <Icon name="futzo-icon:plus" class="mobile-fab" :class="open ? 'opened' : ''" size="24"></Icon>
         <v-speed-dial v-model="open" location="left center" transition="slide-y-reverse-transition" activator="parent">
