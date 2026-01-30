@@ -102,6 +102,16 @@ export const getTournamentRegistrationQRCode = async (tournamentId: number) => {
   return await client<{ image: string }>(`/api/v1/admin/tournaments/${tournamentId}/registration/qr-code/generate`);
 };
 
+export const getTournamentScheduleQRCode = async (tournamentId: number, key: string = 'tournament_status') => {
+  const client = useSanctumClient();
+  return await client<{ image: string; meta: { league_id: number; tournament_id: number; type: string } }>(
+    `/api/v1/admin/tournaments/${tournamentId}/schedule/qr-code/generate`,
+    {
+      query: { key },
+    }
+  );
+};
+
 export const advanceTournamentPhase = async (tournamentId: number) => {
   const client = useSanctumClient();
   return await client(`/api/v1/admin/tournaments/${tournamentId}/phases/advance`, {

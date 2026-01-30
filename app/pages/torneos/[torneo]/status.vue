@@ -8,6 +8,7 @@
   import ScheduleRoundsInfiniteScroll from '~/components/pages/torneos/torneo/schedule/ScheduleRoundsInfiniteScroll.vue'
   import { usePublicTournamentSchedule } from '~/composables/usePublicTournamentSchedule'
   import { publicTournamentStandingsHeaders } from '~/utils/publicTournamentStandingsHeaders'
+  import { getBySlug, getTournamentScheduleQRCode } from '~/http/api/tournament'
   import Vue3EasyDataTable from 'vue3-easy-data-table'
   import 'vue3-easy-data-table/dist/style.css'
   import { Icon } from '#components'
@@ -20,6 +21,20 @@
   const route = useRoute()
   const slug = computed(() => String(route.params.torneo || ''))
   const tab = ref('general')
+  const open = ref(false)
+  const qr = reactive({
+    show: false,
+    image: '',
+    isLoading: false,
+    hasError: false,
+  })
+  const user = useSanctumUser()
+  const isAuthenticated = computed(() => Boolean(user.value))
+  const { toast } = useToast()
+  const runtimeConfig = useRuntimeConfig()
+  const publicBaseUrl = computed(() => runtimeConfig.public.baseUrl || useRequestURL().origin)
+  const publicStatusUrl = computed(() => `${publicBaseUrl.value}/torneos/${slug.value}/status`)
+  const adminTournamentId = ref<number | null>(null)
 
   const { data, loading, error, load } = usePublicTournamentStatus(slug)
   const {
@@ -35,6 +50,20 @@
     () => {
       load()
       resetSchedule()
+      adminTournamentId.value = null
+    },
+    { immediate: true }
+  )
+  watch(
+    () => isAuthenticated.value,
+    async (authed) => {
+      if (!authed || adminTournamentId.value) return
+      try {
+        const data = await getBySlug(slug.value)
+        adminTournamentId.value = data.id as number
+      } catch {
+        adminTournamentId.value = null
+      }
     },
     { immediate: true }
   )
@@ -62,6 +91,54 @@
           return { icon: 'ic:outline-remove-circle', color: 'gray', label: 'Empate' }
       }
     })
+  }
+
+  const copyPublicLink = async () => {
+    try {
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(publicStatusUrl.value)
+      } else {
+        const ta = document.createElement('textarea')
+        ta.value = publicStatusUrl.value
+        ta.style.position = 'fixed'
+        document.body.appendChild(ta)
+        ta.select()
+        document.execCommand('copy')
+        document.body.removeChild(ta)
+      }
+      toast({ type: 'success', msg: 'Enlace copiado' })
+    } catch {
+      toast({ type: 'error', msg: 'No se pudo copiar el enlace' })
+    }
+  }
+
+  const qrCodeHandler = async () => {
+    if (!adminTournamentId.value) {
+      toast({ type: 'warning', msg: 'No se pudo obtener el ID del torneo' })
+      return
+    }
+    qr.hasError = false
+    qr.isLoading = true
+    try {
+      const data = await getTournamentScheduleQRCode(adminTournamentId.value, 'tournament_status')
+      qr.image = data.image
+      qr.show = true
+    } catch {
+      qr.hasError = true
+      toast({ type: 'error', msg: 'No se pudo generar el QR' })
+    } finally {
+      qr.isLoading = false
+    }
+  }
+
+  const downloadQR = () => {
+    if (!qr.image) return
+    const a = document.createElement('a')
+    a.href = qr.image
+    a.download = 'futzo_qr.png'
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
   }
 </script>
 
@@ -192,7 +269,35 @@
         </div>
       </v-footer>
     </template>
+    <template v-if="isAuthenticated" #fab>
+      <v-fab color="primary" icon @click="open = !open">
+        <Icon name="futzo-icon:plus" class="mobile-fab" :class="open ? 'opened' : ''" size="24"></Icon>
+        <v-speed-dial v-model="open" location="left center" transition="slide-y-reverse-transition" activator="parent">
+          <v-btn key="1" color="secondary" icon :loading="qr.isLoading" @click="qrCodeHandler">
+            <v-icon size="16">mdi-qrcode</v-icon>
+          </v-btn>
+          <v-btn key="2" color="secondary" icon @click="copyPublicLink">
+            <v-icon size="16">mdi-link</v-icon>
+          </v-btn>
+        </v-speed-dial>
+      </v-fab>
+    </template>
   </PageLayout>
+  <v-dialog v-model="qr.show" max-width="500">
+    <v-card>
+      <v-card-title>Compartir torneo</v-card-title>
+      <v-card-text>
+        <v-alert v-if="qr.hasError" type="warning" variant="tonal" class="mb-4">
+          No se pudo generar el código QR.
+        </v-alert>
+        <v-img v-if="qr.image" :src="qr.image" :aspect-ratio="1" cover></v-img>
+      </v-card-text>
+      <v-card-actions class="justify-end">
+        <v-btn variant="text" @click="qr.show = false">Cerrar</v-btn>
+        <v-btn color="primary" variant="outlined" :disabled="!qr.image" @click="downloadQR">Descargar QR</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 <style scoped>
   .futzo-page-container {
