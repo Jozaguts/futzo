@@ -768,6 +768,13 @@
   dependencies:
     "@iconify/types" "*"
 
+"@iconify-json/mdi-light@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@iconify-json/mdi-light/-/mdi-light-1.2.2.tgz#bb5d73a840b4ee9d166ede4422125b71b58dc1cb"
+  integrity sha512-86UV9uyNve8zRFWiPrOrrDp9GDzsZM7plYV/on4VjgLLqXlyriuy541eHZB7LIOzTUyIPVli7QiUpBbTtBhsFw==
+  dependencies:
+    "@iconify/types" "*"
+
 "@iconify-json/mdi@^1.2.3":
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/@iconify-json/mdi/-/mdi-1.2.3.tgz#5e4ee9d8c8aaad04381c8cc6c6edbe3327f031b5"
