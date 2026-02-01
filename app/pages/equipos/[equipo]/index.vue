@@ -1,20 +1,20 @@
 <script lang="ts" setup>
-import PlayersList from '~/components/pages/equipos/live-games.vue'
-import NextGamesToday from '~/components/pages/equipos/next-games-today.vue'
-import NextGames from '~/components/pages/equipos/next-games.vue'
-import PageLayout from '~/components/shared/PageLayout.vue'
-import AppBar from '~/components/layout/AppBar.vue'
-import AppBarBtn from '~/components/pages/equipos/equipo/app-bar-btn.vue'
-import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
-import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
-import LastGames from '~/components/pages/equipos/equipo/last-games.vue'
-import { getTeamFormation } from '~/http/api/team'
-import type { Team } from '~/models/Team'
-import type { TeamFormation } from '~/models/Game'
-import { sortFormation } from '~/utils/sort-formation'
-import { Icon } from '#components'
+  import PlayersList from '~/components/pages/equipos/live-games.vue'
+  import NextGamesToday from '~/components/pages/equipos/next-games-today.vue'
+  import NextGames from '~/components/pages/equipos/next-games.vue'
+  import PageLayout from '~/components/shared/PageLayout.vue'
+  import AppBar from '~/components/layout/AppBar.vue'
+  import AppBarBtn from '~/components/pages/equipos/equipo/app-bar-btn.vue'
+  import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
+  import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
+  import LastGames from '~/components/pages/equipos/equipo/last-games.vue'
+  import { getTeamFormation } from '~/http/api/team'
+  import type { Team } from '~/models/Team'
+  import type { TeamFormation } from '~/models/Game'
+  import { sortFormation } from '~/utils/sort-formation'
+  import { Icon } from '#components'
 
-const { homeTeam, nextGames, lastGames, formations, homeFormation, homePlayers } = storeToRefs(useTeamStore())
+  const { homeTeam, nextGames, lastGames, formations, homeFormation, homePlayers } = storeToRefs(useTeamStore())
 
   watchEffect(async () => {
     homeTeam.value = (await useTeamStore().getTeam(useRoute().params?.equipo as string)) as Team
