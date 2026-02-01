@@ -56,9 +56,6 @@ export default defineNuxtConfig({
   ssr: true,
   i18n: {
     defaultLocale: 'es',
-    bundle: {
-      optimizeTranslationDirective: false,
-    },
   },
   features: {
     inlineStyles: false,
