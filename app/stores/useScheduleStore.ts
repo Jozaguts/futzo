@@ -13,8 +13,8 @@ import type {
   LocationFieldsRequest,
   RoundStatus,
   ScheduleRegenerationAnalysis,
-  ScheduleRegenerationPayload,
   ScheduleRegenerationLogSummary,
+  ScheduleRegenerationPayload,
   ScheduleRegenerationResult,
   ScheduleRoundStatus,
   ScheduleSettings,
@@ -27,7 +27,7 @@ import type { IPagination } from '~/interfaces';
 import * as scheduleAPI from '~/http/api/schedule';
 import * as tournamentAPI from '~/http/api/tournament';
 import { useTournamentStore } from '~/stores/useTournamentStore';
-import { useApiError, useToast, useSanctumClient } from '#imports';
+import { useApiError, useSanctumClient, useToast } from '#imports';
 import type { BracketPreview, ConfirmBracketMatch } from '~/models/Bracket';
 
 export const useScheduleStore = defineStore('scheduleStore', () => {
@@ -244,9 +244,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     return /futb[oó]l\s*7|fut7|futsal|f[uú]tbol sala/.test(name) || maxPlayers === 7;
   });
   const matchDurationMins = computed(() => {
-    const baseGameTime = Number(
-      scheduleStoreRequest.value.general?.game_time ?? scheduleSettings.value.game_time ?? 0
-    );
+    const baseGameTime = Number(scheduleStoreRequest.value.general?.game_time ?? scheduleSettings.value.game_time ?? 0);
     const betweenGames = Number(
       scheduleStoreRequest.value.general?.time_between_games ?? scheduleSettings.value.time_between_games ?? 0
     );
@@ -339,10 +337,12 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     { value: 'cancelado', text: 'Cancelada' },
   ]);
   const hasSchedule = ref(false);
+  const scheduleDrawerOpen = ref(false);
   const $resetScheduleStore = () => {
     calendarSteps.value.current = 'general';
     calendarSteps.value = { ...INIT_CALENDAR_STEPS };
     scheduleDialog.value = false;
+    scheduleDrawerOpen.value = false;
     scheduleParams.value = undefined;
     daysToPlaySelected.value = undefined;
     daysToPlayCustomSelected.value = undefined;
@@ -374,6 +374,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     regenerationBanner.value = null;
     isAnalyzingRegeneration.value = false;
     isConfirmingRegeneration.value = false;
+    hasSchedule.value = false;
   };
   const getTournamentSchedules = async () => {
     isLoadingSchedules.value = true;
@@ -827,6 +828,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     reservedMinutesPerWeek,
     hasEnoughCapacity,
     hasSchedule,
+    scheduleDrawerOpen,
     regenerateRoundDialog,
     updateStatusGame,
     getTournamentSchedules,

@@ -159,7 +159,6 @@ export const usePlayerStore = defineStore('playerStore', () => {
       const client = useSanctumClient();
       let url = `/api/v1/admin/players?per_page=${pagination.value.per_page}&page=${pagination.value.current_page}&sort=${pagination.value.sort}`;
       if (search) {
-        pagination.value.per_page = 10;
         pagination.value.current_page = 1;
         url += '&search=' + search;
       }
