@@ -98,7 +98,7 @@
               <v-card-title>Tabla de posiciones</v-card-title>
               <v-card-text>
                 <Vue3EasyDataTable
-                  v-if="standings.length"
+                  v-if="standings?.length"
                   header-text-direction="center"
                   body-text-direction="center"
                   :headers="publicTournamentStandingsHeaders"

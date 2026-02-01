@@ -250,10 +250,9 @@
       away_team_id: match.away.id,
     }))
 
-    const updatePayload: { matches: { home_team_id: number; away_team_id: number }[]; bye_team_id?: number | null } =
-      {
-        matches: matchesPayload,
-      }
+    const updatePayload: { matches: { home_team_id: number; away_team_id: number }[]; bye_team_id?: number | null } = {
+      matches: matchesPayload,
+    }
 
     if (requiresBye || byeTeamId) {
       updatePayload.bye_team_id = byeTeamId
@@ -312,11 +311,13 @@
           @status-change="({ status, round }) => statusHandler(status, round)"
           @export-round="({ type, round }) => scheduleStore.exportTournamentRoundScheduleAs(type, round)"
           @update-game="({ action, gameId, type, roundId }) => updateGame(action, gameId, type, roundId)"
-          @open-modal="({ type, gameId, fieldId, date, locationId }) => openModal(type, gameId, fieldId, date, locationId)"
+          @open-modal="
+            ({ type, gameId, fieldId, date, locationId }) => openModal(type, gameId, fieldId, date, locationId)
+          "
         />
       </v-col>
-      <v-col cols="12" md="4" lg="4">
-        <PhaseProgressCard class="mb-6" @open-bracket="openBracketDialog" />
+      <v-col cols="12" md="4" lg="4" class="pb-6">
+        <PhaseProgressCard @open-bracket="openBracketDialog" />
       </v-col>
     </v-row>
     <ReScheduleGame v-model:show="showReScheduleDialog" />
