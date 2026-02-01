@@ -11,6 +11,7 @@
   import NoCalendar from '~/components/pages/torneos/no-calendar.vue'
   import RegeneateRoundModalComponent from '~/components/pages/calendario/RegeneateRoundModalComponent.vue'
   import { getScheduleRoundDetails, updateScheduleRoundDetails } from '~/http/api/schedule'
+
   const { tournamentId, loading, tournament } = storeToRefs(useTournamentStore())
   const { gameReportDialog, showReScheduleDialog, gameDetailsRequest } = storeToRefs(useGameStore())
   const scheduleStore = useScheduleStore()
@@ -25,6 +26,7 @@
     regeneratedFromRound,
     regenerateRoundDialog,
     scheduleSettings,
+    scheduleDrawerOpen,
   } = storeToRefs(scheduleStore)
   const roundState = ref<{ round: number | null; fetching: boolean; data: ScheduleRoundDetails }>({
     round: null,
@@ -277,7 +279,12 @@
       roundState.value.fetching = false
     }
   }
-  const drawer = ref(mobile.value)
+  const drawer = computed({
+    get: () => scheduleDrawerOpen.value,
+    set: (value) => {
+      scheduleDrawerOpen.value = value
+    },
+  })
 </script>
 <template>
   <v-sheet class="futzo-rounded" style="height: calc(100% - 56px)">
@@ -316,7 +323,7 @@
           ({ type, gameId, fieldId, date, locationId }) => openModal(type, gameId, fieldId, date, locationId)
         "
       />
-      <v-navigation-drawer v-model="drawer" location="right" temporary>
+      <v-navigation-drawer v-model="drawer" location="right" temporary width="400">
         <PhaseProgressCard @open-bracket="openBracketDialog" />
       </v-navigation-drawer>
     </v-layout>

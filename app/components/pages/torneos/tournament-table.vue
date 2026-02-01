@@ -4,8 +4,27 @@
   import { useRouter } from '#app'
   import { getTournamentRegistrationQRCode } from '~/http/api/tournament'
   import { Icon } from '#components'
+  import { useDisplay } from 'vuetify'
 
-  const { noTournaments, tournaments, tournamentId, tournament, pagination, search } = storeToRefs(useTournamentStore())
+  const tournamentStore = useTournamentStore()
+  const { noTournaments, tournaments, tournamentId, tournament, pagination, search } = storeToRefs(tournamentStore)
+  const { mobile } = useDisplay()
+  const syncPaginationPerPage = (isMobile: boolean) => {
+    const nextPerPage = isMobile ? 1 : 10
+    if (pagination.value.per_page === nextPerPage) {
+      return false
+    }
+    pagination.value.per_page = nextPerPage
+    pagination.value.current_page = 1
+    return true
+  }
+  syncPaginationPerPage(mobile.value)
+  watch(mobile, (isMobile) => {
+    const changed = syncPaginationPerPage(isMobile)
+    if (changed) {
+      tournamentStore.loadTournaments()
+    }
+  })
   const headers = getHeaders('tournaments')
   const setChipColor = (status: string) => {
     switch (status) {
@@ -77,8 +96,8 @@
     :search.sync="search"
     v-model:pagination="pagination"
     :status-handler="setChipColor"
-    :paginate="useTournamentStore().loadTournaments"
-    :items-per-page="$vuetify.display.mobile ? 1 : 10"
+    :paginate="tournamentStore.loadTournaments"
+    :items-per-page="mobile ? 1 : 10"
   >
     <template #name="item">
       <div class="d-flex align-center">

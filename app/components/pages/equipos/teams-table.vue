@@ -4,6 +4,7 @@
   import type { Team } from '~/models/Team'
   import { getTeamRegistrationQRCode, updateHomePreferences } from '~/http/api/team'
   import { useLeaguesStore } from '~/stores/useLeaguesStore'
+  import { useDisplay } from 'vuetify'
 
   type LeagueLocationOption = {
     id: number
@@ -13,6 +14,23 @@
   const teamStore = useTeamStore()
   const { teams, pagination, search } = storeToRefs(teamStore)
   const headers = getHeaders('teams')
+  const { mobile } = useDisplay()
+  const syncPaginationPerPage = (isMobile: boolean) => {
+    const nextPerPage = isMobile ? 1 : 15
+    if (pagination.value.per_page === nextPerPage) {
+      return false
+    }
+    pagination.value.per_page = nextPerPage
+    pagination.value.current_page = 1
+    return true
+  }
+  syncPaginationPerPage(mobile.value)
+  watch(mobile, (isMobile) => {
+    const changed = syncPaginationPerPage(isMobile)
+    if (changed) {
+      teamStore.getTeams()
+    }
+  })
 
   const { getLeagueLocations } = useLeaguesStore()
   const { toast } = useToast()
@@ -221,7 +239,7 @@
     :search.sync="search"
     v-model:pagination="pagination"
     :paginate="teamStore.getTeams"
-    :items-per-page="$vuetify.display.mobile ? 1 : 10"
+    :items-per-page="mobile ? 1 : 15"
     @open-assign-modal="openAssignModal"
   >
     <template #name="item">

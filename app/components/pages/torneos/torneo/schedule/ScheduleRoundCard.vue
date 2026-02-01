@@ -31,19 +31,25 @@
     (event: 'open-round-edit', round: number): void
     (event: 'status-change', payload: { status: RoundStatus; round: number }): void
     (event: 'export-round', payload: { type: 'excel' | 'img'; round: number }): void
-    (event: 'update-game', payload: {
-      action: 'up' | 'down'
-      gameId: number
-      type: 'home' | 'away'
-      roundId: number
-    }): void
-    (event: 'open-modal', payload: {
-      type: 'GameReport' | 'ReScheduleGame'
-      gameId: number
-      fieldId: number | null
-      date: string | null
-      locationId: number | null
-    }): void
+    (
+      event: 'update-game',
+      payload: {
+        action: 'up' | 'down'
+        gameId: number
+        type: 'home' | 'away'
+        roundId: number
+      }
+    ): void
+    (
+      event: 'open-modal',
+      payload: {
+        type: 'GameReport' | 'ReScheduleGame'
+        gameId: number
+        fieldId: number | null
+        date: string | null
+        locationId: number | null
+      }
+    ): void
   }>()
 
   const isEditable = computed(() => (props.public ? false : Boolean(props.round.isEditable)))
@@ -52,8 +58,7 @@
     () => props.regeneratedFromRound !== null && props.round.round === props.regeneratedFromRound
   )
 
-  const isPendingManualMatch = (game: Match) =>
-    !game.details || !game.details.raw_date || !game.details.field?.id
+  const isPendingManualMatch = (game: Match) => !game.details || !game.details.raw_date || !game.details.field?.id
 
   const matchesToShow = computed(() => {
     if (!props.showOnlyPendingManual) {
@@ -66,11 +71,11 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col v-if="showRegeneratedSeparator" cols="12" class="pt-0 pb-4">
-        <v-alert variant="tonal" type="info" density="comfortable" border="start" icon="mdi-calendar-refresh">
-          📅 A partir de aquí, se muestran los partidos regenerados por registro tardío.
-        </v-alert>
-      </v-col>
+      <!--      <v-col v-if="showRegeneratedSeparator" cols="12" class="pt-0 pb-4">-->
+      <!--        <v-alert variant="tonal" type="info" density="comfortable" border="start" icon="mdi-calendar-refresh">-->
+      <!--          📅 A partir de aquí, se muestran los partidos regenerados por registro tardío.-->
+      <!--        </v-alert>-->
+      <!--      </v-col>-->
       <v-col cols="12" class="pa-0">
         <div class="title-container">
           <p class="title">
@@ -99,14 +104,7 @@
           {{ round.bye_team.name }} descansa esta jornada.
         </v-alert>
       </v-col>
-      <v-col
-        v-for="game in matchesToShow"
-        :key="game.id"
-        cols="12"
-        md="2"
-        lg="4"
-        class="game-container"
-      >
+      <v-col v-for="game in matchesToShow" :key="game.id" cols="12" md="2" lg="4" class="game-container">
         <ScheduleRoundMatchCard
           :game="game"
           :round-id="round.round"

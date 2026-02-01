@@ -56,7 +56,7 @@
 </template>
 <style lang="scss" scoped>
   .live-games-table {
-    height: 100%;
+    height: auto;
     display: flex;
     width: 100%;
     padding: 1rem;
@@ -65,9 +65,9 @@
     gap: var(--spacing-xl, 16px);
   }
 
-  .live-games-table > .v-table__wrapper {
-    overflow-x: hidden;
-    overflow-y: auto;
+  .live-games-table :deep(.v-table__wrapper) {
+    overflow: hidden;
+    max-height: none;
   }
 
   .live-games-table__title {

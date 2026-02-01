@@ -1,6 +1,8 @@
 <script setup lang="ts">
   import { storeToRefs, watch } from '#imports'
   import type { ScheduleRegenerationPayload } from '~/models/Schedule'
+  import { useDisplay } from 'vuetify'
+  import { Icon } from '#components'
 
   const emits = defineEmits<{
     (event: 'open-bracket'): void
@@ -26,7 +28,9 @@
     isAnalyzingRegeneration,
     isConfirmingRegeneration,
     lastRegeneration,
+    scheduleDrawerOpen,
   } = storeToRefs(scheduleStore)
+  const { mobile } = useDisplay()
   const { tournament } = storeToRefs(useTournamentStore())
   const initialStartDate = ref<string | null>(null)
   const initialRoundTrip = ref<boolean | null>(null)
@@ -300,6 +304,9 @@
 </script>
 <template>
   <v-card v-if="hasPhases" class="futzo-rounded phase-progress-card">
+    <div v-if="mobile" class="phase-progress-card__close" @click="scheduleDrawerOpen = false">
+      <Icon name="futzo-icon:x-dialog" class="pointer-cursor" size="20" />
+    </div>
     <v-card-title>Detalles del torneo </v-card-title>
     <v-divider></v-divider>
     <v-alert v-if="hasPendingManualMatches" type="warning" variant="tonal" border="start" density="compact">
@@ -500,3 +507,15 @@
     </v-card>
   </v-dialog>
 </template>
+<style scoped>
+  .phase-progress-card {
+    position: relative;
+  }
+
+  .phase-progress-card__close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 1;
+  }
+</style>
