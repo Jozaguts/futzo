@@ -1,21 +1,21 @@
 <script lang="ts" setup>
-import StatsTableContainer from '~/components/pages/equipos/live-games.vue'
-import NextGamesToday from '~/components/pages/equipos/next-games-today.vue'
-import LastGames from '~/components/pages/equipos/equipo/last-games.vue'
-import NextGames from '~/components/pages/equipos/next-games.vue'
-import CreateTournamentDialog from '~/components/pages/torneos/dialog/index.vue'
-import PageLayout from '~/components/shared/PageLayout.vue'
-import AppBar from '~/components/layout/AppBar.vue'
-import AppBarBtn from '~/components/pages/torneos/torneo/app-bar-btn.vue'
-import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
-import Vue3EasyDataTable from 'vue3-easy-data-table'
-import 'vue3-easy-data-table/dist/style.css'
-import { useDisplay } from 'vuetify'
-import { publicTournamentStandingsHeaders } from '~/utils/publicTournamentStandingsHeaders'
-import { Icon } from '#components'
-import { last5Handler } from '~/utils/headers-table'
+  import StatsTableContainer from '~/components/pages/equipos/live-games.vue'
+  import NextGamesToday from '~/components/pages/equipos/next-games-today.vue'
+  import LastGames from '~/components/pages/equipos/equipo/last-games.vue'
+  import NextGames from '~/components/pages/equipos/next-games.vue'
+  import CreateTournamentDialog from '~/components/pages/torneos/dialog/index.vue'
+  import PageLayout from '~/components/shared/PageLayout.vue'
+  import AppBar from '~/components/layout/AppBar.vue'
+  import AppBarBtn from '~/components/pages/torneos/torneo/app-bar-btn.vue'
+  import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
+  import Vue3EasyDataTable from 'vue3-easy-data-table'
+  import 'vue3-easy-data-table/dist/style.css'
+  import { useDisplay } from 'vuetify'
+  import { publicTournamentStandingsHeaders } from '~/utils/publicTournamentStandingsHeaders'
+  import { Icon } from '#components'
+  import { last5Handler } from '~/utils/headers-table'
 
-const { standings, tournamentId, lastResults, nextGames, groupStanding, tournament } =
+  const { standings, tournamentId, lastResults, nextGames, groupStanding, tournament } =
     storeToRefs(useTournamentStore())
   const loading = ref(false)
   const route = useRoute()
