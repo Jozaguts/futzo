@@ -277,57 +277,57 @@
       roundState.value.fetching = false
     }
   }
+  const drawer = ref(mobile.value)
 </script>
 <template>
-  <v-container fluid class="pa-0">
-    <v-alert
-      v-if="regenerationBanner"
-      :type="regenerationBanner.type === 'warning' ? 'warning' : 'success'"
-      variant="tonal"
-      border="start"
-      density="comfortable"
-      class="mb-4"
-      closable
-      @click:close="handleDismissBanner"
-    >
-      {{ regenerationBanner.message }}
-    </v-alert>
-    <v-row :no-gutters="mobile">
-      <v-col cols="12" md="8" lg="8" v-if="noSchedules"> <NoCalendar /></v-col>
-      <v-col v-else cols="12" md="8" lg="8">
-        <ScheduleRoundsInfiniteScroll
-          :rounds="schedules.rounds"
-          :schedule-round-status="scheduleRoundStatus"
-          :loading="loading"
-          :is-exporting="isExporting"
-          :show-only-pending-manual="showOnlyPendingManual"
-          :regenerated-from-round="regeneratedFromRound"
-          :should-show-penalty-inputs="shouldShowPenaltyInputs"
-          :penalty-winner-name="penaltyWinnerName"
-          @load="load"
-          @save-round="saveHandler"
-          @edit-round="editRound"
-          @open-round-edit="showRoundModalEdit"
-          @status-change="({ status, round }) => statusHandler(status, round)"
-          @export-round="({ type, round }) => scheduleStore.exportTournamentRoundScheduleAs(type, round)"
-          @update-game="({ action, gameId, type, roundId }) => updateGame(action, gameId, type, roundId)"
-          @open-modal="
-            ({ type, gameId, fieldId, date, locationId }) => openModal(type, gameId, fieldId, date, locationId)
-          "
-        />
-      </v-col>
-      <v-col cols="12" md="4" lg="4" class="pb-6">
+  <v-sheet class="futzo-rounded" style="height: calc(100% - 56px)">
+    <v-layout class="d-flex justify-center items-center h-100">
+      <v-alert
+        v-if="regenerationBanner"
+        :type="regenerationBanner.type === 'warning' ? 'warning' : 'success'"
+        variant="tonal"
+        border="start"
+        density="comfortable"
+        class="mb-4"
+        closable
+        @click:close="handleDismissBanner"
+      >
+        {{ regenerationBanner.message }}
+      </v-alert>
+      <NoCalendar v-if="noSchedules" />
+      <ScheduleRoundsInfiniteScroll
+        v-else
+        :rounds="schedules.rounds"
+        :schedule-round-status="scheduleRoundStatus"
+        :loading="loading"
+        :is-exporting="isExporting"
+        :show-only-pending-manual="showOnlyPendingManual"
+        :regenerated-from-round="regeneratedFromRound"
+        :should-show-penalty-inputs="shouldShowPenaltyInputs"
+        :penalty-winner-name="penaltyWinnerName"
+        @load="load"
+        @save-round="saveHandler"
+        @edit-round="editRound"
+        @open-round-edit="showRoundModalEdit"
+        @status-change="({ status, round }) => statusHandler(status, round)"
+        @export-round="({ type, round }) => scheduleStore.exportTournamentRoundScheduleAs(type, round)"
+        @update-game="({ action, gameId, type, roundId }) => updateGame(action, gameId, type, roundId)"
+        @open-modal="
+          ({ type, gameId, fieldId, date, locationId }) => openModal(type, gameId, fieldId, date, locationId)
+        "
+      />
+      <v-navigation-drawer v-model="drawer" location="right" temporary>
         <PhaseProgressCard @open-bracket="openBracketDialog" />
-      </v-col>
-    </v-row>
-    <ReScheduleGame v-model:show="showReScheduleDialog" />
-    <GameReport />
-    <BracketSchedulerDialog v-model="showBracketDialog" />
-    <RegeneateRoundModalComponent
-      v-model="regenerateRoundDialog"
-      :data="roundState.data"
-      :is-fetching="roundState.fetching"
-      @save="handleRoundSave"
-    />
-  </v-container>
+      </v-navigation-drawer>
+    </v-layout>
+  </v-sheet>
+  <ReScheduleGame v-model:show="showReScheduleDialog" />
+  <GameReport />
+  <BracketSchedulerDialog v-model="showBracketDialog" />
+  <RegeneateRoundModalComponent
+    v-model="regenerateRoundDialog"
+    :data="roundState.data"
+    :is-fetching="roundState.fetching"
+    @save="handleRoundSave"
+  />
 </template>

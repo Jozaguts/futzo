@@ -65,7 +65,7 @@
   })
 </script>
 <template>
-  <v-sheet class="custom-v-sheet d-flex justify-center align-center fill-height">
+  <v-sheet class="custom-v-sheet d-flex justify-center align-center">
     <v-container v-if="isLoadingSchedules">
       <v-row>
         <v-col cols="4">
