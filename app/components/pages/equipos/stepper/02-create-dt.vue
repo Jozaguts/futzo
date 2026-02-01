@@ -2,7 +2,9 @@
   import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
   import type { TeamStoreRequest } from '~/models/Team'
   import { mixed, number, object, string } from 'yup'
+  import { VMaskInput } from 'vuetify/labs/VMaskInput'
   import { vuetifyConfig } from '~/utils/constants'
+
   const teamStore = useTeamStore()
   const { teamStoreRequest, isEdition, steps } = storeToRefs(teamStore)
   // @ts-ignore

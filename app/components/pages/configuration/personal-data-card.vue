@@ -1,5 +1,6 @@
 <script setup lang="ts">
-  import { mixed, object, string, number } from 'yup'
+  import { number, object, string } from 'yup'
+  import { VMaskInput } from 'vuetify/labs/VMaskInput'
   import type { UpdateUserForm, User } from '~/models/User'
   import { vuetifyConfig } from '~/utils/constants'
 

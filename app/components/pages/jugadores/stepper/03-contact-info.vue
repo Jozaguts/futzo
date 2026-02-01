@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import type { PlayerStoreRequest } from '~/models/Player'
-  import { string, object, number } from 'yup'
+  import { number, object, string } from 'yup'
+  import { VMaskInput } from 'vuetify/labs/VMaskInput'
   import { vuetifyConfig } from '~/utils/constants'
 
   const { playerStoreRequest, steps } = storeToRefs(usePlayerStore())
