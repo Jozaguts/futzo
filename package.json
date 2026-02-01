@@ -37,6 +37,7 @@
     "nuxt": "^4.3.0",
     "nuxt-auth-sanctum": "^2.1.2",
     "nuxt-svgo": "4.2.6",
+    "nuxt-tour": "^0.0.40",
     "nuxt-typed-router": "^4.0.2",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",

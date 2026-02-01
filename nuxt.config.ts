@@ -99,7 +99,11 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/test-utils/module',
     '@unlok-co/nuxt-stripe',
+    'nuxt-tour',
   ],
+  tour: {
+    prefix: 'tour',
+  },
   vuetify: {
     moduleOptions: {
       styles: {
