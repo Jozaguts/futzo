@@ -1,19 +1,20 @@
 <script lang="ts" setup>
-  import PlayersList from '~/components/pages/equipos/live-games.vue'
-  import NextGamesToday from '~/components/pages/equipos/next-games-today.vue'
-  import NextGames from '~/components/pages/equipos/next-games.vue'
-  import PageLayout from '~/components/shared/PageLayout.vue'
-  import AppBar from '~/components/layout/AppBar.vue'
-  import AppBarBtn from '~/components/pages/equipos/equipo/app-bar-btn.vue'
-  import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
-  import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
-  import LastGames from '~/components/pages/equipos/equipo/last-games.vue'
-  import { getTeamFormation } from '~/http/api/team'
-  import type { Team } from '~/models/Team'
-  import type { TeamFormation } from '~/models/Game'
-  import { sortFormation } from '~/utils/sort-formation'
-  import { Icon } from '#components'
-  const { homeTeam, nextGames, lastGames, formations, homeFormation, homePlayers } = storeToRefs(useTeamStore())
+import PlayersList from '~/components/pages/equipos/live-games.vue'
+import NextGamesToday from '~/components/pages/equipos/next-games-today.vue'
+import NextGames from '~/components/pages/equipos/next-games.vue'
+import PageLayout from '~/components/shared/PageLayout.vue'
+import AppBar from '~/components/layout/AppBar.vue'
+import AppBarBtn from '~/components/pages/equipos/equipo/app-bar-btn.vue'
+import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
+import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
+import LastGames from '~/components/pages/equipos/equipo/last-games.vue'
+import { getTeamFormation } from '~/http/api/team'
+import type { Team } from '~/models/Team'
+import type { TeamFormation } from '~/models/Game'
+import { sortFormation } from '~/utils/sort-formation'
+import { Icon } from '#components'
+
+const { homeTeam, nextGames, lastGames, formations, homeFormation, homePlayers } = storeToRefs(useTeamStore())
 
   watchEffect(async () => {
     homeTeam.value = (await useTeamStore().getTeam(useRoute().params?.equipo as string)) as Team
@@ -57,54 +58,58 @@
     </template>
     <template #default>
       <div class="teams-team-container">
-        <div class="primary-zone pa-0">
-          <LinesupContainer
-            :show-complete="false"
-            :isReport="false"
-            :homeTeam="homeTeam"
-            :homeFormation="homeFormation"
-            :formations="formations"
-            :homePlayers
-            @update-formation-type="updateFormationType"
-            @leaving="leaving"
-          />
+        <div class="teams-team-column teams-team-column--left">
+          <div class="primary-zone pa-0">
+            <LinesupContainer
+              :show-complete="false"
+              :isReport="false"
+              :homeTeam="homeTeam"
+              :homeFormation="homeFormation"
+              :formations="formations"
+              :homePlayers
+              @update-formation-type="updateFormationType"
+              @leaving="leaving"
+            />
+          </div>
+          <div class="secondary-zone">
+            <NextGames :nextGames />
+          </div>
         </div>
-        <div class="secondary-zone">
-          <NextGames :nextGames />
-        </div>
-        <div class="right-up-zone">
-          <PlayersList title="Jugadores" v-if="homePlayers.length > 0">
-            <template #table-body>
-              <tr v-for="player in homePlayers" :key="player.player_id">
-                <td>
-                  <p>{{ player.number }} {{ player.name }}</p>
-                </td>
-              </tr>
-            </template>
-          </PlayersList>
-          <v-card height="100%" v-else>
-            <v-empty-state
-              image="/no-data.svg"
-              size="100"
-              text="No hay jugadores en este equipo"
-              title="Jugadores"
-            ></v-empty-state>
-          </v-card>
-        </div>
-        <div class="right-down-zone">
-          <NextGamesToday title="Últimos resultados" v-if="lastGames.length > 0">
-            <template #content>
-              <LastGames :lastGames="lastGames" />
-            </template>
-          </NextGamesToday>
-          <v-card height="100%" width="100%" v-else>
-            <v-empty-state
-              image="/no-data.svg"
-              size="100"
-              text="El equipo no ha finalizado algun partido"
-              title="Partidos"
-            ></v-empty-state>
-          </v-card>
+        <div class="teams-team-column teams-team-column--right">
+          <div class="right-up-zone">
+            <PlayersList title="Jugadores" v-if="homePlayers.length > 0">
+              <template #table-body>
+                <tr v-for="player in homePlayers" :key="player.player_id">
+                  <td>
+                    <p>{{ player.number }} {{ player.name }}</p>
+                  </td>
+                </tr>
+              </template>
+            </PlayersList>
+            <v-card height="100%" v-else>
+              <v-empty-state
+                image="/no-data.svg"
+                size="100"
+                text="No hay jugadores en este equipo"
+                title="Jugadores"
+              ></v-empty-state>
+            </v-card>
+          </div>
+          <div class="right-down-zone">
+            <NextGamesToday title="Últimos resultados" v-if="lastGames.length > 0">
+              <template #content>
+                <LastGames :lastGames="lastGames" />
+              </template>
+            </NextGamesToday>
+            <v-card height="100%" width="100%" v-else>
+              <v-empty-state
+                image="/no-data.svg"
+                size="100"
+                text="El equipo no ha finalizado algun partido"
+                title="Partidos"
+              ></v-empty-state>
+            </v-card>
+          </div>
         </div>
         <CreateTeamDialog />
       </div>
