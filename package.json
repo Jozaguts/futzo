@@ -48,6 +48,7 @@
     "vue3-easy-data-table": "^1.5.47",
     "vue3-google-map": "^0.27.0",
     "vue3-perfect-scrollbar": "^2.0.0",
+    "vuetify-nuxt-module": "0.19.5",
     "vuetify-sonner": "^0.4.2",
     "yup": "^1.7.1"
   },
@@ -70,9 +71,7 @@
     "happy-dom": "^20.4.0",
     "playwright-core": "^1.58.1",
     "sass-embedded": "^1.97.3",
-    "vite-plugin-vuetify": "^2.1.3",
-    "vitest": "^4.0.18",
-    "vuetify": "^3.11.8"
+    "vitest": "^4.0.18"
   },
   "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447",
   "web-types": "./web-types.json"

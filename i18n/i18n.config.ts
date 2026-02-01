@@ -21,6 +21,7 @@ export default defineI18nConfig(() => ({
         number: 'Número',
       },
       $vuetify: {
+        loading: 'Cargando...',
         badge: 'Insignia',
         open: 'Abrir',
         close: 'Cerrar',
@@ -47,6 +48,7 @@ export default defineI18nConfig(() => ({
             previous: 'Pagina anterior',
             current_page: 'Pagina actual',
             page: 'Pagina',
+            currentPage: 'Pagina actual',
           },
         },
         infiniteScroll: {

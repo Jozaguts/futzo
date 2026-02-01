@@ -1,6 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 import path from 'node:path';
+import defaults from './config/vuetify/defaults';
+import theme from './config/vuetify/theme';
+
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: false },
@@ -74,23 +76,12 @@ export default defineNuxtConfig({
     },
   },
   // end these 3 are necessary
-  css: ['vuetify/styles', '~/assets/scss/main.scss'],
+  css: ['@mdi/font/css/materialdesignicons.css', 'vuetify/styles', '~/assets/scss/main.scss'],
   build: {
     transpile: ['vuetify', '@vuepic/vue-datepicker', 'vue-sonner', 'v-phone-input'],
   },
   modules: [
-    async (options, nuxt) => {
-      nuxt.hooks.hook('vite:extendConfig', (config) =>
-        // @ts-expect-error
-        config.plugins.push(
-          vuetify({
-            styles: {
-              configFile: 'assets/scss/settings.scss',
-            },
-          })
-        )
-      );
-    },
+    'vuetify-nuxt-module',
     '@formkit/auto-animate/nuxt',
     '@nuxtjs/i18n',
     '@vee-validate/nuxt',
@@ -109,12 +100,18 @@ export default defineNuxtConfig({
     '@nuxt/test-utils/module',
     '@unlok-co/nuxt-stripe',
   ],
-  vite: {
-    vue: {
-      template: {
-        transformAssetUrls,
+  vuetify: {
+    moduleOptions: {
+      styles: {
+        configFile: 'assets/scss/settings.scss',
       },
     },
+    vuetifyOptions: {
+      theme,
+      defaults,
+    },
+  },
+  vite: {
     css: {
       preprocessorOptions: {
         // Use modern Sass compiler API (mejor rendimiento y menos edge-cases con PNPM)
