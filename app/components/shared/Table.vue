@@ -3,6 +3,7 @@
   import { useDisplay } from 'vuetify'
   import type { Team } from '~/models/Team'
   import { Icon } from '#components'
+
   const props = defineProps({
     headers: {
       type: Array as PropType<Header[]>,
@@ -52,15 +53,29 @@
       required: false,
       default: false,
     },
-  })
-  const itemPerPage = computed(() => {
-    return props.showComplete ? props.items?.length : 10
+    itemsPerPage: {
+      type: Number,
+      required: false,
+      default: undefined,
+    },
   })
   const search = defineModel('search', {
     type: String,
     required: false,
   })
   const pagination = defineModel<IPagination>('pagination', { required: false })
+  const itemPerPage = computed(() => {
+    if (props.showComplete) {
+      return props.items?.length ?? 0
+    }
+    if (typeof props.itemsPerPage === 'number') {
+      return props.itemsPerPage
+    }
+    if (pagination.value?.per_page) {
+      return pagination.value.per_page
+    }
+    return 10
+  })
   const last5Handler = (last_5: string) => {
     return last_5.split('').map((value: string) => {
       switch (value) {
