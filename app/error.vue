@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import type {NuxtError} from '#app'
-
-const props = defineProps({
-  error: Object as () => NuxtError
-})
-
-console.error('FROM ERROR PAGE', props)
-const handleError = () => clearError({redirect: '/'})
+  const handleError = () => clearError({ redirect: '/' })
 </script>
 
 <template>
-  <div>
-    <h2>{{ error?.statusCode }}</h2>
-    <button @click="handleError">Clear errors</button>
+  <div class="d-flex justify-center items-center h-screen">
+    <v-empty-state
+      headline="Whoops, 404"
+      title="Pagina no encontrada"
+      text="La página que buscas no existe o ha sido movida."
+      image="/images/logo-07.png"
+      @click:action="handleError"
+      action-text="Volver al inicio"
+    ></v-empty-state>
   </div>
+  x
 </template>
