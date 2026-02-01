@@ -1,21 +1,21 @@
 <script lang="ts" setup>
-  import PositionsTable from '~/components/pages/equipos/positions-table.vue'
-  import StatsTableContainer from '~/components/pages/equipos/live-games.vue'
-  import NextGamesToday from '~/components/pages/equipos/next-games-today.vue'
-  import LastGames from '~/components/pages/equipos/equipo/last-games.vue'
-  import NextGames from '~/components/pages/equipos/next-games.vue'
-  import CreateTournamentDialog from '~/components/pages/torneos/dialog/index.vue'
-  import PageLayout from '~/components/shared/PageLayout.vue'
-  import AppBar from '~/components/layout/AppBar.vue'
-  import AppBarBtn from '~/components/pages/torneos/torneo/app-bar-btn.vue'
-  import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
-  import Vue3EasyDataTable from 'vue3-easy-data-table'
-  import 'vue3-easy-data-table/dist/style.css'
-  import { useDisplay } from 'vuetify'
-  import { publicTournamentStandingsHeaders } from '~/utils/publicTournamentStandingsHeaders'
-  import { Icon } from '#components'
-  import { last5Handler } from '~/utils/headers-table'
-  const { standings, tournamentId, lastResults, nextGames, groupStanding, tournament } =
+import StatsTableContainer from '~/components/pages/equipos/live-games.vue'
+import NextGamesToday from '~/components/pages/equipos/next-games-today.vue'
+import LastGames from '~/components/pages/equipos/equipo/last-games.vue'
+import NextGames from '~/components/pages/equipos/next-games.vue'
+import CreateTournamentDialog from '~/components/pages/torneos/dialog/index.vue'
+import PageLayout from '~/components/shared/PageLayout.vue'
+import AppBar from '~/components/layout/AppBar.vue'
+import AppBarBtn from '~/components/pages/torneos/torneo/app-bar-btn.vue'
+import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
+import Vue3EasyDataTable from 'vue3-easy-data-table'
+import 'vue3-easy-data-table/dist/style.css'
+import { useDisplay } from 'vuetify'
+import { publicTournamentStandingsHeaders } from '~/utils/publicTournamentStandingsHeaders'
+import { Icon } from '#components'
+import { last5Handler } from '~/utils/headers-table'
+
+const { standings, tournamentId, lastResults, nextGames, groupStanding, tournament } =
     storeToRefs(useTournamentStore())
   const loading = ref(false)
   const route = useRoute()
@@ -92,25 +92,26 @@
     </template>
     <template #default>
       <div class="teams-team-container">
-        <div class="primary-zone">
-          <client-only>
-            <v-card class="futzo-rounded" height="100%">
-              <v-card-title>Tabla de posiciones</v-card-title>
-              <v-card-text>
+        <div class="teams-team-column teams-team-column--left">
+          <div class="primary-zone">
+            <client-only>
+              <p class="text-body-1 pb-2">Tabla de posiciones</p>
+              <v-sheet class="futzo-rounded">
                 <Vue3EasyDataTable
                   v-if="standings?.length"
                   header-text-direction="center"
+                  class="futzo-rounded"
                   body-text-direction="center"
                   :headers="publicTournamentStandingsHeaders"
                   :items="standings"
                   hide-footer
-                  :rows-per-page="20"
+                  :rows-per-page="standings?.length"
                   alternating
                 >
                   <template #item-team.name="values">
                     <div class="d-flex">
                       <span class="mr-2">{{ values.rank }}</span>
-                      <span>
+                      <span class="d-inline-block text-truncate" style="max-width: 100px">
                         {{ values.team.name }}
                       </span>
                     </div>
@@ -138,33 +139,35 @@
                   text="La tabla aún no está lista. Vuelve más tarde."
                   image="/junior-soccer.svg"
                 />
-              </v-card-text>
-            </v-card>
-          </client-only>
+              </v-sheet>
+            </client-only>
+          </div>
+          <div class="secondary-zone futzo-rounded">
+            <NextGames :nextGames="nextGames" />
+          </div>
         </div>
-        <div class="secondary-zone futzo-rounded">
-          <NextGames :nextGames="nextGames" />
-        </div>
-        <div class="right-up-zone">
-          <StatsTableContainer title="Líderes de estadísticas">
-            <template #content>
-              <StatsTable />
-            </template>
-          </StatsTableContainer>
-        </div>
-        <div class="right-down-zone futzo-rounded">
-          <NextGamesToday title="Últimos resultados">
-            <template #content>
-              <div v-if="championInfo?.winnerName" class="champion-banner">
-                <span class="champion-banner__label">Campeón</span>
-                <span class="champion-banner__team">{{ championInfo.winnerName }}</span>
-                <span v-if="championInfo?.scoreText" class="champion-banner__score">
-                  {{ championInfo.scoreText }}
-                </span>
-              </div>
-              <LastGames :lastGames="lastResults" :highlighted-match-id="championInfo?.game?.id ?? null" />
-            </template>
-          </NextGamesToday>
+        <div class="teams-team-column teams-team-column--right">
+          <div class="right-up-zone">
+            <StatsTableContainer title="Líderes de estadísticas">
+              <template #content>
+                <StatsTable />
+              </template>
+            </StatsTableContainer>
+          </div>
+          <div class="right-down-zone futzo-rounded">
+            <NextGamesToday title="Últimos resultados">
+              <template #content>
+                <div v-if="championInfo?.winnerName" class="champion-banner">
+                  <span class="champion-banner__label">Campeón</span>
+                  <span class="champion-banner__team">{{ championInfo.winnerName }}</span>
+                  <span v-if="championInfo?.scoreText" class="champion-banner__score">
+                    {{ championInfo.scoreText }}
+                  </span>
+                </div>
+                <LastGames :lastGames="lastResults" :highlighted-match-id="championInfo?.game?.id ?? null" />
+              </template>
+            </NextGamesToday>
+          </div>
         </div>
         <CreateTournamentDialog />
       </div>
