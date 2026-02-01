@@ -317,7 +317,12 @@ const props = defineProps<{
                       :model-value="item.match.field_id"
                       clearable
                       @update:model-value="
-                        (value) => updateMatch(index, 'field_id', value === null || value === undefined ? null : (value as number))
+                        (value) =>
+                          updateMatch(
+                            index,
+                            'field_id',
+                            value === null || value === undefined ? null : (value as number)
+                          )
                       "
                     />
                   </v-col>
