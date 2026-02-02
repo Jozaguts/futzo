@@ -1,8 +1,9 @@
 <script setup lang="ts">
-  import { object, string } from 'yup'
-  import { fetchTickets, responseTicket } from '~/http/api/support'
-  import type { ResponseTicket, Tickets } from '~/models/Support'
-  const { user } = storeToRefs(useAuthStore())
+import {object, string} from 'yup'
+import {fetchTickets, responseTicket} from '~/http/api/support'
+import type {ResponseTicket, Tickets} from '~/models/Support'
+
+const { user } = storeToRefs(useAuthStore())
   const tickets = ref<Tickets>({} as Tickets)
   const loading = ref(false)
   const { defineField, handleSubmit } = useForm<ResponseTicket>({
@@ -56,7 +57,7 @@
 </script>
 
 <template>
-  <div v-if="loading || !tickets.data.length" class="text-center my-4">
+  <div v-if="loading || !tickets.data?.length" class="text-center my-4">
     <v-empty-state
       size="120"
       headline="Todo en orden"

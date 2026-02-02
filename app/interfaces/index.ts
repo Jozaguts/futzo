@@ -2,10 +2,11 @@ import type {ImageForm} from '~/models/tournament';
 import type {TourStep} from "#nuxt-tour/props";
 import type {VTour} from "#components";
 
-export type TourKey = 'dashboard';
+export type TourKey = 'dashboard' | 'torneos' | 'equipos' | 'jugadores' | 'ubicaciones';
 export type TourState = {
   steps: TourStep[];
   show: boolean;
+  // @ts-ignore
   ref: InstanceType<typeof VTour> | null;
 };
 export type Tour = Record<TourKey, TourState>;

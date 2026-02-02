@@ -4,12 +4,9 @@ import type {TourStep} from '#nuxt-tour/props';
 import {VTour} from '#components';
 import {useGlobalStore} from '~/stores/useGlobalStore';
 import type {TourKey} from "~/interfaces";
-import {useLayout} from "#imports";
 
 const props = defineProps<{ name: TourKey; steps: TourStep[] }>();
   const tourRef = ref<InstanceType<typeof VTour> | null>(null);
-  const layout = useLayout()
-  const {mobile} = useDisplay()
   const globalStore = useGlobalStore();
   const { registerTourRef} = globalStore;
 
