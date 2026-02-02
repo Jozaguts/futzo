@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-  import { type ResizeObserverEntry, useResizeObserver } from '@vueuse/core'
-  import { useDisplay } from 'vuetify'
-  import { Icon } from '#components'
-  import OnboardingSteps from '~/components/layout/OnboardingSteps.vue'
-  import { useOnboardingStore } from '~/stores/useOnboardingStore'
+import {useResizeObserver} from '@vueuse/core'
+import {useDisplay} from 'vuetify'
+import {Icon} from '#components'
+import OnboardingSteps from '~/components/layout/OnboardingSteps.vue'
+import {useOnboardingStore} from '~/stores/useOnboardingStore'
+
+const globalStore =  useGlobalStore()
   const { drawer, drawerWidth, isMobile, rail, showSupportButton, openMessageSupportBox } =
-    storeToRefs(useGlobalStore())
+    storeToRefs(globalStore)
   const onboarding = useOnboardingStore()
   const drawerRef = ref()
   const authStore = useAuthStore()
@@ -18,12 +20,6 @@
   }
   const links = reactive([
     { icon: 'futzo-icon:home', title: 'Dashboard', to: '/dashboard', class: 'mr-2 drawer-icon filled' },
-    {
-      icon: 'futzo-icon:location',
-      title: 'Ubicaciones',
-      to: '/ubicaciones',
-      class: 'mr-2 drawer-icon',
-    },
     {
       icon: 'futzo-icon:trophy',
       title: 'Torneos',
@@ -42,9 +38,15 @@
       to: '/jugadores',
       class: 'mr-2 drawer-icon filled',
     },
+    {
+      icon: 'futzo-icon:location',
+      title: 'Ubicaciones',
+      to: '/ubicaciones',
+      class: 'mr-2 drawer-icon',
+    },
   ])
   const { logout } = useSanctumAuth()
-  useResizeObserver(drawerRef, (entries: ReadonlyArray<ResizeObserverEntry>) => {
+  useResizeObserver(drawerRef, (entries) => {
     const entry = entries[0]
     drawerWidth.value = entry?.contentRect?.width as number
   })
@@ -73,6 +75,14 @@
     rail.value = true
     showSupportButton.value = true
     openMessageSupportBox.value = true
+  }
+  const showTutorialHandler = () => {
+    const page = useRoute().name
+    if (page === 'dashboard') {
+      globalStore.resetTour('dashboard')
+      globalStore.recalculateTour('dashboard')
+      globalStore.startTour('dashboard')
+    }
   }
 </script>
 
@@ -106,6 +116,7 @@
             v-for="link in links"
             :key="link.title"
             link
+            :id="`${link.title}-tour`"
             :to="onboarding.isDisabled(link.to) ? null : link.to"
             :disabled="onboarding.isDisabled(link.to)"
             :title="link.title"
@@ -129,6 +140,15 @@
             prepend-icon="mdi-send"
             @click.stop="showSupportHandler"
             v-if="!showSupportButton"
+          >
+          </v-list-item>
+          <v-list-item
+              nav
+              density="compact"
+              key="tutorial"
+              title="Tutorial"
+              prepend-icon="mdi-school"
+              @click.stop="showTutorialHandler"
           >
           </v-list-item>
           <v-list-item

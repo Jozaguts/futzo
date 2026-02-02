@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "laravel-boost": {
+      "command": "/usr/bin/php8.4",
+      "args": [
+        "/home/jozaguts/Projects/personal/futzo_container/laravel/artisan",
+        "boost:mcp"
+      ]
+    }
+  }
+}

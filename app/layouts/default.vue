@@ -1,8 +1,9 @@
 <script setup lang="ts">
-  import Navigation from '~/components/layout/navigation-drawer.vue'
-  import { Toaster } from 'vue-sonner'
-  import StripeElementsDrawer from '~/components/pages/configuration/plans/StripeElementsDrawer.vue'
-  const show = ref(false)
+import Navigation from '~/components/layout/navigation-drawer.vue'
+import {Toaster} from 'vue-sonner'
+import StripeElementsDrawer from '~/components/pages/configuration/plans/StripeElementsDrawer.vue'
+
+const show = ref(false)
   const { rail, isMobile, toastDuration } = storeToRefs(useGlobalStore())
   const { user } = storeToRefs(useAuthStore())
   onMounted(() => {
@@ -15,6 +16,8 @@
     return rail.value ? '56px' : '256px'
   })
   const { stripeDialog } = storeToRefs(useAuthStore())
+  const currentPage = useRoute().name
+  const dashboardTour = useGlobalStore().getTourSteps(currentPage);
 </script>
 <template>
   <div>
@@ -42,6 +45,7 @@
               "
             />
           </v-main>
+          <LazyToursDashboard name="dashboard" :steps="dashboardTour.steps" />
         </ClientOnly>
 
         <AnimatedGradiendButton text="Contacto y soporte" />

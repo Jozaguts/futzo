@@ -1,13 +1,14 @@
 <script setup lang="ts">
-  import AppBar from '~/components/layout/AppBar.vue'
-  import AppBarBtn from '~/components/pages/dashboard/app-bar-btn.vue'
-  import StatsCard from '~/components/pages/dashboard/stats-card.vue'
-  import LastTeamsTable from '~/components/pages/dashboard/last-teams.vue'
-  import DashboardNextGames from '~/components/pages/dashboard/dashboard-next-games.vue'
-  import NoGames from '~/components/shared/empty-states/NoGames.vue'
-  import { useDisplay } from 'vuetify'
-  import { useGlobalStore } from '~/stores/useGlobalStore'
-  const { rail } = storeToRefs(useGlobalStore())
+import AppBar from '~/components/layout/AppBar.vue'
+import AppBarBtn from '~/components/pages/dashboard/app-bar-btn.vue'
+import StatsCard from '~/components/pages/dashboard/stats-card.vue'
+import LastTeamsTable from '~/components/pages/dashboard/last-teams.vue'
+import DashboardNextGames from '~/components/pages/dashboard/dashboard-next-games.vue'
+import NoGames from '~/components/shared/empty-states/NoGames.vue'
+import {useDisplay} from 'vuetify'
+import {useGlobalStore} from '~/stores/useGlobalStore'
+
+const { rail } = storeToRefs(useGlobalStore())
   const { teamStats, nextGames } = storeToRefs(useDashboardStore())
   definePageMeta({
     middleware: ['sanctum:auth'],
@@ -33,6 +34,7 @@
   const { mobile } = useDisplay()
   const page = ref(1)
   const nextGamePage = ref(1)
+
 </script>
 <template>
   <PageLayout>
@@ -51,35 +53,36 @@
       </AppBar>
     </template>
     <template #default>
-      <div class="dashboard-container">
-        <div class="dashboard-cards-container" v-if="!$vuetify.display.mobile">
-          <div class="card-1">
-            <StatsCard
-              title="Equipos totales"
-              :values="teamStats.registeredTeams"
-              :isPositive="teamStats.registeredTeams.current > 0"
-            ></StatsCard>
+      <client-only>
+        <div class="dashboard-container">
+          <div class="dashboard-cards-container" v-if="!$vuetify.display.mobile">
+            <div class="card-1">
+              <StatsCard
+                  title="Equipos totales"
+                  :values="teamStats.registeredTeams"
+                  :isPositive="teamStats.registeredTeams.current > 0"
+              ></StatsCard>
+            </div>
+            <div class="card-2">
+              <StatsCard
+                  title="jugadores activos"
+                  :values="teamStats.activePlayers"
+                  :isPositive="teamStats.activePlayers.current > 0"
+              ></StatsCard>
+            </div>
+            <div class="card-3">
+              <StatsCard
+                  title="juegos finalizados"
+                  :values="teamStats.completedGames"
+                  :isPositive="teamStats.completedGames.current > 0"
+              ></StatsCard>
+            </div>
           </div>
-          <div class="card-2">
-            <StatsCard
-              title="jugadores activos"
-              :values="teamStats.activePlayers"
-              :isPositive="teamStats.activePlayers.current > 0"
-            ></StatsCard>
-          </div>
-          <div class="card-3">
-            <StatsCard
-              title="juegos finalizados"
-              :values="teamStats.completedGames"
-              :isPositive="teamStats.completedGames.current > 0"
-            ></StatsCard>
-          </div>
-        </div>
-        <v-data-iterator
-          class="data-iterator-container"
-          v-else
-          :items-per-page="1"
-          :items="[
+          <v-data-iterator
+              class="data-iterator-container"
+              v-else
+              :items-per-page="1"
+              :items="[
             {
               title: 'Equipos totales',
               values: teamStats.registeredTeams,
@@ -96,77 +99,78 @@
               isPositive: teamStats.completedGames.current > 0,
             },
           ]"
-          :page="page"
-        >
-          <template #default="{ items }">
-            <template v-for="(item, i) in items" :key="i">
-              <StatsCard
-                :title="item.raw.title"
-                :values="item.raw.values"
-                :isPositive="item.raw.isPositive"
-              ></StatsCard>
-            </template>
-          </template>
-          <template #footer>
-            <v-pagination
-              density="compact"
-              :length="3"
-              v-model="page"
-              variant="text"
-              elevation="5"
-              class="mt-2"
-            ></v-pagination>
-          </template>
-        </v-data-iterator>
-        <div class="next-games">
-          <div class="next-game-wrapper">
-            <div class="dashboard subtitle-container">
-              <h2 class="dashboard subtitle">Próximos partidos</h2>
-              <v-btn variant="text" to="/torneos">Ver todos</v-btn>
-            </div>
-            <div v-if="nextGames.length === 0" class="text-center">
-              <NoGames />
-            </div>
-            <v-data-iterator
-              class="data-iterator-container no-border"
-              v-else-if="$vuetify.display.mobile"
-              :items-per-page="1"
-              :items="nextGames"
-              :page="nextGamePage"
-            >
-              <template #default="{ items }">
-                <template v-for="(item, i) in items" :key="i">
-                  <dashboard-next-games :class="[i === 0 ? 'mt-0' : '']" :game="item.raw" />
-                </template>
+              :page="page"
+          >
+            <template #default="{ items }">
+              <template v-for="(item, i) in items" :key="i">
+                <StatsCard
+                    :title="item.raw.title"
+                    :values="item.raw.values"
+                    :isPositive="item.raw.isPositive"
+                ></StatsCard>
               </template>
-              <template #footer>
-                <v-pagination
+            </template>
+            <template #footer>
+              <v-pagination
                   density="compact"
-                  :length="nextGames?.length ?? 0"
-                  v-model="nextGamePage"
+                  :length="3"
+                  v-model="page"
                   variant="text"
-                  total-visible="3"
                   elevation="5"
                   class="mt-2"
-                ></v-pagination>
-              </template>
-            </v-data-iterator>
-            <dashboard-next-games
-              :class="[index === 0 ? 'mt-0' : '']"
-              v-else-if="!$vuetify.display.mobile"
-              v-for="(game, index) in nextGames"
-              :key="game.id"
-              :game="game"
-            />
+              ></v-pagination>
+            </template>
+          </v-data-iterator>
+          <div class="next-games">
+            <div class="next-game-wrapper">
+              <div class="dashboard subtitle-container">
+                <h2 class="dashboard subtitle">Próximos partidos</h2>
+                <v-btn variant="text" to="/torneos">Ver todos</v-btn>
+              </div>
+              <div v-if="nextGames.length === 0" class="text-center">
+                <NoGames />
+              </div>
+              <v-data-iterator
+                  class="data-iterator-container no-border"
+                  v-else-if="$vuetify.display.mobile"
+                  :items-per-page="1"
+                  :items="nextGames"
+                  :page="nextGamePage"
+              >
+                <template #default="{ items }">
+                  <template v-for="(item, i) in items" :key="i">
+                    <dashboard-next-games :class="[i === 0 ? 'mt-0' : '']" :game="item.raw" />
+                  </template>
+                </template>
+                <template #footer>
+                  <v-pagination
+                      density="compact"
+                      :length="nextGames?.length ?? 0"
+                      v-model="nextGamePage"
+                      variant="text"
+                      total-visible="3"
+                      elevation="5"
+                      class="mt-2"
+                  ></v-pagination>
+                </template>
+              </v-data-iterator>
+              <dashboard-next-games
+                  :class="[index === 0 ? 'mt-0' : '']"
+                  v-else-if="!$vuetify.display.mobile"
+                  v-for="(game, index) in nextGames"
+                  :key="game.id"
+                  :game="game"
+              />
+            </div>
+          </div>
+          <div class="table">
+            <div class="table-wrapper">
+              <h2 class="dashboard subtitle">Últimos equipos inscritos</h2>
+              <LastTeamsTable />
+            </div>
           </div>
         </div>
-        <div class="table">
-          <div class="table-wrapper">
-            <h2 class="dashboard subtitle">Últimos equipos inscritos</h2>
-            <LastTeamsTable />
-          </div>
-        </div>
-      </div>
+      </client-only>
     </template>
   </PageLayout>
 </template>
