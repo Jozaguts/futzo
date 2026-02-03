@@ -1,11 +1,11 @@
 <script setup lang="ts">
-  import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
-  import type { TeamStoreRequest } from '~/models/Team'
-  import { mixed, number, object, string } from 'yup'
-  import { VMaskInput } from 'vuetify/labs/VMaskInput'
-  import { vuetifyConfig } from '~/utils/constants'
+import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
+import type {TeamStoreRequest} from '~/models/Team'
+import {mixed, number, object, string} from 'yup'
+import {VMaskInput} from 'vuetify/labs/VMaskInput'
+import {vuetifyConfig} from '~/utils/constants'
 
-  const teamStore = useTeamStore()
+const teamStore = useTeamStore()
   const { teamStoreRequest, isEdition, steps } = storeToRefs(teamStore)
   // @ts-ignore
   const { defineField, meta, values } = useForm<TeamStoreRequest['coach']>({
@@ -92,18 +92,20 @@
 <template>
   <v-container class="container" style="min-height: 480px">
     <BaseInput
+      id="equipos-dt-name"
       v-model="name"
       :props="name_props"
       sublabel="Opcional"
       label="Nombre del DT"
       placeholder="p.ej. Luis Veloz"
     />
-    <BaseInput label="Imagen del usuario" sublabel="Opcional">
+    <BaseInput id="equipos-dt-image" label="Imagen del usuario" sublabel="Opcional">
       <template #input>
         <DragDropImage v-model="image" :error-messages="image_props" />
       </template>
     </BaseInput>
     <BaseInput
+      id="equipos-dt-email"
       label="Correo electrónico"
       sublabel="Opcional"
       v-model="email"
@@ -112,7 +114,7 @@
       :disabled="isEdition"
       type="email"
     />
-    <BaseInput label="Teléfono" sublabel="Opcional">
+    <BaseInput id="equipos-dt-phone" label="Teléfono" sublabel="Opcional">
       <template #input>
         <div class="d-flex">
           <v-number-input

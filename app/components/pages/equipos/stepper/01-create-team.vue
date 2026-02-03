@@ -1,18 +1,18 @@
 <script setup lang="ts">
-  import { storeToRefs } from 'pinia'
-  import CategorySelectComponent from '~/components/inputs/CategoriesSelect.vue'
-  import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
-  import ColorsComponent from '~/components/pages/equipos/colors-component.vue'
-  import { VueDatePicker } from '@vuepic/vue-datepicker'
-  import { useForm } from 'vee-validate'
-  import type { TeamStoreRequest } from '~/models/Team'
-  import { mixed, number, object, string } from 'yup'
-  import { vuetifyConfig } from '~/utils/constants'
-  import type { Tournament } from '~/models/tournament'
-  import type { Field } from '~/models/Location'
-  import { useLeaguesStore } from '~/stores/useLeaguesStore'
+import {storeToRefs} from 'pinia'
+import CategorySelectComponent from '~/components/inputs/CategoriesSelect.vue'
+import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
+import ColorsComponent from '~/components/pages/equipos/colors-component.vue'
+import {VueDatePicker} from '@vuepic/vue-datepicker'
+import {useForm} from 'vee-validate'
+import type {TeamStoreRequest} from '~/models/Team'
+import {mixed, number, object, string} from 'yup'
+import {vuetifyConfig} from '~/utils/constants'
+import type {Tournament} from '~/models/tournament'
+import type {Field} from '~/models/Location'
+import {useLeaguesStore} from '~/stores/useLeaguesStore'
 
-  const leagueLocations = ref<Field[]>([])
+const leagueLocations = ref<Field[]>([])
   const { tournaments, tournament } = storeToRefs(useTournamentStore())
   const { teamStoreRequest, isEdition, steps } = storeToRefs(useTeamStore())
   const { getLeagueLocations } = useLeaguesStore()
@@ -185,8 +185,14 @@
 </script>
 <template>
   <v-container class="container" style="min-height: 480px">
-    <BaseInput v-model="name" :props="name_props" label="Nombre del equipo" placeholder="p.ej. Equipo de verano" />
-    <BaseInput label="Torneo">
+    <BaseInput
+      id="equipos-team-name"
+      v-model="name"
+      :props="name_props"
+      label="Nombre del equipo"
+      placeholder="p.ej. Equipo de verano"
+    />
+    <BaseInput id="equipos-team-tournament" label="Torneo">
       <template #input>
         <v-select
           placeholder="p.ej. Clausura"
@@ -204,17 +210,17 @@
         </v-select>
       </template>
     </BaseInput>
-    <BaseInput label="Categoría">
+    <BaseInput id="equipos-team-category" label="Categoría">
       <template #input>
         <CategorySelectComponent v-model="category_id" :errors="category_id_props" />
       </template>
     </BaseInput>
-    <BaseInput label="Imagen del equipo" sublabel="Opcional">
+    <BaseInput id="equipos-team-image" label="Imagen del equipo" sublabel="Opcional">
       <template #input>
         <DragDropImage v-model="image" :error-messages="image_props" />
       </template>
     </BaseInput>
-    <BaseInput label="Sede" sublabel="Opcional">
+    <BaseInput id="equipos-team-location" label="Sede" sublabel="Opcional">
       <template #input>
         <v-select
           v-model="home_location_id"
@@ -229,7 +235,7 @@
         ></v-select>
       </template>
     </BaseInput>
-    <BaseInput label="Día de juego" sublabel="Opcional">
+    <BaseInput id="equipos-team-day" label="Día de juego" sublabel="Opcional">
       <template #input>
         <v-select
           v-model="home_day_of_week"
@@ -245,7 +251,7 @@
         ></v-select>
       </template>
     </BaseInput>
-    <BaseInput label="Horario de juego" sublabel="Opcional">
+    <BaseInput id="equipos-team-time" label="Horario de juego" sublabel="Opcional">
       <template #input>
         <VueDatePicker
           v-model="homeStartTimeProxy"
@@ -269,7 +275,7 @@
         <input type="hidden" v-model="home_start_time" v-bind="home_start_time_props" />
       </template>
     </BaseInput>
-    <BaseInput label="Colores del equipo" sublabel="Opcional">
+    <BaseInput id="equipos-team-colors" label="Colores del equipo" sublabel="Opcional">
       <template #input>
         <ColorsComponent v-model:model-value="colors" :errors="colors_props" />
       </template>

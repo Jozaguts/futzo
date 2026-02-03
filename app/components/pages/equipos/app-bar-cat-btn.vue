@@ -5,5 +5,5 @@
   }
 </script>
 <template>
-  <PrimaryBtn variant="elevated" text="Crear Equipo" icon="futzo-icon:plus" class="mr-8" @click="toggleDialog" />
+  <PrimaryBtn variant="elevated" text="Crear Equipo" icon="futzo-icon:plus" class="mr-8 teams-primary-btn" @click="toggleDialog"/>
 </template>

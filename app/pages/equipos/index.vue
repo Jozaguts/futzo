@@ -1,17 +1,25 @@
 <script lang="ts" setup>
-  import AppBar from '~/components/layout/AppBar.vue'
-  import AppBarButtons from '~/components/pages/equipos/team-navbar-buttons.vue'
-  import NoTeams from '~/components/pages/equipos/NoTeams.vue'
-  import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
-  import TeamsTable from '~/components/pages/equipos/teams-table.vue'
-  import ImportDialog from '~/components/pages/equipos/import-dialog/index.vue'
-  import { useDisplay } from 'vuetify'
-  import SearchInput from '~/components/pages/equipos/app-bar-search-input.vue'
-  import { Icon } from '#components'
-  const teamStore = useTeamStore()
-  const { noTeams } = storeToRefs(teamStore)
+import AppBar from '~/components/layout/AppBar.vue'
+import AppBarButtons from '~/components/pages/equipos/team-navbar-buttons.vue'
+import NoTeams from '~/components/pages/equipos/NoTeams.vue'
+import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
+import TeamsTable from '~/components/pages/equipos/teams-table.vue'
+import ImportDialog from '~/components/pages/equipos/import-dialog/index.vue'
+import {useDisplay} from 'vuetify'
+import SearchInput from '~/components/pages/equipos/app-bar-search-input.vue'
+import {Icon} from '#components'
+
+const teamStore = useTeamStore()
+  const { noTeams, tourSteps } = storeToRefs(teamStore)
+  const { registerTourRef, startTour, resetTour, recalculateTour } = teamStore
+  const { setActiveController, clearActiveController } = useTourHub()
+  const tourController = { registerTourRef, startTour, resetTour, recalculateTour }
   onMounted(() => {
     teamStore.getTeams()
+    setActiveController(tourController)
+  })
+  onBeforeUnmount(() => {
+    clearActiveController(tourController)
   })
   definePageMeta({
     middleware: ['sanctum:auth'],
@@ -50,6 +58,9 @@
           </v-btn>
         </v-speed-dial>
       </v-fab>
+    </template>
+    <template #tour>
+      <LazyTour name="equipos" :steps="tourSteps" @register="registerTourRef" />
     </template>
   </PageLayout>
 </template>

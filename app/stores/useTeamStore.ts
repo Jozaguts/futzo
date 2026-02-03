@@ -1,14 +1,17 @@
-import { defineStore } from 'pinia';
-import type { Formation, FormSteps, Team, TeamStoreRequest, HomePreferences } from '~/models/Team';
-import type { IPagination } from '~/interfaces';
+import {defineStore} from 'pinia';
+import type {Formation, FormSteps, HomePreferences, Team, TeamStoreRequest} from '~/models/Team';
+import type {IPagination} from '~/interfaces';
 import * as teamAPI from '~/http/api/team';
-import prepareForm, { parseBlobResponse } from '~/utils/prepareFormData';
-import type { TeamFormation, NextGames, Initialize, LastGames } from '~/models/Game';
-import type { TeamLineupAvailablePlayers } from '~/models/Player';
-import { sortFormation } from '~/utils/sort-formation';
-import { useToast } from '~/composables/useToast';
+import prepareForm, {parseBlobResponse} from '~/utils/prepareFormData';
+import type {Initialize, LastGames, NextGames, TeamFormation} from '~/models/Game';
+import type {TeamLineupAvailablePlayers} from '~/models/Player';
+import {sortFormation} from '~/utils/sort-formation';
+import {useToast} from '~/composables/useToast';
+import type {TourStep} from '#nuxt-tour/props';
+import {useTourController} from '~/composables/useTourController';
 
 export const useTeamStore = defineStore('teamStore', () => {
+  const { registerTourRef, startTour, resetTour, recalculateTour } = useTourController();
   const INIT_STEPS: FormSteps = {
     current: 'createTeam',
     steps: {
@@ -72,6 +75,93 @@ export const useTeamStore = defineStore('teamStore', () => {
   const formations = ref<Formation[]>([] as Formation[]);
   const homePlayers = ref<TeamLineupAvailablePlayers[]>([] as TeamLineupAvailablePlayers[]);
   const awayPlayers = ref<TeamLineupAvailablePlayers[]>([] as TeamLineupAvailablePlayers[]);
+  const tourSteps = ref<TourStep[]>([
+    {
+      title: 'Crea un equipo',
+      subText: 'Solo necesitas el nombre y el torneo. El resto es opcional para organizar mejor tu liga.',
+      slot: 'equipos',
+      target: '.teams-primary-btn',
+      onNext: () =>{
+        dialog.value = true
+      }
+    },
+    {
+      title: 'Nombre del equipo',
+      subText: 'Identifica al equipo dentro del torneo. Ejemplo: “Equipo de Verano”.',
+      slot: 'equipos',
+      target: '#equipos-team-name',
+    },
+    {
+      title: 'Torneo',
+      subText: 'Selecciona el torneo en el que participa. La categoría se asigna automáticamente.',
+      slot: 'equipos',
+      target: '#equipos-team-tournament',
+    },
+    {
+      title: 'Categoría',
+      subText: 'Se define automáticamente con base en el torneo seleccionado.',
+      slot: 'equipos',
+      target: '#equipos-team-category',
+    },
+    {
+      title: 'Imagen del equipo',
+      subText: 'Opcional. Ayuda a identificarlo en tablas y vistas.',
+      slot: 'equipos',
+      target: '#equipos-team-image',
+    },
+    {
+      title: 'Sede, día y horario',
+      subText: 'Opcional. Si eliges sede, puedes fijar día y hora para evitar conflictos.',
+      slot: 'equipos',
+      target: '#equipos-team-location',
+    },
+    {
+      title: 'Colores del equipo',
+      subText: 'Opcional. Se usan para identificar equipos y armonizar las tablas.',
+      slot: 'equipos',
+      target: '#equipos-team-colors',
+      onNext: () =>{
+        steps.value.current = 'createDt'
+      }
+    },
+    {
+      title: 'Director técnico',
+      subText: 'Puedes crear el DT ahora o hacerlo más adelante.',
+      slot: 'equipos',
+      target: '#equipos-dt-name',
+    },
+    {
+      title: 'Datos del DT',
+      subText: 'Agrega imagen, correo y teléfono si aplica.',
+      slot: 'equipos',
+      target: '#equipos-dt-email',
+      onNext: () =>{
+        steps.value.current = 'createOwner'
+      }
+    },
+    {
+      title: 'Presidente o dueño',
+      subText: 'Este usuario administra el equipo y recibe los accesos principales.',
+      slot: 'equipos',
+      target: '#equipos-owner-name',
+    },
+    {
+      title: 'Datos del dueño',
+      subText: 'Opcional. Puedes agregar imagen, correo y teléfono.',
+      slot: 'equipos',
+      target: '#equipos-owner-email',
+      onNext: () =>{
+        dialog.value = false
+        steps.value.current = 'createTeam'
+      }
+    },
+    {
+      title: 'Listo',
+      subText: 'El equipo fue creado. Ahora puedes registrar jugadores o continuar con el torneo.',
+      slot: 'equipos',
+      target: 'body',
+    },
+  ]);
   const formatTime = (value?: string | null): string | null => {
     if (!value) {
       return null;
@@ -292,6 +382,10 @@ export const useTeamStore = defineStore('teamStore', () => {
   };
   const noTeams = computed(() => teams.value?.length === 0);
   return {
+    registerTourRef,
+    startTour,
+    resetTour,
+    recalculateTour,
     teams,
     team,
     formations,
@@ -312,6 +406,7 @@ export const useTeamStore = defineStore('teamStore', () => {
     homePlayers,
     awayPlayers,
     lastGames,
+    tourSteps,
     importTeamsHandler,
     noTeams,
     $storeReset,

@@ -107,9 +107,17 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
       subText: "Si un partido termina empatado, se define por penales: ganador: 2 puntos · perdedor: 1 punto.",
       slot: "torneos",
       target: '#tournament-rule',
+      onNext: () =>{
+        dialog.value = false
+        steps.value.current = 'basicInfo'
+      },
     },
-
-
+    {
+      title: 'Listo',
+      subText: 'El equipo fue creado. Ahora puedes registrar jugadores o continuar con el torneo.',
+      slot: 'equipos',
+      target: 'body',
+    },
   ])
   const INIT_STEPS: FormSteps = {
     current: 'basicInfo',
