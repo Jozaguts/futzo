@@ -9,7 +9,11 @@ import {useDisplay} from 'vuetify'
 import {useGlobalStore} from '~/stores/useGlobalStore'
 
 const { rail } = storeToRefs(useGlobalStore())
-  const { teamStats, nextGames } = storeToRefs(useDashboardStore())
+const dashboardStore = useDashboardStore()
+const { teamStats, nextGames, tourSteps } = storeToRefs(dashboardStore)
+const { registerTourRef, startTour, resetTour, recalculateTour } = dashboardStore
+const { setActiveController, clearActiveController } = useTourHub()
+const tourController = { registerTourRef, startTour, resetTour, recalculateTour }
   definePageMeta({
     middleware: ['sanctum:auth'],
   })
@@ -30,11 +34,14 @@ const { rail } = storeToRefs(useGlobalStore())
       useDashboardStore().byRange()
       useDashboardStore().getNextGames()
     }
+    setActiveController(tourController)
+  })
+  onBeforeUnmount(() => {
+    clearActiveController(tourController)
   })
   const { mobile } = useDisplay()
   const page = ref(1)
   const nextGamePage = ref(1)
-
 </script>
 <template>
   <PageLayout>
@@ -171,6 +178,9 @@ const { rail } = storeToRefs(useGlobalStore())
           </div>
         </div>
       </client-only>
+    </template>
+    <template #tour>
+      <LazyTour name="dashboard" :steps="tourSteps" @register="registerTourRef" />
     </template>
   </PageLayout>
 </template>

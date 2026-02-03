@@ -16,8 +16,6 @@ const show = ref(false)
     return rail.value ? '56px' : '256px'
   })
   const { stripeDialog } = storeToRefs(useAuthStore())
-  const currentPage = useRoute().name
-  const dashboardTour = useGlobalStore().getTourSteps(currentPage);
 </script>
 <template>
   <div>
@@ -45,9 +43,7 @@ const show = ref(false)
               "
             />
           </v-main>
-          <LazyToursDashboard name="dashboard" :steps="dashboardTour.steps" />
         </ClientOnly>
-
         <AnimatedGradiendButton text="Contacto y soporte" />
       </v-app>
     </v-layout>

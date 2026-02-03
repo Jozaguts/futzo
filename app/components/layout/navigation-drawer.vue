@@ -6,6 +6,7 @@ import OnboardingSteps from '~/components/layout/OnboardingSteps.vue'
 import {useOnboardingStore} from '~/stores/useOnboardingStore'
 
 const globalStore =  useGlobalStore()
+  const { startTour, resetTour, recalculateTour } = useTourHub()
   const { drawer, drawerWidth, isMobile, rail, showSupportButton, openMessageSupportBox } =
     storeToRefs(globalStore)
   const onboarding = useOnboardingStore()
@@ -77,12 +78,9 @@ const globalStore =  useGlobalStore()
     openMessageSupportBox.value = true
   }
   const showTutorialHandler = () => {
-    const page = useRoute().name
-    if (page === 'dashboard') {
-      globalStore.resetTour('dashboard')
-      globalStore.recalculateTour('dashboard')
-      globalStore.startTour('dashboard')
-    }
+    resetTour()
+    recalculateTour()
+    startTour()
   }
 </script>
 

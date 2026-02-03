@@ -2,25 +2,24 @@
 import {onBeforeUnmount, ref, watch} from 'vue';
 import type {TourStep} from '#nuxt-tour/props';
 import {VTour} from '#components';
-import {useGlobalStore} from '~/stores/useGlobalStore';
-import type {TourKey} from "~/interfaces";
+import type {TourKey} from '~/interfaces';
 
 const props = defineProps<{ name: TourKey; steps: TourStep[] }>();
-  const tourRef = ref<InstanceType<typeof VTour> | null>(null);
-  const globalStore = useGlobalStore();
-  const { registerTourRef} = globalStore;
+const emit = defineEmits<{
+  (event: 'register', value: InstanceType<typeof VTour> | null): void;
+}>();
+const tourRef = ref<InstanceType<typeof VTour> | null>(null);
 
-  watch(
-    () => tourRef.value,
-    (value) => {
-      registerTourRef(props.name, value);
-    },
-    { immediate: true }
-  );
-
-  onBeforeUnmount(() => {
-    registerTourRef(props.name, null);
-  });
+watch(
+  () => tourRef.value,
+  (value) => {
+    emit('register', value);
+  },
+  { immediate: true }
+);
+onBeforeUnmount(() => {
+  emit('register', null);
+});
 </script>
 
 <template>

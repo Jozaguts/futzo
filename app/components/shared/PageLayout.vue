@@ -25,6 +25,7 @@
         </div>
       </div>
     </div>
+    <slot name="tour"></slot>
     <client-only>
       <div class="footer">
         <slot name="footer"></slot>
