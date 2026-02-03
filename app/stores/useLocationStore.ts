@@ -1,13 +1,13 @@
 import {defineStore} from 'pinia';
 import type {
-    All,
-    Field,
-    FormSteps,
-    LocationCard,
-    LocationPosition,
-    LocationResponse,
-    LocationStoreRequest,
-    Windows,
+  All,
+  Field,
+  FormSteps,
+  LocationCard,
+  LocationPosition,
+  LocationResponse,
+  LocationStoreRequest,
+  Windows,
 } from '~/models/Location';
 import {useApiError} from '~/composables/useApiError';
 import type {IPagination} from '~/interfaces';
@@ -122,6 +122,9 @@ export const useLocationStore = defineStore('locationStore', () => {
         locationDialog.value = true;
         formSteps.value.current = 'location';
       },
+      onPrev:() =>{
+        locationDialog.value = false
+      },
     },
     {
       title: 'Registrar una ubicación',
@@ -141,7 +144,6 @@ export const useLocationStore = defineStore('locationStore', () => {
       target: '#location-step-2',
       onNext: () => {
         locationDialog.value = false;
-        formSteps.value.current = 'location';
       },
     },
   ]);
