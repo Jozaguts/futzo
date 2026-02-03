@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-  import AvailabilityFormStep from '~/components/pages/ubicaciones/stepper/AvailabilityFormStep.vue'
-  import type { Field, LocationStoreRequest } from '~/models/Location'
-  import { array, boolean, number, object, string } from 'yup'
-  import { useFieldArray } from 'vee-validate'
-  const currentStep = ref<number>(1)
+import AvailabilityFormStep from '~/components/pages/ubicaciones/stepper/AvailabilityFormStep.vue'
+import type {Field, LocationStoreRequest} from '~/models/Location'
+import {array, boolean, number, object, string} from 'yup'
+import {useFieldArray} from 'vee-validate'
+
+const currentStep = ref<number>(1)
   const { locationStoreRequest, formSteps, isEdition } = storeToRefs(useLocationStore())
   const { handleSubmit, validate } = useForm<Pick<LocationStoreRequest, 'fields'>>({
     validationSchema: toTypedSchema(
@@ -63,7 +64,7 @@
   formSteps.value.steps.availability.next_label = isEdition.value ? 'Editar ubicación' : 'Crear ubicación'
 </script>
 <template>
-  <v-container fluid class="pa-0">
+  <v-container fluid class="pa-0" id="location-step-2">
     <v-row>
       <v-col>
         <v-stepper editable class="pa-0 ma-0 futzo-vertical-stepper" v-model="currentStep">

@@ -1,18 +1,21 @@
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 import type {
-  FormSteps,
-  LocationCard,
-  LocationResponse,
-  LocationStoreRequest,
-  Field,
-  LocationPosition,
+    All,
+    Field,
+    FormSteps,
+    LocationCard,
+    LocationPosition,
+    LocationResponse,
+    LocationStoreRequest,
+    Windows,
 } from '~/models/Location';
-import { useApiError } from '~/composables/useApiError';
-import type { IPagination } from '~/interfaces';
-import { ref } from 'vue';
-import { DEFAULT_POSITION } from '~/utils/constants';
-import type { All, Windows } from '~/models/Location';
-import { useSanctumClient } from '#imports';
+import {useApiError} from '~/composables/useApiError';
+import type {IPagination} from '~/interfaces';
+import {ref} from 'vue';
+import {DEFAULT_POSITION} from '~/utils/constants';
+import {useSanctumClient} from '#imports';
+import type {TourStep} from '#nuxt-tour/props';
+import {useTourController} from '~/composables/useTourController';
 
 function sanitizeWindows(windows: Windows): Windows {
   const keys: (keyof Windows)[] = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'all'];
@@ -40,6 +43,7 @@ function sanitizeLocationPayload(payload: LocationStoreRequest): LocationStoreRe
 }
 
 export const useLocationStore = defineStore('locationStore', () => {
+  const { registerTourRef, startTour, resetTour, recalculateTour } = useTourController();
   const INIT_STEPS: FormSteps = {
     current: 'location',
     steps: {
@@ -107,6 +111,40 @@ export const useLocationStore = defineStore('locationStore', () => {
     sort: 'asc',
   });
   const formSteps = ref<FormSteps>(INIT_STEPS);
+  const tourSteps = ref<TourStep[]>([
+    {
+      title: 'Registra ubicaciones y campos',
+      subText:
+        'Este paso es opcional. Si lo configuras, Futzo podrá programar partidos automáticamente según la disponibilidad.',
+      slot: 'ubicaciones',
+      target: '.locations-primary-btn',
+      onNext: () => {
+        locationDialog.value = true;
+        formSteps.value.current = 'location';
+      },
+    },
+    {
+      title: 'Registrar una ubicación',
+      subText:
+        'Agrega dirección, nombre, cantidad de campos y etiquetas. Estos campos estarán disponibles para toda la liga.',
+      slot: 'ubicaciones',
+      target: '#location-step-1',
+      onNext: () => {
+        formSteps.value.current = 'availability';
+      },
+    },
+    {
+      title: 'Configura campos y disponibilidad',
+      subText:
+        'Define nombre del campo y horarios. Futzo usará esta info para programar partidos sin conflictos.',
+      slot: 'ubicaciones',
+      target: '#location-step-2',
+      onNext: () => {
+        locationDialog.value = false;
+        formSteps.value.current = 'location';
+      },
+    },
+  ]);
   const $reset = () => {
     resetLocationStoreRequest();
     locationDialog.value = false;
@@ -233,6 +271,10 @@ export const useLocationStore = defineStore('locationStore', () => {
 
   const noLocations = computed(() => !locations.value || locations.value.length === 0);
   return {
+    registerTourRef,
+    startTour,
+    resetTour,
+    recalculateTour,
     locations,
     locationStoreRequest,
     locationDialog,
@@ -242,6 +284,7 @@ export const useLocationStore = defineStore('locationStore', () => {
     locationToDelete,
     pagination,
     formSteps,
+    tourSteps,
     stepsCompleted,
     isAllStepsCompleted,
     deleteLocation,

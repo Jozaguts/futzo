@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-  import type { Prediction } from '~/interfaces'
-  import { usePlaceSearch, getPlaceDetails } from '~/utils/googleSearch'
-  import type { AutocompletePrediction } from '~/models/Schedule'
-  import { GoogleMap, AdvancedMarker } from 'vue3-google-map'
-  import type { LocationStoreRequest } from '~/models/Location'
-  import { object, number, string, array } from 'yup'
-  import { vuetifyConfig } from '~/utils/constants'
-  const searchString = ref<AutocompletePrediction>()
+import type {Prediction} from '~/interfaces'
+import {getPlaceDetails, usePlaceSearch} from '~/utils/googleSearch'
+import type {AutocompletePrediction} from '~/models/Schedule'
+import {AdvancedMarker, GoogleMap} from 'vue3-google-map'
+import type {LocationStoreRequest} from '~/models/Location'
+import {array, number, object, string} from 'yup'
+import {vuetifyConfig} from '~/utils/constants'
+
+const searchString = ref<AutocompletePrediction>()
   let foundedLocations = ref([] as AutocompletePrediction[])
   const tag = ref<string>('')
   const tagError = ref<boolean>(false)
@@ -137,7 +138,7 @@
   )
 </script>
 <template>
-  <v-container class="pa-0">
+  <v-container class="pa-0" id="location-step-1">
     <v-row no-gutters>
       <v-col cols="12">
         <v-autocomplete

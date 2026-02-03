@@ -1,15 +1,20 @@
 <script lang="ts" setup>
-  import AppBar from '~/components/layout/AppBar.vue'
-  import NoLocations from '~/components/pages/ubicaciones/NoLocations.vue'
-  import DialogLocation from '~/components/pages/ubicaciones/dialog/index.vue'
-  import LocationCardContainer from '~/components/pages/ubicaciones/LocationCardContainer.vue'
-  import ConfirmDialog from '~/components/shared/confirm-dialog.vue'
-  import { useDisplay } from 'vuetify'
-  import { Icon } from '#components'
-  definePageMeta({
+import AppBar from '~/components/layout/AppBar.vue'
+import NoLocations from '~/components/pages/ubicaciones/NoLocations.vue'
+import DialogLocation from '~/components/pages/ubicaciones/dialog/index.vue'
+import LocationCardContainer from '~/components/pages/ubicaciones/LocationCardContainer.vue'
+import ConfirmDialog from '~/components/shared/confirm-dialog.vue'
+import {useDisplay} from 'vuetify'
+import {Icon} from '#components'
+
+definePageMeta({
     middleware: ['sanctum:auth'],
   })
-  const { isEdition, locationDialog, locationToDelete, locations } = storeToRefs(useLocationStore())
+  const locationStore = useLocationStore()
+  const { isEdition, locationDialog, locationToDelete, locations, tourSteps } = storeToRefs(locationStore)
+  const { registerTourRef, startTour, resetTour, recalculateTour } = locationStore
+  const { setActiveController, clearActiveController } = useTourHub()
+  const tourController = { registerTourRef, startTour, resetTour, recalculateTour }
   const showStoreLocationDialog = () => {
     isEdition.value = false
     locationDialog.value = true
@@ -32,8 +37,12 @@
   const { mobile } = useDisplay()
   onMounted(async () => {
     if (!locations.value) {
-      await useLocationStore().getLocations()
+      await locationStore.getLocations()
     }
+    setActiveController(tourController)
+  })
+  onBeforeUnmount(() => {
+    clearActiveController(tourController)
   })
   const open = ref(false)
 </script>
@@ -54,7 +63,7 @@
               :disabled="false"
               text="Crear ubicación"
               icon="futzo-icon:plus"
-              class="mr-8"
+              class="mr-8 locations-primary-btn"
               @click="showStoreLocationDialog"
             ></PrimaryBtn>
           </div>
@@ -91,6 +100,9 @@
           </v-btn>
         </v-speed-dial>
       </v-fab>
+    </template>
+    <template #tour>
+      <LazyTour name="ubicaciones" :steps="tourSteps" @register="registerTourRef" />
     </template>
   </PageLayout>
 </template>
