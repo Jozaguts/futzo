@@ -1,20 +1,30 @@
 <script setup lang="ts">
-  import AppBar from '~/components/layout/AppBar.vue'
-  import TournamentAppBarButtons from '~/components/pages/torneos/tournament-app-bar-buttons.vue'
-  import TournamentTable from '~/components/pages/torneos/tournament-table.vue'
-  import NoTournaments from '~/components/pages/torneos/no-tournament.vue'
-  import TournamentDialog from '~/components/pages/torneos/dialog/index.vue'
-  import { useDisplay } from 'vuetify'
-  import SearchInput from '~/components/pages/torneos/app-bar-search-input.vue'
-  import { storeToRefs } from '#imports'
-  import { Icon } from '#components'
-  const { dialog, tournamentId, noTournaments } = storeToRefs(useTournamentStore())
+import AppBar from '~/components/layout/AppBar.vue'
+import TournamentAppBarButtons from '~/components/pages/torneos/tournament-app-bar-buttons.vue'
+import TournamentTable from '~/components/pages/torneos/tournament-table.vue'
+import NoTournaments from '~/components/pages/torneos/no-tournament.vue'
+import TournamentDialog from '~/components/pages/torneos/dialog/index.vue'
+import {useDisplay} from 'vuetify'
+import SearchInput from '~/components/pages/torneos/app-bar-search-input.vue'
+import {storeToRefs} from '#imports'
+import {Icon} from '#components'
+
+const tournamentStore = useTournamentStore()
+  const { dialog, tournamentId, noTournaments, tourSteps } = storeToRefs(tournamentStore)
+  const { registerTourRef, startTour, resetTour, recalculateTour } = tournamentStore
+  const { setActiveController, clearActiveController } = useTourHub()
+  const tourController = { registerTourRef, startTour, resetTour, recalculateTour }
+
   definePageMeta({
     middleware: ['sanctum:auth'],
   })
   onMounted(() => {
     tournamentId.value = undefined
     useTournamentStore().loadTournaments()
+    setActiveController(tourController)
+  })
+  onBeforeUnmount(() => {
+    clearActiveController(tourController)
   })
   const { mobile } = useDisplay()
   const open = ref(false)
@@ -51,6 +61,9 @@
           </v-btn>
         </v-speed-dial>
       </v-fab>
+    </template>
+    <template #tour>
+      <LazyTour name="torneos" :steps="tourSteps" @register="registerTourRef" />
     </template>
   </PageLayout>
 </template>

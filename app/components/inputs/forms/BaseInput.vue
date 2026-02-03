@@ -12,6 +12,7 @@
     type = 'text',
     variant = 'outlined',
     readonly = false,
+    id = Math.random()
   } = defineProps<{
     placeholder?: string
     label?: string
@@ -21,11 +22,12 @@
     type?: string
     readonly?: boolean
     variant?: 'outlined' | 'filled' | 'underlined' | 'plain' | 'solo' | 'solo-filled' | 'solo-inverted'
+    id?: number | string
   }>()
 </script>
 
 <template>
-  <v-row>
+  <v-row :id="id">
     <v-col cols="12" lg="4" md="4">
       <slot name="label">
         <span class="d-block text-body-1"> {{ label }} </span>
@@ -36,6 +38,7 @@
       <slot name="input">
         <v-text-field
           :type="type"
+
           :placeholder="placeholder"
           :variant="variant"
           :readonly="readonly"

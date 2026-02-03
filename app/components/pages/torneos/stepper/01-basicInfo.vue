@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-  import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
-  import CategorySelectComponent from '~/components/inputs/CategoriesSelect.vue'
-  import { FUTBOL_11_ID, MAX_TEAMS, MIN_TEAMS, vuetifyConfig } from '~/utils/constants'
-  import { useForm } from 'vee-validate'
-  import { object, number, string, mixed, array, date } from 'yup'
-  import type { TournamentStoreRequest } from '~/models/tournament'
-  import { storeToRefs } from 'pinia'
-  const { footballTypes } = storeToRefs(useLeaguesStore())
+import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
+import CategorySelectComponent from '~/components/inputs/CategoriesSelect.vue'
+import {FUTBOL_11_ID, MAX_TEAMS, MIN_TEAMS, vuetifyConfig} from '~/utils/constants'
+import {useForm} from 'vee-validate'
+import {array, date, mixed, number, object, string} from 'yup'
+import type {TournamentStoreRequest} from '~/models/tournament'
+import {storeToRefs} from 'pinia'
+
+const { footballTypes } = storeToRefs(useLeaguesStore())
   const { formats } = storeToRefs(useCategoryStore())
   const { isEdition, tournamentStoreRequest, steps } = storeToRefs(useTournamentStore())
   const { t } = useI18n()
@@ -76,14 +77,15 @@
 </script>
 <template>
   <v-container class="container">
-    <BaseInput v-model="name" :props="name_props" label="Nombre del torneo*" placeholder="p.ej. Torneo de verano" />
-    <BaseInput label="Fecha de inicio*" :props="start_date_props">
+    <BaseInput v-model="name" :props="name_props" label="Nombre del torneo*" placeholder="p.ej. Torneo de verano"  id="tournament-name" />
+    <BaseInput label="Fecha de inicio*" :props="start_date_props" id="tournament-date">
       <template #input>
         <BaseCalendarInput
           v-model:start_date="start_date"
           v-model:end_date="end_date"
           :multiCalendar="false"
           :error-messages="start_date_props"
+
         />
       </template>
     </BaseInput>
@@ -92,7 +94,7 @@
         <DragDropImage v-model="image" :error-messages="image_props" />
       </template>
     </BaseInput>
-    <BaseInput label="Formato*">
+    <BaseInput label="Formato*" id="tournament-format">
       <template #input>
         <v-select
           :items="formats"
@@ -114,9 +116,10 @@
         </v-select>
       </template>
     </BaseInput>
-    <BaseInput label="Tipo de torneo*">
+    <BaseInput label="Tipo de torneo*" id="tournament-type">
       <template #input>
         <v-select
+
           :items="footballTypes"
           density="compact"
           item-title="name"
@@ -136,12 +139,12 @@
         </v-select>
       </template>
     </BaseInput>
-    <BaseInput label="Categoría*">
+    <BaseInput label="Categoría*" id="tournament-category">
       <template #input>
-        <CategorySelectComponent :disabled="false" v-model="category_id" :errors="category_id_props" />
+        <CategorySelectComponent :disabled="false" v-model="category_id" :errors="category_id_props"/>
       </template>
     </BaseInput>
-    <BaseInput label="Equipos*" sublabel="Mínimo y máximo">
+    <BaseInput label="Equipos*" sublabel="Mínimo y máximo" id="tournament-min-max">
       <template #input>
         <v-range-slider
           step="1"
@@ -157,7 +160,7 @@
         </v-range-slider>
       </template>
     </BaseInput>
-    <BaseInput label="Cambios permitidos*">
+    <BaseInput label="Cambios permitidos*" id="tournament-substitutions">
       <template #input>
         <v-text-field
           v-model="substitutions_per_team"
@@ -168,6 +171,7 @@
           hint="-1 para ilimitados"
           persistent-hint
           density="compact"
+
         >
         </v-text-field>
       </template>

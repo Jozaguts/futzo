@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-  import useSchemas from '~/composables/useSchemas'
-  import type { AutocompletePrediction, Prediction } from '~/interfaces'
-  import { useForm } from 'vee-validate'
-  import type { TournamentStoreRequest } from '~/models/tournament'
-  import { object } from 'yup'
-  import * as yup from 'yup'
-  import { vuetifyConfig } from '~/utils/constants'
-  import type { Field } from '~/models/Location'
+import {useForm} from 'vee-validate'
+import type {TournamentStoreRequest} from '~/models/tournament'
+import * as yup from 'yup'
+import {object} from 'yup'
+import {vuetifyConfig} from '~/utils/constants'
+import type {Field} from '~/models/Location'
 
-  const { tournamentStoreRequest, steps } = storeToRefs(useTournamentStore())
+const { tournamentStoreRequest, steps } = storeToRefs(useTournamentStore())
   const { t } = useI18n()
   const { defineField, resetForm, meta, values } = useForm<TournamentStoreRequest['details']>({
     validationSchema: toTypedSchema(
@@ -76,7 +74,7 @@
 </script>
 <template>
   <v-container class="container">
-    <BaseInput label="Ubicaciones*" sublabel="Donde se llevaran acabo los partidos">
+    <BaseInput label="Ubicaciones*" sublabel="Donde se llevaran acabo los partidos"  id="tournament-location">
       <template #input>
         <v-autocomplete
           multiple
@@ -88,6 +86,7 @@
           v-model="location_ids"
           v-bind="location_ids_props"
           @update:search="searchHandler2"
+
         >
         </v-autocomplete>
       </template>
@@ -124,9 +123,10 @@
     <BaseInput
       sublabel="El ganador en penales suma 2 puntos y su rival 1 punto."
       label="Desempate por penales en empates de fase general"
+      id="tournament-rule"
     >
       <template #input>
-        <v-switch color="primary" v-model="penalty_draw_enabled" v-bind="penalty_draw_enabled_props"></v-switch>
+        <v-switch color="primary" v-model="penalty_draw_enabled" v-bind="penalty_draw_enabled_props" ></v-switch>
       </template>
     </BaseInput>
   </v-container>

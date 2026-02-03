@@ -1,25 +1,25 @@
 import type {
+  BasicInfoForm,
   CalendarStoreRequest,
+  DetailsInfoForm,
+  ExportType,
   FormSteps,
   Tournament,
   TournamentForm,
   TournamentLocation,
   TournamentLocationStoreRequest,
-  TournamentStoreRequest,
-  TournamentStatus,
   TournamentStats,
-  ExportType,
-  DetailsInfoForm,
-  BasicInfoForm,
+  TournamentStatus,
+  TournamentStoreRequest,
 } from '~/models/tournament';
-import type { Game } from '~/models/Game';
-import type { User } from '~/models/User';
+import type {Game} from '~/models/Game';
+import type {User} from '~/models/User';
 import prepareForm from '~/utils/prepareFormData';
-import type { IPagination } from '~/interfaces';
+import type {IPagination} from '~/interfaces';
 import * as tournamentAPI from '~/http/api/tournament';
-import type { Field } from '~/models/Schedule';
-import type { CreateTeamForm } from '~/models/Team';
-import { defineStore } from 'pinia';
+import type {Field} from '~/models/Schedule';
+import type {CreateTeamForm} from '~/models/Team';
+import {defineStore} from 'pinia';
 import {
   storeToRefs,
   useCategoryStore,
@@ -29,8 +29,88 @@ import {
   useTeamStore,
   useToast,
 } from '#imports';
+import type {TourStep} from '#nuxt-tour/props';
+import {useTourController} from '~/composables/useTourController';
 
+// @ts-ignore
 export const useTournamentStore = defineStore('tournamentStore', () => {
+  // @ts-ignore
+  const { registerTourRef, startTour, resetTour, recalculateTour } = useTourController();
+  const tourSteps = ref<TourStep[]>([
+    {
+      title: "Crea tu primer torneo",
+      subText: "Define el formato y Futzo se encarga del calendario y los partidos.",
+      slot: "torneos",
+      target: '.tournament-primary-btn',
+      onNext: () =>{
+       dialog.value = true
+      },
+    },
+    {
+      title: "Configura tu torneo",
+      subText: "Estos datos permiten que Futzo programe partidos y aplique las reglas correctas.",
+      slot: "torneos",
+    },
+    {
+      title: "Nombre del torneo",
+      subText: "Identifica tu torneo. Ejemplo: ‘Apertura 2026",
+      slot: "torneos",
+      target: '#tournament-name',
+    },
+    {
+      title: "Fecha de inicio",
+      subText: "La fecha desde la que Futzo organiza el calendario.",
+      slot: "torneos",
+      target: '#tournament-date',
+    },
+    {
+      title: "Formato del torneo",
+      subText: "Define cómo se juega (liga, liga y eliminatoria, etc.)",
+      slot: "torneos",
+      target: '#tournament-format',
+    },
+    {
+      title: "Tipo de torneo",
+      subText: "Establece las reglas principales del torneo según tu formato, 11 vs 11 o 7 vs 7",
+      slot: "torneos",
+      target: '#tournament-type',
+    },
+    {
+      title: "Categoría",
+      subText: "Clasifica el torneo: amateur, infantil, veteranos, etc",
+      slot: "torneos",
+      target: '#tournament-category',
+    },
+    {
+      title: "Mínimo y maximo de equipos",
+      subText: "Cantidad mínima para iniciar el torneo y maxima para registrar.",
+      slot: "torneos",
+      target: '#tournament-min-max',
+    },
+    {
+      title: "Cambios permitidos",
+      subText: "Número de sustituciones permitidas por partido",
+      slot: "torneos",
+      target: '#tournament-substitutions',
+      onNext: () =>{
+        steps.value.current = 'detailsInfo';
+      },
+    },
+    {
+      title: "Ubicaciones del torneo",
+      subText: "No es obligatorio. Selecciona las canchas disponibles y Futzo las usará para programar los partidos; también puedes hacerlo sin campo asignado.",
+      slot: "torneos",
+      target: '#tournament-location',
+    },
+    {
+      title: "Regla de desempate por penales",
+      subText: "Si un partido termina empatado, se define por penales: ganador: 2 puntos · perdedor: 1 punto.",
+      slot: "torneos",
+      target: '#tournament-rule',
+    },
+
+
+  ])
   const INIT_STEPS: FormSteps = {
     current: 'basicInfo',
     steps: {
@@ -305,6 +385,10 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   };
 
   return {
+    registerTourRef,
+    startTour,
+    resetTour,
+    recalculateTour,
     tournaments,
     tournament,
     nextGames,
@@ -338,6 +422,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     tournamentStats,
     lastResults,
     groupStanding,
+    tourSteps,
     getTournamentLocations,
     loadTournaments,
     applyStatusFilter,

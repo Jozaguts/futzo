@@ -1,5 +1,6 @@
 import type {VTour} from '#components';
 
+// @ts-ignore
 export const useTourController = () => {
   const tourRef = ref<InstanceType<typeof VTour> | null>(null);
 

@@ -4,6 +4,7 @@ import type {NextGames} from '~/models/Game';
 import type {TourStep} from "#nuxt-tour/props";
 import {useTourController} from '~/composables/useTourController';
 
+// @ts-ignore
 export const useDashboardStore = defineStore('dashboardStore', () => {
   const range = ref<IStatStage>('lastMonth');
 
