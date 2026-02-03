@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-  import type { PlayerStoreRequest } from '~/models/Player'
-  import { number, object, string } from 'yup'
-  import { VMaskInput } from 'vuetify/labs/VMaskInput'
-  import { vuetifyConfig } from '~/utils/constants'
+import type {PlayerStoreRequest} from '~/models/Player'
+import {number, object, string} from 'yup'
+import {VMaskInput} from 'vuetify/labs/VMaskInput'
+import {vuetifyConfig} from '~/utils/constants'
 
-  const { playerStoreRequest, steps } = storeToRefs(usePlayerStore())
+const { playerStoreRequest, steps } = storeToRefs(usePlayerStore())
   const { defineField, meta, values } = useForm<PlayerStoreRequest['contact']>({
     validationSchema: toTypedSchema(
       object({
@@ -39,15 +39,16 @@
   )
 </script>
 <template>
-  <v-container class="pt-0">
+  <v-container class="pt-0" id="player-step-3">
     <BaseInput
+      id="jugadores-email"
       v-model="email"
       :props="email_props"
       type="email"
       label="Correo electrónico"
       placeholder="p.ej. sagit@futzo.io"
     />
-    <BaseInput label="Teléfono" sublabel="Opcional">
+    <BaseInput id="jugadores-phone" label="Teléfono" sublabel="Opcional">
       <template #input>
         <div class="d-flex">
           <v-number-input
@@ -76,7 +77,7 @@
         </div>
       </template>
     </BaseInput>
-    <BaseInput label="Notas adicionales" sublabel="Opcional">
+    <BaseInput id="jugadores-notes" label="Notas adicionales" sublabel="Opcional">
       <template #input>
         <v-textarea
           v-model="notes"

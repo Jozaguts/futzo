@@ -1,18 +1,27 @@
 <script lang="ts" setup>
-  import AppBar from '~/components/layout/AppBar.vue'
-  import PlayersNavbarButtons from '~/components/pages/jugadores/players-navbar-buttons.vue'
-  import NoPlayers from '~/components/pages/jugadores/no-players.vue'
-  import PlayersDialog from '~/components/pages/jugadores/dialog/index.vue'
-  import PlayersTable from '~/components/pages/jugadores/players-table.vue'
-  import ImportDialog from '@/components/pages/jugadores/import-dialog/index.vue'
-  import AssignTeamDialog from '@/components/pages/jugadores/assign-team-dialog.vue'
-  import SearchInput from '@/components/pages/jugadores/app-bar-search-input.vue'
-  import { useDisplay } from 'vuetify'
-  import { Icon } from '#components'
-  import { usePlayerStore } from '#imports'
-  const { dialog } = storeToRefs(usePlayerStore())
+import AppBar from '~/components/layout/AppBar.vue'
+import PlayersNavbarButtons from '~/components/pages/jugadores/players-navbar-buttons.vue'
+import NoPlayers from '~/components/pages/jugadores/no-players.vue'
+import PlayersDialog from '~/components/pages/jugadores/dialog/index.vue'
+import PlayersTable from '~/components/pages/jugadores/players-table.vue'
+import ImportDialog from '@/components/pages/jugadores/import-dialog/index.vue'
+import AssignTeamDialog from '@/components/pages/jugadores/assign-team-dialog.vue'
+import SearchInput from '@/components/pages/jugadores/app-bar-search-input.vue'
+import {useDisplay} from 'vuetify'
+import {Icon} from '#components'
+import {usePlayerStore} from '#imports'
+
+const playerStore = usePlayerStore()
+  const { dialog, tourSteps } = storeToRefs(playerStore)
+  const { registerTourRef, startTour, resetTour, recalculateTour } = playerStore
+  const { setActiveController, clearActiveController } = useTourHub()
+  const tourController = { registerTourRef, startTour, resetTour, recalculateTour }
   onMounted(() => {
-    usePlayerStore().getPlayers()
+    playerStore.getPlayers()
+    setActiveController(tourController)
+  })
+  onBeforeUnmount(() => {
+    clearActiveController(tourController)
   })
   definePageMeta({
     middleware: ['sanctum:auth'],
@@ -50,6 +59,9 @@
           </v-btn>
         </v-speed-dial>
       </v-fab>
+    </template>
+    <template #tour>
+      <LazyTour name="jugadores" :steps="tourSteps" @register="registerTourRef" />
     </template>
   </PageLayout>
 </template>

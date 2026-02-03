@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-  import { number as yup_number, object, string } from 'yup'
-  import '@vuepic/vue-datepicker/dist/main.css'
-  import type { PlayerStoreRequest } from '~/models/Player'
-  import { vuetifyConfig } from '~/utils/constants'
-  const { playerStoreRequest, steps } = storeToRefs(usePlayerStore())
+import {number as yup_number, object, string} from 'yup'
+import '@vuepic/vue-datepicker/dist/main.css'
+import type {PlayerStoreRequest} from '~/models/Player'
+import {vuetifyConfig} from '~/utils/constants'
+
+const { playerStoreRequest, steps } = storeToRefs(usePlayerStore())
   const { positions } = storeToRefs(usePositionsStore())
   const { defineField, meta, values } = useForm<PlayerStoreRequest['details']>({
     validationSchema: toTypedSchema(
@@ -40,7 +41,7 @@
   )
 </script>
 <template>
-  <v-container class="pt-0">
+  <v-container class="pt-0" id="player-step-2">
     <BaseInput label="Posición" placeholder="Delantero" sublabel="Opcional">
       <template #input>
         <v-select

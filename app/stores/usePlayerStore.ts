@@ -1,16 +1,19 @@
-import { defineStore } from 'pinia';
-import type { FormSteps, Player, PlayerStoreRequest, TeamLineupAvailablePlayers } from '~/models/Player';
-import prepareForm, { parseBlobResponse } from '~/utils/prepareFormData';
-import type { IPagination } from '~/interfaces';
-import type { Team } from '~/models/Team';
+import {defineStore} from 'pinia';
+import type {FormSteps, Player, PlayerStoreRequest, TeamLineupAvailablePlayers} from '~/models/Player';
+import prepareForm, {parseBlobResponse} from '~/utils/prepareFormData';
+import type {IPagination} from '~/interfaces';
+import type {Team} from '~/models/Team';
 import * as teamAPI from '~/http/api/team';
 import * as playerAPI from '~/http/api/players';
-import type { FormationPlayer } from '~/models/Game';
-import { useToast } from '~/composables/useToast';
-import { useCategoryStore, useSanctumClient, useTeamStore } from '#imports';
+import type {FormationPlayer} from '~/models/Game';
+import {useToast} from '~/composables/useToast';
+import type {TourStep} from '#nuxt-tour/props';
+import {useTourController} from '~/composables/useTourController';
+import {useCategoryStore, useSanctumClient, useTeamStore} from '#imports';
 
 export const usePlayerStore = defineStore('playerStore', () => {
   const { toast } = useToast();
+  const { registerTourRef, startTour, resetTour, recalculateTour } = useTourController();
   const INIT_STEPS: FormSteps = {
     current: 'basic-info',
     steps: {
@@ -67,6 +70,56 @@ export const usePlayerStore = defineStore('playerStore', () => {
   const showAssignTeam = ref(false);
   const player = ref<Player>(null as unknown as Player);
   const steps = ref<FormSteps>(INIT_STEPS);
+  const tourSteps = ref<TourStep[]>([
+    {
+      title: 'Registra a un jugador',
+      subText: 'Solo necesitas sus datos básicos. El resto es opcional y puedes completarlo después.',
+      slot: 'jugadores',
+      target: '.players-primary-btn',
+      onNext: () => {
+        dialog.value = true;
+        steps.value.current = 'basic-info';
+      },
+    },
+    {
+      title: 'Datos básicos (obligatorio)',
+      subText:
+        'Completa nombre, fecha de nacimiento y, si quieres, apellido, nacionalidad, imagen y equipo. La categoría se asigna automáticamente.',
+      slot: 'jugadores',
+      target: '#player-step-1',
+      onNext: () => {
+        steps.value.current = 'details-info';
+      },
+    },
+    {
+      title: 'Información deportiva (opcional)',
+      subText:
+        'Puedes añadir posición, número, altura, peso, pierna dominante y notas médicas. Esto enriquece estadísticas.',
+      slot: 'jugadores',
+      target: '#player-step-2',
+      onNext: () => {
+        steps.value.current = 'contact-info';
+      },
+    },
+    {
+      title: 'Contacto (opcional)',
+      subText: 'Agrega correo, teléfono y notas adicionales para contacto o invitación.',
+      slot: 'jugadores',
+      target: '#player-step-3',
+      onNext: () => {
+        dialog.value = false;
+      },
+    },
+    {
+      title: 'Jugador registrado',
+      subText: 'Ya puedes usar este jugador para estadísticas, goles y tarjetas.',
+      slot: 'jugadores',
+      target: 'body',
+      onNext: () => {
+        steps.value.current = 'basic-info';
+      },
+    },
+  ]);
 
   const getPlayer = async (id: string) => {
     try {
@@ -239,6 +292,10 @@ export const usePlayerStore = defineStore('playerStore', () => {
     await Promise.all([useTeamStore().list(), useCategoryStore().fetchCategories()]);
   };
   return {
+    registerTourRef,
+    startTour,
+    resetTour,
+    recalculateTour,
     players,
     dialog,
     search,
@@ -253,6 +310,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
     isImporting,
     showAssignTeam,
     player,
+    tourSteps,
     $storeReset,
     updatePlayer,
     createPlayer,

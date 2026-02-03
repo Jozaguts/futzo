@@ -1,13 +1,14 @@
 <script lang="ts" setup>
-  import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
-  import { mixed, number, object, string, date } from 'yup'
-  import '@vuepic/vue-datepicker/dist/main.css'
-  import { dragDropImageRef } from '~/composables/useImage'
-  import { vuetifyConfig } from '~/utils/constants'
-  import type { PlayerStoreRequest } from '~/models/Player'
-  import type { Team } from '~/models/Team'
-  import { storeToRefs, toTypedSchema, useCategoryStore, usePlayerStore, useTeamStore, useI18n } from '#imports'
-  const { t } = useI18n()
+import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
+import {date, mixed, number, object, string} from 'yup'
+import '@vuepic/vue-datepicker/dist/main.css'
+import {dragDropImageRef} from '~/composables/useImage'
+import {vuetifyConfig} from '~/utils/constants'
+import type {PlayerStoreRequest} from '~/models/Player'
+import type {Team} from '~/models/Team'
+import {storeToRefs, toTypedSchema, useCategoryStore, useI18n, usePlayerStore, useTeamStore} from '#imports'
+
+const { t } = useI18n()
   const { isEdition, playerStoreRequest, steps } = storeToRefs(usePlayerStore())
   const { teams } = storeToRefs(useTeamStore())
   const { categories } = storeToRefs(useCategoryStore())
@@ -82,7 +83,7 @@
   )
 </script>
 <template>
-  <v-container class="pt-0">
+  <v-container class="pt-0" id="player-step-1">
     <BaseInput label="Nombre(s)" placeholder="p.ej. Cristiano" v-model="name" :props="name_props"></BaseInput>
     <BaseInput
       placeholder="p.ej. Ronaldo"
