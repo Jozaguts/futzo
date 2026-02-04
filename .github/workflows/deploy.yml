@@ -93,8 +93,8 @@ jobs:
               echo "PW_E2E_PASSWORD=$PW_E2E_PASSWORD"
               echo "PW_BASE_URL=$PW_BASE_URL"
               echo "NUXT_PUBLIC_STRIPE_KEY=$NUXT_PUBLIC_STRIPE_KEY"
-              echo "NUXT_PUBLIC_UMAMI_ID=NUXT_PUBLIC_UMAMI_ID"
-              echo "NUXT_PUBLIC_UMAMI_HOST=NUXT_PUBLIC_UMAMI_HOST"
+              echo "NUXT_PUBLIC_UMAMI_ID=$NUXT_PUBLIC_UMAMI_ID"
+              echo "NUXT_PUBLIC_UMAMI_HOST=$NUXT_PUBLIC_UMAMI_HOST"
             ) > .env.prod
 
             yarn install --frozen-lockfile
