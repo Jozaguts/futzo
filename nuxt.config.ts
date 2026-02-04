@@ -125,7 +125,7 @@ export default defineNuxtConfig({
     autoTrack: true,
     // proxy: 'cloak',
     // useDirective: true,
-    // ignoreLocalhost: true,
+    ignoreLocalhost: true,
     // excludeQueryParams: false,
     // domains: ['cool-site.app', 'my-space.site'],
     // customEndpoint: '/my-custom-endpoint',
