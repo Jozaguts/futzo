@@ -38,6 +38,8 @@ jobs:
           PW_E2E_PASSWORD: ${{ vars.PW_E2E_PASSWORD || secrets.PW_E2E_PASSWORD }}
           PW_BASE_URL: ${{ vars.PW_BASE_URL || secrets.PW_BASE_URL }}
           NUXT_PUBLIC_STRIPE_KEY: ${{ vars.NUXT_PUBLIC_STRIPE_KEY || secrets.NUXT_PUBLIC_STRIPE_KEY }}
+          NUXT_PUBLIC_UMAMI_ID: ${{secrets.NUXT_PUBLIC_UMAMI_ID}}
+          NUXT_PUBLIC_UMAMI_HOST: ${{vars.NUXT_PUBLIC_UMAMI_HOST}}
         run: |
           ssh -p ${{ vars.SSH_PORT || secrets.SSH_PORT || '22' }} -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
             set -Eeuo pipefail
@@ -91,6 +93,8 @@ jobs:
               echo "PW_E2E_PASSWORD=$PW_E2E_PASSWORD"
               echo "PW_BASE_URL=$PW_BASE_URL"
               echo "NUXT_PUBLIC_STRIPE_KEY=$NUXT_PUBLIC_STRIPE_KEY"
+              echo "NUXT_PUBLIC_UMAMI_ID=NUXT_PUBLIC_UMAMI_ID"
+              echo "NUXT_PUBLIC_UMAMI_HOST=NUXT_PUBLIC_UMAMI_HOST"
             ) > .env.prod
 
             yarn install --frozen-lockfile

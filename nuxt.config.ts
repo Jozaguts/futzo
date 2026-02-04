@@ -54,28 +54,10 @@ export default defineNuxtConfig({
     { path: '~/components/inputs/forms', pathPrefix: false },
     '~/components',
   ],
-  // these 3 are necessary
   ssr: true,
-  i18n: {
-    defaultLocale: 'es',
-  },
   features: {
     inlineStyles: false,
   },
-  icon: {
-    customCollections: [
-      {
-        prefix: 'futzo-icon',
-        dir: './app/assets/icons',
-      },
-    ],
-    clientBundle: {
-      scan: true,
-      includeCustomCollections: true,
-      sizeLimitKb: 256,
-    },
-  },
-  // end these 3 are necessary
   css: ['@mdi/font/css/materialdesignicons.css', 'vuetify/styles', '~/assets/scss/main.scss'],
   build: {
     transpile: ['vuetify', '@vuepic/vue-datepicker', 'vue-sonner', 'v-phone-input'],
@@ -99,21 +81,8 @@ export default defineNuxtConfig({
     '@nuxt/test-utils/module',
     '@unlok-co/nuxt-stripe',
     'nuxt-tour',
+    'nuxt-umami',
   ],
-  tour: {
-    prefix: 'V',
-  },
-  vuetify: {
-    moduleOptions: {
-      styles: {
-        configFile: 'assets/scss/settings.scss',
-      },
-    },
-    vuetifyOptions: {
-      theme,
-      defaults,
-    },
-  },
   vite: {
     css: {
       preprocessorOptions: {
@@ -128,6 +97,40 @@ export default defineNuxtConfig({
         '@formkit/auto-animate$': path.resolve(__dirname, 'app/shims/auto-animate.ts'),
       },
     },
+  },
+  runtimeConfig: {
+    public: {
+      stripe: {
+        key: process.env.NUXT_PUBLIC_STRIPE_KEY,
+        options: {},
+      },
+      baseURLBackend: process.env.NUXT_PUBLIC_URL_BACKEND,
+      backendPrefix: process.env.NUXT_PUBLIC_BACKEND_PREFIX,
+      appName: process.env.NUXT_PUBLIC_APP_NAME,
+      appVersion: process.env.NUXT_PUBLIC_APP_VERSION || 'dev',
+      googleMapsAPIKey: process.env.NUXT_GOOGLE_MAPS_API_KEY,
+      googleMapId: process.env.NUXT_GOOGLE_MAP_ID,
+      baseUrl: process.env.NUXT_PUBLIC_URL,
+    },
+  },
+  googleFonts: {
+    families: {
+      Inter: '200..900',
+    },
+    display: 'swap',
+  },
+  umami: {
+    id:  process.env.NUXT_PUBLIC_UMAMI_ID,
+    host: process.env.NUXT_PUBLIC_UMAMI_HOST,
+    autoTrack: true,
+    // proxy: 'cloak',
+    // useDirective: true,
+    // ignoreLocalhost: true,
+    // excludeQueryParams: false,
+    // domains: ['cool-site.app', 'my-space.site'],
+    // customEndpoint: '/my-custom-endpoint',
+    // enabled: false,
+    // logErrors: true,
   },
   sanctum: {
     baseUrl: process.env.NUXT_PUBLIC_URL_BACKEND, // Laravel API
@@ -161,25 +164,34 @@ export default defineNuxtConfig({
       user: '/api/v1/me', // Endpoint that return current user information
     },
   },
-  runtimeConfig: {
-    public: {
-      stripe: {
-        key: process.env.NUXT_PUBLIC_STRIPE_KEY,
-        options: {},
+  tour: {
+    prefix: 'V',
+  },
+  vuetify: {
+    moduleOptions: {
+      styles: {
+        configFile: 'assets/scss/settings.scss',
       },
-      baseURLBackend: process.env.NUXT_PUBLIC_URL_BACKEND,
-      backendPrefix: process.env.NUXT_PUBLIC_BACKEND_PREFIX,
-      appName: process.env.NUXT_PUBLIC_APP_NAME,
-      appVersion: process.env.NUXT_PUBLIC_APP_VERSION || 'dev',
-      googleMapsAPIKey: process.env.NUXT_GOOGLE_MAPS_API_KEY,
-      googleMapId: process.env.NUXT_GOOGLE_MAP_ID,
-      baseUrl: process.env.NUXT_PUBLIC_URL,
+    },
+    vuetifyOptions: {
+      theme,
+      defaults,
     },
   },
-  googleFonts: {
-    families: {
-      Inter: '200..900',
+  icon: {
+    customCollections: [
+      {
+        prefix: 'futzo-icon',
+        dir: './app/assets/icons',
+      },
+    ],
+    clientBundle: {
+      scan: true,
+      includeCustomCollections: true,
+      sizeLimitKb: 256,
     },
-    display: 'swap',
+  },
+  i18n: {
+    defaultLocale: 'es',
   },
 });
