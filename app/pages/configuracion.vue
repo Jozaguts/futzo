@@ -106,21 +106,18 @@ const user = computed(() => useAuthStore().user)
             </v-col>
             <v-col cols="12" md="9" class="py-0 py-md-2 py-lg-2">
             <div class="configuration-container">
-                <transition-fade mode="out-in" :duration="200">
-                  <div :key="isSwitching ? 'skeleton' : tab" class="configuration-content futzo-rounded">
-                    <v-skeleton-loader v-if="isSwitching" type="card, text, actions" class="configuration-skeleton" />
-                    <template v-else>
-                      <personal-data-card v-if="tab === 1" />
-                      <lazy-pages-configuration-password-data-card v-else-if="tab === 2" />
-                      <Plans v-else-if="tab === 3" />
-                      <TournamentsSettingsCard v-else-if="tab === 4" />
-                      <TeamsSettingsCard v-else-if="tab === 5" />
-                      <PlayersSettingsCard v-else-if="tab === 6" />
-                      <LocationsSettingsCard v-else />
-                    </template>
-                  </div>
-                </transition-fade>
+              <div class="configuration-content futzo-rounded">
+                <TransitionFade group>
+                  <personal-data-card v-if="tab === 1" :key="1"/>
+                  <lazy-pages-configuration-password-data-card v-else-if="tab === 2"  :key="2" />
+                  <Plans v-else-if="tab === 3"  :key="3" />
+                  <TournamentsSettingsCard v-else-if="tab === 4" />
+                  <TeamsSettingsCard v-else-if="tab === 5" />
+                  <PlayersSettingsCard v-else-if="tab === 6" />
+                  <LocationsSettingsCard v-else />
+                </TransitionFade>
               </div>
+            </div>
             </v-col>
           </v-row>
         </div>
