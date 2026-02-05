@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import {expect, test} from '@playwright/test';
 
 const EMAIL = process.env.PW_E2E_EMAIL;
 const PASSWORD = process.env.PW_E2E_PASSWORD;
@@ -29,7 +29,7 @@ test.describe('Auth: login UI (local backend)', () => {
 
     // 4) Redirección a home
     await page.waitForLoadState('networkidle');
-    await page.waitForURL('**/');
-    await expect(page).toHaveURL(/\/$/);
+    await page.waitForURL('**/dashboard');
+    await expect(page).toHaveURL('dashboard');
   });
 });

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import {expect, test} from '@playwright/test';
 
 // Usa el email base de .env y le agrega un subfijo único
 function withPlusAddress(baseEmail: string) {
@@ -38,7 +38,7 @@ test.describe('Auth: registro UI (local backend)', () => {
     await page.getByPlaceholder('Crea una contraseña').fill(PASSWORD);
 
     // 3) Aceptar consentimiento (checkbox) y enviar (Empezar)
-    const consent = page.getByRole('checkbox', { name: /Entiendo que recibiré/i });
+    const consent = page.getByRole('checkbox', { name: /El código llegará al medio que seleccione: WhatsApp/i });
     await consent.click();
     await expect(page.getByRole('button', { name: /^Empezar$/i })).toBeEnabled();
     await page.getByRole('button', { name: /^Empezar$/i }).click();
@@ -115,6 +115,6 @@ test.describe('Auth: registro UI (local backend)', () => {
     // Click en Inicio redirige a /
     await homeBtn.click();
     await page.waitForLoadState('networkidle');
-    await page.waitForURL('**/');
+    await page.waitForURL('**/dashboard');
   });
 });
