@@ -1,7 +1,44 @@
 # Futzo
 
-Plataforma para gestionar partidos de fútbol, equipos y torneos, construida con Nuxt 4, Vue 3 y Vuetify.
+Futzo es la plataforma para operar ligas y torneos de futbol de forma simple, ordenada y profesional.
 
+## Que es
+
+Una solucion integral para organizadores de ligas: desde el registro de equipos y jugadores hasta la calendarizacion, el seguimiento de resultados y la comunicacion con los participantes.
+
+## Para quien
+
+- Ligas amateur y organizadores de torneos locales.
+- Academias, escuelas y comunidades deportivas.
+- Clubes y coordinadores que buscan operar con procesos claros.
+
+## Que resolvemos
+
+- El caos operativo de hojas de calculo, chats dispersos y procesos manuales.
+- La falta de visibilidad sobre partidos, horarios y resultados.
+- La necesidad de profesionalizar la experiencia para equipos y jugadores.
+
+## Como lo hacemos
+
+- Automatizamos la calendarización y evitamos conflictos de horarios.
+- Centralizamos equipos, jugadores, resultados y estadísticas.
+- Facilitamos inscripciones, comunicación y soporte.
+- Habilitamos modelos de cobro por suscripcion para ligas.
+
+## Características clave
+
+- Gestion de ligas, torneos y fases.
+- Calendarización automática y reprogramaciones.
+- Registro y administración de equipos y jugadores.
+- Estadísticas y tablas de posiciones.
+- Verificación de jugadores y control de transferencias.
+- QR para registro y consulta de resultados.
+- Pagos y suscripciones integradas.
+- Soporte a usuarios con sistema de tickets.
+
+## Contacto
+
+Agenda una demo o solicita informacion en `hola@futzo.io`.
 ## Tecnologías
 
 - Nuxt 4 (SSR) y Vue 3
