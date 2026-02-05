@@ -1,7 +1,8 @@
-import type { User } from '~/models/User';
+import type {User} from '~/models/User';
 
 export default defineNuxtRouteMiddleware(async (to) => {
   if (import.meta.server) return;
+  if (to.meta?.sanctum?.excluded) return;
   // if (to.name !== 'configuracion' && to.name !== 'bienvenido' && to.name !== 'verificar') {
   const userRef = useSanctumUser<User>();
   const isLogin = !!userRef.value?.email || !!userRef.value?.phone;

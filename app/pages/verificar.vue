@@ -1,26 +1,58 @@
 <script lang="ts" setup>
-  import OtpCard from '~/components/pages/verify-email/cards/otp-card.vue'
-  import VerifiedCard from '~/components/pages/verify-email/cards/verified-card.vue'
-  type ComponentNames = 'OtpCard' | 'VerifiedCard'
+import OtpCard from '~/components/pages/verify-email/cards/otp-card.vue'
+import VerifiedCard from '~/components/pages/verify-email/cards/verified-card.vue'
+
+type ComponentNames = 'OtpCard' | 'VerifiedCard'
   definePageMeta({
     layout: 'blank',
     bodyAttrs: {
       class: 'd-none',
     },
+    middleware: (to) => {
+      const allowedQueryKeys = ['email', 'phone']
+      let valid = false
+      for (const key of allowedQueryKeys) {
+        const raw = to.query?.[key]
+        const value = Array.isArray(raw) ? raw[0] : raw
+        if (value && String(value).trim()) {
+          valid = true
+          break
+        }
+      }
+      if (!valid) {
+        if (import.meta.client) {
+          const { toast } = useToast()
+          toast({
+            type: 'info',
+            msg: 'Enlace inválido',
+            description: 'Falta información para verificar tu cuenta. Intenta nuevamente desde el correo o WhatsApp.',
+          })
+        }
+         navigateTo('/')
+      }
+    },
   })
   const { toast } = useToast()
-  const queryParams = useRoute().query
+  const route = useRoute()
   const param = computed(() => {
-    return {
-      type: Object.keys(queryParams)[0],
-      value: Object.values(queryParams)[0],
+    const email = route.query.email
+    const phone = route.query.phone
+    if (email) {
+      const value = Array.isArray(email) ? email[0] : email
+      return { type: 'email', value: String(value).trim() }
     }
+    if (phone) {
+      const value = Array.isArray(phone) ? phone[0] : phone
+      return { type: 'phone', value: String(value).trim() }
+    }
+    return { type: null, value: '' }
   })
   const currentComponent = ref<ComponentNames>('OtpCard')
   let setTimeoutId: any = null
   const loading = ref<boolean>(false)
   const disabled = ref<boolean>(false)
   const verify = (code?: string) => {
+    if (!param.value.type || !param.value.value) return
     const client = useSanctumClient()
     const { refreshIdentity } = useSanctumAuth()
     // si da problemas verificar que la peticion del CSR  token se haga antes de hacer la peticion a /verify

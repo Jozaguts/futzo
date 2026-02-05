@@ -1,7 +1,7 @@
-import type { Formation, PreRegisterTeamResponse, Team, TeamsPaginatedResponse } from '~/models/Team';
-import type { TeamLineupAvailablePlayers } from '~/models/Player';
-import type { FormationPlayer, LastGames, NextGames, TeamFormation } from '~/models/Game';
-import type { IPagination } from '~/interfaces';
+import type {Formation, PreRegisterTeamResponse, Team, TeamsPaginatedResponse} from '~/models/Team';
+import type {TeamLineupAvailablePlayers} from '~/models/Player';
+import type {FormationPlayer, LastGames, NextGames, TeamFormation} from '~/models/Game';
+import type {IPagination} from '~/interfaces';
 
 export const getTeamBy = async (term: number | string) => {
   const client = useSanctumClient();
@@ -106,8 +106,16 @@ export const updateHomePreferences = async (
   });
 };
 export const initPreRegister = async (slug: string) => {
-  const client = useSanctumClient();
-  return await client<PreRegisterTeamResponse>(`/api/v1/public/teams/${slug}/registrations/catalogs`);
+  const config = useRuntimeConfig();
+  const requestFetch = useRequestFetch();
+  return await requestFetch<PreRegisterTeamResponse>(
+    `${config.public.baseURLBackend}/api/v1/public/teams/${slug}/registrations/catalogs`,
+    {
+      headers: {
+        accept: 'application/json',
+      },
+    }
+  );
 };
 export const getTeams = async (pagination: IPagination) => {
   const client = useSanctumClient();

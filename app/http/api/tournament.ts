@@ -1,28 +1,38 @@
-import { useSanctumClient } from '#imports';
-import type {
-  ExportType,
-  PreRegisterTournamentResponse,
-  Tournament,
-  TournamentLocationStoreRequest,
-  TournamentStats,
-} from '~/models/tournament';
-import type { Game } from '~/models/Game';
-import { parseBlobResponse } from '~/utils/prepareFormData';
-import type { BracketPreview, ConfirmBracketPayload } from '~/models/Bracket';
+import {useRequestFetch, useRuntimeConfig, useSanctumClient} from '#imports';
+import type {ExportType, PreRegisterTournamentResponse, Tournament, TournamentStats,} from '~/models/tournament';
+import type {Game} from '~/models/Game';
+import {parseBlobResponse} from '~/utils/prepareFormData';
+import type {BracketPreview, ConfirmBracketPayload} from '~/models/Bracket';
 import type {
   ScheduleRegenerationAnalysis,
   ScheduleRegenerationPayload,
   ScheduleRegenerationResult,
 } from '~/models/Schedule';
-import type { PublicTournamentStatusData } from '~/models/PublicTournament';
+import type {PublicTournamentStatusData} from '~/models/PublicTournament';
 
 export const getTournamentPublicSchedule = async (slug: string, page: number, perPage: number = 3) => {
-  const client = useSanctumClient();
-  return await client(`api/v1/public/tournaments/${slug}/schedule?page=${page}&perPage=${perPage}`);
+  const config = useRuntimeConfig();
+  const requestFetch = useRequestFetch();
+  return await requestFetch(
+    `${config.public.baseURLBackend}/api/v1/public/tournaments/${slug}/schedule?page=${page}&perPage=${perPage}`,
+    {
+      headers: {
+        accept: 'application/json',
+      },
+    }
+  );
 };
 export const getTournamentPublicDetails = async (slug: string) => {
-  const client = useSanctumClient();
-  return await client<PublicTournamentStatusData>(`/api/v1/public/tournaments/${slug}/details`);
+  const config = useRuntimeConfig();
+  const requestFetch = useRequestFetch();
+  return await requestFetch<PublicTournamentStatusData>(
+    `${config.public.baseURLBackend}/api/v1/public/tournaments/${slug}/details`,
+    {
+      headers: {
+        accept: 'application/json',
+      },
+    }
+  );
 };
 export const exportTournamentRoundScheduleAs = async (type: ExportType, tournamentId: number, round: any) => {
   const client = useSanctumClient();
@@ -86,8 +96,16 @@ export const exportTournamentStatsTables = async (type: ExportType, tournament: 
   parseBlobResponse(blob, `${tournament.name}-estadísticas`, type);
 };
 export const initPreRegister = async (slug: string) => {
-  const client = useSanctumClient();
-  return await client<PreRegisterTournamentResponse>(`/api/v1/public/tournaments/${slug}/registrations/catalogs`);
+  const config = useRuntimeConfig();
+  const requestFetch = useRequestFetch();
+  return await requestFetch<PreRegisterTournamentResponse>(
+    `${config.public.baseURLBackend}/api/v1/public/tournaments/${slug}/registrations/catalogs`,
+    {
+      headers: {
+        accept: 'application/json',
+      },
+    }
+  );
 };
 export const getGroupStanding = async (tournamentId: number, phase_id?: number) => {
   const client = useSanctumClient();

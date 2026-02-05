@@ -1,11 +1,14 @@
 <script lang="ts" setup>
-  import { useProductPrices } from '~/composables/useProductPrices'
-  import PlanCard from '~/components/pages/PlanCard.vue'
+import {useProductPrices} from '~/composables/useProductPrices'
+import PlanCard from '~/components/pages/PlanCard.vue'
 
-  definePageMeta({
+definePageMeta({
     layout: 'legacy',
     bodyAttrs: {
       class: 'd-none',
+    },
+    sanctum: {
+      excluded: true,
     },
   })
 
