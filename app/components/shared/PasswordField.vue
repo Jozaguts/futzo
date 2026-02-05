@@ -5,13 +5,19 @@
     showNewPasswordConfirmation: false,
   })
   const modelValue = defineModel<string>('modelValue')
+  const {variant ='plain',rounded = false} = defineProps<{
+    variant?: 'outlined' | 'filled' | 'underlined' | 'plain' | 'solo' | 'solo-filled' | 'solo-inverted',
+    rounded?: boolean | number | string}
+  >()
 </script>
 
 <template>
   <v-text-field
     :type="states.showPassword ? 'text' : 'password'"
     v-model="modelValue"
-    variant="plain"
+    :variant="variant"
+    :rounded="rounded"
+
     class="user-data-configuration-form__input"
   >
     <template #append>
