@@ -13,7 +13,7 @@
   line-height: 24px
   text-transform: lowercase
 .secondary-card
-  margin: 24px 0
+  margin: 0
 .secondary-card__title
   color: var(--colors-text-text-primary-900, #101828)
   font-size: 18px
@@ -77,3 +77,30 @@
   border-left: 1px solid #EAECF0
 .user-data-configuration-form__input>.v-input--density-comfortable.v-input--plain-underlined .v-input__prepend, .v-input--density-comfortable.v-input--plain-underlined .v-input__append
   padding-top: 10px
+.configuration-layout
+  align-items: flex-start
+.configuration-nav
+  border-right: 1px solid #EAECF0
+  padding: 8px 0
+.configuration-nav__item
+  border-radius: 10px
+  margin: 4px 8px
+  color: var(--colors-text-text-secondary-700, #344054)
+  font-weight: 500
+  &.v-list-item--active
+    background: var(--Colors-Background-bg-secondary, #F9FAFB)
+    color: var(--colors-text-text-primary-900, #101828)
+    font-weight: 600
+@media (max-width: 959px)
+  .configuration-nav
+    border-right: none
+  .configuration-nav-mobile
+    padding: 8px
+    border: 1px solid #EAECF0
+  .configuration-nav-mobile__toggle
+    width: 100%
+    display: flex
+    justify-content: space-between
+  .configuration-nav-mobile__btn
+    flex: 1 1 0
+    min-width: 0

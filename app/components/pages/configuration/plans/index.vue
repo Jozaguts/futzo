@@ -2,11 +2,14 @@
   import type { Currency, FutzoPlan, Prices, ProductPrices } from '~/models/Product'
   import PlanCard from '~/components/pages/configuration/plans/PlanCard.vue'
   import StripeElementsDrawer from '~/components/pages/configuration/plans/StripeElementsDrawer.vue'
+  import { useDisplay } from 'vuetify'
   const type = ref<'yearly' | 'monthly'>('yearly')
   const isYearly = computed(() => type.value === 'yearly')
   const isMonthly = computed(() => type.value === 'monthly')
   const { isSubscribed, user, stripeDialog } = storeToRefs(useAuthStore())
   const productPrices = ref()
+  const { mobile } = useDisplay()
+  const page = ref(1)
 
   onMounted(async () => {
     if (!isSubscribed.value) {
@@ -43,10 +46,28 @@
       'Comunicación directa con jugadores y entrenadores',
     ],
   }
+
+  const plans = computed(() => [
+    {
+      plan: productPrices.value?.kickoff,
+      features: features.kickoff ?? [],
+      prioritary: false,
+    },
+    {
+      plan: productPrices.value?.pro_play,
+      features: features.pro_play ?? [],
+      prioritary: true,
+    },
+    {
+      plan: productPrices.value?.elite_league,
+      features: features.elite_league ?? [],
+      prioritary: false,
+    },
+  ])
 </script>
 <template>
-  <v-container fluid>
-    <v-row v-if="!isSubscribed">
+  <v-container fluid class="pa-0">
+    <v-row v-if="!isSubscribed && !mobile">
       <v-col cols="12" lg="2" md="2">
         <div class="d-flex flex-column futzo-rounded pa-4">
           <v-btn :variant="isYearly ? 'flat' : 'text'" @click="() => (type = 'yearly')" class="mb-2">Anual</v-btn>
@@ -75,6 +96,42 @@
             @checkout="handleCheckout"
           />
         </div>
+      </v-col>
+    </v-row>
+    <v-row v-else-if="!isSubscribed && mobile">
+      <v-col cols="12">
+        <div class="d-flex justify-center ga-2 futzo-rounded pa-4">
+          <v-btn :variant="isYearly ? 'flat' : 'text'" @click="() => (type = 'yearly')">Anual</v-btn>
+          <v-btn :variant="isMonthly ? 'flat' : 'text'" @click="() => (type = 'monthly')">Mensual</v-btn>
+        </div>
+      </v-col>
+      <v-col cols="12">
+        <v-data-iterator class="data-iterator-container" :items-per-page="1" :items="plans" :page="page">
+          <template #default="{ items }">
+            <template v-for="(item, i) in items" :key="i">
+              <div class="mobile-plan-card">
+                <PlanCard
+                  :isMonthlyPrice="isMonthly"
+                  :plan="item.raw.plan"
+                  :prioritary="item.raw.prioritary"
+                  :features="item.raw.features"
+                  @checkout="handleCheckout"
+                />
+              </div>
+            </template>
+          </template>
+          <template #footer>
+            <v-pagination
+              density="compact"
+              :length="plans.length"
+              v-model="page"
+              variant="text"
+              total-visible="3"
+              elevation="5"
+              class="mt-2"
+            />
+          </template>
+        </v-data-iterator>
       </v-col>
     </v-row>
     <v-row v-else>
@@ -115,3 +172,15 @@
     >
   </v-container>
 </template>
+<style scoped lang="scss">
+  .mobile-plan-card {
+    min-height: 580px;
+    display: flex;
+    align-items: stretch;
+  }
+  @media (min-width: 960px) {
+    .mobile-plan-card {
+      min-height: auto;
+    }
+  }
+</style>
