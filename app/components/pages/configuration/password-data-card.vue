@@ -1,9 +1,10 @@
 <script setup lang="ts">
-  import type { UpdateUserPasswordForm, User } from '~/models/User'
-  import { mixed, object, string, ref as yupRef } from 'yup'
-  import { vuetifyConfig } from '~/utils/constants'
-  import PasswordField from '~/components/shared/PasswordField.vue'
-  const user = computed(() => useAuthStore().user as User)
+import type {UpdateUserPasswordForm, User} from '~/models/User'
+import {object, ref as yupRef, string} from 'yup'
+import {vuetifyConfig} from '~/utils/constants'
+import PasswordField from '~/components/shared/PasswordField.vue'
+
+const user = computed(() => useAuthStore().user as User)
   const states = reactive({
     showPassword: false,
     showNewPassword: false,
@@ -43,7 +44,7 @@
   })
 </script>
 <template>
-  <v-card class="secondary-card futzo-rounded pa-lg-8 pa-md-8 pa-4" max-width="600">
+  <v-card class="secondary-card pa-lg-8 pa-md-8 pa-4" max-width="600" variant="text">
     <v-card-title class="secondary-card__title">Contraseña</v-card-title>
     <v-card-subtitle class="secondary-card__subtitle"> Ingresa tu contraseña actual para actualizarla.</v-card-subtitle>
     <v-card-text>

@@ -19,7 +19,7 @@ import type {IPagination} from '~/interfaces';
 import * as tournamentAPI from '~/http/api/tournament';
 import type {Field} from '~/models/Schedule';
 import type {CreateTeamForm} from '~/models/Team';
-import {defineStore} from 'pinia';
+import {defineStore, skipHydrate} from 'pinia';
 import {
   storeToRefs,
   useCategoryStore,
@@ -430,7 +430,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     tournamentStats,
     lastResults,
     groupStanding,
-    tourSteps,
+    tourSteps: skipHydrate(tourSteps),
     getTournamentLocations,
     loadTournaments,
     applyStatusFilter,

@@ -1,8 +1,9 @@
-import { useSanctumClient } from '#imports';
+import {useSanctumClient} from '#imports';
 import type {
   PlayerTransferLockSetting,
   PlayerVerificationMethod,
   PlayerVerificationSettings,
+  TournamentConfigurationSettings,
 } from '~/models/settings';
 
 export const getPlayerTransferLocks = async () => {
@@ -50,4 +51,25 @@ export const updateTournamentVerificationSettings = async (
     method: 'PUT',
     body: payload,
   });
+};
+
+export const getTournamentConfiguration = async (tournamentId: number) => {
+  const client = useSanctumClient();
+  return await client<TournamentConfigurationSettings>(
+    `/api/v1/admin/settings/tournaments/${tournamentId}/configuration`
+  );
+};
+
+export const updateTournamentConfiguration = async (
+  tournamentId: number,
+  payload: TournamentConfigurationSettings
+) => {
+  const client = useSanctumClient();
+  return await client<TournamentConfigurationSettings>(
+    `/api/v1/admin/settings/tournaments/${tournamentId}/configuration`,
+    {
+      method: 'PUT',
+      body: payload,
+    }
+  );
 };

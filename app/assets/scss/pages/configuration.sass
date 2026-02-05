@@ -91,6 +91,61 @@
     background: var(--Colors-Background-bg-secondary, #F9FAFB)
     color: var(--colors-text-text-primary-900, #101828)
     font-weight: 600
+.configuration-container
+  height: 100%
+.configuration-content
+  height: clamp(560px, 72vh, 760px)
+  overflow-y: auto
+  overflow-x: hidden
+.configuration-skeleton
+  height: 100%
+  min-height: 100%
+  width: 100%
+.tournaments-settings
+  height: 520px
+  overflow: hidden
+.tournaments-settings__layout
+  display: flex
+  height: 100%
+.tournaments-settings__nav
+  width: 220px
+  border-right: 1px solid #EAECF0
+  padding: 12px 8px
+  overflow-y: auto
+.tournaments-settings__nav-list
+  display: flex
+  flex-direction: column
+  gap: 4px
+.tournaments-settings__nav-item
+  border-radius: 10px
+  font-weight: 500
+  white-space: normal
+.tournaments-settings__nav-item.v-list-item--active
+  background: var(--Colors-Background-bg-secondary, #F9FAFB)
+  color: var(--colors-text-text-primary-900, #101828)
+  font-weight: 600
+.tournaments-settings__content
+  flex: 1
+  min-width: 0
+  height: 100%
+.tournaments-settings__window
+  height: 100%
+  .v-window__container
+    height: 100%
+  .v-window-item
+    height: 100%
+.tournaments-settings__section
+  height: 100%
+  overflow-y: auto
+  padding: 12px 16px 16px
+.tournaments-settings__state
+  height: 100%
+  display: flex
+  align-items: center
+  justify-content: center
+  padding: 16px
+.tournaments-settings__skeleton
+  width: 100%
 @media (max-width: 959px)
   .configuration-nav
     border-right: none
@@ -104,3 +159,22 @@
   .configuration-nav-mobile__btn
     flex: 1 1 0
     min-width: 0
+  .tournaments-settings
+    height: 60vh
+  .tournaments-settings__layout
+    flex-direction: column
+  .tournaments-settings__nav
+    width: 100%
+    border-right: none
+    border-bottom: 1px solid #EAECF0
+    padding: 8px
+  .tournaments-settings__nav-list
+    flex-direction: row
+    gap: 8px
+    overflow-x: auto
+  .tournaments-settings__nav-item
+    flex: 0 0 auto
+    min-width: 160px
+    white-space: nowrap
+  .tournaments-settings__section
+    padding: 12px

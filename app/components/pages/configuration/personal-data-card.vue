@@ -1,10 +1,10 @@
 <script setup lang="ts">
-  import { number, object, string } from 'yup'
-  import { VMaskInput } from 'vuetify/labs/VMaskInput'
-  import type { UpdateUserForm, User } from '~/models/User'
-  import { vuetifyConfig } from '~/utils/constants'
+import {number, object, string} from 'yup'
+import {VMaskInput} from 'vuetify/labs/VMaskInput'
+import type {UpdateUserForm, User} from '~/models/User'
+import {vuetifyConfig} from '~/utils/constants'
 
-  const user = computed(() => useAuthStore().user as User)
+const user = computed(() => useAuthStore().user as User)
   const { defineField, handleSubmit, errors, meta } = useForm<
     Pick<User, 'email' | 'phone' | 'name' | 'contact_method'> & { iso_code: number }
   >({
@@ -66,7 +66,7 @@
   })
 </script>
 <template>
-  <v-card class="secondary-card futzo-rounded pa-lg-8 pa-md-8 pa-4" max-width="600">
+  <v-card class="secondary-card pa-lg-8 pa-md-8 pa-4" max-width="600" variant="text">
     <v-card-item class="secondary-card-item">
       <v-card-text class="secondary-card__title">Datos personales</v-card-text>
       <v-card-subtitle class="secondary-card__subtitle">Revisa y actualiza tu información. </v-card-subtitle>

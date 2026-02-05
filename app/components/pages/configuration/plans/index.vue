@@ -1,15 +1,22 @@
 <script setup lang="ts">
-  import type { Currency, FutzoPlan, Prices, ProductPrices } from '~/models/Product'
-  import PlanCard from '~/components/pages/configuration/plans/PlanCard.vue'
-  import StripeElementsDrawer from '~/components/pages/configuration/plans/StripeElementsDrawer.vue'
-  import { useDisplay } from 'vuetify'
-  const type = ref<'yearly' | 'monthly'>('yearly')
+import type {Currency, FutzoPlan, Prices, ProductPrices} from '~/models/Product'
+import PlanCard from '~/components/pages/configuration/plans/PlanCard.vue'
+import {useDisplay} from 'vuetify'
+
+const type = ref<'yearly' | 'monthly'>('yearly')
   const isYearly = computed(() => type.value === 'yearly')
   const isMonthly = computed(() => type.value === 'monthly')
   const { isSubscribed, user, stripeDialog } = storeToRefs(useAuthStore())
   const productPrices = ref()
   const { mobile } = useDisplay()
   const page = ref(1)
+  const loadingPlans = computed(() => {
+    if (isSubscribed.value) {
+      return !user.value?.plan
+    }
+    return !productPrices.value
+  })
+  const skeletonItems = computed(() => (mobile.value ? [0] : [0, 1, 2]))
 
   onMounted(async () => {
     if (!isSubscribed.value) {
@@ -66,7 +73,7 @@
   ])
 </script>
 <template>
-  <v-container fluid class="pa-0">
+  <v-container fluid class="pa-0 bg-background">
     <v-row v-if="!isSubscribed && !mobile">
       <v-col cols="12" lg="2" md="2">
         <div class="d-flex flex-column futzo-rounded pa-4">
@@ -76,25 +83,44 @@
       </v-col>
       <v-col cols="12" lg="10" md="10">
         <div class="d-flex ga-8 justify-center flex-md-nowrap flex-lg-nowrap flex-wrap">
-          <PlanCard
-            :isMonthlyPrice="isMonthly"
-            :plan="productPrices?.kickoff"
-            :features="features.kickoff ?? []"
-            @checkout="handleCheckout"
-          />
-          <PlanCard
-            :isMonthlyPrice="isMonthly"
-            :plan="productPrices?.pro_play"
-            :prioritary="true"
-            :features="features.pro_play ?? []"
-            @checkout="handleCheckout"
-          />
-          <PlanCard
-            :isMonthlyPrice="isMonthly"
-            :plan="productPrices?.elite_league"
-            :features="features.elite_league ?? []"
-            @checkout="handleCheckout"
-          />
+          <template v-if="loadingPlans">
+            <v-card
+              v-for="item in skeletonItems"
+              :key="item"
+              class="pa-8 futzo-rounded plan-card-skeleton"
+              min-width="280"
+              max-width="400"
+              va
+            >
+              <v-skeleton-loader type="chip" class="mb-4" />
+              <v-skeleton-loader type="heading" class="mb-2" />
+              <v-skeleton-loader type="text" class="mb-4" />
+              <v-divider class="mb-4" />
+              <v-skeleton-loader type="list-item@4" class="mb-4" />
+              <v-skeleton-loader type="actions" />
+            </v-card>
+          </template>
+          <template v-else>
+            <PlanCard
+              :isMonthlyPrice="isMonthly"
+              :plan="productPrices?.kickoff"
+              :features="features.kickoff ?? []"
+              @checkout="handleCheckout"
+            />
+            <PlanCard
+              :isMonthlyPrice="isMonthly"
+              :plan="productPrices?.pro_play"
+              :prioritary="true"
+              :features="features.pro_play ?? []"
+              @checkout="handleCheckout"
+            />
+            <PlanCard
+              :isMonthlyPrice="isMonthly"
+              :plan="productPrices?.elite_league"
+              :features="features.elite_league ?? []"
+              @checkout="handleCheckout"
+            />
+          </template>
         </div>
       </v-col>
     </v-row>
@@ -106,11 +132,25 @@
         </div>
       </v-col>
       <v-col cols="12">
-        <v-data-iterator class="data-iterator-container" :items-per-page="1" :items="plans" :page="page">
+        <v-data-iterator
+          class="data-iterator-container"
+          :items-per-page="1"
+          :items="loadingPlans ? skeletonItems : plans"
+          :page="page"
+        >
           <template #default="{ items }">
             <template v-for="(item, i) in items" :key="i">
               <div class="mobile-plan-card">
+                <v-card v-if="loadingPlans" class="pa-8 futzo-rounded plan-card-skeleton" min-width="280">
+                  <v-skeleton-loader type="chip" class="mb-4" />
+                  <v-skeleton-loader type="heading" class="mb-2" />
+                  <v-skeleton-loader type="text" class="mb-4" />
+                  <v-divider class="mb-4" />
+                  <v-skeleton-loader type="list-item@4" class="mb-4" />
+                  <v-skeleton-loader type="actions" />
+                </v-card>
                 <PlanCard
+                  v-else
                   :isMonthlyPrice="isMonthly"
                   :plan="item.raw.plan"
                   :prioritary="item.raw.prioritary"
@@ -122,6 +162,7 @@
           </template>
           <template #footer>
             <v-pagination
+              v-if="!loadingPlans"
               density="compact"
               :length="plans.length"
               v-model="page"
@@ -136,7 +177,16 @@
     </v-row>
     <v-row v-else>
       <v-col cols="12" md="4" lg="4">
+        <v-card v-if="loadingPlans" class="pa-8 futzo-rounded plan-card-skeleton" min-width="280" max-width="400">
+          <v-skeleton-loader type="chip" class="mb-4" />
+          <v-skeleton-loader type="heading" class="mb-2" />
+          <v-skeleton-loader type="text" class="mb-4" />
+          <v-divider class="mb-4" />
+          <v-skeleton-loader type="list-item@4" class="mb-4" />
+          <v-skeleton-loader type="actions" />
+        </v-card>
         <PlanCard
+          v-else
           :isMonthlyPrice="user?.plan?.billing_period === 'month'"
           :prioritary="true"
           badge="Tu plan actual"
@@ -168,8 +218,8 @@
             </div>
           </template>
         </PlanCard>
-      </v-col></v-row
-    >
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 <style scoped lang="scss">
@@ -177,6 +227,9 @@
     min-height: 580px;
     display: flex;
     align-items: stretch;
+  }
+  .plan-card-skeleton {
+    width: 100%;
   }
   @media (min-width: 960px) {
     .mobile-plan-card {
