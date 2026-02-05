@@ -139,7 +139,7 @@ const { toast } = useToast()
 </script>
 
 <template>
-  <v-card class="secondary-card pa-6">
+  <v-card class="secondary-card pa-6" variant="text">
     <v-card-item class="secondary-card-item">
       <v-card-text class="secondary-card__title">Configuración por torneo</v-card-text>
       <v-card-subtitle class="secondary-card__subtitle">

@@ -44,29 +44,31 @@ const user = computed(() => useAuthStore().user as User)
   })
 </script>
 <template>
-  <v-card class="secondary-card pa-lg-8 pa-md-8 pa-4" max-width="600" variant="text">
-    <v-card-title class="secondary-card__title">Contraseña</v-card-title>
-    <v-card-subtitle class="secondary-card__subtitle"> Ingresa tu contraseña actual para actualizarla.</v-card-subtitle>
-    <v-card-text>
+  <v-card class="secondary-card pa-lg-8 pa-md-8 pa-4" variant="text">
+    <v-card-item class="secondary-card-item">
+      <v-card-title class="secondary-card__title">Contraseña</v-card-title>
+      <v-card-subtitle class="secondary-card__subtitle"> Ingresa tu contraseña actual para actualizarla.</v-card-subtitle>
+    </v-card-item>
+    <v-card-text style="max-width: 600px;">
       <v-form class="user-data-configuration-form" @submit.prevent="submit">
         <BaseInput label="Contraseña actual">
           <template #input>
-            <PasswordField v-model="password" />
+            <PasswordField v-model="password"  variant="solo-filled" :rounded="16"/>
           </template>
         </BaseInput>
         <BaseInput label="Nueva contraseña">
           <template #input>
-            <PasswordField v-model="new_password" />
+            <PasswordField v-model="new_password" variant="solo-filled" :rounded="16" />
           </template>
         </BaseInput>
         <BaseInput label="Confirma tu nueva contraseña">
           <template #input>
-            <PasswordField v-model="new_password_confirmation" />
+            <PasswordField v-model="new_password_confirmation"  variant="solo-filled" :rounded="16"/>
           </template>
         </BaseInput>
       </v-form>
     </v-card-text>
-    <v-card-actions>
+    <v-card-actions style="max-width: 600px;">
       <v-btn type="submit" variant="elevated" color="primary" block> Guardar cambios </v-btn>
     </v-card-actions>
   </v-card>

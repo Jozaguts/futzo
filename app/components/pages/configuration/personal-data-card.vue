@@ -66,14 +66,14 @@ const user = computed(() => useAuthStore().user as User)
   })
 </script>
 <template>
-  <v-card class="secondary-card pa-lg-8 pa-md-8 pa-4" max-width="600" variant="text">
+  <v-card class="secondary-card pa-lg-8 pa-md-8 pa-4"  variant="text">
     <v-card-item class="secondary-card-item">
       <v-card-text class="secondary-card__title">Datos personales</v-card-text>
       <v-card-subtitle class="secondary-card__subtitle">Revisa y actualiza tu información. </v-card-subtitle>
     </v-card-item>
-    <v-card-text>
+    <v-card-text style="max-width: 600px;">
       <v-form class="user-data-configuration-form">
-        <BaseInput v-model="name" :props="name_props" label="Nombre completo" />
+        <BaseInput v-model="name" :props="name_props" label="Nombre completo" variant="solo-filled" :rounded="16" />
         <BaseInput label="Teléfono" sublabel="Opcional">
           <template #input>
             <div class="d-flex">
@@ -90,15 +90,17 @@ const user = computed(() => useAuthStore().user as User)
                 v-model="iso_code"
                 density="compact"
                 control-variant="hidden"
-                variant="outlined"
+                variant="solo-filled"
+                :rounded="16"
               ></v-number-input>
               <v-mask-input
-                variant="outlined"
-                density="compact"
-                v-model="phone"
-                v-bind="phone_props"
-                mask="phone"
-                placeholder="(###) ### - ####"
+                  variant="solo-filled"
+                  :rounded="16"
+                  density="compact"
+                  v-model="phone"
+                  v-bind="phone_props"
+                  mask="phone"
+                  placeholder="(###) ### - ####"
               >
               </v-mask-input>
             </div>
@@ -106,7 +108,8 @@ const user = computed(() => useAuthStore().user as User)
         </BaseInput>
         <BaseInput
           v-model="email"
-          variant="outlined"
+          variant="solo-filled"
+          :rounded="16"
           :props="email_props"
           label="Correo electrónico"
           type="email"
@@ -122,7 +125,8 @@ const user = computed(() => useAuthStore().user as User)
               ]"
               item-value="value"
               item-title="tile"
-              variant="outlined"
+              variant="solo-filled"
+              :rounded="16"
               density="compact"
               iyrm
               placeholder="Selecciona un método de contacto"
@@ -132,7 +136,7 @@ const user = computed(() => useAuthStore().user as User)
         </BaseInput>
       </v-form>
     </v-card-text>
-    <v-card-actions>
+    <v-card-actions style="max-width: 600px;">
       <v-btn @click="submit" type="button" variant="elevated" color="primary" block> Guardar cambios </v-btn>
     </v-card-actions>
   </v-card>
