@@ -9,11 +9,40 @@ export type TeamLineupAvailablePlayers = {
   number: number;
   position: string;
 };
+
+export type PlayerVerificationStatus = 'not_required' | 'pending' | 'approved' | 'rejected';
+
+export type PlayerVerification = {
+  status?: PlayerVerificationStatus | null;
+  verified_at?: string | null;
+  verified_by?: number | null;
+  notes?: string | null;
+};
+
+export type PlayerTransferLock = {
+  expires_at?: string | null;
+  released_at?: string | null;
+  released_by?: number | null;
+  team_id?: number | null;
+  tournament_id?: number | null;
+};
+
+export type GuardianInfo = {
+  name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  relationship?: string | null;
+};
 export interface Player {
   id?: number;
   name: string;
   email: string;
   phone: string;
+  curp?: string | null;
+  is_minor?: boolean;
+  guardian?: GuardianInfo | null;
+  verification?: PlayerVerification | null;
+  team_lock?: PlayerTransferLock | null;
   position_id: number;
   team: Team;
   number: number;
@@ -52,6 +81,7 @@ export interface PlayerStoreRequest {
   basic: BasicInfoForm;
   details: DetailsInfoForm;
   contact: ContactInfoForm;
+  guardian?: GuardianForm;
 }
 
 export interface ImageForm {
@@ -75,6 +105,8 @@ export interface BasicInfoForm {
   image?: HTMLImageElement | File | string;
   team_id?: number;
   category_id?: number;
+  curp?: string;
+  is_minor?: boolean;
 }
 
 export interface DetailsInfoForm {
@@ -91,6 +123,13 @@ export interface ContactInfoForm {
   phone: string;
   notes: string;
   iso_code?: string;
+}
+
+export interface GuardianForm {
+  name?: string;
+  email?: string;
+  phone?: string;
+  relationship?: string;
 }
 
 export interface PlayerResponse {}

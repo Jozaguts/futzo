@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia';
-import type {FormSteps, Player, PlayerStoreRequest, TeamLineupAvailablePlayers} from '~/models/Player';
+import type { FormSteps, Player, PlayerStoreRequest, TeamLineupAvailablePlayers } from '~/models/Player';
 import prepareForm, {parseBlobResponse} from '~/utils/prepareFormData';
 import type {IPagination} from '~/interfaces';
 import type {Team} from '~/models/Team';
@@ -121,6 +121,13 @@ export const usePlayerStore = defineStore('playerStore', () => {
     },
   ]);
 
+  type PlayerImportResponse = {
+    imported_count: number;
+    skipped_count: number;
+    skipped: Array<{ name: string; last_name: string; reason: string }>;
+    message?: string;
+  };
+
   const getPlayer = async (id: string) => {
     try {
       const client = useSanctumClient();
@@ -228,15 +235,17 @@ export const usePlayerStore = defineStore('playerStore', () => {
     const formData = new FormData();
     formData.append('team_id', teamId.toString());
     formData.append('file', file);
-    await client('/api/v1/admin/players/import', {
+    await client<PlayerImportResponse>('/api/v1/admin/players/import', {
       method: 'POST',
       body: formData,
     })
-      .then(async () => {
+      .then(async (response) => {
+        const imported = response?.imported_count ?? 0;
+        const skipped = response?.skipped_count ?? 0;
         toast({
           type: 'success',
           msg: 'Jugadores importados',
-          description: 'Los jugadores han sido importados y registrados exitosamente.',
+          description: `Importados: ${imported}. Omitidos: ${skipped}.`,
         });
         importModal.value = false;
         await getPlayers();
@@ -251,6 +260,78 @@ export const usePlayerStore = defineStore('playerStore', () => {
         });
       })
       .finally(() => (isImporting.value = false));
+  };
+
+  const releasePlayer = async (playerId: number) => {
+    try {
+      await playerAPI.releasePlayer(playerId);
+      toast({
+        type: 'success',
+        msg: 'Jugador liberado',
+        description: 'El jugador fue liberado correctamente.',
+      });
+    } catch (error: any) {
+      toast({
+        type: 'error',
+        msg: 'No se pudo liberar',
+        description: error?.data?.message ?? 'Inténtalo nuevamente.',
+      });
+      throw error;
+    }
+  };
+
+  const uploadVerification = async (playerId: number, document: File, photo: File) => {
+    try {
+      await playerAPI.uploadPlayerVerification(playerId, document, photo);
+      toast({
+        type: 'success',
+        msg: 'Documentos cargados',
+        description: 'La verificación fue enviada correctamente.',
+      });
+    } catch (error: any) {
+      toast({
+        type: 'error',
+        msg: 'Error al cargar documentos',
+        description: error?.data?.message ?? 'Inténtalo nuevamente.',
+      });
+      throw error;
+    }
+  };
+
+  const approveVerification = async (playerId: number) => {
+    try {
+      await playerAPI.approvePlayerVerification(playerId);
+      toast({
+        type: 'success',
+        msg: 'Jugador validado',
+        description: 'La verificación fue aprobada.',
+      });
+    } catch (error: any) {
+      toast({
+        type: 'error',
+        msg: 'No se pudo aprobar',
+        description: error?.data?.message ?? 'Inténtalo nuevamente.',
+      });
+      throw error;
+    }
+  };
+
+  const rejectVerification = async (playerId: number, notes: string) => {
+    try {
+      await playerAPI.rejectPlayerVerification(playerId, notes);
+      toast({
+        type: 'success',
+        msg: 'Verificación rechazada',
+        description: 'Se rechazó la verificación del jugador.',
+      });
+    } catch (error: any) {
+      toast({
+        type: 'error',
+        msg: 'No se pudo rechazar',
+        description: error?.data?.message ?? 'Inténtalo nuevamente.',
+      });
+      throw error;
+    }
   };
   const getDefaultLineupAvailableTeamPlayers = async (team: Team) => {
     return await teamAPI.getDefaultLineupAvailableTeemPlayers(team);
@@ -325,5 +406,9 @@ export const usePlayerStore = defineStore('playerStore', () => {
     addLineupPlayer,
     searchPlayer,
     initPlayerForm,
+    releasePlayer,
+    uploadVerification,
+    approveVerification,
+    rejectVerification,
   };
 });

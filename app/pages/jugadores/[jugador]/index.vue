@@ -2,7 +2,7 @@
   import dayjs from 'dayjs'
   import AppBar from '~/components/layout/AppBar.vue'
   import PageLayout from '~/components/shared/PageLayout.vue'
-  import type { Player } from '~/models/Player'
+  import type { Player, PlayerVerificationStatus } from '~/models/Player'
   import type { Team } from '~/models/Team'
   import type { Tournament } from '~/models/tournament'
 
@@ -41,6 +41,27 @@
     tournaments?: Tournament[]
     category?: Team['category'] | null
     number_of_goals?: number | null
+    curp?: string | null
+    is_minor?: boolean | null
+    guardian?: {
+      name?: string | null
+      email?: string | null
+      phone?: string | null
+      relationship?: string | null
+    } | null
+    verification?: {
+      status?: PlayerVerificationStatus | null
+      verified_at?: string | null
+      verified_by?: number | null
+      notes?: string | null
+    } | null
+    team_lock?: {
+      expires_at?: string | null
+      released_at?: string | null
+      released_by?: number | null
+      team_id?: number | null
+      tournament_id?: number | null
+    } | null
   }
 
   const route = useRoute()
@@ -125,6 +146,12 @@
     return parsed.isValid() ? parsed.format('DD MMM YYYY') : 'Sin registro'
   }
 
+  const formatDateTime = (value?: string | null) => {
+    if (!value) return 'Sin registro'
+    const parsed = dayjs(value)
+    return parsed.isValid() ? parsed.format('DD MMM YYYY HH:mm') : 'Sin registro'
+  }
+
   const playerAge = computed(() => {
     const birthdate = currentPlayer.value?.birthdate
     if (!birthdate) return null
@@ -201,11 +228,109 @@
 
   const positionLabel = computed(() => currentPlayer.value?.position?.name ?? 'Posición sin asignar')
 
+  const verificationStatus = computed(() => currentPlayer.value?.verification?.status ?? null)
+  const verificationStatusLabel = computed(() => {
+    switch (verificationStatus.value) {
+      case 'approved':
+        return 'Aprobado'
+      case 'pending':
+        return 'Pendiente'
+      case 'rejected':
+        return 'Rechazado'
+      case 'not_required':
+        return 'No requerido'
+      default:
+        return 'Sin registro'
+    }
+  })
+  const verificationNotes = computed(() => currentPlayer.value?.verification?.notes ?? '')
+
+  const lockExpiresAt = computed(() => currentPlayer.value?.team_lock?.expires_at ?? null)
+  const lockReleasedAt = computed(() => currentPlayer.value?.team_lock?.released_at ?? null)
+  const isLockActive = computed(() => {
+    if (!lockExpiresAt.value) return false
+    if (lockReleasedAt.value) return false
+    return dayjs(lockExpiresAt.value).isAfter(dayjs())
+  })
+  const lockStatusLabel = computed(() => {
+    if (isLockActive.value) {
+      return `Bloqueado hasta ${formatDateTime(lockExpiresAt.value)}`
+    }
+    if (lockReleasedAt.value) {
+      return `Liberado el ${formatDateTime(lockReleasedAt.value)}`
+    }
+    return 'Sin bloqueo activo'
+  })
+
+  const verificationDocument = ref<File | File[] | null>(null)
+  const verificationPhoto = ref<File | File[] | null>(null)
+  const isUploadingVerification = ref(false)
+  const isApprovingVerification = ref(false)
+  const isRejectingVerification = ref(false)
+  const isReleasingLock = ref(false)
+  const rejectDialog = ref(false)
+  const rejectNotes = ref('')
+
+  const submitVerification = async () => {
+    const documentFile = Array.isArray(verificationDocument.value)
+      ? verificationDocument.value[0]
+      : verificationDocument.value
+    const photoFile = Array.isArray(verificationPhoto.value) ? verificationPhoto.value[0] : verificationPhoto.value
+
+    if (!currentPlayer.value?.id || !documentFile || !photoFile) return
+    isUploadingVerification.value = true
+    try {
+      await playerStore.uploadVerification(currentPlayer.value.id, documentFile, photoFile)
+      verificationDocument.value = null
+      verificationPhoto.value = null
+      await fetchPlayer()
+    } finally {
+      isUploadingVerification.value = false
+    }
+  }
+
+  const approveVerificationHandler = async () => {
+    if (!currentPlayer.value?.id) return
+    isApprovingVerification.value = true
+    try {
+      await playerStore.approveVerification(currentPlayer.value.id)
+      await fetchPlayer()
+    } finally {
+      isApprovingVerification.value = false
+    }
+  }
+
+  const rejectVerificationHandler = async () => {
+    if (!currentPlayer.value?.id || !rejectNotes.value) return
+    isRejectingVerification.value = true
+    try {
+      await playerStore.rejectVerification(currentPlayer.value.id, rejectNotes.value)
+      rejectDialog.value = false
+      rejectNotes.value = ''
+      await fetchPlayer()
+    } finally {
+      isRejectingVerification.value = false
+    }
+  }
+
+  const releaseLockHandler = async () => {
+    if (!currentPlayer.value?.id) return
+    isReleasingLock.value = true
+    try {
+      await playerStore.releasePlayer(currentPlayer.value.id)
+      await fetchPlayer()
+    } finally {
+      isReleasingLock.value = false
+    }
+  }
+
   const createDefaultEditableFields = () => ({
     name: '',
     last_name: '',
     birthdate: '',
     nationality: '',
+    curp: '',
+    is_minor: '',
     team_name: '',
     category_name: '',
     position_id: null as number | null,
@@ -217,6 +342,10 @@
     email: '',
     phone: '',
     notes: '',
+    guardian_name: '',
+    guardian_email: '',
+    guardian_phone: '',
+    guardian_relationship: '',
   })
 
   type EditableFields = ReturnType<typeof createDefaultEditableFields>
@@ -264,6 +393,20 @@
         },
         { label: 'Nacionalidad', field: 'nationality' },
         {
+          label: 'CURP',
+          field: 'curp',
+          readonly: true,
+          updatable: false,
+          displayFormatter: (value) => formatText(value),
+        },
+        {
+          label: 'Menor de edad',
+          field: 'is_minor',
+          readonly: true,
+          updatable: false,
+          displayFormatter: (value) => formatText(value),
+        },
+        {
           label: 'Equipo actual',
           field: 'team_name',
           readonly: true,
@@ -304,6 +447,34 @@
       items: [
         { label: 'Correo electrónico', field: 'email' },
         { label: 'Teléfono', field: 'phone' },
+        {
+          label: 'Tutor (nombre)',
+          field: 'guardian_name',
+          readonly: true,
+          updatable: false,
+          displayFormatter: (value) => formatText(value),
+        },
+        {
+          label: 'Tutor (correo)',
+          field: 'guardian_email',
+          readonly: true,
+          updatable: false,
+          displayFormatter: (value) => formatText(value),
+        },
+        {
+          label: 'Tutor (teléfono)',
+          field: 'guardian_phone',
+          readonly: true,
+          updatable: false,
+          displayFormatter: (value) => formatText(value),
+        },
+        {
+          label: 'Tutor (parentesco)',
+          field: 'guardian_relationship',
+          readonly: true,
+          updatable: false,
+          displayFormatter: (value) => formatText(value),
+        },
         { label: 'Notas adicionales', field: 'notes', fullWidth: true },
       ],
     },
@@ -341,6 +512,8 @@
       last_name: playerData.last_name ?? '',
       birthdate: playerData.birthdate ? dayjs(playerData.birthdate).format('YYYY-MM-DD') : '',
       nationality: playerData.nationality ?? '',
+      curp: playerData.curp ?? '',
+      is_minor: playerData.is_minor ? 'Sí' : 'No',
       team_name: primaryTeam?.name ?? '',
       category_name: teamCategoryLabel.value || '',
       position_id: playerData.position?.id ?? null,
@@ -352,6 +525,10 @@
       email: playerData.email ?? '',
       phone: formattedPhone,
       notes: playerData.notes ?? '',
+      guardian_name: playerData.guardian?.name ?? '',
+      guardian_email: playerData.guardian?.email ?? '',
+      guardian_phone: playerData.guardian?.phone ?? '',
+      guardian_relationship: playerData.guardian?.relationship ?? '',
     }
 
     sectionEditState.value = buildSectionState()
@@ -619,6 +796,87 @@
             <v-card class="detail-card futzo-rounded" variant="flat">
               <div class="detail-card__header">
                 <div>
+                  <h3 class="text-subtitle-1 mb-1">Verificación</h3>
+                  <p class="text-body-2 text-medium-emphasis">Estado de validación del jugador.</p>
+                </div>
+              </div>
+              <div class="player-stats">
+                <div class="player-stats__item">
+                  <p>Estado</p>
+                  <span>{{ verificationStatusLabel }}</span>
+                </div>
+                <div class="player-stats__item" v-if="verificationNotes">
+                  <p>Notas</p>
+                  <span>{{ verificationNotes }}</span>
+                </div>
+              </div>
+              <v-divider class="my-4" />
+              <div class="d-flex flex-column ga-3">
+                <v-file-input
+                  v-model="verificationDocument"
+                  density="comfortable"
+                  label="Documento oficial"
+                  variant="outlined"
+                  accept=".jpg,.jpeg,.png,.pdf"
+                />
+                <v-file-input
+                  v-model="verificationPhoto"
+                  density="comfortable"
+                  label="Foto del jugador"
+                  variant="outlined"
+                  accept=".jpg,.jpeg,.png"
+                />
+                <v-btn
+                  color="primary"
+                  variant="elevated"
+                  :loading="isUploadingVerification"
+                  :disabled="!verificationDocument || !verificationPhoto"
+                  @click="submitVerification"
+                >
+                  Subir documentos
+                </v-btn>
+                <div class="d-flex ga-2">
+                  <v-btn
+                    color="success"
+                    variant="tonal"
+                    :loading="isApprovingVerification"
+                    @click="approveVerificationHandler"
+                  >
+                    Aprobar
+                  </v-btn>
+                  <v-btn color="error" variant="tonal" @click="rejectDialog = true">Rechazar</v-btn>
+                </div>
+              </div>
+            </v-card>
+
+            <v-card class="detail-card futzo-rounded" variant="flat">
+              <div class="detail-card__header">
+                <div>
+                  <h3 class="text-subtitle-1 mb-1">Bloqueo de transferencia</h3>
+                  <p class="text-body-2 text-medium-emphasis">Restricciones para registrar al jugador en otro equipo.</p>
+                </div>
+              </div>
+              <div class="player-stats">
+                <div class="player-stats__item">
+                  <p>Estado</p>
+                  <span>{{ lockStatusLabel }}</span>
+                </div>
+              </div>
+              <v-btn
+                class="mt-3"
+                color="primary"
+                variant="outlined"
+                :loading="isReleasingLock"
+                :disabled="!isLockActive"
+                @click="releaseLockHandler"
+              >
+                Liberar jugador
+              </v-btn>
+            </v-card>
+
+            <v-card class="detail-card futzo-rounded" variant="flat">
+              <div class="detail-card__header">
+                <div>
                   <h3 class="text-subtitle-1 mb-1">Equipos</h3>
                   <p class="text-body-2 text-medium-emphasis">Historial de equipos vinculados.</p>
                 </div>
@@ -669,6 +927,33 @@
       </div>
     </template>
   </PageLayout>
+
+  <v-dialog v-model="rejectDialog" max-width="520">
+    <v-card class="futzo-rounded pa-4">
+      <v-card-title class="text-subtitle-1">Rechazar verificación</v-card-title>
+      <v-card-text>
+        <v-textarea
+          v-model="rejectNotes"
+          label="Motivo del rechazo"
+          variant="outlined"
+          rows="4"
+          auto-grow
+        />
+      </v-card-text>
+      <v-card-actions class="justify-end">
+        <v-btn variant="text" @click="rejectDialog = false">Cancelar</v-btn>
+        <v-btn
+          color="error"
+          variant="elevated"
+          :loading="isRejectingVerification"
+          :disabled="!rejectNotes"
+          @click="rejectVerificationHandler"
+        >
+          Rechazar
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 <style lang="sass">
   @use '~/assets/scss/pages/player-detail.sass'

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
-import {date, mixed, number, object, string} from 'yup'
+import { boolean, date, mixed, number, object, string } from 'yup'
 import '@vuepic/vue-datepicker/dist/main.css'
 import {dragDropImageRef} from '~/composables/useImage'
 import {vuetifyConfig} from '~/utils/constants'
@@ -35,6 +35,8 @@ const { t } = useI18n()
         nationality: string().nullable(),
         team_id: number().nullable(),
         category_id: number().nullable(),
+        curp: string().nullable(),
+        is_minor: boolean().nullable(),
       })
     ),
     initialValues: playerStoreRequest.value.basic,
@@ -46,6 +48,8 @@ const { t } = useI18n()
   const [nationality, nationality_props] = defineField('nationality', vuetifyConfig)
   const [team_id, team_id_props] = defineField('team_id', vuetifyConfig)
   const [category_id, category_id_props] = defineField('category_id', vuetifyConfig)
+  const [curp, curp_props] = defineField('curp', vuetifyConfig)
+  const [is_minor, is_minor_props] = defineField('is_minor', vuetifyConfig)
   const updateCategory = (teamId: number) => {
     const selectedTeam = teams.value?.find((t: Team) => t.id === teamId)
     if (!selectedTeam) return
@@ -110,6 +114,12 @@ const { t } = useI18n()
       placeholder="p.ej. Mexicana"
       sublabel="Opcional"
     ></BaseInput>
+    <BaseInput v-model="curp" :props="curp_props" label="CURP" sublabel="Opcional" placeholder="18 caracteres" />
+    <BaseInput label="¿Es menor de edad?" sublabel="Opcional">
+      <template #input>
+        <v-switch v-model="is_minor" v-bind="is_minor_props" color="primary" hide-details inset />
+      </template>
+    </BaseInput>
     <BaseInput label="Imagen del jugador" sublabel="opcional">
       <template #input>
         <DragDropImage v-model="image" :error-messages="image_props" />

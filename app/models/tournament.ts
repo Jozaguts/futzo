@@ -78,6 +78,9 @@ export interface Tournament {
     name: string;
   };
   penalty_draw_enabled: boolean;
+  player_lock_duration_days?: number | null;
+  requires_player_verification?: boolean | null;
+  player_verification_method?: 'none' | 'curp' | 'ine' | 'passport' | 'other' | null;
 }
 
 export interface TournamentForm {
