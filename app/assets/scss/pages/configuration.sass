@@ -32,7 +32,8 @@
   padding: 0
 .secondary-card-item
   border-bottom: 1px solid #EAECF0
-  padding: 0 0 24px 0
+  padding: 0 0
+  margin-bottom: 1rem
 .label-form
   color: var(--colors-text-text-secondary-700, #344054)
   font-size: 14px
@@ -45,9 +46,9 @@
 .user-data-configuration-form__input
   border-radius: var(--radius-md, 8px)
   border: 1px solid var(--Colors-Border-border-primary, #D0D5DD) !important
-  background: var(--Colors-Background-bg-primary, #FFF)
+  //background: var(--Colors-Background-bg-primary, #FFF)
   box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05)
-  padding: 0 14px
+  padding: 0 14px 0 0
   overflow: hidden
   color: var(--colors-text-text-primary-900, #101828)
   text-overflow: ellipsis
@@ -79,18 +80,59 @@
   padding-top: 10px
 .configuration-layout
   align-items: flex-start
+.configuration-page
+  padding: 8px 0 24px
+.configuration-page__header
+  display: flex
+  align-items: center
+  justify-content: space-between
+  padding: 0 4px 12px
+.configuration-page__title
+  color: var(--colors-text-text-primary-900, #101828)
+  font-size: 22px
+  font-weight: 600
+  line-height: 30px
+.configuration-page__divider
+  margin-bottom: 16px
+.configuration-sidebar
+  display: flex
+  flex-direction: column
+  gap: 16px
+.configuration-user-card
+  padding: 16px
+.configuration-user
+  display: flex
+  align-items: center
+  gap: 12px
+.configuration-user__meta
+  min-width: 0
+.configuration-user__name
+  color: var(--colors-text-text-primary-900, #101828)
+  font-weight: 600
+  font-size: 16px
+  line-height: 22px
+.configuration-user__email
+  color: var(--colors-text-text-tertiary-600, #475467)
+  font-size: 12px
+  line-height: 18px
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+.configuration-nav-card
+  padding: 8px
 .configuration-nav
-  border-right: 1px solid #EAECF0
-  padding: 8px 0
+  padding: 4px
 .configuration-nav__item
   border-radius: 10px
-  margin: 4px 8px
+  margin: 4px
   color: var(--colors-text-text-secondary-700, #344054)
   font-weight: 500
   &.v-list-item--active
-    background: var(--Colors-Background-bg-secondary, #F9FAFB)
-    color: var(--colors-text-text-primary-900, #101828)
+    background: #9155fd
+    color: #fff
     font-weight: 600
+    .v-icon
+      color: #fff
 .configuration-container
   height: 100%
 .configuration-content
@@ -121,8 +163,8 @@
   font-weight: 500
   white-space: normal
 .tournaments-settings__nav-item.v-list-item--active
-  background: var(--Colors-Background-bg-secondary, #F9FAFB)
-  color: var(--colors-text-text-primary-900, #101828)
+  background: #9155fd
+  color: #fff
   font-weight: 600
 .tournaments-settings__content
   flex: 1
@@ -147,11 +189,8 @@
 .tournaments-settings__skeleton
   width: 100%
 @media (max-width: 959px)
-  .configuration-nav
-    border-right: none
-  .configuration-nav-mobile
-    padding: 8px
-    border: 1px solid #EAECF0
+  .configuration-sidebar
+    gap: 12px
   .configuration-nav-mobile__toggle
     width: 100%
     display: flex
@@ -159,6 +198,11 @@
   .configuration-nav-mobile__btn
     flex: 1 1 0
     min-width: 0
+    &.v-btn--active
+      background: #9155fd
+      color: #fff
+      .v-icon
+        color: #fff
   .tournaments-settings
     height: 60vh
   .tournaments-settings__layout

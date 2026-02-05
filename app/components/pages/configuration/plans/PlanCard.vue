@@ -1,9 +1,10 @@
 <script setup lang="ts">
-  import { Icon } from '#components'
-  import type { FutzoPlan } from '~/models/Product'
-  import { useToast } from '~/composables/useToast'
-  import { createBillingPortalSession } from '~/http/api/stripe'
-  const {
+import {Icon} from '#components'
+import type {FutzoPlan} from '~/models/Product'
+import {useToast} from '~/composables/useToast'
+import {createBillingPortalSession} from '~/http/api/stripe'
+
+const {
     isMonthlyPrice,
     plan,
     prioritary = false,
@@ -58,54 +59,140 @@
   })
 </script>
 <template>
-  <v-card class="pa-8 futzo-rounded" min-width="280" max-width="400" :elevation="prioritary ? 10 : 2">
-    <div class="position-relative" v-if="prioritary">
-      <v-chip class="float-end position-absolute top-0 right-0" color="primary" variant="flat" size="small">{{
-        badge
-      }}</v-chip>
-    </div>
-    <v-card-title class="text-center text-h5 text-capitalize"> {{ plan?.name }} </v-card-title>
-    <v-card-subtitle class="text-center">
+  <v-card
+    class="plan-card futzo-rounded"
+    :class="{ 'plan-card--featured': prioritary }"
+    min-width="280"
+    max-width="400"
+    :elevation="prioritary ? 6 : 0"
+  >
+    <v-chip v-if="prioritary" class="plan-card__badge" color="primary" variant="flat" size="small">{{ badge }}</v-chip>
+    <div class="plan-card__title">{{ plan?.name }}</div>
+    <div class="plan-card__price">
       <slot name="subtitle">
         <span
-          class="text-center text-h5 font-weight-bold"
-          :class="!isMonthlyPrice ? 'text-decoration-line-through text-medium-emphasis' : 'text-black'"
-          >{{ plan?.currency?.symbol }}{{ plan?.price }}{{ plan?.currency?.iso_code }}/mes
+          class="plan-card__price-amount"
+          :class="!isMonthlyPrice ? 'plan-card__price-amount--muted' : ''"
+        >
+          {{ plan?.currency?.symbol }}{{ plan?.price }}{{ plan?.currency?.iso_code }}/mes
         </span>
       </slot>
-    </v-card-subtitle>
-    <v-card-text>
-      <v-divider color="primary" opacity="1" />
-      <slot name="separator">
-        <p class="my-1 text-center" v-if="isMonthlyPrice">Plan mensual estándar</p>
-        <div v-else class="my-1 text-center font-weight-bold">
-          <div class="d-flex justify-center align-center my-1">
-            <p class="mr-1">{{ plan?.currency?.symbol }}{{ plan?.annually_price }}{{ plan?.currency?.iso_code }}/mes</p>
-            <v-chip variant="elevated" color="primary" density="compact" size="small"> Facturado anual </v-chip>
-          </div>
-          <span class="d-block font-weight-normal text-body-2">
-            💸 Ahorra
-            <span class="font-weight-bold">
-              {{ plan?.currency?.symbol }}{{ plan?.annual_saving }}{{ plan?.currency?.iso_code }}/año
-            </span></span
-          >
-        </div>
-        <v-divider color="primary" opacity="1" />
-      </slot>
-      <v-list v-for="feature in features">
-        <v-list-item
-          density="compact"
-          :prepend-icon="() => h(Icon, { name: 'futzo-icon:check-box' })"
-          lines="one"
-          class="text-left"
-          >{{ feature }}</v-list-item
-        >
-      </v-list>
-    </v-card-text>
-    <v-card-actions>
-      <v-btn block variant="outlined" @click="buttonHandler" :disabled="disabled" :loading="loading">{{
-        catText
-      }}</v-btn>
+    </div>
+    <div class="plan-card__divider" />
+    <slot name="separator">
+     <div v-auto-animate>
+       <p class="plan-card__note" v-if="isMonthlyPrice" >Plan mensual estándar</p>
+       <div v-else class="plan-card__billing">
+         <div class="plan-card__billing-row">
+           <p>{{ plan?.currency?.symbol }}{{ plan?.annually_price }}{{ plan?.currency?.iso_code }}/mes</p>
+           <v-chip variant="elevated" color="primary" density="compact" size="small"> Facturado anual </v-chip>
+         </div>
+         <span class="plan-card__saving" v-auto-animate>
+          💸 Ahorra
+          <span class="plan-card__saving-amount" v-if="plan?.currency?.symbol">
+            {{ plan?.currency?.symbol }}{{ plan?.annual_saving }}{{ plan?.currency?.iso_code }}/año
+          </span>
+        </span>
+       </div>
+       <div class="plan-card__divider"></div>
+     </div>
+    </slot>
+    <v-list v-for="feature in features" class="plan-card__features"
+            v-auto-animate>
+      <v-list-item
+        density="compact"
+        :prepend-icon="() => h(Icon, { name: 'futzo-icon:check-box' })"
+        lines="one"
+        :key="feature"
+        class="plan-card__feature"
+        >{{ feature }}</v-list-item
+      >
+    </v-list>
+    <v-card-actions class="plan-card__actions">
+      <v-btn
+        block
+        :variant="prioritary ? 'flat' : 'outlined'"
+        :color="prioritary ? 'primary' : undefined"
+        @click="buttonHandler"
+        :disabled="disabled"
+        :loading="loading"
+      >
+        {{ catText }}
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
+
+<style scoped>
+.plan-card {
+  position: relative;
+  padding: 24px;
+  box-shadow: none;
+}
+.plan-card--featured {
+  border-color: #7f56d9 !important;
+  box-shadow: 0 12px 24px rgba(127, 86, 217, 0.18);
+}
+.plan-card__badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+.plan-card__title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #101828;
+}
+.plan-card__price {
+  font-size: 22px;
+  font-weight: 700;
+  color: #7f56d9;
+  margin-bottom: 8px;
+}
+.plan-card__price-amount--muted {
+  text-decoration: line-through;
+  color: #667085;
+  font-weight: 600;
+}
+.plan-card__divider {
+  height: 1px;
+  background: #eaecf0;
+  margin: 12px 0;
+}
+.plan-card__note {
+  color: #667085;
+  margin: 0 0 8px 0;
+}
+.plan-card__billing {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+  color: #101828;
+  font-weight: 600;
+}
+.plan-card__billing-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.plan-card__saving {
+  color: #12b76a;
+  font-weight: 600;
+  font-size: 13px;
+}
+.plan-card__saving-amount {
+  font-weight: 700;
+}
+.plan-card__features {
+  padding: 0;
+}
+.plan-card__feature {
+  padding-left: 0;
+}
+.plan-card__actions {
+  padding: 0;
+  margin-top: 12px;
+}
+</style>

@@ -73,16 +73,16 @@ const type = ref<'yearly' | 'monthly'>('yearly')
   ])
 </script>
 <template>
-  <v-container fluid class="pa-0 bg-background">
+  <v-container fluid class="pa-0">
     <v-row v-if="!isSubscribed && !mobile">
-      <v-col cols="12" lg="2" md="2">
-        <div class="d-flex flex-column futzo-rounded pa-4">
-          <v-btn :variant="isYearly ? 'flat' : 'text'" @click="() => (type = 'yearly')" class="mb-2">Anual</v-btn>
-          <v-btn :variant="isMonthly ? 'flat' : 'text'" @click="() => (type = 'monthly')" class="mb-2">Mensual</v-btn>
-        </div>
+      <v-col cols="12" class="d-flex justify-center">
+        <v-btn-toggle v-model="type" class="plans-toggle" density="comfortable" rounded="lg" divided mandatory>
+          <v-btn value="yearly" class="plans-toggle__btn" :variant="isYearly ? 'flat' : 'text'">Anual</v-btn>
+          <v-btn value="monthly" class="plans-toggle__btn" :variant="isMonthly ? 'flat' : 'text'">Mensual</v-btn>
+        </v-btn-toggle>
       </v-col>
-      <v-col cols="12" lg="10" md="10">
-        <div class="d-flex ga-8 justify-center flex-md-nowrap flex-lg-nowrap flex-wrap">
+      <v-col cols="12">
+        <div class="plans-grid">
           <template v-if="loadingPlans">
             <v-card
               v-for="item in skeletonItems"
@@ -90,7 +90,6 @@ const type = ref<'yearly' | 'monthly'>('yearly')
               class="pa-8 futzo-rounded plan-card-skeleton"
               min-width="280"
               max-width="400"
-              va
             >
               <v-skeleton-loader type="chip" class="mb-4" />
               <v-skeleton-loader type="heading" class="mb-2" />
@@ -125,11 +124,11 @@ const type = ref<'yearly' | 'monthly'>('yearly')
       </v-col>
     </v-row>
     <v-row v-else-if="!isSubscribed && mobile">
-      <v-col cols="12">
-        <div class="d-flex justify-center ga-2 futzo-rounded pa-4">
-          <v-btn :variant="isYearly ? 'flat' : 'text'" @click="() => (type = 'yearly')">Anual</v-btn>
-          <v-btn :variant="isMonthly ? 'flat' : 'text'" @click="() => (type = 'monthly')">Mensual</v-btn>
-        </div>
+      <v-col cols="12" class="d-flex justify-center">
+        <v-btn-toggle v-model="type" class="plans-toggle" density="comfortable" rounded="lg" divided mandatory>
+          <v-btn value="yearly" class="plans-toggle__btn" :variant="isYearly ? 'flat' : 'text'">Anual</v-btn>
+          <v-btn value="monthly" class="plans-toggle__btn" :variant="isMonthly ? 'flat' : 'text'">Mensual</v-btn>
+        </v-btn-toggle>
       </v-col>
       <v-col cols="12">
         <v-data-iterator
@@ -176,7 +175,7 @@ const type = ref<'yearly' | 'monthly'>('yearly')
       </v-col>
     </v-row>
     <v-row v-else>
-      <v-col cols="12" md="4" lg="4">
+      <v-col cols="12" md="4" lg="4" >
         <v-card v-if="loadingPlans" class="pa-8 futzo-rounded plan-card-skeleton" min-width="280" max-width="400">
           <v-skeleton-loader type="chip" class="mb-4" />
           <v-skeleton-loader type="heading" class="mb-2" />
@@ -223,17 +222,37 @@ const type = ref<'yearly' | 'monthly'>('yearly')
   </v-container>
 </template>
 <style scoped lang="scss">
+.mobile-plan-card {
+  min-height: 580px;
+  display: flex;
+  align-items: stretch;
+}
+.plans-toggle {
+  background: #f2f4f7;
+  padding: 4px;
+  margin: 8px 0 0;
+}
+.plans-toggle__btn {
+  min-width: 110px;
+  text-transform: none;
+  font-weight: 600;
+}
+.plans-grid {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 0 16px;
+}
+.plan-card-skeleton {
+  width: 100%;
+}
+@media (min-width: 960px) {
   .mobile-plan-card {
-    min-height: 580px;
-    display: flex;
-    align-items: stretch;
+    min-height: auto;
   }
-  .plan-card-skeleton {
-    width: 100%;
+  .plans-grid {
+    flex-wrap: nowrap;
   }
-  @media (min-width: 960px) {
-    .mobile-plan-card {
-      min-height: auto;
-    }
-  }
+}
 </style>

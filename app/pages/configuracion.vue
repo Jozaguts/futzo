@@ -7,7 +7,6 @@ import TournamentsSettingsCard from '~/components/pages/configuration/tournament
 import TeamsSettingsCard from '~/components/pages/configuration/teams-settings-card.vue'
 import LocationsSettingsCard from '~/components/pages/configuration/locations-settings-card.vue'
 import {useToast} from '~/composables/useToast'
-import AppBar from '~/components/layout/AppBar.vue'
 import {useDisplay} from 'vuetify'
 
 const user = computed(() => useAuthStore().user)
@@ -59,70 +58,72 @@ const user = computed(() => useAuthStore().user)
 </script>
 <template>
   <PageLayout>
-    <template #app-bar>
-      <AppBar :extended="false" :density="$vuetify.display.mobile ? 'prominent' : 'default'">
-        <template #title>
-          <div class="d-flex ml-4">
-            <Avatar />
-            <div class="d-flex flex-column">
-              <v-card-title class="card-title ml-2"> {{ user?.name }}</v-card-title>
-              <v-card-subtitle class="card-subtitle ml-2">{{ user?.email }} </v-card-subtitle>
-            </div>
-          </div>
-        </template>
-      </AppBar>
-    </template>
     <template #default>
       <v-container class="pa-0" fluid>
-        <v-row class="configuration-layout">
-          <v-col cols="12" md="3">
-            <v-sheet v-if="mobile" class="configuration-nav-mobile" rounded="lg">
-              <v-btn-toggle v-model="tab" mandatory class="configuration-nav-mobile__toggle" divided>
-                <v-btn
-                  v-for="section in sections"
-                  :key="section.value"
-                  :value="section.value"
-                  variant="text"
-                  class="configuration-nav-mobile__btn"
-                  :aria-label="section.label"
-                >
-                  <v-icon :icon="section.icon" />
-                </v-btn>
-              </v-btn-toggle>
-            </v-sheet>
-            <v-sheet v-else class="configuration-nav" rounded="lg">
-              <v-list density="comfortable" nav>
-                <v-list-item
-                  v-for="section in sections"
-                  :key="section.value"
-                  class="configuration-nav__item"
-                  :title="section.label"
-                  :active="tab === section.value"
-                  :prepend-icon="section.icon"
-                  @click="tab = section.value"
-                />
-              </v-list>
-            </v-sheet>
-          </v-col>
-          <v-col cols="12" md="9" class="py-0 py-md-2 py-lg-2">
-            <div class="configuration-container ">
-              <transition-fade mode="out-in" :duration="200">
-                <div :key="isSwitching ? 'skeleton' : tab" class="configuration-content futzo-rounded">
-                  <v-skeleton-loader v-if="isSwitching" type="card, text, actions" class="configuration-skeleton" />
-                  <template v-else>
-                    <personal-data-card v-if="tab === 1" />
-                    <lazy-pages-configuration-password-data-card v-else-if="tab === 2" />
-                    <Plans v-else-if="tab === 3" />
-                    <TournamentsSettingsCard v-else-if="tab === 4" />
-                    <TeamsSettingsCard v-else-if="tab === 5" />
-                    <PlayersSettingsCard v-else-if="tab === 6" />
-                    <LocationsSettingsCard v-else />
-                  </template>
-                </div>
-              </transition-fade>
-            </div>
-          </v-col>
-        </v-row>
+        <div class="configuration-page">
+          <div class="configuration-page__header">
+            <h2 class="configuration-page__title">Configuración</h2>
+          </div>
+          <v-divider class="configuration-page__divider" />
+          <v-row class="configuration-layout">
+            <v-col cols="12" md="3">
+              <div class="configuration-sidebar">
+                <v-card class="configuration-user-card futzo-rounded" variant="flat">
+                  <div class="configuration-user">
+                    <Avatar />
+                    <div class="configuration-user__meta">
+                      <div class="configuration-user__name">{{ user?.name }}</div>
+                      <div class="configuration-user__email">{{ user?.email }}</div>
+                    </div>
+                  </div>
+                </v-card>
+                <v-card class="configuration-nav-card" variant="text">
+                  <v-btn-toggle v-if="mobile" v-model="tab" mandatory class="configuration-nav-mobile__toggle" divided>
+                    <v-btn
+                      v-for="section in sections"
+                      :key="section.value"
+                      :value="section.value"
+                      variant="text"
+                      class="configuration-nav-mobile__btn"
+                      :aria-label="section.label"
+                    >
+                      <v-icon :icon="section.icon" />
+                    </v-btn>
+                  </v-btn-toggle>
+                  <v-list v-else class="configuration-nav bg-background" density="comfortable" >
+                    <v-list-item
+                      v-for="section in sections"
+                      :key="section.value"
+                      class="configuration-nav__item rounded-lg"
+                      :title="section.label"
+                      :active="tab === section.value"
+                      :prepend-icon="section.icon"
+                      @click="tab = section.value"
+                    />
+                  </v-list>
+                </v-card>
+              </div>
+            </v-col>
+            <v-col cols="12" md="9" class="py-0 py-md-2 py-lg-2">
+            <div class="configuration-container">
+                <transition-fade mode="out-in" :duration="200">
+                  <div :key="isSwitching ? 'skeleton' : tab" class="configuration-content futzo-rounded">
+                    <v-skeleton-loader v-if="isSwitching" type="card, text, actions" class="configuration-skeleton" />
+                    <template v-else>
+                      <personal-data-card v-if="tab === 1" />
+                      <lazy-pages-configuration-password-data-card v-else-if="tab === 2" />
+                      <Plans v-else-if="tab === 3" />
+                      <TournamentsSettingsCard v-else-if="tab === 4" />
+                      <TeamsSettingsCard v-else-if="tab === 5" />
+                      <PlayersSettingsCard v-else-if="tab === 6" />
+                      <LocationsSettingsCard v-else />
+                    </template>
+                  </div>
+                </transition-fade>
+              </div>
+            </v-col>
+          </v-row>
+        </div>
       </v-container>
     </template>
   </PageLayout>
