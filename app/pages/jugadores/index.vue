@@ -11,6 +11,9 @@ import {useDisplay} from 'vuetify'
 import {Icon} from '#components'
 import {usePlayerStore} from '#imports'
 
+definePageMeta({
+  middleware: ['sanctum:auth'],
+})
 const playerStore = usePlayerStore()
   const { dialog, tourSteps } = storeToRefs(playerStore)
   const { registerTourRef, startTour, resetTour, recalculateTour } = playerStore
@@ -23,9 +26,7 @@ const playerStore = usePlayerStore()
   onBeforeUnmount(() => {
     clearActiveController(tourController)
   })
-  definePageMeta({
-    middleware: ['sanctum:auth'],
-  })
+
   const { mobile } = useDisplay()
   const open = ref(false)
 </script>

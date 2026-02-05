@@ -9,15 +9,14 @@ import SearchInput from '~/components/pages/torneos/app-bar-search-input.vue'
 import {storeToRefs} from '#imports'
 import {Icon} from '#components'
 
+definePageMeta({
+  middleware: ['sanctum:auth'],
+})
 const tournamentStore = useTournamentStore()
   const { dialog, tournamentId, noTournaments, tourSteps } = storeToRefs(tournamentStore)
   const { registerTourRef, startTour, resetTour, recalculateTour } = tournamentStore
   const { setActiveController, clearActiveController } = useTourHub()
   const tourController = { registerTourRef, startTour, resetTour, recalculateTour }
-
-  definePageMeta({
-    middleware: ['sanctum:auth'],
-  })
   onMounted(() => {
     tournamentId.value = undefined
     useTournamentStore().loadTournaments()

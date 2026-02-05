@@ -9,6 +9,7 @@ import {useDisplay} from 'vuetify'
 import SearchInput from '~/components/pages/equipos/app-bar-search-input.vue'
 import {Icon} from '#components'
 
+definePageMeta({   middleware: ['sanctum:auth']})
 const teamStore = useTeamStore()
   const { noTeams, tourSteps } = storeToRefs(teamStore)
   const { registerTourRef, startTour, resetTour, recalculateTour } = teamStore
@@ -20,9 +21,6 @@ const teamStore = useTeamStore()
   })
   onBeforeUnmount(() => {
     clearActiveController(tourController)
-  })
-  definePageMeta({
-    middleware: ['sanctum:auth'],
   })
   const { mobile } = useDisplay()
   const open = ref(false)
