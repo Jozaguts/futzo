@@ -4,8 +4,6 @@ import PersonalDataCard from '~/components/pages/configuration/personal-data-car
 import Plans from '~/components/pages/configuration/plans/index.vue'
 import PlayersSettingsCard from '~/components/pages/configuration/players-settings-card.vue'
 import TournamentsSettingsCard from '~/components/pages/configuration/tournaments-settings-card.vue'
-import TeamsSettingsCard from '~/components/pages/configuration/teams-settings-card.vue'
-import LocationsSettingsCard from '~/components/pages/configuration/locations-settings-card.vue'
 import {useToast} from '~/composables/useToast'
 import {useDisplay} from 'vuetify'
 
@@ -21,8 +19,8 @@ const user = computed(() => useAuthStore().user)
     { value: 3, label: 'Suscripción', icon: 'mdi-credit-card-outline' },
     { value: 4, label: 'Torneo', icon: 'mdi-trophy-outline' },
     { value: 5, label: 'Jugadores', icon: 'mdi-run' },
-    { value: 6, label: 'Equipos', icon: 'mdi-account-group-outline' },
-    { value: 7, label: 'Locaciones', icon: 'mdi-map-marker-outline' },
+    // { value: 6, label: 'Equipos', icon: 'mdi-account-group-outline' },
+    // { value: 7, label: 'Locaciones', icon: 'mdi-map-marker-outline' },
   ]
   const startSwitching = () => {
     isSwitching.value = true
@@ -90,11 +88,11 @@ const user = computed(() => useAuthStore().user)
                       <v-icon :icon="section.icon" />
                     </v-btn>
                   </v-btn-toggle>
-                  <v-list v-else class="configuration-nav bg-background" density="comfortable" >
+                  <v-list v-else class="configuration-nav bg-background" density="compact" nav>
                     <v-list-item
                       v-for="section in sections"
                       :key="section.value"
-                      class="configuration-nav__item rounded-lg"
+                      class="configuration-nav__item"
                       :title="section.label"
                       :active="tab === section.value"
                       :prepend-icon="section.icon"
@@ -113,8 +111,8 @@ const user = computed(() => useAuthStore().user)
                   <Plans v-else-if="tab === 3"  :key="3" />
                   <TournamentsSettingsCard v-else-if="tab === 4" />
                   <PlayersSettingsCard v-else-if="tab === 5" />
-                  <TeamsSettingsCard v-else-if="tab === 6" />
-                  <LocationsSettingsCard v-else />
+<!--                  <TeamsSettingsCard v-else-if="tab === 6" />-->
+<!--                  <LocationsSettingsCard v-else />-->
                 </TransitionFade>
               </div>
             </div>
