@@ -77,21 +77,45 @@ export default defineNuxtConfig({
   site: {
     url: 'https://futzo.io',
   },
+  routeRules: {
+    '/dashboard': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/dashboard/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/equipos': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/equipos/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/jugadores': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/jugadores/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/ubicaciones': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/ubicaciones/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/login': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/login/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/torneos': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/torneos/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/bienvenido': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/bienvenido/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/authorize': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/authorize/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/configuracion': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/configuracion/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/suscripcion': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/suscripcion/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/verificar': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/verificar/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+  },
   robots: {
     disallow: [
-        '/dashboard',
+      '/dashboard',
       '/equipos',
       '/jugadores',
       '/ubicaciones',
       '/login',
       '/torneos',
       '/bienvenido',
-      '/authorize/facebook/callback',
-      '/authorize/google/callback',
+      '/authorize',
       '/configuracion',
       '/suscripcion',
       '/verificar'
     ],
+    sitemap: 'https://futzo.io/sitemap.xml',
   },
   sitemap:{
     debug: true,
@@ -99,7 +123,20 @@ export default defineNuxtConfig({
       '/',
       '/politica-de-privacidad',
       '/terminos-de-servicio'
-    ]
+    ],
+    exclude: [
+      '/dashboard/**',
+      '/equipos/**',
+      '/jugadores/**',
+      '/ubicaciones/**',
+      '/login/**',
+      '/torneos/**',
+      '/bienvenido/**',
+      '/authorize/**',
+      '/configuracion/**',
+      '/suscripcion/**',
+      '/verificar/**'
+    ],
   },
   vite: {
     css: {

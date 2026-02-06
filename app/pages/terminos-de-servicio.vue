@@ -1,9 +1,6 @@
 <script setup lang="ts">
   definePageMeta({
     layout: 'blank',
-    bodyAttrs: {
-      class: 'd-none',
-    },
     sanctum: {
       excluded: true,
     },

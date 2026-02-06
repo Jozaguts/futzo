@@ -10,7 +10,7 @@ useHead({
     { rel: 'canonical', href: siteUrl + route.path }
   ],
   meta: [
-    { name: 'description', content: 'Administra ligas de fútbol: equipos, jugadores, calendarios, resultados y estadísticas. Empieza gratis con Futzo.' },
+    { name: 'description', content: 'Administra ligas de fútbol: equipos, jugadores, calendarios, resultados y estadísticas. Empieza gratis con Futzo en minutos.' },
     { name: 'robots', content: 'index,follow,max-image-preview:large' },
 
     // Open Graph (para compartir)

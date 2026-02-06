@@ -4,9 +4,6 @@ import PlanCard from '~/components/pages/PlanCard.vue'
 
 definePageMeta({
   layout: 'legacy',
-  bodyAttrs: {
-    class: 'd-none',
-  },
   sanctum: {
     excluded: true,
   },
@@ -51,9 +48,14 @@ useHead({
     updateUrl(kickoffPlan.value)
     await load()
   })
+  const { gtag } = useGtag()
   const { isAuthenticated } = useSanctumAuth()
   const textButton = computed(() => (isAuthenticated?.value ? 'Ir al Dashboard' : 'Comenzar'))
   const mainRoute = computed(() => (isAuthenticated?.value ? '/dashboard' : '/login'))
+  const trackCta = (location: 'hero' | 'nav') => {
+    if (isAuthenticated?.value) return
+    gtag('event', 'sign_up', { method: location, event_label: 'Comenzar' })
+  }
 </script>
 <template>
   <PageLayout styles="main pa-0">
@@ -106,6 +108,7 @@ useHead({
                   <nuxt-link
                     class="nav-link bg-white futzo-rounded px-3 py-2 ma-6 text-primary font-weight-bold"
                     :to="mainRoute"
+                    @click="trackCta('nav')"
                     >{{ textButton }}</nuxt-link
                   >
                 </li>
@@ -136,7 +139,7 @@ useHead({
                   <li>✅ Estadísticas automáticas sin trabajo manual</li>
                 </ul>
                 <div class="hero-ctas">
-                  <nuxt-link class="btn btn-primary" to="/login">Comenzar</nuxt-link>
+                  <nuxt-link class="btn btn-primary" to="/login" @click="trackCta('hero')">Comenzar</nuxt-link>
                 </div>
                 <small class="hero-note"> Sin instalación. Prueba rápida. Soporte por chat. </small>
               </div>
@@ -752,7 +755,7 @@ useHead({
                       <div class="card border-top-0 border-left-0 border-right-0 border-bottom">
                         <!-- Card Header -->
                         <div class="card-header bg-inherit border-0 p-0">
-                          <h2 class="mb-0">
+                          <h3 class="mb-0">
                             <button
                               class="btn px-0 py-3"
                               type="button"
@@ -761,7 +764,7 @@ useHead({
                             >
                               ¿Qué es Futzo.io y cómo puede ayudarme en la gestión de mi liga de fútbol?
                             </button>
-                          </h2>
+                          </h3>
                         </div>
                         <div id="collapseOne" class="collapse show" data-parent="#sApp-accordion">
                           <!-- Card Body -->
@@ -781,7 +784,7 @@ useHead({
                       <div class="card border-top-0 border-left-0 border-right-0 border-bottom">
                         <!-- Card Header -->
                         <div class="card-header bg-inherit border-0 p-0">
-                          <h2 class="mb-0">
+                          <h3 class="mb-0">
                             <button
                               class="btn collapsed px-0 py-3"
                               type="button"
@@ -790,7 +793,7 @@ useHead({
                             >
                               ¿Necesito instalar algún software para usar Futzo.io?
                             </button>
-                          </h2>
+                          </h3>
                         </div>
                         <div id="collapseTwo" class="collapse" data-parent="#sApp-accordion">
                           <!-- Card Body -->
@@ -805,7 +808,7 @@ useHead({
                       <div class="card border-top-0 border-left-0 border-right-0 border-bottom">
                         <!-- Card Header -->
                         <div class="card-header bg-inherit border-0 p-0">
-                          <h2 class="mb-0">
+                          <h3 class="mb-0">
                             <button
                               class="btn collapsed px-0 py-3"
                               type="button"
@@ -814,7 +817,7 @@ useHead({
                             >
                               ¿Puedo gestionar múltiples torneos al mismo tiempo con Futzo.io?
                             </button>
-                          </h2>
+                          </h3>
                         </div>
                         <div id="collapseThree" class="collapse" data-parent="#sApp-accordion">
                           <!-- Card Body -->
@@ -829,7 +832,7 @@ useHead({
                       <div class="card border-top-0 border-left-0 border-right-0 border-bottom">
                         <!-- Card Header -->
                         <div class="card-header bg-inherit border-0 p-0">
-                          <h2 class="mb-0">
+                          <h3 class="mb-0">
                             <button
                               class="btn collapsed px-0 py-3"
                               type="button"
@@ -838,7 +841,7 @@ useHead({
                             >
                               ¿Qué tipo de soporte técnico ofrece Futzo.io?
                             </button>
-                          </h2>
+                          </h3>
                         </div>
                         <div id="collapseFour" class="collapse" data-parent="#sApp-accordion">
                           <!-- Card Body -->
@@ -853,7 +856,7 @@ useHead({
                       <div class="card border-top-0 border-left-0 border-right-0 border-bottom">
                         <!-- Card Header -->
                         <div class="card-header bg-inherit border-0 p-0">
-                          <h2 class="mb-0">
+                          <h3 class="mb-0">
                             <button
                               class="btn collapsed px-0 py-3"
                               type="button"
@@ -862,7 +865,7 @@ useHead({
                             >
                               ¿Es seguro almacenar los datos de mi liga en Futzo.io?
                             </button>
-                          </h2>
+                          </h3>
                         </div>
                         <div id="collapseFive" class="collapse" data-parent="#sApp-accordion">
                           <!-- Card Body -->
