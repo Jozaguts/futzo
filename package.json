@@ -37,6 +37,7 @@
     "nuxt": "^4.3.0",
     "nuxt-auth-sanctum": "^2.1.2",
     "nuxt-gtag": "4.1.0",
+    "nuxt-schema-org": "^5.0.10",
     "nuxt-svgo": "4.2.6",
     "nuxt-tour": "^0.0.40",
     "nuxt-umami": "3.2.1",

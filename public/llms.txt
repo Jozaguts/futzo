@@ -1,0 +1,18 @@
+# Futzo.io
+
+Futzo.io es un SaaS para administrar ligas de futbol: equipos, jugadores, calendarios, resultados y estadisticas.
+
+## Sitio
+- https://futzo.io/
+
+## Paginas clave
+- https://futzo.io/
+- https://futzo.io/politica-de-privacidad
+- https://futzo.io/terminos-de-servicio
+
+## Contacto
+- Email: contacto [arroba] futzo.io
+- Telefono: +52 322 327 8118
+
+## Robots
+- Sitemap: https://futzo.io/sitemap.xml

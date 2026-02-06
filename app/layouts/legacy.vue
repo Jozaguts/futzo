@@ -7,7 +7,7 @@ const { toastDuration } = storeToRefs(useGlobalStore())
   useHead({
     htmlAttrs: { lang: 'es' },
     titleTemplate: (titleChunk) =>
-        titleChunk ? `${titleChunk} | Futzo` : 'Software para Administrar Ligas de Fútbol | Futzo',
+        titleChunk ? `${titleChunk} | Futzo` : 'Software para Administrar Ligas de Fútbol Online | Futzo',
     link: [
       // Canonical dinámico por ruta
       { rel: 'canonical', href: siteUrl + route.path }
@@ -27,7 +27,7 @@ const { toastDuration } = storeToRefs(useGlobalStore())
       { property: 'og:type', content: 'website' },
       { property: 'og:site_name', content: 'Futzo' },
       { property: 'og:url', content: siteUrl + route.path },
-      { property: 'og:title', content: 'Software para Administrar Ligas de Fútbol | Futzo' },
+      { property: 'og:title', content: 'Software para Administrar Ligas de Fútbol Online | Futzo' },
       { property: 'og:description', content: 'Administra ligas de fútbol: equipos, calendarios, resultados y estadísticas. Empieza gratis.' },
       { property: 'og:image', content: 'https://futzo.io/og-futzo.png' },
       // Twitter (opcional)

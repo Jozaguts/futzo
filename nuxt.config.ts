@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import path from 'node:path';
+import {defineOrganization} from 'nuxt-schema-org/schema';
 import defaults from './config/vuetify/defaults';
 import theme from './config/vuetify/theme';
 
@@ -69,6 +70,7 @@ export default defineNuxtConfig({
     'nuxt-umami',
     '@nuxtjs/robots',
     '@nuxtjs/sitemap',
+    'nuxt-schema-org',
     'nuxt-gtag',
   ],
   gtag: {
@@ -76,6 +78,28 @@ export default defineNuxtConfig({
   },
   site: {
     url: 'https://futzo.io',
+  },
+  schemaOrg: {
+    identity: defineOrganization({
+      '@type': 'Organization',
+      name: 'Futzo',
+      description: 'Software para administrar ligas de fútbol: equipos, jugadores, calendarios, resultados y estadísticas.',
+      url: 'https://futzo.io',
+      logo: '/futzo/logos/logo-17.png',
+      contactPoint: [
+        {
+          '@type': 'ContactPoint',
+          contactType: 'customer service',
+          telephone: '+52 322 327 8118',
+          availableLanguage: ['Spanish'],
+        },
+      ],
+      sameAs: [
+        'https://www.facebook.com/futzo.io',
+        'https://www.instagram.com/futzo.io/',
+        'https://www.youtube.com/@futzo-oficial',
+      ],
+    }),
   },
   routeRules: {
     '/dashboard': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
