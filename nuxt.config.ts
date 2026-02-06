@@ -75,7 +75,7 @@ export default defineNuxtConfig({
     id: 'G-6B315LGN56'
   },
   site: {
-    url: 'https://futzo.io'
+    url: 'https://futzo.io',
   },
   robots: {
     disallow: [
@@ -85,18 +85,21 @@ export default defineNuxtConfig({
       '/ubicaciones',
       '/login',
       '/torneos',
-      'bienvenido',
+      '/bienvenido',
       '/authorize/facebook/callback',
       '/authorize/google/callback',
       '/configuracion',
       '/suscripcion',
       '/verificar'
     ],
-    sitemap: 'https://futzo.io/sitemap.xml'
   },
-  sitemap: {
-    // rutas base; luego podemos añadir dinámicas si tienes páginas por liga/torneo públicas
-    include: ['/', '/politica-de-privacidad', '/terminos-de-servicio']
+  sitemap:{
+    debug: true,
+    urls: [
+      '/',
+      '/politica-de-privacidad',
+      '/terminos-de-servicio'
+    ]
   },
   vite: {
     css: {
@@ -207,6 +210,8 @@ export default defineNuxtConfig({
     },
   },
   i18n: {
+    locales: [{ code: 'es', iso: 'es-MX', name: 'Español' }],
     defaultLocale: 'es',
+    strategy: 'no_prefix'
   },
 });
