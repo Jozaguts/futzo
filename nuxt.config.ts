@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   nitro: {
     externals: {
-      inline: ['vue', '@vue/server-renderer'],
+      inline: ['vue', '@vue/server-renderer', 'unhead', '@unhead/schema-org'],
       // alternativa si no quieres inline:
       // trace: ['vue', '@vue/server-renderer'],
     },
