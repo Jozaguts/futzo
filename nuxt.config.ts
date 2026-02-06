@@ -3,6 +3,7 @@ import path from 'node:path';
 import defaults from './config/vuetify/defaults';
 import theme from './config/vuetify/theme';
 
+// @ts-ignore
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: false },
@@ -19,22 +20,6 @@ export default defineNuxtConfig({
         {
           name: 'facebook-domain-verification',
           content: '0qihdsq3uqi5n4uaim0ao378p6e5xv',
-        },
-        {
-          property: 'og:title',
-          content: process.env.NUXT_PUBLIC_APP_NAME || 'Futzo',
-        },
-        {
-          property: 'og:image',
-          content: 'https://futzo.io/og-futzo.png',
-        },
-        {
-          property: 'og:description',
-          content: 'Futzo es una plataforma para gestionar partidos de fútbol, equipos y torneos.',
-        },
-        {
-          property: 'og:type',
-          content: 'website',
         },
         {
           property: 'fb:app_id',
@@ -82,7 +67,37 @@ export default defineNuxtConfig({
     '@unlok-co/nuxt-stripe',
     'nuxt-tour',
     'nuxt-umami',
+    '@nuxtjs/robots',
+    '@nuxtjs/sitemap',
+    'nuxt-gtag',
   ],
+  gtag: {
+    id: 'G-6B315LGN56'
+  },
+  site: {
+    url: 'https://futzo.io'
+  },
+  robots: {
+    disallow: [
+        '/dashboard',
+      '/equipos',
+      '/jugadores',
+      '/ubicaciones',
+      '/login',
+      '/torneos',
+      'bienvenido',
+      '/authorize/facebook/callback',
+      '/authorize/google/callback',
+      '/configuracion',
+      '/suscripcion',
+      '/verificar'
+    ],
+    sitemap: 'https://futzo.io/sitemap.xml'
+  },
+  sitemap: {
+    // rutas base; luego podemos añadir dinámicas si tienes páginas por liga/torneo públicas
+    include: ['/', '/politica-de-privacidad', '/terminos-de-servicio']
+  },
   vite: {
     css: {
       preprocessorOptions: {
@@ -129,7 +144,7 @@ export default defineNuxtConfig({
     // excludeQueryParams: false,
     // domains: ['cool-site.app', 'my-space.site'],
     // customEndpoint: '/my-custom-endpoint',
-    // enabled: false,
+    enabled: false,
     // logErrors: true,
   },
   sanctum: {

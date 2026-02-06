@@ -20,8 +20,8 @@ const user = computed(() => useAuthStore().user)
     { value: 2, label: 'Contraseña', icon: 'mdi-lock-outline' },
     { value: 3, label: 'Suscripción', icon: 'mdi-credit-card-outline' },
     { value: 4, label: 'Torneo', icon: 'mdi-trophy-outline' },
-    { value: 5, label: 'Equipos', icon: 'mdi-account-group-outline' },
-    { value: 6, label: 'Jugadores', icon: 'mdi-run' },
+    { value: 5, label: 'Jugadores', icon: 'mdi-run' },
+    { value: 6, label: 'Equipos', icon: 'mdi-account-group-outline' },
     { value: 7, label: 'Locaciones', icon: 'mdi-map-marker-outline' },
   ]
   const startSwitching = () => {
@@ -112,8 +112,8 @@ const user = computed(() => useAuthStore().user)
                   <lazy-pages-configuration-password-data-card v-else-if="tab === 2"  :key="2" />
                   <Plans v-else-if="tab === 3"  :key="3" />
                   <TournamentsSettingsCard v-else-if="tab === 4" />
-                  <TeamsSettingsCard v-else-if="tab === 5" />
-                  <PlayersSettingsCard v-else-if="tab === 6" />
+                  <PlayersSettingsCard v-else-if="tab === 5" />
+                  <TeamsSettingsCard v-else-if="tab === 6" />
                   <LocationsSettingsCard v-else />
                 </TransitionFade>
               </div>

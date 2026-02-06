@@ -1,30 +1,38 @@
 <script setup lang="ts">
-  import { Toaster } from 'vue-sonner'
-  const { toastDuration } = storeToRefs(useGlobalStore())
+import {Toaster} from 'vue-sonner'
+
+const { toastDuration } = storeToRefs(useGlobalStore())
+  const siteUrl = 'https://futzo.io'
+  const route = useRoute()
   useHead({
-    link: [{ rel: 'stylesheet', href: 'https://assets.calendly.com/assets/external/widget.css' }],
+    htmlAttrs: { lang: 'es' },
+    titleTemplate: (titleChunk) =>
+        titleChunk ? `${titleChunk} | Futzo` : 'Software para Administrar Ligas de Fútbol | Futzo',
+    link: [
+      // Canonical dinámico por ruta
+      { rel: 'canonical', href: siteUrl + route.path }
+    ],
     script: [
       { src: 'https://futzo.s3.us-east-2.amazonaws.com/assets/js/jquery-3.3.1.min.js', tagPosition: 'bodyClose' },
       { src: 'https://futzo.s3.us-east-2.amazonaws.com/assets/js/popper.min.js', tagPosition: 'bodyClose' },
       { src: 'https://futzo.s3.us-east-2.amazonaws.com/assets/js/bootstrap.min.js', tagPosition: 'bodyClose' },
       { src: 'https://futzo.s3.us-east-2.amazonaws.com/assets/js/plugins.min.js', tagPosition: 'bodyClose' },
       { src: 'https://futzo.s3.us-east-2.amazonaws.com/assets/js/scripts.js', tagPosition: 'bodyClose' },
-      { src: 'https://assets.calendly.com/assets/external/widget.js', tagPosition: 'bodyClose', async: true },
     ],
     meta: [
-      { name: 'description', content: 'Futzo.io es una plataforma para organizar y administrar ligas deportivas.' },
-      { property: 'og:site_name', content: 'Futzo.io' },
-      { property: 'og:title', content: 'Futzo.io - Gestiona tu liga como un profesional' },
-      {
-        property: 'og:description',
-        content:
-          'Crea torneos, registra equipos y jugadores, genera calendarios y estadísticas desde una plataforma intuitiva.',
-      },
-      { property: 'og:image', content: 'https://futzo.io/images/futzo.png' },
-      { property: 'og:url', content: 'https://futzo.io' },
-      { property: 'og:site_name', content: 'Futzo.io' },
+      { name: 'description', content: 'Administra ligas de fútbol: equipos, jugadores, calendarios, resultados y estadísticas. Empieza gratis con Futzo.' },
+      { name: 'robots', content: 'index,follow,max-image-preview:large' },
+
+      // Open Graph (para compartir)
       { property: 'og:type', content: 'website' },
-    ],
+      { property: 'og:site_name', content: 'Futzo' },
+      { property: 'og:url', content: siteUrl + route.path },
+      { property: 'og:title', content: 'Software para Administrar Ligas de Fútbol | Futzo' },
+      { property: 'og:description', content: 'Administra ligas de fútbol: equipos, calendarios, resultados y estadísticas. Empieza gratis.' },
+      { property: 'og:image', content: 'https://futzo.io/og-futzo.png' },
+      // Twitter (opcional)
+      { name: 'twitter:card', content: 'summary_large_image' }
+    ]
   })
 </script>
 <template>

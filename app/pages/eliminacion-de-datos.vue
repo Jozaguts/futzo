@@ -8,14 +8,6 @@
       excluded: true,
     },
   })
-  useHead({
-    meta: [
-      {
-        property: 'og:url',
-        content: 'https://futzo.io' + useRoute().path,
-      },
-    ],
-  })
 </script>
 <template>
   <v-container class="mb-8">

@@ -171,10 +171,11 @@ const { toast } = useToast()
         </div>
         <div v-else-if="configuration" class="tournaments-settings__layout">
           <div class="tournaments-settings__nav">
-            <v-list class="tournaments-settings__nav-list" density="compact" nav>
+            <v-list class="tournaments-settings__nav-list" density="compact" variant="plain">
               <v-list-item
                 v-for="item in sections"
                 :key="item.value"
+                :rounded="16"
                 :active="section === item.value"
                 class="tournaments-settings__nav-item"
                 @click="section = item.value"
@@ -182,6 +183,9 @@ const { toast } = useToast()
                 <v-list-item-title>{{ item.label }}</v-list-item-title>
               </v-list-item>
             </v-list>
+            <v-btn color="primary" variant="elevated" :loading="saving" :disabled="!configuration" @click="saveConfiguration">
+              Guardar cambios
+            </v-btn>
           </div>
           <div class="tournaments-settings__content">
             <v-window v-model="section" class="tournaments-settings__window">
@@ -371,10 +375,5 @@ const { toast } = useToast()
         </div>
       </div>
     </v-card-text>
-    <v-card-actions>
-      <v-btn color="primary" variant="elevated" :loading="saving" :disabled="!configuration" @click="saveConfiguration">
-        Guardar cambios
-      </v-btn>
-    </v-card-actions>
   </v-card>
 </template>

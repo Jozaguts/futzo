@@ -1,6 +1,7 @@
 <script setup lang="ts">
-  import AuthForm from '~/components/authentication/AuthForm.vue'
-  const { errorMessage } = storeToRefs(useAuthStore())
+import AuthForm from '~/components/authentication/AuthForm.vue'
+
+const { errorMessage } = storeToRefs(useAuthStore())
   const { toast } = useToast()
   const loadingPage = ref(true)
   definePageMeta({
@@ -21,14 +22,6 @@
   })
   onUnmounted(() => {
     errorMessage.value = ''
-  })
-  useHead({
-    meta: [
-      {
-        property: 'og:url',
-        content: 'https://futzo.io' + useRoute().path,
-      },
-    ],
   })
 </script>
 <template>

@@ -128,6 +128,9 @@ const {
   position: relative;
   padding: 24px;
   box-shadow: none;
+  min-height: var(--plan-card-min-height, 520px);
+  display: flex;
+  flex-direction: column;
 }
 .plan-card--featured {
   border-color: #7f56d9 !important;
@@ -193,6 +196,6 @@ const {
 }
 .plan-card__actions {
   padding: 0;
-  margin-top: 12px;
+  margin-top: auto;
 }
 </style>

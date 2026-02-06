@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-  import CreateLeague from '~/components/pages/bienvenido/cards/create-league.vue'
-  import CreatedLeague from '~/components/pages/bienvenido/cards/created-league.vue'
+import CreateLeague from '~/components/pages/bienvenido/cards/create-league.vue'
+import CreatedLeague from '~/components/pages/bienvenido/cards/created-league.vue'
 
-  definePageMeta({
+definePageMeta({
     layout: 'blank',
     bodyAttrs: {
       class: 'd-none',
@@ -10,14 +10,6 @@
     middleware: ['post-checkout-login'],
   })
   const currentComponent = ref('CreateLeague')
-  useHead({
-    meta: [
-      {
-        property: 'og:url',
-        content: 'https://futzo.io' + useRoute().path,
-      },
-    ],
-  })
   const initLeague = (name: string) => {
     useSanctumClient()(`/api/v1/admin/leagues`, {
       credentials: 'include',

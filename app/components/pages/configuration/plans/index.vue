@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {Currency, FutzoPlan, Prices, ProductPrices} from '~/models/Product'
+import type {ProductPrices} from '~/models/Product'
 import PlanCard from '~/components/pages/configuration/plans/PlanCard.vue'
 import {useDisplay} from 'vuetify'
 
@@ -36,21 +36,28 @@ const type = ref<'yearly' | 'monthly'>('yearly')
 
   const features: Record<keyof ProductPrices, string[]> = {
     kickoff: [
-      'Administra todos tus torneos desde un solo lugar',
-      'Calendario automático en segundos (adiós Excel)',
-      'Resultados y estadísticas en tiempo real',
+      'Torneos ilimitados',
+      'Gestión de ligas, torneos y fases',
+      'Registro de equipos y jugadores',
+      'Calendario automático',
+      'Resultados y tablas de posiciones',
+      'Vista pública del torneo + QR',
     ],
     pro_play: [
-      'Todo lo de Kickoff',
-      'Registro automático con links únicos',
-      'Personaliza colores y logo de tu liga',
-      'Soporte estándar',
+      'Incluye Kickoff',
+      'Verificación de jugadores',
+      'Bloqueo de transferencias de jugadores',
+      'Reprogramación completa de partidos',
+      'Gestión de ubicaciones y canchas',
+      'Soporte prioritario',
     ],
     elite_league: [
-      'Todo lo de ProPlay',
-      'Soporte prioritario',
+      'Incluye ProPlay',
+      'Roles avanzados (staff, árbitros, admins)',
+      'Historial completo de torneos',
+      'Soporte prioritario + WhatsApp',
+      'Personalización visual (branding básico)',
       'Acceso anticipado a nuevas funciones',
-      'Comunicación directa con jugadores y entrenadores',
     ],
   }
 
@@ -226,6 +233,7 @@ const type = ref<'yearly' | 'monthly'>('yearly')
   min-height: 580px;
   display: flex;
   align-items: stretch;
+  --plan-card-min-height: 580px;
 }
 .plans-toggle {
   background: #f2f4f7;
@@ -243,9 +251,14 @@ const type = ref<'yearly' | 'monthly'>('yearly')
   justify-content: center;
   flex-wrap: wrap;
   padding: 0 16px;
+  align-items: stretch;
+  --plan-card-min-height: 520px;
 }
 .plan-card-skeleton {
   width: 100%;
+  min-height: var(--plan-card-min-height, 520px);
+  display: flex;
+  flex-direction: column;
 }
 @media (min-width: 960px) {
   .mobile-plan-card {

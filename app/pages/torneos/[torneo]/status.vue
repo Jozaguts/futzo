@@ -1,18 +1,22 @@
 <script setup lang="ts">
-  import TournamentHeader from '~/components/pages/torneos/status/TournamentHeader.vue'
-  import PublicStatsTabs from '~/components/pages/torneos/status/PublicStatsTabs.vue'
-  import NextGamesToday from '~/components/pages/equipos/next-games-today.vue'
-  import LastGames from '~/components/pages/equipos/equipo/last-games.vue'
-  import StatsTableContainer from '~/components/pages/equipos/live-games.vue'
-  import { usePublicTournamentStatus } from '~/composables/usePublicTournamentStatus'
-  import ScheduleRoundsInfiniteScroll from '~/components/pages/torneos/torneo/schedule/ScheduleRoundsInfiniteScroll.vue'
-  import { usePublicTournamentSchedule } from '~/composables/usePublicTournamentSchedule'
-  import { publicTournamentStandingsHeaders } from '~/utils/publicTournamentStandingsHeaders'
-  import { getBySlug, getTournamentScheduleQRCode } from '~/http/api/tournament'
-  import { useDisplay } from 'vuetify'
-  import Vue3EasyDataTable from 'vue3-easy-data-table'
-  import 'vue3-easy-data-table/dist/style.css'
-  import { Icon } from '#components'
+import TournamentHeader from '~/components/pages/torneos/status/TournamentHeader.vue'
+import PublicStatsTabs from '~/components/pages/torneos/status/PublicStatsTabs.vue'
+import NextGamesToday from '~/components/pages/equipos/next-games-today.vue'
+import LastGames from '~/components/pages/equipos/equipo/last-games.vue'
+import StatsTableContainer from '~/components/pages/equipos/live-games.vue'
+import {usePublicTournamentStatus} from '~/composables/usePublicTournamentStatus'
+import ScheduleRoundsInfiniteScroll from '~/components/pages/torneos/torneo/schedule/ScheduleRoundsInfiniteScroll.vue'
+import {usePublicTournamentSchedule} from '~/composables/usePublicTournamentSchedule'
+import {publicTournamentStandingsHeaders} from '~/utils/publicTournamentStandingsHeaders'
+import {getBySlug, getTournamentScheduleQRCode} from '~/http/api/tournament'
+import {useDisplay} from 'vuetify'
+import Vue3EasyDataTable from 'vue3-easy-data-table'
+import 'vue3-easy-data-table/dist/style.css'
+import {Icon} from '#components'
+
+useHead({
+    meta: [{ name: 'robots', content: 'noindex,follow' }]
+  })
   definePageMeta({
     layout: 'blank',
     sanctum: {

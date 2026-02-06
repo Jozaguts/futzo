@@ -3,15 +3,32 @@ import {useProductPrices} from '~/composables/useProductPrices'
 import PlanCard from '~/components/pages/PlanCard.vue'
 
 definePageMeta({
-    layout: 'legacy',
-    bodyAttrs: {
-      class: 'd-none',
-    },
-    sanctum: {
-      excluded: true,
-    },
-  })
+  layout: 'legacy',
+  bodyAttrs: {
+    class: 'd-none',
+  },
+  sanctum: {
+    excluded: true,
+  },
+})
 
+useHead({
+  script: [
+    {
+      type: 'application/ld+json',
+      //@ts-ignore
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Futzo",
+        "operatingSystem": "Web",
+        "applicationCategory": "BusinessApplication",
+        "description": "Software para administrar ligas de fútbol: equipos, jugadores, calendarios, resultados y estadísticas.",
+        "url": "https://futzo.io/"
+      })
+    }
+  ]
+})
   const imgSrc = '/futzo/logos/logo-17.png'
   const { $buildAppUrl } = useNuxtApp() as any
   const url = ref('')
@@ -106,15 +123,17 @@ definePageMeta({
             <!-- Welcome Intro Start -->
             <div class="col-12 col-md-7">
               <div class="welcome-intro">
-                <h1>Futzo.io</h1>
-                <h2><strong>Administra tu liga en minutos</strong></h2>
-                <p class="hero-subtitle my-0">Calendarios, equipos y resultados en un solo lugar.</p>
+                <h1>Software para administrar ligas de fútbol</h1>
+                <h2 class="text-h5"><strong>Administra tu liga amateur en minutos</strong></h2>
+                <p class="text-body-2 py-2">
+                  Calendarios automáticos, equipos, resultados, estadísticas y control desde un solo lugar.
+                </p>
                 <ul class="hero-benefits">
                   <li>✅ Calendario y resultados en tiempo real</li>
                   <li>✅ Registro automatizado de torneos, equipos, jugadores</li>
                   <li>✅ Control de sedes/campos de juego</li>
-                  <li>✅ Recalendarización de partidos, suspende, pospone o cancela partidos</li>
-                  <li>✅ Estadísticas automáticas</li>
+                  <li>✅ Reprograma, suspende o cancela partidos fácilmente</li>
+                  <li>✅ Estadísticas automáticas sin trabajo manual</li>
                 </ul>
                 <div class="hero-ctas">
                   <nuxt-link class="btn btn-primary" to="/login">Comenzar</nuxt-link>
@@ -629,10 +648,13 @@ definePageMeta({
                     cta="Empieza gratis 7 días"
                     :url="kickoffPlan?.url"
                     :features="[
-                      'Administra todos tus torneos desde un solo lugar',
-                      'Calendario automático en segundos (adiós Excel)',
-                      'Resultados y estadísticas en tiempo real',
-                    ]"
+                        'Torneos ilimitados',
+                        'Gestión de ligas, torneos y fases',
+                        'Registro de equipos y jugadores',
+                        'Calendario automático',
+                        'Resultados y tablas de posiciones',
+                        'Vista pública del torneo + QR'
+                        ]"
                     :mode="priceMode"
                   />
                 </div>
@@ -650,11 +672,13 @@ definePageMeta({
                     cta="Empieza gratis 7 días"
                     :url="proPlayPlan?.url"
                     :features="[
-                      'Todo lo de Kickoff',
-                      'Registro automático con links únicos',
-                      'Personaliza colores y logo de tu liga',
-                      'Soporte estándar',
-                    ]"
+                      'Incluye Kickoff',
+                      'Verificación de jugadores',
+                      'Bloqueo de transferencias de jugadores',
+                      'Reprogramación completa de partidos',
+                      'Gestión de ubicaciones y canchas',
+                      'Soporte prioritario'
+                      ]"
                     :mode="priceMode"
                     featured
                     badge="Más elegido"
@@ -674,11 +698,13 @@ definePageMeta({
                     cta="Empieza gratis 7 días"
                     :url="eliteLeaguePlan?.url"
                     :features="[
-                      'Todo lo de ProPlay',
-                      'Soporte prioritario',
-                      'Acceso anticipado a nuevas funciones',
-                      'Comunicación directa con jugadores y entrenadores',
-                    ]"
+                      'Incluye ProPlay',
+                      'Roles avanzados (staff, árbitros, admins)',
+                      'Historial completo de torneos',
+                      'Soporte prioritario + WhatsApp',
+                      'Personalización visual (branding básico)',
+                      'Acceso anticipado a nuevas funciones'
+                      ]"
                     :mode="priceMode"
                   />
                 </div>
@@ -860,9 +886,7 @@ definePageMeta({
           <i class="fas fa-arrow-up"></i>
         </client-only>
       </div>
-    </template>
-    <template #footer>
-      <div>
+      <section id="footer">
         <div class="height-emulator d-none d-lg-block"></div>
         <div class="footer-area bg-gray">
           <!-- Footer Top -->
@@ -875,11 +899,11 @@ definePageMeta({
                     <!-- Logo -->
                     <a class="navbar-brand" href="#">
                       <img
-                        class="logo"
-                        src="assets/images/logo-07.png"
-                        alt="futzo plataforma admintrativa de ligas deportivas"
-                        width="140"
-                        height="169"
+                          class="logo"
+                          src="assets/images/logo-07.png"
+                          alt="futzo plataforma admintrativa de ligas deportivas"
+                          width="140"
+                          height="169"
                       />
                     </a>
                     <p class="mt-2 mb-3"></p>
@@ -889,16 +913,16 @@ definePageMeta({
                         <Icon name="fa7-brands:facebook" class="mx-auto my-auto" size="42"></Icon>
                       </a>
                       <a
-                        class="bg-danger"
-                        href="https://www.instagram.com/futzo.io/"
-                        aria-label="Visit Futzo on Instagram"
+                          class="bg-danger"
+                          href="https://www.instagram.com/futzo.io/"
+                          aria-label="Visit Futzo on Instagram"
                       >
                         <Icon name="fa7-brands:instagram" class="mx-auto my-auto" size="42"></Icon>
                       </a>
                       <a
-                        class="bg-danger"
-                        href="https://www.youtube.com/@futzo-oficial"
-                        aria-label="Visit Futzo on Youtube"
+                          class="bg-danger"
+                          href="https://www.youtube.com/@futzo-oficial"
+                          aria-label="Visit Futzo on Youtube"
                       >
                         <Icon name="fa7-brands:youtube" class="mx-auto my-auto" size="42"></Icon>
                       </a>
@@ -913,7 +937,6 @@ definePageMeta({
                     <ul>
                       <li class="py-2"><a href="#home">Home</a></li>
                       <li class="py-2"><a href="#features">Características</a></li>
-                      <li class="py-2"><a href="#screenshots">Imágenes</a></li>
                       <li class="py-2"><a href="#faq">Preguntas frecuentes</a></li>
                       <li class="py-2">
                         <nuxt-link to="/politica-de-privacidad">Política de privacidad</nuxt-link>
@@ -951,7 +974,7 @@ definePageMeta({
                 <div class="col-12">
                   <!-- Copyright Area -->
                   <div
-                    class="copyright-area d-flex flex-wrap justify-content-center justify-content-sm-between text-center py-4"
+                      class="copyright-area d-flex flex-wrap justify-content-center justify-content-sm-between text-center py-4"
                   >
                     <!-- Copyright Left -->
                     <div class="copyright-left">
@@ -964,13 +987,16 @@ definePageMeta({
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </template>
   </PageLayout>
 </template>
 <style scoped>
   @import '~/assets/css/style.css';
   @import '~/assets/css/responsive.css';
+  html{
+    overflow-y: hidden;
+  }
   a.text-primary:hover,
   .btn-primary:hover {
     color: white !important;

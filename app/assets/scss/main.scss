@@ -19,6 +19,9 @@
 * {
   scrollbar-width: thin;
 }
+html{
+  overflow-y: hidden;
+}
 :root {
   --header-height: 90px; /* ajusta a tu header real */
   --radius-2xl: 16px;
