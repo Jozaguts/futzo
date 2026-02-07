@@ -72,6 +72,7 @@ export default defineNuxtConfig({
     '@nuxtjs/sitemap',
     'nuxt-schema-org',
     'nuxt-gtag',
+    'nuxt-meta-pixel'
   ],
   gtag: {
     id: 'G-6B315LGN56'
