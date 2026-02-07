@@ -161,14 +161,14 @@ const { toast } = useToast()
     <v-main >
       <v-card class="secondary-card pa-6" variant="text">
         <v-card-item class="secondary-card-item">
-          <v-card-text class="secondary-card__title">Configuración por torneo</v-card-text>
-          <v-card-subtitle class="secondary-card__subtitle">
-            Selecciona un torneo y ajusta la configuración completa.
-          </v-card-subtitle>
-        </v-card-item>
-        <v-card-text class="pt-6">
-          <BaseInput label="Torneo" sublabel="Selecciona el torneo a configurar">
-            <template #input>
+          <div class="tournaments-settings__header">
+            <div>
+              <v-card-text class="secondary-card__title">Configuración por torneo</v-card-text>
+              <v-card-subtitle class="secondary-card__subtitle">
+                Selecciona un torneo y ajusta la configuración completa.
+              </v-card-subtitle>
+            </div>
+            <div class="tournaments-settings__selector mb-2">
               <v-select
                   v-model="selectedTournamentId"
                   :items="tournaments"
@@ -180,194 +180,185 @@ const { toast } = useToast()
                   placeholder="Selecciona un torneo"
                   :loading="loadingTournaments"
               />
-            </template>
-          </BaseInput>
+            </div>
+          </div>
+        </v-card-item>
+        <v-card-text>
           <div class="tournaments-settings mt-4">
             <div class="tournaments-settings__layout">
               <div class="tournaments-settings__content">
-                <v-window v-model="section" class="tournaments-settings__window">
-                  <v-window-item value="base" transition="fade-transition" reverse-transition="fade-transition">
-                    <v-form class="pa-4">
-                      <BaseInput label="Formato del torneo" >
-                        <template #input>
-                          <v-select
-                              v-model="configuration.tournament_format_id"
-                              :items="formats"
-                              item-title="name"
-                              item-value="id"
-                              density="compact"
-                              variant="solo-filled"
-                              :rounded="16"
-                              placeholder="Selecciona un formato"
-                          />
-                        </template>
-                      </BaseInput>
-                      <BaseInput label="Tipo de torneo">
-                        <template #input>
-                          <v-select
-                              v-model="configuration.football_type_id"
-                              :items="footballTypes"
-                              item-title="name"
-                              item-value="id"
-                              density="compact"
-                              variant="solo-filled"
-                              :rounded="16"
-                              placeholder="Selecciona un tipo"
-                          />
-                        </template>
-                      </BaseInput>
-                      <BaseInput label="Cambios permitidos" sublabel="-1 para ilimitados">
-                        <template #input>
-                          <v-text-field
-                              v-model.number="configuration.substitutions_per_team"
-                              type="number"
-                              density="compact"
-                              variant="solo-filled"
-                              :rounded="16"
-                          />
-                        </template>
-                      </BaseInput>
-                      <BaseInput label="Tiempo de juego (min)">
-                        <template #input>
-                          <v-text-field
-                              v-model.number="configuration.game_time"
-                              type="number"
-                              density="compact"
-                              variant="solo-filled"
-                              :rounded="16"
-                          />
-                        </template>
-                      </BaseInput>
-                      <BaseInput label="Tiempo entre juegos (min)">
-                        <template #input>
-                          <v-text-field
-                              v-model.number="configuration.time_between_games"
-                              type="number"
-                              density="compact"
-                              variant="solo-filled"
-                              :rounded="16"
-                          />
-                        </template>
-                      </BaseInput>
-                    </v-form>
-                  </v-window-item>
-
-                  <v-window-item value="teams" transition="fade-transition" reverse-transition="fade-transition">
-                    <v-form class="pa-4">
-                      <BaseInput label="Mínimo de equipos">
-                        <template #input>
-                          <v-text-field
-                              v-model.number="configuration.min_teams"
-                              type="number"
-                              density="compact"
-                              variant="solo-filled"
-                              :rounded="16"
-                          />
-                        </template>
-                      </BaseInput>
-                      <BaseInput label="Máximo de equipos">
-                        <template #input>
-                          <v-text-field
-                              v-model.number="configuration.max_teams"
-                              type="number"
-                              density="compact"
-                              variant="solo-filled"
-                              :rounded="16"
-                          />
-                        </template>
-                      </BaseInput>
-                      <BaseInput label="Mínimo de jugadores por equipo">
-                        <template #input>
-                          <v-text-field
-                              v-model.number="configuration.min_players_per_team"
-                              type="number"
-                              density="compact"
-                              variant="solo-filled"
-                              :rounded="16"
-                          />
-                        </template>
-                      </BaseInput>
-                      <BaseInput label="Máximo de jugadores por equipo">
-                        <template #input>
-                          <v-text-field
-                              v-model.number="configuration.max_players_per_team"
-                              type="number"
-                              density="compact"
-                              variant="solo-filled"
-                              :rounded="16"
-                          />
-                        </template>
-                      </BaseInput>
-                      <BaseInput label="Máximo de equipos por jugador">
-                        <template #input>
-                          <v-text-field
-                              v-model.number="configuration.max_teams_per_player"
-                              type="number"
-                              density="compact"
-                              variant="solo-filled"
-                              :rounded="16"
-                          />
-                        </template>
-                      </BaseInput>
-                    </v-form>
-                  </v-window-item>
-
-                  <v-window-item value="verification" transition="fade-transition" reverse-transition="fade-transition">
-                    <v-form class="pa-4">
-                      <BaseInput label="Bloqueo por tiempo (días)">
-                        <template #input>
-                          <v-text-field
-                              v-model.number="configuration.player_lock_duration_days"
-                              type="number"
-                              density="compact"
-                              variant="solo-filled"
-                              :rounded="16"
-                          />
-                        </template>
-                      </BaseInput>
-                      <BaseInput label="Verificación de jugador">
-                        <template #input>
-                          <v-switch density="compact" v-model="configuration.requires_player_verification" color="primary"/>
-                        </template>
-                      </BaseInput>
-                      <BaseInput label="Método de verificación">
-                        <template #input>
-                          <v-select
-                              v-model="configuration.player_verification_method"
-                              :items="verificationOptions"
-                              item-title="title"
-                              item-value="value"
-                              density="compact"
-                              variant="solo-filled"
-                              :rounded="16"
-                              :disabled="!configuration.requires_player_verification"
-                              placeholder="Selecciona un método"
-                          />
-                        </template>
-                      </BaseInput>
-                    </v-form>
-                  </v-window-item>
-
-                  <v-window-item value="format" transition="fade-transition" reverse-transition="fade-transition">
-                    <v-form class="pa-4">
-                      <BaseInput label="Ida y vuelta">
-                        <template #input>
-                          <v-switch density="compact" v-model="configuration.round_trip" color="primary"  />
-                        </template>
-                      </BaseInput>
-                      <BaseInput label="Fase de grupos">
-                        <template #input>
-                          <v-switch density="compact" v-model="configuration.group_stage" color="primary"  />
-                        </template>
-                      </BaseInput>
-                      <BaseInput label="Eliminación ida y vuelta">
-                        <template #input>
-                          <v-switch density="compact" v-model="configuration.elimination_round_trip" color="primary"  />
-                        </template>
-                      </BaseInput>
-                    </v-form>
-                  </v-window-item>
-                </v-window>
+                <TransitionFade group>
+                  <v-form v-if="section ==='base'" class="pa-4">
+                    <BaseInput label="Formato del torneo" >
+                      <template #input>
+                        <v-select
+                            v-model="configuration.tournament_format_id"
+                            :items="formats"
+                            item-title="name"
+                            item-value="id"
+                            density="compact"
+                            variant="solo-filled"
+                            :rounded="16"
+                            placeholder="Selecciona un formato"
+                        />
+                      </template>
+                    </BaseInput>
+                    <BaseInput label="Tipo de torneo">
+                      <template #input>
+                        <v-select
+                            v-model="configuration.football_type_id"
+                            :items="footballTypes"
+                            item-title="name"
+                            item-value="id"
+                            density="compact"
+                            variant="solo-filled"
+                            :rounded="16"
+                            placeholder="Selecciona un tipo"
+                        />
+                      </template>
+                    </BaseInput>
+                    <BaseInput label="Cambios permitidos" sublabel="-1 para ilimitados">
+                      <template #input>
+                        <v-text-field
+                            v-model.number="configuration.substitutions_per_team"
+                            type="number"
+                            density="compact"
+                            variant="solo-filled"
+                            :rounded="16"
+                        />
+                      </template>
+                    </BaseInput>
+                    <BaseInput label="Tiempo de juego (min)">
+                      <template #input>
+                        <v-text-field
+                            v-model.number="configuration.game_time"
+                            type="number"
+                            density="compact"
+                            variant="solo-filled"
+                            :rounded="16"
+                        />
+                      </template>
+                    </BaseInput>
+                    <BaseInput label="Tiempo entre juegos (min)">
+                      <template #input>
+                        <v-text-field
+                            v-model.number="configuration.time_between_games"
+                            type="number"
+                            density="compact"
+                            variant="solo-filled"
+                            :rounded="16"
+                        />
+                      </template>
+                    </BaseInput>
+                  </v-form>
+                  <v-form v-else-if="section === 'teams'" class="pa-4">
+                    <BaseInput label="Mínimo de equipos">
+                      <template #input>
+                        <v-text-field
+                            v-model.number="configuration.min_teams"
+                            type="number"
+                            density="compact"
+                            variant="solo-filled"
+                            :rounded="16"
+                        />
+                      </template>
+                    </BaseInput>
+                    <BaseInput label="Máximo de equipos">
+                      <template #input>
+                        <v-text-field
+                            v-model.number="configuration.max_teams"
+                            type="number"
+                            density="compact"
+                            variant="solo-filled"
+                            :rounded="16"
+                        />
+                      </template>
+                    </BaseInput>
+                    <BaseInput label="Mínimo de jugadores por equipo">
+                      <template #input>
+                        <v-text-field
+                            v-model.number="configuration.min_players_per_team"
+                            type="number"
+                            density="compact"
+                            variant="solo-filled"
+                            :rounded="16"
+                        />
+                      </template>
+                    </BaseInput>
+                    <BaseInput label="Máximo de jugadores por equipo">
+                      <template #input>
+                        <v-text-field
+                            v-model.number="configuration.max_players_per_team"
+                            type="number"
+                            density="compact"
+                            variant="solo-filled"
+                            :rounded="16"
+                        />
+                      </template>
+                    </BaseInput>
+                    <BaseInput label="Máximo de equipos por jugador">
+                      <template #input>
+                        <v-text-field
+                            v-model.number="configuration.max_teams_per_player"
+                            type="number"
+                            density="compact"
+                            variant="solo-filled"
+                            :rounded="16"
+                        />
+                      </template>
+                    </BaseInput>
+                  </v-form>
+                  <v-form v-else-if="section === 'verification'" class="pa-4">
+                    <BaseInput label="Bloqueo por tiempo (días)">
+                      <template #input>
+                        <v-text-field
+                            v-model.number="configuration.player_lock_duration_days"
+                            type="number"
+                            density="compact"
+                            variant="solo-filled"
+                            :rounded="16"
+                        />
+                      </template>
+                    </BaseInput>
+                    <BaseInput label="Verificación de jugador">
+                      <template #input>
+                        <v-switch density="compact" v-model="configuration.requires_player_verification" color="primary"/>
+                      </template>
+                    </BaseInput>
+                    <BaseInput label="Método de verificación">
+                      <template #input>
+                        <v-select
+                            v-model="configuration.player_verification_method"
+                            :items="verificationOptions"
+                            item-title="title"
+                            item-value="value"
+                            density="compact"
+                            variant="solo-filled"
+                            :rounded="16"
+                            :disabled="!configuration.requires_player_verification"
+                            placeholder="Selecciona un método"
+                        />
+                      </template>
+                    </BaseInput>
+                  </v-form>
+                  <v-form v-else class="pa-4">
+                    <BaseInput label="Ida y vuelta">
+                      <template #input>
+                        <v-switch density="compact" v-model="configuration.round_trip" color="primary"  />
+                      </template>
+                    </BaseInput>
+                    <BaseInput label="Fase de grupos">
+                      <template #input>
+                        <v-switch density="compact" v-model="configuration.group_stage" color="primary"  />
+                      </template>
+                    </BaseInput>
+                    <BaseInput label="Eliminación ida y vuelta">
+                      <template #input>
+                        <v-switch density="compact" v-model="configuration.elimination_round_trip" color="primary"  />
+                      </template>
+                    </BaseInput>
+                  </v-form>
+                </TransitionFade>
               </div>
             </div>
           </div>
@@ -376,3 +367,18 @@ const { toast } = useToast()
     </v-main>
   </v-layout>
 </template>
+
+<style scoped>
+  .tournaments-settings__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .tournaments-settings__selector {
+    flex: 0 1 320px;
+    min-width: 240px;
+  }
+</style>
