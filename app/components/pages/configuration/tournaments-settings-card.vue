@@ -15,7 +15,6 @@ const { toast } = useToast()
   const saving = ref(false)
   const section = ref('base')
 
-  const verificationOptions = [{ title: 'CURP', value: 'curp' }]
   const sections = [
     { value: 'base', label: 'Reglas base' },
     { value: 'teams', label: 'Equipos y jugadores' },
@@ -36,7 +35,7 @@ const { toast } = useToast()
     max_teams_per_player: null,
     player_lock_duration_days: null,
     requires_player_verification: false,
-    player_verification_method: 'curp',
+    player_verification_method: null,
     game_time: null,
     round_trip: false,
     group_stage: false,
@@ -72,7 +71,7 @@ const { toast } = useToast()
         ...response,
         tournament_id: tournamentId,
         requires_player_verification: response.requires_player_verification ?? false,
-        player_verification_method: response.player_verification_method ?? 'curp',
+        player_verification_method: response.player_verification_method ?? null,
         round_trip: response.round_trip ?? false,
         group_stage: response.group_stage ?? false,
         elimination_round_trip: response.elimination_round_trip ?? false,
@@ -95,7 +94,7 @@ const { toast } = useToast()
     try {
       const payload: TournamentConfigurationSettings = {
         ...configuration.value,
-        player_verification_method: configuration.value.requires_player_verification ? 'curp' : null,
+        player_verification_method: null,
       }
       configuration.value = await settingsAPI.updateTournamentConfiguration(selectedTournamentId.value, payload)
       toast({
@@ -122,14 +121,6 @@ const { toast } = useToast()
     }
     fetchConfiguration(value)
   })
-
-  watch(
-    () => configuration.value?.requires_player_verification,
-    (value) => {
-      if (!configuration.value) return
-      configuration.value.player_verification_method = value ? 'curp' : null
-    }
-  )
 
   onMounted(async () => {
     await useCategoryStore().fetchFormats()
@@ -309,35 +300,9 @@ const { toast } = useToast()
                     </BaseInput>
                   </v-form>
                   <v-form v-else-if="section === 'verification'" class="pa-4">
-                    <BaseInput label="Bloqueo por tiempo (días)">
-                      <template #input>
-                        <v-text-field
-                            v-model.number="configuration.player_lock_duration_days"
-                            type="number"
-                            density="compact"
-                            variant="solo-filled"
-                            :rounded="16"
-                        />
-                      </template>
-                    </BaseInput>
                     <BaseInput label="Verificación de jugador">
                       <template #input>
                         <v-switch density="compact" v-model="configuration.requires_player_verification" color="primary"/>
-                      </template>
-                    </BaseInput>
-                    <BaseInput label="Método de verificación">
-                      <template #input>
-                        <v-select
-                            v-model="configuration.player_verification_method"
-                            :items="verificationOptions"
-                            item-title="title"
-                            item-value="value"
-                            density="compact"
-                            variant="solo-filled"
-                            :rounded="16"
-                            :disabled="!configuration.requires_player_verification"
-                            placeholder="Selecciona un método"
-                        />
                       </template>
                     </BaseInput>
                   </v-form>

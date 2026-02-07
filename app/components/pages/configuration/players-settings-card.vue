@@ -8,9 +8,20 @@ const { toast } = useToast()
   const saving = ref(false)
   const settings = ref<PlayerVerificationSettings>({
     requires_player_verification: false,
-    player_verification_method: 'curp',
+    player_verification_methods: [],
+    player_lock_duration_days: null,
   })
-  const verificationOptions = [{ title: 'CURP', value: 'curp' }]
+  const verificationOptions = [
+    { title: 'CURP', value: 'curp' },
+    { title: 'INE', value: 'ine' },
+    { title: 'Pasaporte', value: 'passport' },
+    { title: 'Otro', value: 'other' },
+  ]
+
+  const normalizeMethods = (value?: PlayerVerificationSettings['player_verification_methods'] | null) => {
+    if (Array.isArray(value)) return value
+    return []
+  }
 
   const fetchSettings = async () => {
     loading.value = true
@@ -18,7 +29,10 @@ const { toast } = useToast()
       const response = await settingsAPI.getPlayerVerificationSettings()
       settings.value = {
         requires_player_verification: response.requires_player_verification ?? false,
-        player_verification_method: response.player_verification_method ?? 'curp',
+        player_verification_methods: normalizeMethods(
+          response.player_verification_methods ?? (response.player_verification_method ? [response.player_verification_method] : [])
+        ),
+        player_lock_duration_days: response.player_lock_duration_days ?? null,
       }
     } catch (error: any) {
       toast({
@@ -36,7 +50,10 @@ const { toast } = useToast()
     try {
       const payload: PlayerVerificationSettings = {
         requires_player_verification: settings.value.requires_player_verification,
-        player_verification_method: settings.value.requires_player_verification ? 'curp' : null,
+        player_verification_methods: settings.value.requires_player_verification
+          ? normalizeMethods(settings.value.player_verification_methods)
+          : [],
+        player_lock_duration_days: settings.value.player_lock_duration_days ?? null,
       }
       await settingsAPI.updatePlayerVerificationSettings(payload)
       toast({
@@ -59,7 +76,9 @@ const { toast } = useToast()
   watch(
     () => settings.value.requires_player_verification,
     (value) => {
-      settings.value.player_verification_method = value ? 'curp' : null
+      if (!value) {
+        settings.value.player_verification_methods = []
+      }
     }
   )
 </script>
@@ -69,7 +88,7 @@ const { toast } = useToast()
     <v-card-item class="secondary-card-item">
       <v-card-text class="secondary-card__title">Validación de jugadores</v-card-text>
       <v-card-subtitle class="secondary-card__subtitle">
-        Configura si la liga requiere verificación con CURP.
+        Configura si la liga requiere verificación y los métodos permitidos.
       </v-card-subtitle>
     </v-card-item>
     <v-card-text class="pt-6">
@@ -81,17 +100,31 @@ const { toast } = useToast()
           label="Requerir validación de jugador"
           inset
         />
-        <BaseInput label="Método de validación" sublabel="Disponible: CURP">
+        <BaseInput label="Métodos de validación" sublabel="Selecciona los métodos permitidos">
           <template #input>
             <v-select
-              v-model="settings.player_verification_method"
+              v-model="settings.player_verification_methods"
               :items="verificationOptions"
               item-title="title"
               item-value="value"
+              multiple
+              chips
               density="compact"
               variant="outlined"
               :disabled="!settings.requires_player_verification"
-              placeholder="Selecciona un método"
+              placeholder="Selecciona uno o varios métodos"
+            />
+          </template>
+        </BaseInput>
+        <BaseInput label="Bloqueo de jugador (días)" sublabel="Tiempo de bloqueo para cambiar de equipo">
+          <template #input>
+            <v-text-field
+              v-model.number="settings.player_lock_duration_days"
+              type="number"
+              density="compact"
+              variant="outlined"
+              min="0"
+              placeholder="Ej. 7"
             />
           </template>
         </BaseInput>

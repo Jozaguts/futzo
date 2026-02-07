@@ -2,7 +2,9 @@ export type PlayerVerificationMethod = 'none' | 'curp' | 'ine' | 'passport' | 'o
 
 export type PlayerVerificationSettings = {
   requires_player_verification: boolean;
-  player_verification_method: PlayerVerificationMethod | null;
+  player_verification_methods?: PlayerVerificationMethod[] | null;
+  player_verification_method?: PlayerVerificationMethod | null;
+  player_lock_duration_days?: number | null;
 };
 
 export type PlayerTransferLockSetting = {
