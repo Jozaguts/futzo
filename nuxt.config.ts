@@ -190,6 +190,9 @@ export default defineNuxtConfig({
       googleMapsAPIKey: process.env.NUXT_GOOGLE_MAPS_API_KEY,
       googleMapId: process.env.NUXT_GOOGLE_MAP_ID,
       baseUrl: process.env.NUXT_PUBLIC_URL,
+      metapixel: {
+        default: { id: process.env.NUXT_PUBLIC_META_PIXEL_ID || '543648128091975', pageView: '/' },
+      }
     },
   },
   googleFonts: {

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-  import CardCTA from '~/components/pages/CardCTA.vue'
-  import type { PlanCard as PlanCardProps } from '~/types'
+import CardCTA from '~/components/pages/CardCTA.vue'
+import type {PlanCard as PlanCardProps} from '~/types'
 
-  const { isAnnuallyPrice } = useProductPrices()
+const { isAnnuallyPrice } = useProductPrices()
 
   const {
     title,
@@ -12,7 +12,7 @@
     iso_code,
     annually_price, // mensual prorrateado cuando es anual
     annual_saving, // ahorro total anual (en la moneda)
-    cta = 'Empieza gratis 7 días',
+    cta = 'Empieza gratis',
     url,
     features = [],
     // Nuevos opcionales (no rompen compatibilidad):

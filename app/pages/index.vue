@@ -8,7 +8,6 @@ definePageMeta({
     excluded: true,
   },
 })
-
 useHead({
   script: [
     {
@@ -52,10 +51,34 @@ useHead({
   const { isAuthenticated } = useSanctumAuth()
   const textButton = computed(() => (isAuthenticated?.value ? 'Ir al Dashboard' : 'Comenzar'))
   const mainRoute = computed(() => (isAuthenticated?.value ? '/dashboard' : '/login'))
+const {$fbq} = useNuxtApp()
+const pricingRef = ref(null)
+const pricingRefIsVisible = ref(false)
   const trackCta = (location: 'hero' | 'nav') => {
     if (isAuthenticated?.value) return
     gtag('event', 'sign_up', { method: location, event_label: 'Comenzar' })
   }
+const {stop} = useIntersectionObserver(
+    pricingRef,
+    ([{isIntersecting}], observerElement) => {
+      pricingRefIsVisible.value = isIntersecting
+    },
+)
+const unWatch = watch(() => pricingRefIsVisible.value, (value) => {
+  if (value) {
+    $fbq('track', 'ViewContent', {
+      content_name: 'pricing',
+      content_category: 'plans',
+      content_type: 'pricing'
+    })
+    stop()
+    unWatch()
+  }
+})
+onMounted(()=>{
+  window.onload = function() { window.Calendly?.initBadgeWidget({ url: 'https://calendly.com/futzo', text: 'Agenda tu demo con Futzo ⚽', color: '#9155FD', textColor: '#ffffff', branding: false }); }
+
+})
 </script>
 <template>
   <PageLayout styles="main pa-0">
@@ -592,7 +615,7 @@ useHead({
           </div>
         </div>
       </section>
-      <section id="pricing" class="section price-plan-area overflow-hidden bg-white ptb_100">
+      <section ref="pricingRef" id="pricing" class="section price-plan-area overflow-hidden bg-white ptb_100">
         <div v-if="!loading" class="container">
           <div class="row justify-content-center">
             <div class="col-12 col-md-10 col-lg-7">
@@ -648,7 +671,7 @@ useHead({
                     :iso_code="kickoffPlan?.currency?.iso_code"
                     :annually_price="kickoffPlan?.annually_price"
                     :annual_saving="kickoffPlan?.annual_saving"
-                    cta="Empieza gratis 7 días"
+                    cta="Empieza gratis"
                     :url="kickoffPlan?.url"
                     :features="[
                         'Torneos ilimitados',
@@ -672,7 +695,7 @@ useHead({
                     :iso_code="proPlayPlan?.currency?.iso_code"
                     :annually_price="proPlayPlan?.annually_price"
                     :annual_saving="proPlayPlan?.annual_saving"
-                    cta="Empieza gratis 7 días"
+                    cta="Empieza gratis"
                     :url="proPlayPlan?.url"
                     :features="[
                       'Incluye Kickoff',
@@ -698,7 +721,7 @@ useHead({
                     :iso_code="eliteLeaguePlan?.currency?.iso_code"
                     :annually_price="eliteLeaguePlan?.annually_price"
                     :annual_saving="eliteLeaguePlan?.annual_saving"
-                    cta="Empieza gratis 7 días"
+                    cta="Empieza gratis"
                     :url="eliteLeaguePlan?.url"
                     :features="[
                       'Incluye ProPlay',

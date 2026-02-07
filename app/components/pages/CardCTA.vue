@@ -35,7 +35,7 @@ const clickHandler = () => {
 
 <template>
   <div>
-    <button type="button" class="btn mt-4" @click="clickHandler">{{cta}} </button>
+    <button type="button" class="btn bg-primary px-4 py-2 rounded-lg mt-4" @click="clickHandler">{{cta}} </button>
     <p class="trial-note mt-3" aria-live="polite">
       No se te cobrará durante la prueba.
       Elige tu plan al finalizar los 7 días.
