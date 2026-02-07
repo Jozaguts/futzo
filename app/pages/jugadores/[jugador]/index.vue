@@ -1,10 +1,15 @@
 <script lang="ts" setup>
-  import dayjs from 'dayjs'
-  import AppBar from '~/components/layout/AppBar.vue'
-  import PageLayout from '~/components/shared/PageLayout.vue'
-  import type { Player, PlayerVerificationStatus } from '~/models/Player'
-  import type { Team } from '~/models/Team'
-  import type { Tournament } from '~/models/tournament'
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+import 'dayjs/locale/es'
+import AppBar from '~/components/layout/AppBar.vue'
+import PageLayout from '~/components/shared/PageLayout.vue'
+import type {Player, PlayerVerificationStatus} from '~/models/Player'
+import type {Team} from '~/models/Team'
+import type {Tournament} from '~/models/tournament'
+
+dayjs.extend(customParseFormat)
+  dayjs.locale('es')
 
   definePageMeta({
     middleware: ['sanctum:auth'],
@@ -150,10 +155,16 @@
     return parsed.isValid() ? parsed.format('DD MMM YYYY') : 'Sin registro'
   }
 
+  const parseLockDate = (value?: string | null) => {
+    if (!value) return null
+    const parsed = dayjs(value, ['YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD', 'DD [de] MMMM YYYY', 'DD [de] MMMM YYYY HH:mm'], 'es', true)
+    return parsed.isValid() ? parsed : null
+  }
+
   const formatDateTime = (value?: string | null) => {
     if (!value) return 'Sin registro'
-    const parsed = dayjs(value)
-    return parsed.isValid() ? parsed.format('DD MMM YYYY HH:mm') : 'Sin registro'
+    const parsed = parseLockDate(value)
+    return parsed ? parsed.format('DD [de] MMMM YYYY') : value
   }
 
   const playerAge = computed(() => {
@@ -256,7 +267,9 @@
   const isLockActive = computed(() => {
     if (!lockExpiresAt.value) return false
     if (lockReleasedAt.value) return false
-    return dayjs(lockExpiresAt.value).isAfter(dayjs())
+    const parsed = parseLockDate(lockExpiresAt.value)
+    if (!parsed) return true
+    return parsed.isAfter(dayjs())
   })
   const lockStatusLabel = computed(() => {
     if (isLockActive.value) {

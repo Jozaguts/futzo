@@ -18,6 +18,12 @@ definePageMeta({
     middleware: ['sanctum:auth'],
   })
   const { homeTeam, nextGames, lastGames, formations, homeFormation, homePlayers } = storeToRefs(useTeamStore())
+  const teamPlayers = computed(() => {
+    const value = homePlayers.value as any
+    if (Array.isArray(value)) return value
+    if (Array.isArray(value?.data)) return value.data
+    return []
+  })
 
   watchEffect(async () => {
     homeTeam.value = (await useTeamStore().getTeam(useRoute().params?.equipo as string)) as Team
@@ -62,10 +68,11 @@ definePageMeta({
     <template #default>
       <div class="teams-team-container">
         <div class="teams-team-column teams-team-column--left">
-          <div class="primary-zone pa-0">
+          <div class="primary-zone pa-4 futzo-rounded">
             <LinesupContainer
               :show-complete="false"
               :isReport="false"
+              fixed-height-desktop="400px"
               :homeTeam="homeTeam"
               :homeFormation="homeFormation"
               :formations="formations"
@@ -74,19 +81,23 @@ definePageMeta({
               @leaving="leaving"
             />
           </div>
-          <div class="secondary-zone">
+          <div class="secondary-zone futzo-rounded">
             <NextGames :nextGames />
           </div>
         </div>
-        <div class="teams-team-column teams-team-column--right">
+        <div class="teams-team-column futzo-rounded teams-team-column--right">
           <div class="right-up-zone">
-            <PlayersList title="Jugadores" v-if="homePlayers.length > 0">
-              <template #table-body>
-                <tr v-for="player in homePlayers" :key="player.player_id">
-                  <td>
-                    <p>{{ player.number }} {{ player.name }}</p>
-                  </td>
-                </tr>
+            <PlayersList title="Jugadores" v-if="teamPlayers.length > 0">
+              <template #content>
+                <table class="w-100">
+                  <tbody>
+                    <tr v-for="player in teamPlayers" :key="player.player_id">
+                      <td>
+                        <p>{{ player.number ? `${player.number} ` : '' }}{{ player.name }}</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </template>
             </PlayersList>
             <v-card height="100%" v-else>
@@ -129,6 +140,6 @@ definePageMeta({
     </template>
   </PageLayout>
 </template>
-<style lang="sass">
-  @use "~/assets/scss/pages/teams-team.sass"
+<style lang="sass" scoped>
+  @use "~/assets/scss/pages/teams-team-equipo.sass"
 </style>

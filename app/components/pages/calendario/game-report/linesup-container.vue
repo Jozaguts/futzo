@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-  import PlayerDot from '~/components/pages/calendario/game-report/player-dot.vue'
-  import type { TeamFormation } from '~/models/Game'
-  import type { Formation, Team } from '~/models/Team'
-  import type { TeamLineupAvailablePlayers } from '~/models/Player'
-  import { useDisplay } from 'vuetify'
+import PlayerDot from '~/components/pages/calendario/game-report/player-dot.vue'
+import type {TeamFormation} from '~/models/Game'
+import type {Formation, Team} from '~/models/Team'
+import type {TeamLineupAvailablePlayers} from '~/models/Player'
+import {useDisplay} from 'vuetify'
 
-  const {
+const {
     showComplete,
     isReport,
     homeTeam,
@@ -15,6 +15,7 @@
     homePlayers,
     awayPlayers,
     formations,
+    fixedHeightDesktop,
   } = defineProps({
     showComplete: Boolean,
     isReport: Boolean,
@@ -41,6 +42,10 @@
       type: Array as PropType<TeamLineupAvailablePlayers[]>,
       default: () => [] as TeamLineupAvailablePlayers[],
     },
+    fixedHeightDesktop: {
+      type: String,
+      default: null,
+    },
   })
   const emits = defineEmits(['updateFormationType', 'leaving', 'reloadPlayers'])
   const { mobile } = useDisplay()
@@ -51,6 +56,9 @@
     }
   })
   const linesupHeightContainer = computed(() => {
+    if (fixedHeightDesktop && !mobile.value) {
+      return fixedHeightDesktop
+    }
     return showComplete ? '880px' : mobile.value ? '300px' : '100%'
   })
   const linesupTeamHeightContainerStyle = computed(() => {
