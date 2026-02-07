@@ -1,4 +1,4 @@
-import {defineStore} from 'pinia';
+import {defineStore, skipHydrate} from 'pinia';
 import type {
   All,
   Field,
@@ -286,7 +286,7 @@ export const useLocationStore = defineStore('locationStore', () => {
     locationToDelete,
     pagination,
     formSteps,
-    tourSteps,
+    tourSteps: skipHydrate(tourSteps),
     stepsCompleted,
     isAllStepsCompleted,
     deleteLocation,

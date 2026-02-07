@@ -1,5 +1,5 @@
-import {defineStore} from 'pinia';
-import type { FormSteps, Player, PlayerStoreRequest, TeamLineupAvailablePlayers } from '~/models/Player';
+import {defineStore, skipHydrate} from 'pinia';
+import type {FormSteps, Player, PlayerStoreRequest, TeamLineupAvailablePlayers} from '~/models/Player';
 import prepareForm, {parseBlobResponse} from '~/utils/prepareFormData';
 import type {IPagination} from '~/interfaces';
 import type {Team} from '~/models/Team';
@@ -391,7 +391,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
     isImporting,
     showAssignTeam,
     player,
-    tourSteps,
+    tourSteps: skipHydrate(tourSteps),
     $storeReset,
     updatePlayer,
     createPlayer,

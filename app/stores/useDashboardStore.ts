@@ -1,4 +1,4 @@
-import {defineStore} from 'pinia';
+import {defineStore, skipHydrate} from 'pinia';
 import type {IStatStage, ITeamStats, Stats} from '~/interfaces';
 import type {NextGames} from '~/models/Game';
 import type {TourStep} from "#nuxt-tour/props";
@@ -77,7 +77,7 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
     teamStats,
     range,
     nextGames,
-    tourSteps,
+    tourSteps: skipHydrate(tourSteps),
     registerTourRef,
     startTour,
     resetTour,

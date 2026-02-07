@@ -1,4 +1,4 @@
-import {defineStore} from 'pinia';
+import {defineStore, skipHydrate} from 'pinia';
 import type {Formation, FormSteps, HomePreferences, Team, TeamStoreRequest} from '~/models/Team';
 import type {IPagination} from '~/interfaces';
 import * as teamAPI from '~/http/api/team';
@@ -406,7 +406,7 @@ export const useTeamStore = defineStore('teamStore', () => {
     homePlayers,
     awayPlayers,
     lastGames,
-    tourSteps,
+    tourSteps: skipHydrate(tourSteps),
     importTeamsHandler,
     noTeams,
     $storeReset,
