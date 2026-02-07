@@ -280,7 +280,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
     }
   };
 
-  const uploadVerification = async (playerId: number, document: File, photo: File) => {
+  const uploadVerification = async (playerId: number, document: File, photo?: File | null) => {
     try {
       await playerAPI.uploadPlayerVerification(playerId, document, photo);
       toast({

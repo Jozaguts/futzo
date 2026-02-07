@@ -25,11 +25,13 @@ export const releasePlayer = async (playerId: number) => {
   });
 };
 
-export const uploadPlayerVerification = async (playerId: number, document: File, photo: File) => {
+export const uploadPlayerVerification = async (playerId: number, document: File, photo?: File | null) => {
   const client = useSanctumClient();
   const formData = new FormData();
   formData.append('document', document);
-  formData.append('photo', photo);
+  if (photo) {
+    formData.append('photo', photo);
+  }
   return await client<{ message: string }>(`/api/v1/admin/players/${playerId}/verification`, {
     method: 'POST',
     body: formData,

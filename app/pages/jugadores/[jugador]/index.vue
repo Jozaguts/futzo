@@ -54,6 +54,10 @@
       verified_at?: string | null
       verified_by?: number | null
       notes?: string | null
+      documents?: {
+        document_url?: string | null
+        photo_url?: string | null
+      } | null
     } | null
     team_lock?: {
       expires_at?: string | null
@@ -244,6 +248,8 @@
     }
   })
   const verificationNotes = computed(() => currentPlayer.value?.verification?.notes ?? '')
+  const verificationDocumentUrl = computed(() => currentPlayer.value?.verification?.documents?.document_url ?? null)
+  const verificationPhotoUrl = computed(() => currentPlayer.value?.verification?.documents?.photo_url ?? null)
 
   const lockExpiresAt = computed(() => currentPlayer.value?.team_lock?.expires_at ?? null)
   const lockReleasedAt = computed(() => currentPlayer.value?.team_lock?.released_at ?? null)
@@ -277,10 +283,10 @@
       : verificationDocument.value
     const photoFile = Array.isArray(verificationPhoto.value) ? verificationPhoto.value[0] : verificationPhoto.value
 
-    if (!currentPlayer.value?.id || !documentFile || !photoFile) return
+    if (!currentPlayer.value?.id || !documentFile) return
     isUploadingVerification.value = true
     try {
-      await playerStore.uploadVerification(currentPlayer.value.id, documentFile, photoFile)
+      await playerStore.uploadVerification(currentPlayer.value.id, documentFile, photoFile ?? null)
       verificationDocument.value = null
       verificationPhoto.value = null
       await fetchPlayer()
@@ -809,37 +815,48 @@
                   <p>Notas</p>
                   <span>{{ verificationNotes }}</span>
                 </div>
+                <div class="player-stats__item" v-if="verificationDocumentUrl">
+                  <p>Documento</p>
+                  <a :href="verificationDocumentUrl" target="_blank" rel="noopener">Ver documento</a>
+                </div>
+                <div class="player-stats__item" v-if="verificationPhotoUrl">
+                  <p>Foto</p>
+                  <a :href="verificationPhotoUrl" target="_blank" rel="noopener">Ver foto</a>
+                </div>
               </div>
               <v-divider class="my-4" />
               <div class="d-flex flex-column ga-3">
-                <v-file-input
-                  v-model="verificationDocument"
-                  density="comfortable"
-                  label="Documento oficial"
-                  variant="outlined"
-                  accept=".jpg,.jpeg,.png,.pdf"
-                />
-                <v-file-input
-                  v-model="verificationPhoto"
-                  density="comfortable"
-                  label="Foto del jugador"
-                  variant="outlined"
-                  accept=".jpg,.jpeg,.png"
-                />
-                <v-btn
-                  color="primary"
-                  variant="elevated"
-                  :loading="isUploadingVerification"
-                  :disabled="!verificationDocument || !verificationPhoto"
-                  @click="submitVerification"
-                >
-                  Subir documentos
-                </v-btn>
+                <template v-if="!verificationDocumentUrl">
+                  <v-file-input
+                    v-model="verificationDocument"
+                    density="comfortable"
+                    label="Documento oficial"
+                    variant="outlined"
+                    accept=".jpg,.jpeg,.png,.pdf"
+                  />
+                  <v-file-input
+                    v-model="verificationPhoto"
+                    density="comfortable"
+                    label="Foto del jugador (opcional)"
+                    variant="outlined"
+                    accept=".jpg,.jpeg,.png"
+                  />
+                  <v-btn
+                    color="primary"
+                    variant="elevated"
+                    :loading="isUploadingVerification"
+                    :disabled="!verificationDocument"
+                    @click="submitVerification"
+                  >
+                    Subir documentos
+                  </v-btn>
+                </template>
                 <div class="d-flex ga-2">
                   <v-btn
                     color="success"
                     variant="tonal"
                     :loading="isApprovingVerification"
+                    :disabled="!verificationDocumentUrl"
                     @click="approveVerificationHandler"
                   >
                     Aprobar
