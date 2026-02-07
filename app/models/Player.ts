@@ -107,6 +107,8 @@ export interface BasicInfoForm {
   category_id?: number;
   curp?: string;
   is_minor?: boolean;
+  identification_method?: import('~/models/settings').PlayerVerificationMethod | null;
+  identification_document?: File | string | null;
 }
 
 export interface DetailsInfoForm {
