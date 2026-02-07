@@ -153,12 +153,23 @@ const leagueLocations = ref<Field[]>([])
     //@ts-ignore
     return useRoute().name === 'torneos-torneo-equipos-inscripcion'
   })
+  const isPublicRegistration = computed(() => isInscription.value || isPreInscription.value)
   onMounted(async () => {
-    try {
-      const locations = await getLeagueLocations()
-      leagueLocations.value = locations ?? []
-    } catch (error) {
+    if (!isPublicRegistration.value) {
+      try {
+        const locations = await getLeagueLocations()
+        leagueLocations.value = locations ?? []
+      } catch (error) {
+        leagueLocations.value = []
+      }
+    } else {
       leagueLocations.value = []
+      setValues({
+        ...values.value,
+        home_location_id: null,
+        home_day_of_week: null,
+        home_start_time: null,
+      })
     }
     //@ts-ignore
     if (useRoute().name === 'torneos-torneo-inscripcion') {
@@ -220,61 +231,63 @@ const leagueLocations = ref<Field[]>([])
         <DragDropImage v-model="image" :error-messages="image_props" />
       </template>
     </BaseInput>
-    <BaseInput id="equipos-team-location" label="Sede" sublabel="Opcional">
-      <template #input>
-        <v-select
-          v-model="home_location_id"
-          :items="leagueLocations"
-          item-title="name"
-          item-value="id"
-          clearable
-          outlined
-          density="compact"
-          v-bind="home_location_id_props"
-          placeholder="Selecciona una sede"
-        ></v-select>
-      </template>
-    </BaseInput>
-    <BaseInput id="equipos-team-day" label="Día de juego" sublabel="Opcional">
-      <template #input>
-        <v-select
-          v-model="home_day_of_week"
-          :items="dayOptions"
-          item-title="label"
-          item-value="value"
-          clearable
-          outlined
-          density="compact"
-          :disabled="!isLocationSelected"
-          v-bind="home_day_of_week_props"
-          placeholder="Selecciona un día"
-        ></v-select>
-      </template>
-    </BaseInput>
-    <BaseInput id="equipos-team-time" label="Horario de juego" sublabel="Opcional">
-      <template #input>
-        <VueDatePicker
-          v-model="homeStartTimeProxy"
-          time-picker
-          :is-24="true"
-          :disabled="!isLocationSelected"
-          :minutes-increment="5"
-        >
-          <template #dp-input="{ value }">
-            <v-text-field
-              :value="value"
-              placeholder="HH:MM"
-              density="compact"
-              variant="outlined"
-              :disabled="!isLocationSelected"
-              :error-messages="timeFieldErrors"
-              readonly
-            ></v-text-field>
-          </template>
-        </VueDatePicker>
-        <input type="hidden" v-model="home_start_time" v-bind="home_start_time_props" />
-      </template>
-    </BaseInput>
+    <template v-if="!isPublicRegistration">
+      <BaseInput id="equipos-team-location" label="Sede" sublabel="Opcional">
+        <template #input>
+          <v-select
+            v-model="home_location_id"
+            :items="leagueLocations"
+            item-title="name"
+            item-value="id"
+            clearable
+            outlined
+            density="compact"
+            v-bind="home_location_id_props"
+            placeholder="Selecciona una sede"
+          ></v-select>
+        </template>
+      </BaseInput>
+      <BaseInput id="equipos-team-day" label="Día de juego" sublabel="Opcional">
+        <template #input>
+          <v-select
+            v-model="home_day_of_week"
+            :items="dayOptions"
+            item-title="label"
+            item-value="value"
+            clearable
+            outlined
+            density="compact"
+            :disabled="!isLocationSelected"
+            v-bind="home_day_of_week_props"
+            placeholder="Selecciona un día"
+          ></v-select>
+        </template>
+      </BaseInput>
+      <BaseInput id="equipos-team-time" label="Horario de juego" sublabel="Opcional">
+        <template #input>
+          <VueDatePicker
+            v-model="homeStartTimeProxy"
+            time-picker
+            :is-24="true"
+            :disabled="!isLocationSelected"
+            :minutes-increment="5"
+          >
+            <template #dp-input="{ value }">
+              <v-text-field
+                :value="value"
+                placeholder="HH:MM"
+                density="compact"
+                variant="outlined"
+                :disabled="!isLocationSelected"
+                :error-messages="timeFieldErrors"
+                readonly
+              ></v-text-field>
+            </template>
+          </VueDatePicker>
+          <input type="hidden" v-model="home_start_time" v-bind="home_start_time_props" />
+        </template>
+      </BaseInput>
+    </template>
     <BaseInput id="equipos-team-colors" label="Colores del equipo" sublabel="Opcional">
       <template #input>
         <ColorsComponent v-model:model-value="colors" :errors="colors_props" />
