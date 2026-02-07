@@ -7,32 +7,30 @@
   })
 </script>
 <template>
-  <div class="dashboard-game-container">
-    <div class="dashboard-teams">
-      <div class="dashboard-team-local">
-        <img :src="game.home_team.image" alt="team logo" class="dashboard-logo" />
-        <span class="dashboard-team_name">{{ game.home_team.name }}</span>
+  <div class="next-game-card">
+    <div class="next-game-card__time">
+      <span class="next-game-card__date">{{ game.match_date }}</span>
+      <span class="next-game-card__hour">{{ game.match_time }}</span>
+    </div>
+    <div class="next-game-card__teams">
+      <div class="next-game-card__team">
+        <img :src="game.home_team.image" alt="team logo" class="next-game-card__logo" />
+        <span class="next-game-card__team-name">{{ game.home_team.name }}</span>
       </div>
-      <div class="dashboard-vs-container">
-        <div class="dashboard-vs">vs</div>
-      </div>
-      <div class="dashboard-team-away">
-        <img :src="game.away_team.image" alt="team logo" class="dashboard-logo" />
-        <span class="dashboard-team_name">{{ game.away_team.name }}</span>
+      <span class="next-game-card__vs">vs</span>
+      <div class="next-game-card__team">
+        <img :src="game.away_team.image" alt="team logo" class="next-game-card__logo" />
+        <span class="next-game-card__team-name">{{ game.away_team.name }}</span>
       </div>
     </div>
-    <div class="dashboard-data">
-      <span class="dashboard-date">{{ game.match_date }}</span>
-      <span class="dashboard-hour">{{ game.match_time }}</span>
-      <span class="dashboard-field">{{ game.location.name }}</span>
-    </div>
-    <div class="dashboard-btn-container">
-      <v-btn variant="text" :ripple="false" to="/torneos">
-        <span class="dashboard-btn-text"> Ver detalles</span>
-        <template #append>
-          <Icon name="futzo-icon:arrow-right" />
-        </template>
-      </v-btn>
+    <div class="next-game-card__meta">
+      <div class="next-game-card__field">
+        <v-icon size="14">mdi-map-marker-outline</v-icon>
+        <span>{{ game.location?.name ?? 'Sin sede' }}</span>
+      </div>
+      <v-chip class="next-game-card__chip" size="small" variant="tonal" color="primary">
+        {{ game.tournament?.name ?? 'Torneo' }}
+      </v-chip>
     </div>
   </div>
 </template>

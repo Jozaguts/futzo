@@ -1,20 +1,21 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import path from 'node:path';
 import {defineOrganization} from 'nuxt-schema-org/schema';
 import defaults from './config/vuetify/defaults';
 import theme from './config/vuetify/theme';
+
+const isTest = process.env.NODE_ENV === 'test' || Boolean(process.env.VITEST) || process.env.NUXT_TEST === '1';
 
 // @ts-ignore
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: false },
-  nitro: {
-    externals: {
-      inline: ['vue', '@vue/server-renderer', 'unhead', '@unhead/schema-org'],
+  // nitro: {
+    // externals: {
+      // inline: ['vue', '@vue/server-renderer', 'unhead', '@unhead/schema-org'],
       // alternativa si no quieres inline:
       // trace: ['vue', '@vue/server-renderer'],
-    },
-  },
+    // },
+  // },
   app: {
     head: {
       meta: [
@@ -44,9 +45,9 @@ export default defineNuxtConfig({
   features: {
     inlineStyles: false,
   },
-  css: ['@mdi/font/css/materialdesignicons.css', 'vuetify/styles', '~/assets/scss/main.scss'],
+  css: ['~/assets/scss/main.scss'],
   build: {
-    transpile: ['vuetify', '@vuepic/vue-datepicker', 'vue-sonner', 'v-phone-input'],
+    transpile: ['@vuepic/vue-datepicker', 'vue-sonner', 'v-phone-input'],
   },
   modules: [
     'vuetify-nuxt-module',
@@ -64,7 +65,7 @@ export default defineNuxtConfig({
     'vue-sonner/nuxt',
     'nuxt-svgo',
     '@nuxt/image',
-    '@nuxt/test-utils/module',
+    ...(isTest ? ['@nuxt/test-utils/module'] : []),
     '@unlok-co/nuxt-stripe',
     'nuxt-tour',
     // 'nuxt-umami',
@@ -72,7 +73,7 @@ export default defineNuxtConfig({
     '@nuxtjs/sitemap',
     'nuxt-schema-org',
     'nuxt-gtag',
-    'nuxt-meta-pixel'
+    // 'nuxt-meta-pixel' // no funciona en nuxt 4
   ],
   gtag: {
     id: 'G-6B315LGN56'
@@ -163,21 +164,25 @@ export default defineNuxtConfig({
       '/verificar/**'
     ],
   },
-  vite: {
-    css: {
-      preprocessorOptions: {
-        // Use modern Sass compiler API (mejor rendimiento y menos edge-cases con PNPM)
-        // @ts-expect-error
-        sass: { api: 'modern-compiler' },
-      },
-    },
-    resolve: {
-      alias: {
-        // Shim to provide named export { autoAnimate } for versions < commit 6d2950b
-        '@formkit/auto-animate$': path.resolve(__dirname, 'app/shims/auto-animate.ts'),
-      },
-    },
-  },
+  // vite: {
+    // css: {
+    //   preprocessorOptions: {
+    //     // Use modern Sass compiler API (mejor rendimiento y menos edge-cases con PNPM)
+    //     // @ts-expect-error
+    //     sass: { api: 'modern-compiler' },
+    //   },
+    // },
+    // optimizeDeps: {
+    //   include: ['brace-expansion', 'minimatch'],
+    //   needsInterop: ['brace-expansion'],
+    // },
+    // resolve: {
+    //   alias: {
+    //     // Shim to provide named export { autoAnimate } for versions < commit 6d2950b
+    //     '@formkit/auto-animate$': path.resolve(__dirname, 'app/shims/auto-animate.ts'),
+    //   },
+    // },
+  // },
   runtimeConfig: {
     public: {
       stripe: {

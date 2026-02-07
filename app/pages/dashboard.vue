@@ -1,182 +1,246 @@
 <script setup lang="ts">
 import AppBar from '~/components/layout/AppBar.vue'
-import AppBarBtn from '~/components/pages/dashboard/app-bar-btn.vue'
-import StatsCard from '~/components/pages/dashboard/stats-card.vue'
-import LastTeamsTable from '~/components/pages/dashboard/last-teams.vue'
 import DashboardNextGames from '~/components/pages/dashboard/dashboard-next-games.vue'
+import MetricCard from '~/components/pages/dashboard/metric-card.vue'
+import ActivityFeed from '~/components/pages/dashboard/activity-feed.vue'
+import TournamentDialog from '~/components/pages/torneos/dialog/index.vue'
+import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
+import PlayersDialog from '~/components/pages/jugadores/dialog/index.vue'
 import NoGames from '~/components/shared/empty-states/NoGames.vue'
 import {useDisplay} from 'vuetify'
-import {useGlobalStore} from '~/stores/useGlobalStore'
+import type {Tournament} from '~/models/tournament'
 
-const { rail } = storeToRefs(useGlobalStore())
 const dashboardStore = useDashboardStore()
 const { teamStats, nextGames, tourSteps } = storeToRefs(dashboardStore)
 const { registerTourRef, startTour, resetTour, recalculateTour } = dashboardStore
 const { setActiveController, clearActiveController } = useTourHub()
 const tourController = { registerTourRef, startTour, resetTour, recalculateTour }
-  definePageMeta({
-    middleware: ['sanctum:auth'],
-  })
-  watchEffect(() => {
-    const route = useRoute()
-    const router = useRouter()
-    if (route.query?.code === 'USER_NOT_VERIFIED') {
-      useToast().toast({
-        type: 'error',
-        msg: 'Correo No Verificado',
-        description: 'Tu correo electrónico no ha sido verificado. Por favor, revisa tu bandeja de entrada.',
-      })
-      router.replace('/')
-    }
-  })
-  onMounted(() => {
-    if (useAuth().isSignUp.value) {
-      useDashboardStore().byRange()
-      useDashboardStore().getNextGames()
-    }
-    setActiveController(tourController)
-  })
-  onBeforeUnmount(() => {
-    clearActiveController(tourController)
-  })
-  const { mobile } = useDisplay()
-  const page = ref(1)
-  const nextGamePage = ref(1)
+const { mobile } = useDisplay()
+const router = useRouter()
+
+const tournamentStore = useTournamentStore()
+const teamStore = useTeamStore()
+const playerStore = usePlayerStore()
+const { tournaments, dialog: tournamentDialog } = storeToRefs(tournamentStore)
+const { dialog: teamDialog } = storeToRefs(teamStore)
+const { dialog: playerDialog } = storeToRefs(playerStore)
+
+const scheduleDialog = ref(false)
+const scheduleLoading = ref(false)
+const selectedTournament = ref<Tournament | null>(null)
+
+type ActivityItem = {
+  id: number | string
+  title: string
+  subtitle?: string
+  time?: string
+  icon?: string
+  tone?: 'purple' | 'green' | 'orange' | 'blue'
+}
+
+const activityItems = ref<ActivityItem[]>([])
+
+const metrics = computed(() => {
+  const { registeredTeams, activePlayers, completedGames } = teamStats.value
+  return [
+    {
+      title: 'Torneos Activos',
+      value: '—',
+      icon: 'futzo-icon:trophy',
+      iconTone: 'purple',
+    },
+    {
+      title: 'Equipos Registrados',
+      value: registeredTeams.total,
+      trendValue: registeredTeams.current,
+      trendLabel: registeredTeams.label,
+      icon: 'futzo-icon:shirt-sharp',
+      iconTone: 'green',
+    },
+    {
+      title: 'Jugadores',
+      value: activePlayers.total,
+      trendValue: activePlayers.current,
+      trendLabel: activePlayers.label,
+      icon: 'futzo-icon:players',
+      iconTone: 'blue',
+    },
+    {
+      title: 'Partidos Esta Semana',
+      value: completedGames.total,
+      trendValue: completedGames.current,
+      trendLabel: completedGames.label,
+      icon: 'futzo-icon:calendar',
+      iconTone: 'orange',
+    },
+  ]
+})
+
+definePageMeta({
+  middleware: ['sanctum:auth'],
+})
+
+watchEffect(() => {
+  const route = useRoute()
+  if (route.query?.code === 'USER_NOT_VERIFIED') {
+    useToast().toast({
+      type: 'error',
+      msg: 'Correo No Verificado',
+      description: 'Tu correo electrónico no ha sido verificado. Por favor, revisa tu bandeja de entrada.',
+    })
+    router.replace('/')
+  }
+})
+
+onMounted(() => {
+  if (useAuth().isSignUp.value) {
+    useDashboardStore().byRange()
+    useDashboardStore().getNextGames()
+  }
+  setActiveController(tourController)
+})
+
+onBeforeUnmount(() => {
+  clearActiveController(tourController)
+})
+
+const openScheduleDialog = async () => {
+  scheduleDialog.value = true
+  selectedTournament.value = null
+  if (!tournaments.value.length) {
+    scheduleLoading.value = true
+    await tournamentStore.fetchTournamentsByLeagueId()
+    scheduleLoading.value = false
+  }
+}
+
+const goToSchedule = () => {
+  if (!selectedTournament.value) {
+    return
+  }
+  scheduleDialog.value = false
+  router.push(`/torneos/${selectedTournament.value.slug}/calendario`)
+}
 </script>
 <template>
-  <PageLayout>
+  <PageLayout styles="main dashboard-main md">
     <template #app-bar>
-      <AppBar :extended="mobile">
-        <template #buttons>
-          <div class="d-none d-lg-block d-md-block">
-            <AppBarBtn />
-          </div>
-        </template>
-        <template #extension>
-          <div class="d-block d-lg-none d-md-none" v-if="rail">
-            <AppBarBtn />
-          </div>
-        </template>
-      </AppBar>
+      <AppBar :extended="false" />
     </template>
     <template #default>
       <client-only>
-        <div class="dashboard-container">
-          <div class="dashboard-cards-container" v-if="!$vuetify.display.mobile">
-            <div class="card-1">
-              <StatsCard
-                  title="Equipos totales"
-                  :values="teamStats.registeredTeams"
-                  :isPositive="teamStats.registeredTeams.current > 0"
-              ></StatsCard>
-            </div>
-            <div class="card-2">
-              <StatsCard
-                  title="jugadores activos"
-                  :values="teamStats.activePlayers"
-                  :isPositive="teamStats.activePlayers.current > 0"
-              ></StatsCard>
-            </div>
-            <div class="card-3">
-              <StatsCard
-                  title="juegos finalizados"
-                  :values="teamStats.completedGames"
-                  :isPositive="teamStats.completedGames.current > 0"
-              ></StatsCard>
-            </div>
-          </div>
-          <v-data-iterator
-              class="data-iterator-container"
-              v-else
-              :items-per-page="1"
-              :items="[
-            {
-              title: 'Equipos totales',
-              values: teamStats.registeredTeams,
-              isPositive: teamStats.registeredTeams.current > 0,
-            },
-            {
-              title: 'jugadores activos',
-              values: teamStats.activePlayers,
-              isPositive: teamStats.activePlayers.current > 0,
-            },
-            {
-              title: 'juegos finalizados',
-              values: teamStats.completedGames,
-              isPositive: teamStats.completedGames.current > 0,
-            },
-          ]"
-              :page="page"
-          >
-            <template #default="{ items }">
-              <template v-for="(item, i) in items" :key="i">
-                <StatsCard
-                    :title="item.raw.title"
-                    :values="item.raw.values"
-                    :isPositive="item.raw.isPositive"
-                ></StatsCard>
-              </template>
-            </template>
-            <template #footer>
-              <v-pagination
-                  density="compact"
-                  :length="3"
-                  v-model="page"
-                  variant="text"
-                  elevation="5"
-                  class="mt-2"
-              ></v-pagination>
-            </template>
-          </v-data-iterator>
-          <div class="next-games">
-            <div class="next-game-wrapper">
-              <div class="dashboard subtitle-container">
-                <h2 class="dashboard subtitle">Próximos partidos</h2>
+        <div class="dashboard-shell">
+          <section class="metrics-grid">
+            <MetricCard
+              v-for="metric in metrics"
+              :key="metric.title"
+              :title="metric.title"
+              :value="metric.value"
+              :icon="metric.icon"
+              :icon-tone="metric.iconTone"
+              :trend-value="metric.trendValue"
+              :trend-label="metric.trendLabel"
+              :trend-as-percent="true"
+            />
+          </section>
+          <div class="dashboard-body">
+            <section class="panel panel--next-games">
+              <div class="panel__header">
+                <h2 class="panel__title">Próximos partidos</h2>
                 <v-btn variant="text" to="/torneos">Ver todos</v-btn>
               </div>
-              <div v-if="nextGames.length === 0" class="text-center">
-                <NoGames />
+              <div class="panel__body">
+                <div v-if="nextGames.length === 0" class="panel__empty">
+                  <NoGames />
+                </div>
+                <div v-else class="next-games-list">
+                  <DashboardNextGames v-for="game in nextGames" :key="game.id" :game="game" />
+                </div>
               </div>
-              <v-data-iterator
-                  class="data-iterator-container no-border"
-                  v-else-if="$vuetify.display.mobile"
-                  :items-per-page="1"
-                  :items="nextGames"
-                  :page="nextGamePage"
-              >
-                <template #default="{ items }">
-                  <template v-for="(item, i) in items" :key="i">
-                    <dashboard-next-games :class="[i === 0 ? 'mt-0' : '']" :game="item.raw" />
-                  </template>
-                </template>
-                <template #footer>
-                  <v-pagination
-                      density="compact"
-                      :length="nextGames?.length ?? 0"
-                      v-model="nextGamePage"
-                      variant="text"
-                      total-visible="3"
-                      elevation="5"
-                      class="mt-2"
-                  ></v-pagination>
-                </template>
-              </v-data-iterator>
-              <dashboard-next-games
-                  :class="[index === 0 ? 'mt-0' : '']"
-                  v-else-if="!$vuetify.display.mobile"
-                  v-for="(game, index) in nextGames"
-                  :key="game.id"
-                  :game="game"
-              />
-            </div>
-          </div>
-          <div class="table">
-            <div class="table-wrapper">
-              <h2 class="dashboard subtitle">Últimos equipos inscritos</h2>
-              <LastTeamsTable />
+            </section>
+            <div class="dashboard-side">
+              <section class="panel panel--actions">
+                <div class="panel__header">
+                  <h2 class="panel__title">Acciones Rápidas</h2>
+                </div>
+                <div class="panel__body">
+                  <div class="actions-grid">
+                    <v-btn
+                      class="action-btn action-btn--primary"
+                      color="primary"
+                      variant="flat"
+                      @click="tournamentDialog = true"
+                    >
+                      <template #prepend>
+                        <Icon name="futzo-icon:trophy" />
+                      </template>
+                      Nuevo Torneo
+                    </v-btn>
+                    <v-btn class="action-btn" color="primary" variant="outlined" @click="teamDialog = true">
+                      <template #prepend>
+                        <Icon name="futzo-icon:shirt-sharp" />
+                      </template>
+                      Agregar Equipo
+                    </v-btn>
+                    <v-btn class="action-btn" color="primary" variant="outlined" @click="playerDialog = true">
+                      <template #prepend>
+                        <Icon name="futzo-icon:players" />
+                      </template>
+                      Registrar Jugador
+                    </v-btn>
+                    <v-btn class="action-btn" color="primary" variant="outlined" @click="openScheduleDialog">
+                      <template #prepend>
+                        <v-icon size="18">mdi-calendar</v-icon>
+                      </template>
+                      Programar Partido
+                    </v-btn>
+                  </div>
+                </div>
+              </section>
+              <section class="panel panel--activity">
+                <div class="panel__header">
+                  <h2 class="panel__title">Actividad Reciente</h2>
+                </div>
+                <div class="panel__body">
+                  <ActivityFeed :items="activityItems" />
+                </div>
+              </section>
             </div>
           </div>
         </div>
+        <TournamentDialog />
+        <CreateTeamDialog />
+        <PlayersDialog />
+        <v-dialog v-model="scheduleDialog" max-width="520">
+          <v-card>
+            <v-card-title>Programar Partido</v-card-title>
+            <v-card-text>
+              <div class="text-body-2 mb-3">Selecciona el torneo para abrir su calendario.</div>
+              <v-select
+                v-model="selectedTournament"
+                :items="tournaments"
+                :loading="scheduleLoading"
+                item-title="name"
+                item-value="id"
+                return-object
+                label="Torneo"
+                variant="outlined"
+              />
+              <v-empty-state
+                v-if="!scheduleLoading && !tournaments.length"
+                image="/no-data.svg"
+                size="80"
+                title="Sin torneos"
+                text="Crea un torneo para programar partidos."
+              ></v-empty-state>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer />
+              <v-btn variant="text" @click="scheduleDialog = false">Cancelar</v-btn>
+              <v-btn color="primary" :disabled="!selectedTournament" @click="goToSchedule">Ir al calendario</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </client-only>
     </template>
     <template #tour>

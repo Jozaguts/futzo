@@ -5,8 +5,7 @@ import {Icon} from '#components'
 
 const globalStore =  useGlobalStore()
   const { startTour, resetTour, recalculateTour } = useTourHub()
-  const { drawer, drawerWidth, isMobile, rail, showSupportButton, openMessageSupportBox } =
-    storeToRefs(globalStore)
+  const { drawer, drawerWidth, isMobile, rail } = storeToRefs(globalStore)
   const drawerRef = ref()
   const authStore = useAuthStore()
   const { user } = storeToRefs(authStore)
@@ -56,11 +55,6 @@ const globalStore =  useGlobalStore()
     }
   }
   const { mobile } = useDisplay()
-  const showSupportHandler = () => {
-    rail.value = true
-    showSupportButton.value = true
-    openMessageSupportBox.value = true
-  }
   const showTutorialHandler = () => {
     resetTour()
     recalculateTour()
@@ -81,7 +75,9 @@ const globalStore =  useGlobalStore()
   >
     <template #prepend>
       <v-list-item nav ref="drawerRef">
-        <Logo />
+        <div class="drawer-brand">
+          <Logo />
+        </div>
         <template #prepend>
           <v-btn v-if="rail" variant="text" icon="mdi-menu" @click.stop="rail = !rail"></v-btn>
         </template>
@@ -110,16 +106,8 @@ const globalStore =  useGlobalStore()
     <template #append>
       <div>
         <v-list density="compact" nav v-auto-animate>
-          <v-list-item
-            nav
-            density="compact"
-            key="help"
-            :disabled="false"
-            title="Contacto y soporte"
-            prepend-icon="mdi-send"
-            @click.stop="showSupportHandler"
-            v-if="!showSupportButton"
-          >
+          <v-list-item class="nav-section-title" density="compact">
+            <div class="title-text">Admin</div>
           </v-list-item>
           <v-list-item
               nav
@@ -179,6 +167,21 @@ const globalStore =  useGlobalStore()
   }
   .v-list-item--active .config-icon path {
     stroke: white;
+  }
+  .drawer-header .v-list-item__content {
+    display: flex;
+    align-items: center;
+  }
+  .drawer-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .drawer-brand__text {
+    font-weight: 700;
+    font-size: 16px;
+    color: #101828;
+    letter-spacing: 0.2px;
   }
   .nav-section-title .title-text:after {
     border-block-end: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));

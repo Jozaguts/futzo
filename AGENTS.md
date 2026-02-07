@@ -23,6 +23,7 @@
 - Formatting uses Prettier (`.prettierrc.json`): 2 spaces, single quotes, semicolons, `printWidth` 120.
 - Vue SFCs use no semicolons; keep `<script>` and `<style>` indented (`vueIndentScriptAndStyle`).
 - TypeScript is preferred for app logic; keep filenames descriptive and kebab-case for Vue files.
+- Any style need to be performance with mobile first method
 
 ## Testing Guidelines
 - Frameworks: Vitest for unit/nuxt tests, Playwright for browser E2E.
