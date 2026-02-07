@@ -2,23 +2,15 @@
 import {useResizeObserver} from '@vueuse/core'
 import {useDisplay} from 'vuetify'
 import {Icon} from '#components'
-import OnboardingSteps from '~/components/layout/OnboardingSteps.vue'
-import {useOnboardingStore} from '~/stores/useOnboardingStore'
 
 const globalStore =  useGlobalStore()
   const { startTour, resetTour, recalculateTour } = useTourHub()
   const { drawer, drawerWidth, isMobile, rail, showSupportButton, openMessageSupportBox } =
     storeToRefs(globalStore)
-  const onboarding = useOnboardingStore()
   const drawerRef = ref()
   const authStore = useAuthStore()
   const { user } = storeToRefs(authStore)
-  const onClick = (to: string, e: MouseEvent) => {
-    if (onboarding.isDisabled(to)) {
-      e.preventDefault()
-      useToast().toast({ type: 'warning', msg: 'Completa los pasos previos para acceder.' })
-    }
-  }
+
   const links = reactive([
     { icon: 'futzo-icon:home', title: 'Dashboard', to: '/dashboard', class: 'mr-2 drawer-icon filled' },
     {
@@ -59,19 +51,11 @@ const globalStore =  useGlobalStore()
       await logout()
       useTournamentStore().$reset()
       useLocationStore().$reset()
-      useOnboardingStore().$reset()
     } catch (error) {
       console.error('Error during logout:', error)
     }
   }
   const { mobile } = useDisplay()
-  watch(
-    () => user.value?.is_operational,
-    async (ok) => {
-      if (ok) await onboarding.loadSafe()
-    },
-    { immediate: true }
-  )
   const showSupportHandler = () => {
     rail.value = true
     showSupportButton.value = true
@@ -115,15 +99,12 @@ const globalStore =  useGlobalStore()
             :key="link.title"
             link
             :id="`${link.title}-tour`"
-            :to="onboarding.isDisabled(link.to) ? null : link.to"
-            :disabled="onboarding.isDisabled(link.to)"
+            :to="link.to"
             :title="link.title"
-            @click="(e) => onClick(link.to, e)"
             :prepend-icon="() => h(Icon, { name: link.icon, class: link.class, mode: 'svg' })"
           >
           </v-list-item>
         </v-list>
-        <OnboardingSteps v-if="!onboarding.state.all_done && user?.is_operational" />
       </div>
     </template>
     <template #append>
