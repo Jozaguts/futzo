@@ -20,6 +20,11 @@
   gap: 12px;
 }
 
+.metrics-carousel-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
 .metric-card {
   display: flex;
   flex-direction: column;
@@ -103,17 +108,28 @@
 }
 
 .dashboard-body {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 16px;
   min-height: 0;
 }
 
 .dashboard-side {
-  display: grid;
-  grid-template-rows: auto auto;
-  gap: 16px;
-  min-height: 0;
+  display: contents;
+}
+
+@media (width <= 600px) {
+  .panel--actions {
+    order: 2;
+  }
+
+  .panel--next-games {
+    order: 3;
+  }
+
+  .panel--activity {
+    order: 4;
+  }
 }
 
 .panel {
@@ -144,6 +160,7 @@
   padding: 16px;
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
   gap: 12px;
   min-height: 0;
   overflow: hidden;
@@ -379,11 +396,15 @@
   }
 
   .dashboard-body {
+    display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   }
 
   .dashboard-side {
+    display: grid;
     grid-template-rows: auto 1fr;
+    gap: 16px;
+    min-height: 0;
   }
 }
 

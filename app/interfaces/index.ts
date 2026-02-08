@@ -11,6 +11,8 @@ export type TourState = {
 };
 export type Tour = Record<TourKey, TourState>;
 export type Stats = {
+  activeTournaments?: ActivePlayers;
+  matchesThisWeek?: ActivePlayers;
   registeredTeams: ActivePlayers;
   activePlayers: ActivePlayers;
   completedGames: ActivePlayers;
@@ -148,6 +150,8 @@ export interface Term {
 
 export type IStatStage = 'last24Hrs' | 'lastWeek' | 'lastMonth' | 'lastYear';
 export type ITeamStats = {
+  activeTournaments: IDashboardStatsValues;
+  matchesThisWeek: IDashboardStatsValues;
   registeredTeams: IDashboardStatsValues;
   activePlayers: IDashboardStatsValues;
   completedGames: IDashboardStatsValues;

@@ -2,6 +2,7 @@
 import AppBar from '~/components/layout/AppBar.vue'
 import DashboardNextGames from '~/components/pages/dashboard/dashboard-next-games.vue'
 import MetricCard from '~/components/pages/dashboard/metric-card.vue'
+import MetricsCarousel from '~/components/pages/dashboard/metrics-carousel.vue'
 import ActivityFeed from '~/components/pages/dashboard/activity-feed.vue'
 import TournamentDialog from '~/components/pages/torneos/dialog/index.vue'
 import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
@@ -11,7 +12,7 @@ import {useDisplay} from 'vuetify'
 import type {Tournament} from '~/models/tournament'
 
 const dashboardStore = useDashboardStore()
-const { teamStats, nextGames, tourSteps } = storeToRefs(dashboardStore)
+const { teamStats, nextGames, activity, tourSteps } = storeToRefs(dashboardStore)
 const { registerTourRef, startTour, resetTour, recalculateTour } = dashboardStore
 const { setActiveController, clearActiveController } = useTourHub()
 const tourController = { registerTourRef, startTour, resetTour, recalculateTour }
@@ -38,14 +39,58 @@ type ActivityItem = {
   tone?: 'purple' | 'green' | 'orange' | 'blue'
 }
 
-const activityItems = ref<ActivityItem[]>([])
+const activityIconMap: Record<string, { icon: string; tone: ActivityItem['tone'] }> = {
+  game_result: { icon: 'futzo-icon:calendar', tone: 'orange' },
+  tournament_created: { icon: 'futzo-icon:trophy', tone: 'purple' },
+  team_registered: { icon: 'futzo-icon:shirt-sharp', tone: 'green' },
+  player_registered: { icon: 'futzo-icon:players', tone: 'blue' },
+}
+
+const formatActivityTime = (value?: string) => {
+  if (!value) return ''
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) {
+    return value
+  }
+  const diff = Date.now() - date.getTime()
+  const seconds = Math.floor(diff / 1000)
+  if (seconds < 60) return 'Hace unos segundos'
+  const minutes = Math.floor(seconds / 60)
+  if (minutes < 60) return `Hace ${minutes} minuto${minutes === 1 ? '' : 's'}`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `Hace ${hours} hora${hours === 1 ? '' : 's'}`
+  const days = Math.floor(hours / 24)
+  if (days < 7) return `Hace ${days} día${days === 1 ? '' : 's'}`
+  return date.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' })
+}
+
+const activityItems = computed<ActivityItem[]>(() =>
+  (activity.value ?? []).map((item: any, index: number) => {
+    const typeKey = String(item?.type ?? item?.event_type ?? '').toLowerCase()
+    const meta = activityIconMap[typeKey]
+    return {
+      id: item?.id ?? `${typeKey}-${index}`,
+      title: item?.title ?? item?.message ?? 'Actividad reciente',
+      subtitle: item?.subtitle ?? item?.tournament?.name ?? item?.team?.name ?? '',
+      time: item?.time ?? item?.time_label ?? formatActivityTime(item?.created_at),
+      icon: meta?.icon,
+      tone: meta?.tone,
+    }
+  })
+)
 
 const metrics = computed(() => {
-  const { registeredTeams, activePlayers, completedGames } = teamStats.value
+  const { registeredTeams, activePlayers, completedGames, activeTournaments, matchesThisWeek } = teamStats.value
+  const tournamentsValue =
+    activeTournaments?.total !== undefined && activeTournaments?.total !== null ? activeTournaments.total : '—'
+  const matchesValue =
+    matchesThisWeek?.total !== undefined && matchesThisWeek?.total !== null ? matchesThisWeek.total : completedGames.total
   return [
     {
       title: 'Torneos Activos',
-      value: '—',
+      value: tournamentsValue,
+      trendValue: activeTournaments?.current ?? null,
+      trendLabel: activeTournaments?.label ?? '',
       icon: 'futzo-icon:trophy',
       iconTone: 'purple',
     },
@@ -67,9 +112,9 @@ const metrics = computed(() => {
     },
     {
       title: 'Partidos Esta Semana',
-      value: completedGames.total,
-      trendValue: completedGames.current,
-      trendLabel: completedGames.label,
+      value: matchesValue,
+      trendValue: matchesThisWeek?.current ?? completedGames.current,
+      trendLabel: matchesThisWeek?.label ?? completedGames.label,
       icon: 'futzo-icon:calendar',
       iconTone: 'orange',
     },
@@ -96,6 +141,7 @@ onMounted(() => {
   if (useAuth().isSignUp.value) {
     useDashboardStore().byRange()
     useDashboardStore().getNextGames()
+    useDashboardStore().getActivity()
   }
   setActiveController(tourController)
 })
@@ -130,7 +176,7 @@ const goToSchedule = () => {
     <template #default>
       <client-only>
         <div class="dashboard-shell">
-          <section class="metrics-grid">
+          <section class="metrics-grid" v-if="!mobile">
             <MetricCard
               v-for="metric in metrics"
               :key="metric.title"
@@ -142,6 +188,9 @@ const goToSchedule = () => {
               :trend-label="metric.trendLabel"
               :trend-as-percent="true"
             />
+          </section>
+          <section v-else class="metrics-carousel-wrapper">
+            <MetricsCarousel :items="metrics" />
           </section>
           <div class="dashboard-body">
             <section class="panel panel--next-games">

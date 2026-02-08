@@ -9,6 +9,18 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
   const range = ref<IStatStage>('lastMonth');
 
   const teamStats = ref<ITeamStats>({
+    activeTournaments: {
+      total: 0,
+      current: 0,
+      dailyData: [],
+      label: 'vs último mes',
+    },
+    matchesThisWeek: {
+      total: 0,
+      current: 0,
+      dailyData: [],
+      label: 'vs último mes',
+    },
     registeredTeams: {
       total: 0,
       current: 0,
@@ -29,6 +41,7 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
     },
   });
   const nextGames = ref(<NextGames['data']>[]);
+  const activity = ref<any[]>([]);
   const { registerTourRef, startTour, resetTour, recalculateTour } = useTourController();
   const tourSteps = ref<TourStep[]>([
       {
@@ -60,6 +73,12 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
   function byRange() {
     const client = useSanctumClient();
     client<Stats>(`/api/v1/admin/dashboard/stats?range=${range.value}`).then((response) => {
+      if (response.activeTournaments) {
+        teamStats.value.activeTournaments = response.activeTournaments;
+      }
+      if (response.matchesThisWeek) {
+        teamStats.value.matchesThisWeek = response.matchesThisWeek;
+      }
       teamStats.value.registeredTeams = response.registeredTeams;
       teamStats.value.activePlayers = response.activePlayers;
       teamStats.value.completedGames = response.completedGames;
@@ -73,10 +92,18 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
     });
   }
 
+  function getActivity() {
+    const client = useSanctumClient();
+    client<{ data: any[] }>('/api/v1/admin/dashboard/activity').then((response) => {
+      activity.value = response?.data ?? [];
+    });
+  }
+
   return {
     teamStats,
     range,
     nextGames,
+    activity,
     tourSteps: skipHydrate(tourSteps),
     registerTourRef,
     startTour,
@@ -84,5 +111,6 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
     recalculateTour,
     byRange,
     getNextGames,
+    getActivity,
   };
 });
