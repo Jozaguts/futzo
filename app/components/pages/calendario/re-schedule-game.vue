@@ -1,11 +1,11 @@
 <script setup lang="ts">
-  import '@vuepic/vue-datepicker/dist/main.css'
-  import dayjs from 'dayjs'
-  import { useToast } from '~/composables/useToast'
-  import { useLeaguesStore } from '~/stores/useLeaguesStore'
-  import type { Field as ScheduleField, HourAvailableInterval } from '~/models/Schedule'
+import '@vuepic/vue-datepicker/dist/main.css'
+import dayjs from 'dayjs'
+import {useToast} from '~/composables/useToast'
+import {useLeaguesStore} from '~/stores/useLeaguesStore'
+import type {Field as ScheduleField, HourAvailableInterval} from '~/models/Schedule'
 
-  const gameStore = useGameStore()
+const gameStore = useGameStore()
   const tournamentStore = useTournamentStore()
   const leaguesStore = useLeaguesStore()
   const { toast } = useToast()
@@ -215,6 +215,59 @@
     }
     return []
   })
+
+  const canReschedule = computed(() => {
+    const hasDate = !!gameDetailsRequest.value.date
+    const hasField = !!gameDetailsRequest.value.field_id
+    const hasDay = !!gameDetailsRequest.value.day
+    const hasTime = !!gameDetailsRequest.value.selected_time
+    const hasHours = availableIntervalHours.value.length > 0
+    return hasDate && hasField && hasDay && hasTime && hasHours && !loading.value
+  })
+
+  const handleReschedule = () => {
+    if (!gameDetailsRequest.value.date) {
+      toast({
+        type: 'warning',
+        msg: 'Selecciona una fecha',
+        description: 'Debes seleccionar una fecha válida para reprogramar el partido.',
+      })
+      return
+    }
+    if (!gameDetailsRequest.value.field_id) {
+      toast({
+        type: 'warning',
+        msg: 'Selecciona un campo',
+        description: 'Debes seleccionar un campo para reprogramar el partido.',
+      })
+      return
+    }
+    if (!gameDetailsRequest.value.day) {
+      toast({
+        type: 'warning',
+        msg: 'Selecciona una fecha válida',
+        description: 'No pudimos determinar el día de la semana para reprogramar el partido.',
+      })
+      return
+    }
+    if (!gameDetailsRequest.value.selected_time) {
+      toast({
+        type: 'warning',
+        msg: 'Selecciona una hora',
+        description: 'Debes seleccionar una hora disponible para reprogramar el partido.',
+      })
+      return
+    }
+    if (!availableIntervalHours.value.length) {
+      toast({
+        type: 'warning',
+        msg: 'Sin horas disponibles',
+        description: 'No hay horarios disponibles para la fecha y campo seleccionados.',
+      })
+      return
+    }
+    reScheduleGame()
+  }
 </script>
 <template>
   <Dialog
@@ -333,7 +386,9 @@
       </v-container>
     </template>
     <template #actions>
-      <v-btn class="ml-auto mr-4" variant="elevated" @click="reScheduleGame"> Reprogramar </v-btn>
+      <v-btn class="ml-auto mr-4" variant="elevated" :disabled="!canReschedule" @click="handleReschedule">
+        Reprogramar
+      </v-btn>
     </template>
   </Dialog>
 </template>

@@ -169,7 +169,7 @@ const goToSchedule = () => {
 }
 </script>
 <template>
-  <PageLayout styles="main dashboard-main md">
+  <PageLayout styles="main dashboard-main">
     <template #app-bar>
       <AppBar :extended="false" />
     </template>

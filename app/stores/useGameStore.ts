@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 
 import type {
   ActionGameReportState,
@@ -12,11 +12,11 @@ import type {
   TeamSubstitutions,
   TeamType,
 } from '~/models/Game';
-import type { PenaltyAttempt } from '~/models/Schedule';
+import type {PenaltyAttempt} from '~/models/Schedule';
 import * as gameAPI from '~/http/api/game';
 import dayjs from 'dayjs';
-import { useToast } from '~/composables/useToast';
-import { useSanctumClient } from '#imports';
+import {useToast} from '~/composables/useToast';
+import {useSanctumClient} from '#imports';
 
 export const useGameStore = defineStore('gameStore', () => {
   const game = ref<Game>(null as unknown as Game);
@@ -301,6 +301,38 @@ export const useGameStore = defineStore('gameStore', () => {
       });
   };
   const reScheduleGame = async () => {
+    if (!gameDetailsRequest.value?.date) {
+      useToast().toast({
+        type: 'warning',
+        msg: 'Selecciona una fecha',
+        description: 'Debes seleccionar una fecha válida para reprogramar el partido.',
+      });
+      return;
+    }
+    if (!gameDetailsRequest.value?.field_id) {
+      useToast().toast({
+        type: 'warning',
+        msg: 'Selecciona un campo',
+        description: 'Debes seleccionar un campo para reprogramar el partido.',
+      });
+      return;
+    }
+    if (!gameDetailsRequest.value?.day) {
+      useToast().toast({
+        type: 'warning',
+        msg: 'Selecciona una fecha válida',
+        description: 'No pudimos determinar el día de la semana para reprogramar el partido.',
+      });
+      return;
+    }
+    if (!gameDetailsRequest.value?.selected_time) {
+      useToast().toast({
+        type: 'warning',
+        msg: 'Selecciona una hora',
+        description: 'Debes seleccionar una hora disponible para reprogramar el partido.',
+      });
+      return;
+    }
     const client = useSanctumClient();
     client(`/api/v1/admin/games/${gameDetailsRequest.value?.game_id}/reschedule`, {
       method: 'PUT',
