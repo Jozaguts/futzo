@@ -214,35 +214,17 @@ const goToSchedule = () => {
                 </div>
                 <div class="panel__body">
                   <div class="actions-grid">
-                    <v-btn
-                      class="action-btn action-btn--primary"
-                      color="primary"
-                      variant="flat"
-                      @click="tournamentDialog = true"
+                    <PrimaryBtn
+                        text="Nuevo torneo"
+                        icon="mdi:trophy-outline"
+                        icon-position="right"
+                        @click="tournamentDialog = true"
+
                     >
-                      <template #prepend>
-                        <Icon name="futzo-icon:trophy" />
-                      </template>
-                      Nuevo Torneo
-                    </v-btn>
-                    <v-btn class="action-btn" color="primary" variant="outlined" @click="teamDialog = true">
-                      <template #prepend>
-                        <Icon name="futzo-icon:shirt-sharp" />
-                      </template>
-                      Agregar Equipo
-                    </v-btn>
-                    <v-btn class="action-btn" color="primary" variant="outlined" @click="playerDialog = true">
-                      <template #prepend>
-                        <Icon name="futzo-icon:players" />
-                      </template>
-                      Registrar Jugador
-                    </v-btn>
-                    <v-btn class="action-btn" color="primary" variant="outlined" @click="openScheduleDialog">
-                      <template #prepend>
-                        <v-icon size="18">mdi-calendar</v-icon>
-                      </template>
-                      Programar Partido
-                    </v-btn>
+                    </PrimaryBtn>
+                    <SecondaryBtn @click="teamDialog = true" icon="futzo-icon:shirt-sharp" text="Agregar Equipo" icon-position="right" />
+                    <SecondaryBtn @click="playerDialog = true" icon="futzo-icon:players" text="Registrar Jugador" icon-position="right" />
+                    <SecondaryBtn @click="openScheduleDialog" icon="mdi-calendar" text="Programar Partido" icon-position="right" />
                   </div>
                 </div>
               </section>

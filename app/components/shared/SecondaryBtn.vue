@@ -9,6 +9,7 @@
     color?: string
     density?: 'comfortable' | 'default' | 'compact'
     iconPosition?: 'left' | 'right'
+    iconClass?: string
   }
   const props = withDefaults(defineProps<Props>(), {
     text: 'prop name not set',
@@ -20,6 +21,7 @@
     color: 'primary',
     density: 'default',
     iconPosition: 'left',
+    iconClass: '',
   })
   const emits = defineEmits(['btn-click'])
 </script>
@@ -33,10 +35,10 @@
     @click="() => emits('btn-click')"
   >
     <template #prepend v-if="props.showIcon && props.iconPosition === 'left'">
-      <Icon v-if="props.showIcon" :name="props.icon" />
+      <Icon v-if="props.showIcon" :name="props.icon" :class="iconClass" />
     </template>
     <template #append v-if="props.showIcon && props.iconPosition === 'right'">
-      <Icon v-if="props.showIcon" :name="props.icon" />
+      <Icon v-if="props.showIcon" :name="props.icon"  :class="iconClass"  />
     </template>
     <span class="app-bar-secondary-btn__input_text">
       {{ text }}

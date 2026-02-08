@@ -44,7 +44,6 @@ const show = ref(false)
             />
           </v-main>
         </ClientOnly>
-        <AnimatedGradiendButton text="Contacto y soporte" />
       </v-app>
     </v-layout>
   </div>

@@ -2,13 +2,16 @@
 import {useResizeObserver} from '@vueuse/core'
 import {useDisplay} from 'vuetify'
 import {Icon} from '#components'
+import ContactForm from '~/components/shared/ContactForm.vue'
+import TicketList from '~/components/shared/TicketList.vue'
 
 const globalStore =  useGlobalStore()
   const { startTour, resetTour, recalculateTour } = useTourHub()
-  const { drawer, drawerWidth, isMobile, rail } = storeToRefs(globalStore)
+  const { drawer, drawerWidth, isMobile, rail, openMessageSupportBox } = storeToRefs(globalStore)
   const drawerRef = ref()
   const authStore = useAuthStore()
   const { user } = storeToRefs(authStore)
+  const tab = ref(user?.value?.opened_tickets_count ? 'history' : 'contact-support')
 
   const links = reactive([
     { icon: 'futzo-icon:home', title: 'Dashboard', to: '/dashboard', class: 'mr-2 drawer-icon filled' },
@@ -109,6 +112,44 @@ const globalStore =  useGlobalStore()
           <v-list-item class="nav-section-title" density="compact">
             <div class="title-text">Admin</div>
           </v-list-item>
+          <v-menu v-model="openMessageSupportBox" :close-on-content-click="false" location="end top" offset="0, 12">
+            <template #activator="{ props }">
+              <v-list-item
+                nav
+                density="compact"
+                key="support"
+                title="Contacto y soporte"
+                :prepend-icon="() => h(Icon, { name:'material-symbols-light:support-agent-outline-sharp', class:'text-primary' })"
+                v-bind="props"
+              >
+              </v-list-item>
+            </template>
+            <v-card
+              max-width="400px"
+              min-width="100%"
+              min-height="100%"
+              class="futzo-rounded"
+              variant="outlined"
+              density="compact"
+            >
+              <v-card-item>
+                <v-tabs color="primary" v-model="tab">
+                  <v-tab value="contact-support" :disabled="!!user?.opened_tickets_count"> Contacto y soporte </v-tab>
+                  <v-tab value="history"> Historial </v-tab>
+                </v-tabs>
+              </v-card-item>
+              <v-card-text>
+                <v-tabs-window v-model="tab">
+                  <v-tabs-window-item value="contact-support" height="100%">
+                    <ContactForm @submitted="openMessageSupportBox = false" />
+                  </v-tabs-window-item>
+                  <v-tabs-window-item value="history" height="100%">
+                    <TicketList />
+                  </v-tabs-window-item>
+                </v-tabs-window>
+              </v-card-text>
+            </v-card>
+          </v-menu>
           <v-list-item
               nav
               density="compact"

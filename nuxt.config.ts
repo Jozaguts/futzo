@@ -76,7 +76,8 @@ export default defineNuxtConfig({
     // 'nuxt-meta-pixel' // no funciona en nuxt 4
   ],
   gtag: {
-    id: 'G-6B315LGN56'
+    id: 'G-6B315LGN56',
+    enabled: process.env.NODE_ENV === 'production',
   },
   site: {
     url: 'https://futzo.io',
