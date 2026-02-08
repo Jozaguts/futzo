@@ -346,7 +346,7 @@
             color="secondary"
             variant="outlined"
             @click="handleRequestAdvancePhase"
-            text="Avanzar"
+            :text="advanceLabel"
             :show-icon="false"
             :loading="isAdvancingPhase"
             :disabled="!canAdvance || isAdvancingPhase"

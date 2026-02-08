@@ -69,6 +69,11 @@
       emits('select-all', { weekday: props.weekday, value })
     },
   })
+
+  defineExpose({
+    selectAll,
+    selectedValues,
+  })
 </script>
 <template>
   <v-container class="pa-0 pb-1">

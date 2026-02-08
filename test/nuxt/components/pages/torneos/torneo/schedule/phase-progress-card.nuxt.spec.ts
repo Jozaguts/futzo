@@ -6,7 +6,7 @@ import { ensureVuetifyApp, vuetifyStubs } from '../../../../../utils/vuetify-stu
 const advancePhaseMock = vi.fn();
 
 const scheduleStoreMock = {
-  scheduleSettings: ref({ phases: [{ id: 1, name: 'Final' }] }),
+  scheduleSettings: ref({ phases: [{ id: 1, name: 'Final' }], can_update_start_date: true, round_trip: false }),
   isAdvancingPhase: ref(false),
   eliminationPhases: ref([{ id: 1, name: 'Final', is_active: true }]),
   activePhase: ref({ id: 1, name: 'Final' }),
@@ -18,6 +18,17 @@ const scheduleStoreMock = {
   areActivePhaseMatchesProgrammed: ref(true),
   areActivePhaseMatchesCompleted: ref(false),
   isActivePhaseConfigurationLocked: ref(false),
+  teamsWithoutGames: ref([]),
+  pendingManualMatches: ref(0),
+  hasPendingManualMatches: ref(false),
+  regenerationAnalysis: ref(null),
+  isAnalyzingRegeneration: ref(false),
+  isConfirmingRegeneration: ref(false),
+  lastRegeneration: ref(null),
+  scheduleDrawerOpen: ref(false),
+  resetRegenerationState: vi.fn(),
+  analyzeScheduleRegeneration: vi.fn(),
+  confirmScheduleRegeneration: vi.fn(),
   advanceTournamentPhase: advancePhaseMock,
 };
 
@@ -87,6 +98,11 @@ describe('PhaseProgressCard', () => {
 
     expect(primaryButton.attributes('disabled')).toBeUndefined();
     await primaryButton.trigger('click');
+    const confirmButton = wrapper
+      .findAll('.v-btn')
+      .find((button) => button.text().includes('Finalizar torneo') || button.text().includes('Avanzar'));
+    expect(confirmButton).toBeTruthy();
+    await confirmButton!.trigger('click');
     expect(advancePhaseMock).toHaveBeenCalledTimes(1);
 
     const configureButton = wrapper.find('[data-test="Configurar"]');

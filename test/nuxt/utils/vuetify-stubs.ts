@@ -11,6 +11,17 @@ export const ensureVuetifyApp = () => {
       disconnect() {}
     } as any;
   }
+  if (!(globalThis as any).visualViewport) {
+    (globalThis as any).visualViewport = {
+      addEventListener() {},
+      removeEventListener() {},
+      width: 0,
+      height: 0,
+      scale: 1,
+      offsetLeft: 0,
+      offsetTop: 0,
+    } as any;
+  }
 };
 
 export const iconStub = defineComponent({
@@ -50,6 +61,25 @@ export const vuetifyStubs = {
   'v-card-title': passthrough('v-card-title'),
   'v-card-subtitle': passthrough('v-card-subtitle'),
   'v-card-text': passthrough('v-card-text'),
+  'v-dialog': defineComponent({
+    name: 'StubVDialog',
+    props: {
+      modelValue: { type: Boolean, default: false },
+    },
+    emits: ['update:modelValue'],
+    setup(props, { slots, attrs }) {
+      return () =>
+        h(
+          'div',
+          {
+            ...attrs,
+            class: ['v-dialog', attrs.class].filter(Boolean),
+            'data-model-value': props.modelValue,
+          },
+          props.modelValue && slots.default ? slots.default() : undefined
+        );
+    },
+  }),
   'v-switch': passthrough('v-switch', 'button'),
   'v-chip-group': passthrough('v-chip-group'),
   'v-chip': passthrough('v-chip', 'button'),

@@ -47,14 +47,14 @@ describe('InputAvailabilityDate', () => {
   it('syncs selectedValues from provided day intervals', async () => {
     const wrapper = await mountComponent(buildDay(['08:00', '09:00']));
     const component = wrapper.getComponent(InputAvailabilityDate);
-    expect((component.vm as any).selectedValues.value).toEqual(['08:00', '09:00']);
+    expect((component.vm as any).selectedValues).toEqual(['08:00', '09:00']);
   });
 
   it('emits input-date-changed when selectedValues change', async () => {
     const wrapper = await mountComponent(buildDay());
     const component = wrapper.getComponent(InputAvailabilityDate);
 
-    (component.vm as any).selectedValues.value = ['08:00'];
+    (component.vm as any).selectedValues = ['08:00'];
     await nextTick();
 
     expect(component.emitted('input-date-changed')).toBeTruthy();
@@ -73,7 +73,8 @@ describe('InputAvailabilityDate', () => {
     expect(component.emitted('select-all')?.[0]?.[0]).toEqual({ weekday: 'monday', value: true });
 
     // Simulate parent response updating props
-    await component.setProps({ day: buildDay(['08:00', '09:00']) });
+    await wrapper.setProps({ day: buildDay(['08:00', '09:00']) });
+    await nextTick();
     expect((component.vm as any).selectAll).toBe(true);
   });
 });

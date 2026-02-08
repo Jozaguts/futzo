@@ -1,15 +1,10 @@
 <script lang="ts" setup>
   import NoCalendarSvg from '~/components/pages/torneos/NoCalendarSvg.vue'
 
-  const {
-    scheduleDialog,
-    isLoadingSchedules,
-    noSchedules,
-    schedulePagination,
-    hasSchedule,
-    scheduleSettings,
-    activePhase,
-  } = storeToRefs(useScheduleStore())
+  const scheduleStore = useScheduleStore()
+  const { scheduleDialog, isLoadingSchedules, noSchedules, schedulePagination, hasSchedule, scheduleSettings } =
+    storeToRefs(scheduleStore)
+  const scheduleSettingsRef = scheduleSettings ?? ref({ phases: [] })
   const { tournament } = storeToRefs(useTournamentStore())
   const isTournamentCompletedWithChampion = computed(
     () => tournament.value?.status === 'completado' && Boolean(tournament.value?.winner)
@@ -22,18 +17,21 @@
     scheduleDialog.value = !scheduleDialog.value
   }
   const currentPhaseName = computed(() => {
-    const explicit = activePhase.value?.name
+    const explicit = scheduleStore.activePhase?.value?.name
     if (explicit) {
       return explicit
     }
-    return scheduleSettings.value?.phases?.find((phase) => phase.is_active)?.name ?? null
+    return scheduleSettingsRef.value?.phases?.find((phase) => phase.is_active)?.name ?? null
   })
   const generalPhaseActive = computed(() => currentPhaseName.value === 'Tabla general')
   const eliminationPhaseNames = ['Octavos de Final', 'Cuartos de Final', 'Semifinales', 'Final']
   const isDirectEliminationPhaseActive = computed(() => eliminationPhaseNames.includes(currentPhaseName.value ?? ''))
-  const showCreateButton = computed(
-    () => (!isTournamentCompletedWithChampion.value && generalPhaseActive.value) || !hasSchedule.value
-  )
+  const showCreateButton = computed(() => {
+    if (isTournamentCompletedWithChampion.value) {
+      return false
+    }
+    return generalPhaseActive.value || !hasSchedule.value
+  })
   const foundedTextLabel = computed(() => {
     if (isTournamentCompletedWithChampion.value) {
       return 'Torneo finalizado'
