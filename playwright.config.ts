@@ -1,10 +1,12 @@
-import 'dotenv/config';
 import { defineConfig, devices } from '@playwright/test';
+import { ensurePlaywrightEnv } from './playwright/load-env';
+
+ensurePlaywrightEnv();
 
 const NUXT_PORT = process.env.NUXT_PORT || '3000';
 const NUXT_HOST = process.env.NUXT_HOST || '127.0.0.1';
 const APP_BASE_URL = process.env.PW_BASE_URL || `http://${NUXT_HOST}:${NUXT_PORT}`;
-const BACKEND_URL = process.env.NUXT_PUBLIC_URL_BACKEND || 'http://app.futzo.test';
+const BACKEND_URL = process.env.NUXT_PUBLIC_URL_BACKEND || 'http://testing.futzo.test';
 const BACKEND_PREFIX = process.env.NUXT_PUBLIC_BACKEND_PREFIX || 'api/v1';
 
 export default defineConfig({

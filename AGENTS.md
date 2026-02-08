@@ -29,6 +29,13 @@
 - Frameworks: Vitest for unit/nuxt tests, Playwright for browser E2E.
 - Naming: `*.nuxt.spec.ts` for Nuxt/UI tests, `*.e2e.ts` for headless E2E.
 - Run targeted suites with `yarn test:nuxt`, `yarn test:unit`, or `yarn test:e2e`.
+- Al tocar un componente existente sin tests, se deben crear tests. Todo componente nuevo debe incluir tests desde el inicio.
+
+## Quality & Error Handling (Obligatorio)
+- Cada vez que se **modifique** un componente crítico, se debe **crear o actualizar** su(s) test(s).
+- Cada **componente nuevo** debe incluir su test desde el inicio.
+- No se permiten fallas silenciosas: cualquier error HTTP **4xx/5xx** debe mostrar un **toast** al usuario.
+- Preferir **422** para validaciones; los **400/500** deben informar claramente al usuario.
 
 ## Commit & Pull Request Guidelines
 - Commits follow a conventional style like `feat(scope): summary` or `fix(scope): summary`.

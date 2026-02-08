@@ -5,6 +5,9 @@ node_modules
 .cache
 .output
 .env
+.env.testing
+.env.test
+.env.local
 dist
 .DS_Store
 .idea/*

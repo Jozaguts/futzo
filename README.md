@@ -181,7 +181,7 @@ Para producción, considera una build multi-stage que ejecute `.output/server/in
 - Ejecutar:
 
 ```bash
-RUN_E2E=1 NUXT_PUBLIC_URL_BACKEND=http://app.futzo.test yarn test:e2e
+RUN_E2E=1 NUXT_PUBLIC_URL_BACKEND=http://testing.futzo.test yarn test:e2e
 ```
 
 ### E2E navegador (Playwright)
@@ -189,10 +189,10 @@ RUN_E2E=1 NUXT_PUBLIC_URL_BACKEND=http://app.futzo.test yarn test:e2e
 1) Configurar `.env` (ver `.env.example`):
 
 ```env
-NUXT_PUBLIC_URL_BACKEND=http://app.futzo.test
+NUXT_PUBLIC_URL_BACKEND=http://testing.futzo.test
 NUXT_PUBLIC_BACKEND_PREFIX=api/v1
-PW_E2E_EMAIL=tu-usuario@example.com
-PW_E2E_PASSWORD=tu-password
+PW_E2E_EMAIL=e2e-admin@futzo.test
+PW_E2E_PASSWORD=Password123!
 # Opcional si usas host local custom
 # PW_BASE_URL=http://futzo.test:3000
 ```
@@ -210,9 +210,10 @@ yarn test:pw           # headless
 yarn test:pw:headed   # con navegador visible
 ```
 
-Requisitos para entorno local:
-- El dominio `app.futzo.test` debe resolver a tu backend local (edita `/etc/hosts` si aplica).
+Requisitos para entorno local/testing:
+- El dominio `testing.futzo.test` debe resolver a tu backend de testing (edita `/etc/hosts` si aplica).
 - Backend con Sanctum/CORS configurado para permitir origen del front (`127.0.0.1:3000` o `futzo.test:3000`).
+- Usuario seed de testing (rol `administrador` o `super administrador`) con credenciales `PW_E2E_EMAIL=e2e-admin@futzo.test` y `PW_E2E_PASSWORD=Password123!`.
 
 ## Estructura breve
 

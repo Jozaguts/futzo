@@ -3,12 +3,19 @@ import { defineVitestProject } from '@nuxt/test-utils/config';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve as resolvePath } from 'node:path';
 const rootDir = dirname(fileURLToPath(import.meta.url));
+const appDir = resolvePath(rootDir, 'app');
 const nuxtSetupFile = resolvePath(rootDir, 'test/nuxt/setup.sanctum.ts');
-const E2E_BACKEND_URL = process.env.NUXT_PUBLIC_URL_BACKEND || 'http://app.futzo.test';
+const E2E_BACKEND_URL = process.env.NUXT_PUBLIC_URL_BACKEND || 'http://testing.futzo.test';
 const E2E_BACKEND_PREFIX = process.env.NUXT_PUBLIC_BACKEND_PREFIX || 'api/v1';
 const INCLUDE_E2E = process.env.RUN_E2E === '1' || process.env.RUN_E2E === 'true';
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '~': appDir,
+      '@': appDir,
+    },
+  },
   test: {
     projects: [
       {

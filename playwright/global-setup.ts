@@ -1,11 +1,14 @@
-import 'dotenv/config';
 import { FullConfig, request } from '@playwright/test';
+import { ensurePlaywrightEnv } from './load-env';
 import fs from 'node:fs';
 import path from 'node:path';
 
 export default async function globalSetup(config: FullConfig) {
-  const backendURL = process.env.NUXT_PUBLIC_URL_BACKEND || 'http://app.futzo.test';
+  ensurePlaywrightEnv();
+  const backendURL = process.env.NUXT_PUBLIC_URL_BACKEND || 'http://testing.futzo.test';
   const appOrigin = process.env.PW_BASE_URL || `http://127.0.0.1:${process.env.NUXT_PORT || '3000'}`;
+  console.log('[pw] backendURL', backendURL);
+  console.log('[pw] appOrigin', appOrigin);
   const email = process.env.PW_E2E_EMAIL;
   const password = process.env.PW_E2E_PASSWORD;
   const outDir = path.resolve(process.cwd(), 'playwright/.auth');
@@ -32,6 +35,7 @@ export default async function globalSetup(config: FullConfig) {
 
   // 1) Pedir CSRF cookie (XSRF-TOKEN)
   const csrfRes = await api.get('/sanctum/csrf-cookie');
+  console.log('[pw] csrf status', csrfRes.status(), 'url', csrfRes.url());
   if (!csrfRes.ok()) throw new Error(`CSRF cookie failed: ${csrfRes.status()}`);
 
   // Extraer XSRF-TOKEN de cookies
@@ -47,6 +51,7 @@ export default async function globalSetup(config: FullConfig) {
     },
     data: { email, password },
   });
+  console.log('[pw] login status', loginRes.status(), 'url', loginRes.url());
   if (!loginRes.ok()) throw new Error(`Login failed: ${loginRes.status()} ${await loginRes.text()}`);
 
   // 3) Verificar identidad

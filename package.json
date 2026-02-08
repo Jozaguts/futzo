@@ -7,6 +7,7 @@
     "build": "nuxt build --max-old-space-size=4096 --dotenv .env.prod",
     "build:test": "nuxt build --dotenv .env",
     "dev": "rm -rf /tmp/nitro && nuxt dev",
+    "dev:testing": "rm -rf /tmp/nitro && nuxt dev --dotenv .env.testing",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
@@ -15,9 +16,9 @@
     "test:unit": "vitest --project unit",
     "test": "vitest",
     "pw:install": "npx -y playwright install --with-deps || true",
-    "test:pw": "PW_E2E_EMAIL=$PW_E2E_EMAIL PW_E2E_PASSWORD=$PW_E2E_PASSWORD NUXT_PUBLIC_URL_BACKEND=${NUXT_PUBLIC_URL_BACKEND:-http://app.futzo.test} NUXT_PUBLIC_BACKEND_PREFIX=${NUXT_PUBLIC_BACKEND_PREFIX:-api/v1} playwright test",
-    "test:pw:headed": "PW_E2E_EMAIL=$PW_E2E_EMAIL PW_E2E_PASSWORD=$PW_E2E_PASSWORD NUXT_PUBLIC_URL_BACKEND=${NUXT_PUBLIC_URL_BACKEND:-http://app.futzo.test} NUXT_PUBLIC_BACKEND_PREFIX=${NUXT_PUBLIC_BACKEND_PREFIX:-api/v1} playwright test --headed",
-    "test:pw:ui": "playwright test --ui"
+    "test:pw": "NUXT_PUBLIC_URL_BACKEND=${NUXT_PUBLIC_URL_BACKEND:-http://testing.futzo.test} NUXT_PUBLIC_BACKEND_PREFIX=${NUXT_PUBLIC_BACKEND_PREFIX:-api/v1} playwright test",
+    "test:pw:headed": "NUXT_PUBLIC_URL_BACKEND=${NUXT_PUBLIC_URL_BACKEND:-http://testing.futzo.test} NUXT_PUBLIC_BACKEND_PREFIX=${NUXT_PUBLIC_BACKEND_PREFIX:-api/v1} playwright test --headed",
+    "test:pw:ui": "NUXT_PUBLIC_URL_BACKEND=${NUXT_PUBLIC_URL_BACKEND:-http://testing.futzo.test} NUXT_PUBLIC_BACKEND_PREFIX=${NUXT_PUBLIC_BACKEND_PREFIX:-api/v1} playwright test --ui"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.9.0",
@@ -54,7 +55,8 @@
     "vuetify": "3.11.8",
     "vuetify-nuxt-module": "0.19.5",
     "vuetify-sonner": "^0.4.2",
-    "yup": "^1.7.1"
+    "yup": "^1.7.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@iconify-json/ant-design": "^1.2.5",
