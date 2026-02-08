@@ -1,8 +1,12 @@
 import {defineStore, skipHydrate} from 'pinia';
-import type {IStatStage, ITeamStats, Stats} from '~/interfaces';
+import type {IStatStage, ITeamStats} from '~/interfaces';
 import type {NextGames} from '~/models/Game';
 import type {TourStep} from "#nuxt-tour/props";
 import {useTourController} from '~/composables/useTourController';
+import { dashboardStatsSchema } from '~/schemas/dashboard/stats.schema';
+import { nextGamesSchema } from '~/schemas/dashboard/next-games.schema';
+import { activitySchema } from '~/schemas/dashboard/activity.schema';
+import { validateResponse } from '~/utils/validateResponse';
 
 // @ts-ignore
 export const useDashboardStore = defineStore('dashboardStore', () => {
@@ -72,30 +76,36 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
 
   function byRange() {
     const client = useSanctumClient();
-    client<Stats>(`/api/v1/admin/dashboard/stats?range=${range.value}`).then((response) => {
-      if (response.activeTournaments) {
-        teamStats.value.activeTournaments = response.activeTournaments;
-      }
-      if (response.matchesThisWeek) {
-        teamStats.value.matchesThisWeek = response.matchesThisWeek;
-      }
-      teamStats.value.registeredTeams = response.registeredTeams;
-      teamStats.value.activePlayers = response.activePlayers;
-      teamStats.value.completedGames = response.completedGames;
+    client<unknown>(`/api/v1/admin/dashboard/stats?range=${range.value}`).then((response) => {
+      const parsed = validateResponse(response, dashboardStatsSchema, {
+        context: 'Dashboard: estadísticas',
+      });
+      if (!parsed) return;
+      teamStats.value.activeTournaments = parsed.activeTournaments;
+      teamStats.value.matchesThisWeek = parsed.matchesThisWeek;
+      teamStats.value.registeredTeams = parsed.registeredTeams;
+      teamStats.value.activePlayers = parsed.activePlayers;
+      teamStats.value.completedGames = parsed.completedGames;
     });
   }
 
   function getNextGames() {
     const client = useSanctumClient();
-    client<NextGames>('/api/v1/admin/dashboard/next-games').then((response) => {
-      nextGames.value = response.data;
+    client<unknown>('/api/v1/admin/dashboard/next-games').then((response) => {
+      const parsed = validateResponse(response, nextGamesSchema, {
+        context: 'Dashboard: próximos partidos',
+      });
+      nextGames.value = parsed?.data ?? [];
     });
   }
 
   function getActivity() {
     const client = useSanctumClient();
-    client<{ data: any[] }>('/api/v1/admin/dashboard/activity').then((response) => {
-      activity.value = response?.data ?? [];
+    client<unknown>('/api/v1/admin/dashboard/activity').then((response) => {
+      const parsed = validateResponse(response, activitySchema, {
+        context: 'Dashboard: actividad reciente',
+      });
+      activity.value = parsed?.data ?? [];
     });
   }
 

@@ -176,7 +176,7 @@ const goToSchedule = () => {
     <template #default>
       <client-only>
         <div class="dashboard-shell">
-          <section class="metrics-grid" v-if="!mobile">
+          <section class="metrics-grid" v-if="!mobile" data-testid="dashboard-metrics-grid">
             <MetricCard
               v-for="metric in metrics"
               :key="metric.title"
@@ -189,11 +189,11 @@ const goToSchedule = () => {
               :trend-as-percent="true"
             />
           </section>
-          <section v-else class="metrics-carousel-wrapper">
+          <section v-else class="metrics-carousel-wrapper" data-testid="dashboard-metrics-carousel">
             <MetricsCarousel :items="metrics" />
           </section>
           <div class="dashboard-body">
-            <section class="panel panel--next-games">
+            <section class="panel panel--next-games" data-testid="dashboard-next-games">
               <div class="panel__header">
                 <h2 class="panel__title">Próximos partidos</h2>
                 <v-btn variant="text" to="/torneos">Ver todos</v-btn>
@@ -208,7 +208,7 @@ const goToSchedule = () => {
               </div>
             </section>
             <div class="dashboard-side">
-              <section class="panel panel--actions">
+              <section class="panel panel--actions" data-testid="dashboard-actions">
                 <div class="panel__header">
                   <h2 class="panel__title">Acciones Rápidas</h2>
                 </div>
@@ -228,7 +228,7 @@ const goToSchedule = () => {
                   </div>
                 </div>
               </section>
-              <section class="panel panel--activity">
+              <section class="panel panel--activity" data-testid="dashboard-activity">
                 <div class="panel__header">
                   <h2 class="panel__title">Actividad Reciente</h2>
                 </div>
