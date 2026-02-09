@@ -38,7 +38,7 @@ a {
 .main {
   grid-area: main;
   box-sizing: border-box;
-  padding: 16px 16px 0 71px; // mobile default
+  padding: 16px 16px 0 16px; // mobile default
   position: relative;
   min-height: 0;
   max-height: 100vh;

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import {useResizeObserver} from '@vueuse/core'
-import {useDisplay} from 'vuetify'
 import {Icon} from '#components'
 import ContactForm from '~/components/shared/ContactForm.vue'
 import TicketList from '~/components/shared/TicketList.vue'
@@ -12,6 +11,7 @@ const globalStore =  useGlobalStore()
   const authStore = useAuthStore()
   const { user } = storeToRefs(authStore)
   const tab = ref(user?.value?.opened_tickets_count ? 'history' : 'contact-support')
+  const desktopRail = ref(false)
 
   const links = reactive([
     { icon: 'futzo-icon:home', title: 'Dashboard', to: '/dashboard', class: 'mr-2 drawer-icon filled' },
@@ -45,9 +45,16 @@ const globalStore =  useGlobalStore()
     const entry = entries[0]
     drawerWidth.value = entry?.contentRect?.width as number
   })
-  watchEffect(() => {
-    rail.value = isMobile.value
-  })
+  watch(isMobile, (value) => {
+    if (value) {
+      desktopRail.value = rail.value
+      rail.value = false
+      drawer.value = false
+      return
+    }
+    drawer.value = true
+    rail.value = desktopRail.value
+  }, { immediate: true })
   const logOut = async () => {
     try {
       await logout()
@@ -57,7 +64,6 @@ const globalStore =  useGlobalStore()
       console.error('Error during logout:', error)
     }
   }
-  const { mobile } = useDisplay()
   const showTutorialHandler = () => {
     resetTour()
     recalculateTour()
@@ -67,13 +73,14 @@ const globalStore =  useGlobalStore()
 
 <template>
   <v-navigation-drawer
-    :permanent="!mobile"
-    :mobile="false"
+    :permanent="!isMobile"
+    :temporary="isMobile"
     v-model="drawer"
-    :rail="rail"
-    @click.stop="rail = false"
+    :rail="!isMobile && rail"
+    :scrim="isMobile"
+    :app="!isMobile"
+    @click.stop="!isMobile && (rail = false)"
     rail-width="56"
-    app
     style="min-height: 100vh"
   >
     <template #prepend>
@@ -82,10 +89,22 @@ const globalStore =  useGlobalStore()
           <Logo />
         </div>
         <template #prepend>
-          <v-btn v-if="rail" variant="text" icon="mdi-menu" @click.stop="rail = !rail"></v-btn>
+          <v-btn v-if="!isMobile && rail" variant="text" icon="mdi-menu" @click.stop="rail = !rail"></v-btn>
         </template>
         <template #append>
-          <v-btn icon="mdi-chevron-left" variant="text" @click.stop="rail = !rail"></v-btn>
+          <v-btn
+            v-if="!isMobile"
+            icon="mdi-chevron-left"
+            variant="text"
+            @click.stop="rail = !rail"
+          ></v-btn>
+          <v-btn
+            v-else
+            icon="mdi-close"
+            variant="text"
+            aria-label="Cerrar navegación"
+            @click.stop="drawer = false"
+          ></v-btn>
         </template>
       </v-list-item>
     </template>

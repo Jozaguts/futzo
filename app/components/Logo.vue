@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-  import { useTheme } from 'vuetify'
-
-  const logo = ref('/futzo/logos/horizontal/logo-12.png')
-  const hydrated = ref(true)
+const hydrated = ref(true)
 
   export interface Props {
     maxWidth?: string | number
@@ -11,18 +8,9 @@
   const props = withDefaults(defineProps<Props>(), {
     maxWidth: '100%',
   })
-  watch(
-    useTheme().global.current,
-    (value) => {
-      value.dark
-        ? (logo.value = '/futzo/logos/horizontal/logo-14.png')
-        : (logo.value = '/futzo/logos/horizontal/logo-12.png')
-    },
-    { deep: true }
-  )
   const goToHome = () => {
-    if (useRoute().name !== 'torneos-torneo-inscripcion') {
-      useRouter().push({ name: 'index' })
+    if (useRoute().name !== 'dashboard') {
+      useRouter().push({ name: 'dashboard' })
     }
   }
   onMounted(() => {
@@ -31,5 +19,15 @@
 </script>
 <template>
   <VSkeletonLoader v-if="hydrated" :max-width="props.maxWidth" type="avatar, heading" />
-  <v-img v-else :max-width="props.maxWidth" :src="logo" class="cursor-pointer" @click="goToHome"></v-img>
+  <NuxtImg
+      src="/futzo/logos/horizontal/bar-logo-12.png"
+      format="webp"
+      loading="lazy"
+      fetch-priority="low"
+      width="120"
+      height="50"
+      sizes="200px sm:120px md:120px"
+      @click="goToHome"
+      class="cursor-pointer"
+  />
 </template>

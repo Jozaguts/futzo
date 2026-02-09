@@ -5,12 +5,6 @@
       default: 'main',
     },
   })
-  const { rail, isMobile } = storeToRefs(useGlobalStore())
-  onMounted(() => {
-    if (isMobile.value) {
-      rail.value = true
-    }
-  })
 </script>
 <template>
   <div class="futzo-page-container">

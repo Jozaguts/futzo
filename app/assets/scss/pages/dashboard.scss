@@ -3,7 +3,7 @@
   height: auto;
   max-height: none;
   overflow-y: auto;
-  padding: 16px 16px 0 70px;
+  padding: 16px 16px 0 16px;
 }
 
 .dashboard-shell {
@@ -356,7 +356,7 @@
 
 @media (width > 480px) {
   .main.dashboard-main {
-    padding: 16px 16px 0 72px;
+    padding: 16px 16px 0 16px;
   }
 }
 
