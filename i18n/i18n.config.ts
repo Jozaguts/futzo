@@ -64,6 +64,13 @@ export default defineI18nConfig(() => ({
           divider: 'o',
           browse: 'Buscar',
         },
+        carousel:{
+          ariaLabel:{
+            delimiter: '.'
+          },
+          prev: 'atras',
+          next:'siguiente',
+        }
       },
     },
   },
