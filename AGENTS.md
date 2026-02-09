@@ -47,6 +47,12 @@
 - Start from `.env.example`; do not commit secrets. Use `.env.prod` for builds.
 - `deploy.sh` requires `GITHUB_TOKEN` and pushes `.output/` to the `web` branch.
 
+## Testing & UX Notes (Contexto Reutilizable)
+- Playwright usa `NUXT_PUBLIC_URL_BACKEND` y carga envs en este orden: `.env`, `.env.local`, `.env.test`, `.env.testing`. Para testing, define `NUXT_PUBLIC_URL_BACKEND` en `.env.testing`. `.env.testing` está ignorado en git.
+- Si Playwright apunta al backend equivocado, asegúrate de cerrar cualquier `nuxt dev` previo porque Playwright reutiliza el server existente.
+- El endpoint de actividad de dashboard puede fallar validación si `team.slug` llega `null`. Definir si el backend debe siempre enviar slug o si el schema debe aceptar `null`.
+- Flujo actual (para UX): crear torneo → registrar equipos → abrir calendario → si no hay calendario, stepper 4 pasos (general, reglas, eliminatoria, campos) → generar calendario. Marcadores se actualizan rápido por jornada o completo en “Acta de partido” (goles, tarjetas, sustituciones, penales). Tablas de goles/tarjetas requieren jugadores registrados y eventos capturados.
+
 ## Domain Context (Futzo SaaS)
 Futzo administra ligas de fútbol. Los módulos principales en la app son `torneos`, `jugadores`, `equipos`, `ubicaciones` y `configuracion`. Cada cambio en reglas puede afectar la creación, validación y programación entre módulos. Este bloque es el mapa base para evitar efectos colaterales.
 
