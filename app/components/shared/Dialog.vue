@@ -22,6 +22,14 @@ defineProps({
     type: String,
     default: 'line-md:map-marker-loop',
   },
+  persistent: {
+    type: Boolean,
+    default: false,
+  },
+  showClose: {
+    type: Boolean,
+    default: true,
+  },
   width: {
     type: String,
     default: '700px',
@@ -33,6 +41,7 @@ defineProps({
       v-model="dialog"
       :max-width="width"
       :min-height="minHeight"
+      :persistent="persistent"
       @after-leave="() => emits('leaving')"
       scrollable
   >
@@ -58,7 +67,13 @@ defineProps({
         </v-card-title>
         <v-card-subtitle><span v-html="subtitle"></span></v-card-subtitle>
         <template #append>
-          <Icon name="futzo-icon:x-dialog" @click="dialog = false" size="24" class="cursor-pointer"/>
+          <Icon
+            v-if="showClose"
+            name="futzo-icon:x-dialog"
+            @click="dialog = false"
+            size="24"
+            class="cursor-pointer"
+          />
         </template>
       </v-card-item>
       <v-progress-linear

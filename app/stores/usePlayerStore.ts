@@ -190,29 +190,30 @@ export const usePlayerStore = defineStore('playerStore', () => {
     const url = isPreRegister
       ? `/api/v1/public/teams/${playerStoreRequest.value.basic.team_id}/pre-register-player`
       : '/api/v1/admin/players';
-    await client(url, {
-      method: 'POST',
-      body: form,
-    })
-      .then(async () => {
-        toast({
-          type: 'success',
-          msg: 'Jugador creado',
-          description: 'El nuevo jugadores se ha agregado exitosamente.',
-        });
-        dialog.value = false;
-        if (!isPreRegister) {
-          await getPlayers();
-        }
-      })
-      .catch((error) => {
-        toast({
-          type: 'error',
-          msg: 'Error al crear al jugadores',
-          description:
-            error.data?.message ?? 'No se pudo crear al jugadores. Verifica tu información e inténtalo de nuevo.',
-        });
+    try {
+      await client(url, {
+        method: 'POST',
+        body: form,
       });
+      toast({
+        type: 'success',
+        msg: 'Jugador creado',
+        description: 'El nuevo jugadores se ha agregado exitosamente.',
+      });
+      dialog.value = false;
+      if (!isPreRegister) {
+        await getPlayers();
+      }
+      return true;
+    } catch (error: any) {
+      toast({
+        type: 'error',
+        msg: 'Error al crear al jugadores',
+        description:
+          error.data?.message ?? 'No se pudo crear al jugadores. Verifica tu información e inténtalo de nuevo.',
+      });
+      return false;
+    }
   };
   const getPlayers = async (search?: string) => {
     try {

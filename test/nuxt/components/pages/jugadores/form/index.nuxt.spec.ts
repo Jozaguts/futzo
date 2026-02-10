@@ -94,7 +94,7 @@ describe('JugadoresForm', () => {
           'v-container': { template: '<div><slot /></div>' },
           'v-row': { template: '<div><slot /></div>' },
           'v-col': { template: '<div><slot /></div>' },
-          'v-btn': { template: '<button @click=\"$emit(\\'click\\')\"><slot /></button>' },
+          'v-btn': { template: `<button @click=\"$emit('click')\"><slot /></button>` },
         },
       },
     })
