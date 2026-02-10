@@ -9,6 +9,7 @@ const sanctumUser = vi.hoisted(() => ({ value: null as any }))
 mockNuxtImport('navigateTo', () => navigateTo)
 mockNuxtImport('useTournamentStore', () => () => ({ tournamentId }))
 mockNuxtImport('useSanctumUser', () => () => sanctumUser)
+mockNuxtImport('storeToRefs', () => (store: any) => store)
 
 describe('check-tournament middleware', () => {
   beforeEach(() => {
