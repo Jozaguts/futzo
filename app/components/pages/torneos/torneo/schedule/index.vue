@@ -225,11 +225,12 @@
       return
     }
 
-    if (roundState.value.round !== 1) {
+    const roundStatus = String(roundState.value.data?.status ?? '').toLowerCase()
+    if (roundStatus === 'completado') {
       toast({
         type: 'error',
-        msg: 'Jornada no válida',
-        description: 'Por ahora solo se puede guardar la Jornada 1.',
+        msg: 'Jornada completada',
+        description: 'No se puede editar una jornada que ya fue completada.',
       })
       return
     }
