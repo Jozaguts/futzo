@@ -2,7 +2,7 @@
 import AppBar from '~/components/layout/AppBar.vue'
 import PlayersNavbarButtons from '~/components/pages/jugadores/players-navbar-buttons.vue'
 import NoPlayers from '~/components/pages/jugadores/no-players.vue'
-import PlayersDialog from '~/components/pages/jugadores/dialog/index.vue'
+import JugadoresForm from '~/components/pages/jugadores/form/index.vue'
 import PlayersTable from '~/components/pages/jugadores/players-table.vue'
 import ImportDialog from '@/components/pages/jugadores/import-dialog/index.vue'
 import AssignTeamDialog from '@/components/pages/jugadores/assign-team-dialog.vue'
@@ -47,7 +47,7 @@ const playerStore = usePlayerStore()
     <template #default>
       <NoPlayers />
       <PlayersTable />
-      <PlayersDialog />
+      <JugadoresForm />
       <ImportDialog />
       <AssignTeamDialog />
     </template>

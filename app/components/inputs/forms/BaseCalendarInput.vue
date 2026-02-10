@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-  import { VueDatePicker, type RootPropsWithDefaults } from '@vuepic/vue-datepicker'
-  import '@vuepic/vue-datepicker/dist/main.css'
-  import { es } from 'date-fns/locale'
-  import useCalendar from '~/composables/useCalendar'
-  import { isDate } from 'date-fns'
-  type VErrorProps = {
+import {type RootPropsWithDefaults, VueDatePicker} from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
+import {es} from 'date-fns/locale'
+import useCalendar from '~/composables/useCalendar'
+import {isDate} from 'date-fns'
+
+type VErrorProps = {
     'error-messages': string[]
   }
   const startDate = defineModel<Date | string>('start_date')
   const endDate = defineModel<Date | string>('end_date')
-  const dates = ref<Date | Date[]>(new Date())
   const props = defineProps({
     paddingBottom: {
       type: String,
@@ -39,6 +39,10 @@
       type: Date,
       required: false,
     },
+    startEmpty: {
+      type: Boolean,
+      default: false,
+    },
     'error-messages': {
       type: Object as PropType<VErrorProps>,
       required: false,
@@ -48,6 +52,7 @@
       default: false,
     },
   })
+  const dates = ref<Date | Date[] | undefined>(props.startEmpty ? undefined : new Date())
   const { getDate, formatDate, selectDate, dp } = useCalendar()
   const emits = defineEmits(['start_date_updated', 'end_date_updated', 'update:modelValue'])
   const attr: RootPropsWithDefaults = {

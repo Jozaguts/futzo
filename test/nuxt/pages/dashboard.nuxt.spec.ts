@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { ref } from 'vue'
-import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
+import {beforeEach, describe, expect, it, vi} from 'vitest'
+import {ref} from 'vue'
+import {mockNuxtImport, mountSuspended} from '@nuxt/test-utils/runtime'
 import DashboardPage from '../../../app/pages/dashboard.vue'
 
 const isMobile = ref(false)
@@ -63,7 +63,7 @@ describe('Dashboard page', () => {
           NoGames: { template: '<div data-testid="no-games"></div>' },
           TournamentDialog: true,
           CreateTeamDialog: true,
-          PlayersDialog: true,
+          JugadoresForm: true,
         },
       },
     })
@@ -88,7 +88,7 @@ describe('Dashboard page', () => {
           NoGames: { template: '<div data-testid="no-games"></div>' },
           TournamentDialog: true,
           CreateTeamDialog: true,
-          PlayersDialog: true,
+          JugadoresForm: true,
         },
       },
     })
@@ -123,7 +123,7 @@ describe('Dashboard page', () => {
           NoGames: { template: '<div data-testid="no-games"></div>' },
           TournamentDialog: true,
           CreateTeamDialog: true,
-          PlayersDialog: true,
+          JugadoresForm: true,
         },
       },
     })

@@ -6,7 +6,7 @@ import MetricsCarousel from '~/components/pages/dashboard/metrics-carousel.vue'
 import ActivityFeed from '~/components/pages/dashboard/activity-feed.vue'
 import TournamentDialog from '~/components/pages/torneos/dialog/index.vue'
 import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
-import PlayersDialog from '~/components/pages/jugadores/dialog/index.vue'
+import JugadoresForm from '~/components/pages/jugadores/form/index.vue'
 import NoGames from '~/components/shared/empty-states/NoGames.vue'
 import {useDisplay} from 'vuetify'
 import type {Tournament} from '~/models/tournament'
@@ -241,7 +241,7 @@ const goToSchedule = () => {
         </div>
         <TournamentDialog />
         <CreateTeamDialog />
-        <PlayersDialog />
+        <JugadoresForm />
         <v-dialog v-model="scheduleDialog" max-width="520">
           <v-card>
             <v-card-title>Programar Partido</v-card-title>

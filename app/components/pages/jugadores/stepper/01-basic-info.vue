@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import DragDropImage from '~/components/pages/torneos/drag-drop-image.vue'
-import { boolean, date, mixed, number, object, string } from 'yup'
+import {boolean, date, mixed, number, object, string} from 'yup'
 import '@vuepic/vue-datepicker/dist/main.css'
 import {dragDropImageRef} from '~/composables/useImage'
 import {vuetifyConfig} from '~/utils/constants'
@@ -22,6 +22,7 @@ const { t } = useI18n()
   const teamSlug = computed(() => String(useRoute().params?.equipo ?? ''))
   const initialBasicValues = {
     ...playerStoreRequest.value.basic,
+    birthdate: isEdition.value ? playerStoreRequest.value.basic?.birthdate ?? null : null,
     name: [playerStoreRequest.value.basic?.name, playerStoreRequest.value.basic?.last_name].filter(Boolean).join(' ').trim(),
   }
   const fileFromInput = (value: File | File[] | string | null | undefined) => {
@@ -246,6 +247,7 @@ const { t } = useI18n()
           v-model:start_date="birthdate"
           v-model:end_date="birthdate"
           :multiCalendar="false"
+          start-empty
           :error-messages="birthdate_props"
         />
       </template>
