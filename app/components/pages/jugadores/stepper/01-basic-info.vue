@@ -7,6 +7,7 @@ import {vuetifyConfig} from '~/utils/constants'
 import type {PlayerStoreRequest} from '~/models/Player'
 import type {Team} from '~/models/Team'
 import type {PlayerVerificationMethod, PlayerVerificationSettings} from '~/models/settings'
+import type {User} from '~/models/User'
 import * as settingsAPI from '~/http/api/settings'
 import {storeToRefs, toTypedSchema, useCategoryStore, useI18n, usePlayerStore, useTeamStore} from '#imports'
 
@@ -16,6 +17,9 @@ const { t } = useI18n()
   const { categories } = storeToRefs(useCategoryStore())
   //@ts-ignore
   const isPreRegister = computed(() => useRoute().name === 'equipos-equipo-jugadores-inscripcion')
+  const user = useSanctumUser<User>()
+  const isGuest = computed(() => !user.value?.email && !user.value?.phone)
+  const teamSlug = computed(() => String(useRoute().params?.equipo ?? ''))
   const initialBasicValues = {
     ...playerStoreRequest.value.basic,
     name: [playerStoreRequest.value.basic?.name, playerStoreRequest.value.basic?.last_name].filter(Boolean).join(' ').trim(),
@@ -140,24 +144,33 @@ const { t } = useI18n()
     // @ts-ignore
     if (categoryId) category_id.value = categoryId as number
   }
+  const fetchVerificationSettings = async () => {
+    try {
+      if (isPreRegister.value && isGuest.value && teamSlug.value) {
+        verificationSettings.value = await settingsAPI.getPlayerVerificationSettingsPublic(teamSlug.value)
+        return
+      }
+      verificationSettings.value = await settingsAPI.getPlayerVerificationSettings()
+    } catch {
+      verificationSettings.value = null
+    }
+  }
+
   onMounted(() => {
     if (!isPreRegister.value) {
       usePlayerStore().initPlayerForm()
     }
-    settingsAPI
-      .getPlayerVerificationSettings()
-      .then((response) => {
-        verificationSettings.value = response
-      })
-      .catch(() => {
-        verificationSettings.value = null
-      })
+    fetchVerificationSettings()
   })
 
   watch(
     selectedTournamentId,
     (tournamentId) => {
       if (!tournamentId) {
+        tournamentVerificationOverride.value = null
+        return
+      }
+      if (isGuest.value) {
         tournamentVerificationOverride.value = null
         return
       }

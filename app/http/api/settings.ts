@@ -1,4 +1,4 @@
-import {useSanctumClient} from '#imports';
+import {useRequestFetch, useRuntimeConfig, useSanctumClient} from '#imports';
 import type {
   PlayerTransferLockSetting,
   PlayerVerificationMethod,
@@ -25,6 +25,20 @@ export const updatePlayerTransferLock = async (tournamentId: number, player_lock
 export const getPlayerVerificationSettings = async () => {
   const client = useSanctumClient();
   return await client<PlayerVerificationSettings>('/api/v1/admin/settings/players/verification');
+};
+
+export const getPlayerVerificationSettingsPublic = async (teamSlug: string) => {
+  const config = useRuntimeConfig();
+  const requestFetch = useRequestFetch();
+  const encodedSlug = encodeURIComponent(teamSlug);
+  return await requestFetch<PlayerVerificationSettings>(
+    `${config.public.baseURLBackend}/api/v1/public/settings/players/verification?team_slug=${encodedSlug}`,
+    {
+      headers: {
+        accept: 'application/json',
+      },
+    }
+  );
 };
 
 export const updatePlayerVerificationSettings = async (payload: PlayerVerificationSettings) => {
