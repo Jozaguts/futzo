@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-  import getHeaders from '~/utils/headers-table'
   import type { Tournament } from '~/models/tournament'
   import { useRouter } from '#app'
   import { getTournamentRegistrationQRCode } from '~/http/api/tournament'
@@ -9,6 +8,16 @@
   const tournamentStore = useTournamentStore()
   const { noTournaments, tournaments, tournamentId, tournament, pagination, search } = storeToRefs(tournamentStore)
   const { mobile } = useDisplay()
+  const headers = computed(() => [
+    { title: 'Torneo', value: 'name', sortable: true },
+    { title: 'Formato', value: 'format_label', sortable: false },
+    { title: 'Tipo', value: 'football_type_label', sortable: false },
+    { title: 'Equipos', value: 'teams_count', sortable: false, align: 'center' },
+    { title: 'Jugadores', value: 'players_count', sortable: false, align: 'center' },
+    { title: 'Progreso', value: 'progress', sortable: false, align: 'center' },
+    { title: 'Estado', value: 'status', sortable: false, align: 'center' },
+    { title: '', value: 'actions', sortable: false, align: 'center' },
+  ])
   const syncPaginationPerPage = (isMobile: boolean) => {
     const nextPerPage = isMobile ? 1 : 10
     if (pagination.value.per_page === nextPerPage) {
@@ -25,21 +34,6 @@
       tournamentStore.loadTournaments()
     }
   })
-  const headers = getHeaders('tournaments')
-  const setChipColor = (status: string) => {
-    switch (status) {
-      case 'creado':
-        return 'warning'
-      case 'en curso':
-        return 'success'
-      case 'completado':
-        return 'primary'
-      case 'cancelado':
-        return 'error'
-      default:
-        return 'warning'
-    }
-  }
   const handleShowTournament = (_tournament: Tournament) => {
     tournamentId.value = _tournament.id as number
     tournament.value = _tournament
@@ -86,6 +80,20 @@
     a.click()
     document.body.removeChild(a)
   }
+  const statusHandler = (status?: string | null) => {
+    switch (status) {
+      case 'creado':
+        return { label: 'Próximo', color: 'warning' }
+      case 'en curso':
+        return { label: 'Activo', color: 'success' }
+      case 'completado':
+        return { label: 'Finalizado', color: 'grey-lighten-1' }
+      case 'cancelado':
+        return { label: 'Cancelado', color: 'error' }
+      default:
+        return { label: '-', color: 'grey-lighten-1' }
+    }
+  }
 </script>
 <template>
   <Table
@@ -95,9 +103,9 @@
     itemKey="name"
     :search.sync="search"
     v-model:pagination="pagination"
-    :status-handler="setChipColor"
     :paginate="tournamentStore.loadTournaments"
     :items-per-page="mobile ? 1 : 10"
+    :status-handler="statusHandler"
   >
     <template #name="item">
       <div class="d-flex align-center">
@@ -110,41 +118,33 @@
       </div>
     </template>
     <template #actions="{ item }">
-      <div class="d-flex flex-column my-2 align-center">
-        <v-menu location="start" density="compact" :close-on-content-click="false">
-          <template v-if="!$vuetify.display.mobile" v-slot:activator="{ props }">
-            <v-btn icon="mdi-dots-vertical" variant="text" v-bind="props"></v-btn>
+      <div class="tournament-actions">
+        <v-tooltip text="Copiar enlace de inscripción" location="top">
+          <template #activator="{ props }">
+            <CopyLink :item="item" icon-only v-bind="props" />
           </template>
-          <template v-if="$vuetify.display.mobile" v-slot:activator="{ props }">
-            <v-btn block density="compact" variant="outlined" v-bind="props">Menu</v-btn>
+        </v-tooltip>
+        <v-tooltip text="Generar QR" location="top">
+          <template #activator="{ props }">
+            <v-btn icon variant="text" v-bind="props" @click="qrCodeHandler(item as Tournament)">
+              <Icon name="mdi-qrcode" size="20" />
+            </v-btn>
           </template>
-          <v-list density="compact" nav class="futzo-rounded">
-            <v-list-subheader>Ver</v-list-subheader>
-            <v-list-item @click="scheduleHandler(item as Tournament)">
-              <template #prepend>
-                <Icon name="futzo-icon:calendar" size="24"></Icon>
-              </template>
-              <v-list-item-title class="ml-1">Calendario</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="handleShowTournament(item as Tournament)">
-              <template #prepend>
-                <Icon name="mdi-trophy" size="24"></Icon>
-              </template>
-              <v-list-item-title class="ml-1">Torneo</v-list-item-title>
-            </v-list-item>
-            <v-list-subheader>Compartir</v-list-subheader>
-            <CopyLink :item="item" text="Enlace de inscripción" />
-            <v-list-item @click="qrCodeHandler(item as Tournament)" v-auto-animate>
-              <template #prepend>
-                <Icon name="mdi-qrcode"></Icon>
-              </template>
-              <v-list-item-title class="ml-1"> QR de inscripción </v-list-item-title>
-              <template #append>
-                <Icon v-show="qr.isLoading" name="line-md:downloading-loop" class="text-primary"></Icon>
-              </template>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+        </v-tooltip>
+        <v-tooltip text="Ver torneo" location="top">
+          <template #activator="{ props }">
+            <v-btn icon variant="text" v-bind="props" @click="handleShowTournament(item as Tournament)">
+              <Icon name="mdi-trophy" size="20" />
+            </v-btn>
+          </template>
+        </v-tooltip>
+        <v-tooltip text="Ver calendario" location="top">
+          <template #activator="{ props }">
+            <v-btn icon variant="text" v-bind="props" @click="scheduleHandler(item as Tournament)">
+              <Icon name="futzo-icon:calendar" size="20" />
+            </v-btn>
+          </template>
+        </v-tooltip>
       </div>
     </template>
   </Table>
@@ -159,3 +159,11 @@
     </v-card>
   </v-dialog>
 </template>
+<style scoped>
+  .tournament-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+</style>

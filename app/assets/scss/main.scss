@@ -44,6 +44,11 @@ a {
   max-height: 100vh;
   overflow-y: scroll;
 }
+.main.torneos-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
 .futzo-page-container {
   display: grid;

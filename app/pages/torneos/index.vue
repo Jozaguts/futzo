@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import AppBar from '~/components/layout/AppBar.vue'
-import TournamentAppBarButtons from '~/components/pages/torneos/tournament-app-bar-buttons.vue'
 import TournamentTable from '~/components/pages/torneos/tournament-table.vue'
 import NoTournaments from '~/components/pages/torneos/no-tournament.vue'
 import TournamentDialog from '~/components/pages/torneos/dialog/index.vue'
-import {useDisplay} from 'vuetify'
-import SearchInput from '~/components/pages/torneos/app-bar-search-input.vue'
-import {storeToRefs} from '#imports'
-import {Icon} from '#components'
+import TournamentKpis from '~/components/pages/torneos/tournament-kpis.vue'
+import TournamentFilters from '~/components/pages/torneos/tournament-filters.vue'
+import { storeToRefs } from '#imports'
 
 definePageMeta({
   middleware: ['sanctum:auth'],
 })
 const tournamentStore = useTournamentStore()
-  const { dialog, tournamentId, noTournaments, tourSteps } = storeToRefs(tournamentStore)
+  const { tournamentId, noTournaments, tourSteps, summary } = storeToRefs(tournamentStore)
   const { registerTourRef, startTour, resetTour, recalculateTour } = tournamentStore
   const { setActiveController, clearActiveController } = useTourHub()
   const tourController = { registerTourRef, startTour, resetTour, recalculateTour }
@@ -25,41 +22,22 @@ const tournamentStore = useTournamentStore()
   onBeforeUnmount(() => {
     clearActiveController(tourController)
   })
-  const { mobile } = useDisplay()
-  const open = ref(false)
 </script>
 <template>
-  <PageLayout>
-    <template #app-bar>
-      <AppBar :extended="mobile">
-        <template #buttons>
-          <TournamentAppBarButtons />
-        </template>
-        <template #extension>
-          <div class="d-flex d-md-none d-lg-none flex-column w-100">
-            <SearchInput class="mx-4" />
-          </div>
-        </template>
-      </AppBar>
-    </template>
+  <PageLayout styles="main torneos-page">
     <template #default>
+      <div class="torneos-page__header">
+        <h1 class="torneos-page__title">Torneos</h1>
+      </div>
+      <TournamentKpis :summary="summary" />
+      <TournamentFilters />
       <NoTournaments />
-      <div v-if="!noTournaments" class="table" style="height: 100%">
+      <div v-if="!noTournaments" class="table torneos-page__table">
         <div class="table-wrapper">
           <TournamentTable />
         </div>
       </div>
       <TournamentDialog />
-    </template>
-    <template #fab>
-      <v-fab color="primary" icon @click="open = !open">
-        <Icon name="futzo-icon:plus" class="mobile-fab" :class="open ? 'opened' : ''" size="24"></Icon>
-        <v-speed-dial v-model="open" location="left center" transition="slide-y-reverse-transition" activator="parent">
-          <v-btn key="1" color="secondary" icon @click="dialog = !dialog">
-            <v-icon size="16">mdi-trophy</v-icon>
-          </v-btn>
-        </v-speed-dial>
-      </v-fab>
     </template>
     <template #tour>
       <LazyTour name="torneos" :steps="tourSteps" @register="registerTourRef" />
@@ -69,5 +47,22 @@ const tournamentStore = useTournamentStore()
 <style scoped>
   .table-wrapper {
     max-height: 100%;
+  }
+
+  .torneos-page__header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+
+  .torneos-page__title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .torneos-page__table {
+    margin-top: 12px;
   }
 </style>

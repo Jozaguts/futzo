@@ -11,6 +11,7 @@ import type {
   TournamentStats,
   TournamentStatus,
   TournamentStoreRequest,
+  TournamentSummary,
 } from '~/models/tournament';
 import type {Game} from '~/models/Game';
 import type {User} from '~/models/User';
@@ -149,6 +150,13 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   const noTournaments = computed(() => !tournaments.value.length);
   const search = ref('');
   const statusFilters = ref<TournamentStatus[]>([]);
+  const formatFilter = ref<string | null>(null);
+  const summary = ref<TournamentSummary>({
+    total: 0,
+    active: 0,
+    upcoming: 0,
+    finished: 0,
+  });
   const calendarDialog = ref(false);
   const tournamentStoreRequest = ref<TournamentStoreRequest>({
     basic: {} as BasicInfoForm,
@@ -231,6 +239,8 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     };
   }
 
+  type TournamentListMeta = IPagination & { summary?: TournamentSummary };
+
   async function loadTournaments() {
     loading.value = true;
     const client = useSanctumClient();
@@ -244,18 +254,30 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     if (statusFilters.value.length) {
       statusFilters.value.forEach((status) => params.append('status[]', status));
     }
+    if (formatFilter.value) {
+      params.set('format', formatFilter.value);
+    }
     try {
-      const response = await client<{ data: Tournament[]; meta: IPagination }>(
+      const response = await client<{ data: Tournament[]; meta: TournamentListMeta }>(
         `/api/v1/admin/tournaments?${params.toString()}`
       );
       tournaments.value = response.data;
       pagination.value = { ...pagination.value, ...response?.meta };
+      if (response?.meta?.summary) {
+        summary.value = response.meta.summary;
+      }
     } finally {
       loading.value = false;
     }
   }
   async function applyStatusFilter(statuses?: TournamentStatus[]) {
     statusFilters.value = Array.isArray(statuses) ? [...statuses] : [];
+    pagination.value.current_page = 1;
+    await loadTournaments();
+  }
+
+  async function applyFormatFilter(format?: string | null) {
+    formatFilter.value = format || null;
     pagination.value.current_page = 1;
     await loadTournaments();
   }
@@ -416,6 +438,8 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     noTournaments,
     search,
     statusFilters,
+    formatFilter,
+    summary,
     steps,
     tournamentStoreRequest,
     calendarDialog,
@@ -434,6 +458,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     getTournamentLocations,
     loadTournaments,
     applyStatusFilter,
+    applyFormatFilter,
     storeTournament,
     fetchTournamentsByLeagueId,
     $reset,

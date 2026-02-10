@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+  defineOptions({ inheritAttrs: false })
   const props = defineProps({
     item: {
       type: Object,
@@ -8,6 +9,11 @@
       type: String,
       required: false,
       default: 'Enlace',
+    },
+    iconOnly: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   })
   const copied = ref(false)
@@ -34,7 +40,10 @@
   }
 </script>
 <template>
-  <v-list-item density="compact" @click="setCopied">
+  <v-btn v-if="iconOnly" icon variant="text" v-bind="$attrs" @click="setCopied" :aria-label="text">
+    <Icon :name="copied ? 'mdi-check' : 'mdi-link'" size="20" />
+  </v-btn>
+  <v-list-item v-else density="compact" v-bind="$attrs" @click="setCopied">
     <template #prepend> <Icon name="mdi-link" size="24"></Icon></template>
     <v-list-item-title class="pl-1" style="min-width: 130px">
       {{ text }}

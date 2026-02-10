@@ -72,6 +72,20 @@ export interface Tournament {
   created_at: Date;
   updated_at: Date;
   teams: Team[];
+  players?: number | null;
+  register_link?: string | null;
+  football_type?: {
+    id?: number;
+    name?: string;
+  } | null;
+  teams_count?: number | null;
+  players_count?: number | null;
+  format_label?: string | null;
+  football_type_label?: string | null;
+  progress?: {
+    percent: number;
+    label: string;
+  } | null;
   substitutions_per_team: number;
   format: {
     id: number;
@@ -302,6 +316,13 @@ export type FormLabelStep = 'Crea un torneo' | 'Detalles del torneo';
 export type CurrentStep = 'basicInfo' | 'detailsInfo';
 
 export interface CreateTournamentForm extends TournamentStoreRequest {}
+
+export type TournamentSummary = {
+  total: number;
+  active: number;
+  upcoming: number;
+  finished: number;
+};
 
 export type TournamentStatus = 'creado' | 'en curso' | 'completado' | 'cancelado';
 export type TournamentStatusText = 'Creado' | 'En curso' | 'Completado' | 'Cancelado';

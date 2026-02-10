@@ -3,7 +3,6 @@
   import { useDisplay } from 'vuetify'
   import type { Team } from '~/models/Team'
   import { Icon } from '#components'
-
   const props = defineProps({
     headers: {
       type: Array as PropType<Header[]>,
@@ -92,6 +91,19 @@
   }
   const { mobile } = useDisplay()
   const emits = defineEmits(['openAssignModal'])
+  const resolveStatus = (status?: string | null) => {
+    if (!props.statusHandler) {
+      return { label: status ?? '-', color: undefined }
+    }
+    const result = props.statusHandler(status ?? '')
+    if (typeof result === 'string') {
+      return { label: status ?? '-', color: result }
+    }
+    return {
+      label: result?.label ?? status ?? '-',
+      color: result?.color,
+    }
+  }
 </script>
 <template>
   <v-data-table
@@ -209,9 +221,21 @@
       ></v-checkbox-btn>
     </template>
     <template v-slot:item.status="{ item }">
-      <v-chip :color="statusHandler(item)" border="md" class="text-capitalize">
-        {{ item.status }}
+      <v-chip :color="resolveStatus(item?.status).color" border="md" class="text-capitalize">
+        {{ resolveStatus(item?.status).label }}
       </v-chip>
+    </template>
+    <template #[`item.progress`]="{item}">
+      <div class="tournament-progress">
+        <v-progress-linear
+            :model-value="item?.progress?.percent ?? 0"
+            height="6"
+            rounded
+            color="primary"
+            class="tournament-progress__bar"
+        />
+        <span class="tournament-progress__label">{{ item?.progress?.label ?? '0/0' }}</span>
+      </div>
     </template>
     <template #item.actions="{ item }">
       <slot name="actions" :item="item"></slot>
@@ -273,3 +297,20 @@
     </template>
   </v-data-table>
 </template>
+<style scoped>
+  .tournament-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tournament-progress__bar {
+    width: 80px;
+  }
+
+  .tournament-progress__label {
+    font-size: 12px;
+    color: #667085;
+  }
+</style>
