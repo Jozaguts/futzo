@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-  import type { Tournament } from '~/models/tournament'
-  import { useRouter } from '#app'
-  import { getTournamentRegistrationQRCode } from '~/http/api/tournament'
-  import { Icon } from '#components'
-  import { useDisplay } from 'vuetify'
+import type {Tournament} from '~/models/tournament'
+import {useRouter} from '#app'
+import {getTournamentRegistrationQRCode} from '~/http/api/tournament'
+import {Icon} from '#components'
+import {useDisplay} from 'vuetify'
 
-  const tournamentStore = useTournamentStore()
+const tournamentStore = useTournamentStore()
   const { noTournaments, tournaments, tournamentId, tournament, pagination, search } = storeToRefs(tournamentStore)
   const { mobile } = useDisplay()
   const headers = computed(() => [
     { title: 'Torneo', value: 'name', sortable: true },
-    { title: 'Formato', value: 'format_label', sortable: false },
-    { title: 'Tipo', value: 'football_type_label', sortable: false },
+    { title: 'Formato', value: 'format.name', sortable: false },
+    { title: 'Tipo', value: 'football_type.name', sortable: false },
     { title: 'Equipos', value: 'teams_count', sortable: false, align: 'center' },
     { title: 'Jugadores', value: 'players_count', sortable: false, align: 'center' },
     { title: 'Progreso', value: 'progress', sortable: false, align: 'center' },
@@ -58,6 +58,8 @@
     showQrCode: false,
   })
   const qrCodeHandler = async (tournament: Tournament) => {
+    const { start, finish } = useLoadingIndicator()
+    start({ force: true })
     try {
       qr.value.hasError = false
       qr.value.isLoading = true
@@ -70,6 +72,7 @@
       qr.value.hasError = true
     } finally {
       qr.value.isLoading = false
+      finish()
     }
   }
   const downloadQR = () => {

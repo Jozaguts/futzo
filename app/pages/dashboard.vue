@@ -224,7 +224,7 @@ const goToSchedule = () => {
                     </PrimaryBtn>
                     <SecondaryBtn @click="teamDialog = true" icon="futzo-icon:shirt-sharp" text="Agregar Equipo" icon-position="right" />
                     <SecondaryBtn @click="playerDialog = true" icon="futzo-icon:players" text="Registrar Jugador" icon-position="right" />
-                    <SecondaryBtn @click="openScheduleDialog" icon="mdi-calendar" text="Programar Partido" icon-position="right" />
+                    <SecondaryBtn @click="openScheduleDialog" icon="mdi-warning" text="Aplicar Sanción" icon-position="right" />
                   </div>
                 </div>
               </section>

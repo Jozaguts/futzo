@@ -4,7 +4,7 @@ import NoTournaments from '~/components/pages/torneos/no-tournament.vue'
 import TournamentDialog from '~/components/pages/torneos/dialog/index.vue'
 import TournamentKpis from '~/components/pages/torneos/tournament-kpis.vue'
 import TournamentFilters from '~/components/pages/torneos/tournament-filters.vue'
-import { storeToRefs } from '#imports'
+import {storeToRefs} from '#imports'
 
 definePageMeta({
   middleware: ['sanctum:auth'],
@@ -64,5 +64,11 @@ const tournamentStore = useTournamentStore()
 
   .torneos-page__table {
     margin-top: 12px;
+    flex: 1 1 calc(100% - 32px);
+  }
+  @media (width <= 600px) {
+    .torneos-page__table {
+      flex: 0 1 400px
+    }
   }
 </style>
