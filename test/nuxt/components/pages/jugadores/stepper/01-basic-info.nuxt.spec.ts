@@ -70,6 +70,10 @@ describe('Player stepper basic info', () => {
     steps.value = { current: 'basic', steps: { basic: { disable: false } } }
     initPlayerForm.mockReset()
 
+    ;(settingsAPI.getPlayerVerificationSettings as any).mockClear()
+    ;(settingsAPI.getPlayerVerificationSettingsPublic as any).mockClear()
+    ;(settingsAPI.getTournamentConfiguration as any).mockClear()
+
     ;(settingsAPI.getPlayerVerificationSettings as any).mockResolvedValue({
       requires_player_verification: false,
       player_verification_methods: [],
