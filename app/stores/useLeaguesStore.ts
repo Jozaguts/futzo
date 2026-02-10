@@ -23,15 +23,21 @@ export const useLeaguesStore = defineStore('leaguesStore', () => {
     const response = await leagueAPI.getLeagueTournaments(leagueId);
     leagueTournaments.value = response.data ?? ([] as Tournament[]);
   };
-  onBeforeMount(async () => {
-    if (!isLogged.value) return;
-    await useLeaguesStore().fetchLeagues();
-    await useLeaguesStore().getFootballTypes();
-  });
-  onMounted(async () => {
-    if (!isLogged.value) return;
-    await getFootballTypes();
-  });
+  const isTestEnv = import.meta.env.MODE === 'test';
+  const hasFetched = ref(false);
+  watch(
+    () => user.value,
+    (currentUser) => {
+      if (!import.meta.client && !isTestEnv) return;
+      if (hasFetched.value) return;
+      const logged = !!currentUser?.email || !!currentUser?.phone;
+      if (!logged) return;
+      fetchLeagues();
+      getFootballTypes();
+      hasFetched.value = true;
+    },
+    { immediate: true }
+  );
   return {
     leagues,
     footballTypes,

@@ -1,6 +1,6 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest'
 import {createPinia, setActivePinia} from 'pinia'
-import {defineComponent, h} from 'vue'
+import {defineComponent, h, ref} from 'vue'
 import {mockNuxtImport, mountSuspended} from '@nuxt/test-utils/runtime'
 import {useLeaguesStore} from '~/stores/useLeaguesStore'
 
@@ -8,7 +8,7 @@ const fetchLeaguesMock = vi.hoisted(() => vi.fn().mockResolvedValue([]))
 const getFootballTypesMock = vi.hoisted(() => vi.fn().mockResolvedValue([]))
 const getLeagueLocationsMock = vi.hoisted(() => vi.fn().mockResolvedValue([]))
 const getLeagueTournamentsMock = vi.hoisted(() => vi.fn().mockResolvedValue({ data: [] }))
-const sanctumUser = vi.hoisted(() => ({ value: null as any }))
+const sanctumUser = ref(null as any)
 
 vi.mock('~/http/api/league', () => ({
   default: {
