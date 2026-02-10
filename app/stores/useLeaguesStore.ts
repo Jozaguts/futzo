@@ -1,13 +1,15 @@
-import type { League, LeagueType } from '~/models/league';
-import { defineStore } from 'pinia';
-import type { Field } from '~/models/Location';
+import type {League, LeagueType} from '~/models/league';
+import type {User} from '~/models/User';
+import {defineStore} from 'pinia';
 import leagueAPI from '~/http/api/league';
-import type { Tournament } from '~/models/tournament';
+import type {Tournament} from '~/models/tournament';
 
 export const useLeaguesStore = defineStore('leaguesStore', () => {
   const leagues = ref<League[]>([]);
   const footballTypes = ref<LeagueType[]>([]);
   const leagueTournaments = ref<Tournament[]>([]);
+  const user = useSanctumUser<User>();
+  const isLogged = computed(() => !!user.value?.email || !!user.value?.phone);
   const fetchLeagues = async () => {
     leagues.value = await leagueAPI.fetchLeagues();
   };
@@ -22,10 +24,12 @@ export const useLeaguesStore = defineStore('leaguesStore', () => {
     leagueTournaments.value = response.data ?? ([] as Tournament[]);
   };
   onBeforeMount(async () => {
+    if (!isLogged.value) return;
     await useLeaguesStore().fetchLeagues();
     await useLeaguesStore().getFootballTypes();
   });
   onMounted(async () => {
+    if (!isLogged.value) return;
     await getFootballTypes();
   });
   return {
