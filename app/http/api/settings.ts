@@ -1,5 +1,11 @@
 import {useRequestFetch, useRuntimeConfig, useSanctumClient} from '#imports';
 import type {
+  DisciplineSettingsDefaults,
+  DisciplineSettingsDefaultsPayload,
+  DisciplineTemplatePayload,
+  DisciplineTemplateSetting,
+  DisciplineViolationPayload,
+  DisciplineViolationSetting,
   PlayerTransferLockSetting,
   PlayerVerificationMethod,
   PlayerVerificationSettings,
@@ -86,4 +92,63 @@ export const updateTournamentConfiguration = async (
       body: payload,
     }
   );
+};
+
+export const getDisciplineViolations = async () => {
+  const client = useSanctumClient();
+  return await client<DisciplineViolationSetting[] | { data?: DisciplineViolationSetting[] }>(
+    '/api/v1/admin/settings/discipline/violations'
+  );
+};
+
+export const createDisciplineViolation = async (payload: DisciplineViolationPayload) => {
+  const client = useSanctumClient();
+  return await client<DisciplineViolationSetting>('/api/v1/admin/settings/discipline/violations', {
+    method: 'POST',
+    body: payload,
+  });
+};
+
+export const updateDisciplineViolation = async (violationId: number, payload: DisciplineViolationPayload) => {
+  const client = useSanctumClient();
+  return await client<DisciplineViolationSetting>(`/api/v1/admin/settings/discipline/violations/${violationId}`, {
+    method: 'PATCH',
+    body: payload,
+  });
+};
+
+export const getDisciplineTemplates = async () => {
+  const client = useSanctumClient();
+  return await client<DisciplineTemplateSetting[] | { data?: DisciplineTemplateSetting[] }>(
+    '/api/v1/admin/settings/discipline/templates'
+  );
+};
+
+export const createDisciplineTemplate = async (payload: DisciplineTemplatePayload) => {
+  const client = useSanctumClient();
+  return await client<DisciplineTemplateSetting>('/api/v1/admin/settings/discipline/templates', {
+    method: 'POST',
+    body: payload,
+  });
+};
+
+export const updateDisciplineTemplate = async (templateId: number, payload: DisciplineTemplatePayload) => {
+  const client = useSanctumClient();
+  return await client<DisciplineTemplateSetting>(`/api/v1/admin/settings/discipline/templates/${templateId}`, {
+    method: 'PATCH',
+    body: payload,
+  });
+};
+
+export const getDisciplineSettingsDefaults = async () => {
+  const client = useSanctumClient();
+  return await client<DisciplineSettingsDefaults>('/api/v1/admin/settings/discipline/defaults');
+};
+
+export const updateDisciplineSettingsDefaults = async (payload: DisciplineSettingsDefaultsPayload) => {
+  const client = useSanctumClient();
+  return await client<DisciplineSettingsDefaults>('/api/v1/admin/settings/discipline/defaults', {
+    method: 'PUT',
+    body: payload,
+  });
 };

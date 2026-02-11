@@ -37,3 +37,66 @@ export type TournamentConfigurationSettings = {
   group_stage: boolean | null;
   elimination_round_trip: boolean | null;
 };
+
+export type DisciplinePresetOption = {
+  id: string;
+  label: string;
+};
+
+export type DisciplineViolationSanctionTag = {
+  id?: number | string | null;
+  label?: string | null;
+  name?: string | null;
+  description?: string | null;
+  type?: string | null;
+};
+
+export type DisciplineViolationSetting = {
+  id: number;
+  name: string;
+  description?: string | null;
+  active?: boolean | null;
+  is_active?: boolean | null;
+  default_sanctions?: DisciplineViolationSanctionTag[] | null;
+  sanctions?: DisciplineViolationSanctionTag[] | null;
+  templates?: DisciplineViolationSanctionTag[] | null;
+};
+
+export type DisciplineTemplateSetting = {
+  id: number;
+  name: string;
+  description?: string | null;
+  active?: boolean | null;
+  is_active?: boolean | null;
+};
+
+export type DisciplineSettingsDefaults = {
+  alignment_default_goals_against: number;
+  alignment_default_match_lost: boolean;
+  alignment_default_preset_id: string | null;
+  enable_appeals: boolean;
+  enable_recidivism_escalation: boolean;
+  presets: DisciplinePresetOption[];
+};
+
+export type DisciplineViolationPayload = {
+  name: string;
+  description?: string | null;
+  active?: boolean;
+  is_active?: boolean;
+};
+
+export type DisciplineTemplatePayload = {
+  name: string;
+  description?: string | null;
+  active?: boolean;
+  is_active?: boolean;
+};
+
+export type DisciplineSettingsDefaultsPayload = {
+  alignment_default_goals_against: number;
+  alignment_default_match_lost: boolean;
+  alignment_default_preset_id: string | null;
+  enable_appeals: boolean;
+  enable_recidivism_escalation: boolean;
+};

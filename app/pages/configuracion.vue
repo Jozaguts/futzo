@@ -4,6 +4,7 @@ import PersonalDataCard from '~/components/pages/configuration/personal-data-car
 import Plans from '~/components/pages/configuration/plans/index.vue'
 import PlayersSettingsCard from '~/components/pages/configuration/players-settings-card.vue'
 import TournamentsSettingsCard from '~/components/pages/configuration/tournaments-settings-card.vue'
+import DisciplineSettingsCard from '~/components/pages/configuration/discipline-settings-card.vue'
 import {useToast} from '~/composables/useToast'
 import {useDisplay} from 'vuetify'
 
@@ -19,6 +20,7 @@ const user = computed(() => useAuthStore().user)
     { value: 3, label: 'Suscripción', icon: 'mdi-credit-card-outline' },
     { value: 4, label: 'Torneo', icon: 'mdi-trophy-outline' },
     { value: 5, label: 'Jugadores', icon: 'mdi-run' },
+    { value: 8, label: 'Disciplina', icon: 'mdi-shield-outline' },
     // { value: 6, label: 'Equipos', icon: 'mdi-account-group-outline' },
     // { value: 7, label: 'Locaciones', icon: 'mdi-map-marker-outline' },
   ]
@@ -111,6 +113,7 @@ const user = computed(() => useAuthStore().user)
                   <Plans v-else-if="tab === 3"  :key="3" />
                   <TournamentsSettingsCard v-else-if="tab === 4" />
                   <PlayersSettingsCard v-else-if="tab === 5" />
+                  <DisciplineSettingsCard v-else-if="tab === 8" />
 <!--                  <TeamsSettingsCard v-else-if="tab === 6" />-->
 <!--                  <LocationsSettingsCard v-else />-->
                 </TransitionFade>
