@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { ref } from 'vue'
-import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { ensureVuetifyApp, vuetifyStubs } from '../../../utils/vuetify-stubs'
+import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
+import {ref} from 'vue'
+import {mockNuxtImport, mountSuspended} from '@nuxt/test-utils/runtime'
+import {ensureVuetifyApp, vuetifyStubs} from '../../../utils/vuetify-stubs'
 import TournamentFilters from '~/components/pages/torneos/tournament-filters.vue'
 
 const search = ref('')
@@ -60,6 +60,7 @@ describe('TournamentFilters', () => {
       },
     })
 
+    expect(wrapper.find('[data-testid="tournament-filters"]').exists()).toBe(true)
     const selects = wrapper.findAllComponents({ name: 'StubVSelect' })
     expect(selects.length).toBe(2)
 
@@ -98,7 +99,7 @@ describe('TournamentFilters', () => {
       },
     })
 
-    const button = wrapper.find('button.v-btn')
+    const button = wrapper.find('[data-testid="tournament-create-button"]')
     await button.trigger('click')
 
     expect(dialog.value).toBe(true)

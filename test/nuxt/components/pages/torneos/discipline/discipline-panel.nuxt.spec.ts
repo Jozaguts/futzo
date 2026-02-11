@@ -1,7 +1,7 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { flushPromises } from '@vue/test-utils'
-import { ensureVuetifyApp, vuetifyStubs } from '../../../../utils/vuetify-stubs'
+import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
+import {mockNuxtImport, mountSuspended} from '@nuxt/test-utils/runtime'
+import {flushPromises} from '@vue/test-utils'
+import {ensureVuetifyApp, vuetifyStubs} from '../../../../utils/vuetify-stubs'
 import DisciplinePanel from '~/components/pages/torneos/discipline/DisciplinePanel.vue'
 
 const toast = vi.fn()
@@ -143,6 +143,7 @@ describe('DisciplinePanel', () => {
     expect(disciplineApi.getDisciplineMeta).toHaveBeenCalledWith(99)
     expect(disciplineApi.getDisciplineCases).toHaveBeenCalledWith(99, expect.objectContaining({ per_page: 25 }))
 
+    expect(wrapper.find('[data-testid="discipline-toolbar-shell"]').exists()).toBe(true)
     expect(wrapper.text()).toContain('DISC-2026-001')
     expect(wrapper.text()).toContain('Incidente de prueba')
   })

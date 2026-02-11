@@ -1,37 +1,37 @@
 <script lang="ts" setup>
-  import { useDebounceFn } from '@vueuse/core'
-  import { useToast } from '#imports'
-  import { notifyApiError } from '~/utils/apiToast'
-  import KpisMetricsSection from '~/components/shared/kpis-metrics-section.vue'
-  import {
-    applyDisciplinaryCase,
-    createDisciplinaryCase,
-    getDisciplinaryCase,
-    getDisciplineCases,
-    getDisciplineDefaults,
-    getDisciplineMeta,
-    getDisciplineSummary,
-    getTeamAvailablePlayers,
-    getTeamDisciplineMatches,
-    previewDisciplinaryCase,
-    revertDisciplinaryCase,
-    submitDisciplinaryCase,
-  } from '~/http/api/discipline'
-  import type { TeamLineupAvailablePlayers } from '~/models/Player'
-  import type {
-    CreateDisciplinaryCasePayload,
-    DisciplineCaseDetail,
-    DisciplineCaseListItem,
-    DisciplineCaseStatus,
-    DisciplineDefaults,
-    DisciplineMeta,
-    DisciplinePreviewPayload,
-    DisciplinePreviewResult,
-    DisciplineSummary,
-    DisciplineTeamMatchOption,
-  } from '~/models/discipline'
+import {useDebounceFn} from '@vueuse/core'
+import {useToast} from '#imports'
+import {notifyApiError} from '~/utils/apiToast'
+import KpisMetricsSection from '~/components/shared/kpis-metrics-section.vue'
+import {
+  applyDisciplinaryCase,
+  createDisciplinaryCase,
+  getDisciplinaryCase,
+  getDisciplineCases,
+  getDisciplineDefaults,
+  getDisciplineMeta,
+  getDisciplineSummary,
+  getTeamAvailablePlayers,
+  getTeamDisciplineMatches,
+  previewDisciplinaryCase,
+  revertDisciplinaryCase,
+  submitDisciplinaryCase,
+} from '~/http/api/discipline'
+import type {TeamLineupAvailablePlayers} from '~/models/Player'
+import type {
+  CreateDisciplinaryCasePayload,
+  DisciplineCaseDetail,
+  DisciplineCaseListItem,
+  DisciplineCaseStatus,
+  DisciplineDefaults,
+  DisciplineMeta,
+  DisciplinePreviewPayload,
+  DisciplinePreviewResult,
+  DisciplineSummary,
+  DisciplineTeamMatchOption,
+} from '~/models/discipline'
 
-  const props = defineProps<{
+const props = defineProps<{
     tournamentId?: number | null
   }>()
 
@@ -1126,135 +1126,140 @@
   <div class="discipline-panel" data-testid="discipline-panel">
     <KpisMetricsSection :items="summaryKpiItems" test-id-prefix="discipline-metrics" />
 
-    <div class="discipline-toolbar">
-      <v-text-field
-        v-model="search"
-        data-testid="discipline-search"
-        class="discipline-toolbar__search"
-        prepend-inner-icon="mdi-magnify"
-        hide-details
-        density="compact"
-        variant="outlined"
-        placeholder="Buscar caso, equipo o jugador..."
-      />
-
-      <div class="discipline-toolbar__filters">
-        <v-select
-          v-model="statusFilter"
-          :items="statusItems"
-          :disabled="loading.meta"
-          item-title="title"
-          item-value="value"
+    <div class="discipline-toolbar-shell futzo-rounded" data-testid="discipline-toolbar-shell">
+      <div class="discipline-toolbar">
+        <v-text-field
+          v-model="search"
+          data-testid="discipline-search"
+          class="discipline-toolbar__search"
+          prepend-inner-icon="mdi-magnify"
+          hide-details
           density="compact"
           variant="outlined"
-          hide-details
-          class="discipline-filter"
+          placeholder="Buscar caso, equipo o jugador..."
         />
 
-        <v-select
-          v-model="violationFilter"
-          :items="violationItems"
-          :disabled="loading.meta"
-          item-title="title"
-          item-value="value"
-          density="compact"
-          variant="outlined"
-          hide-details
-          class="discipline-filter"
-        />
+        <div class="discipline-toolbar__filters">
+          <v-select
+            v-model="statusFilter"
+            :items="statusItems"
+            :disabled="loading.meta"
+            item-title="title"
+            item-value="value"
+            density="compact"
+            variant="outlined"
+            hide-details
+            class="discipline-filter"
+          />
 
-        <v-select
-          v-model="teamFilter"
-          :items="teamItems"
-          :disabled="loading.meta"
-          item-title="title"
-          item-value="value"
-          density="compact"
-          variant="outlined"
-          hide-details
-          class="discipline-filter"
-        />
+          <v-select
+            v-model="violationFilter"
+            :items="violationItems"
+            :disabled="loading.meta"
+            item-title="title"
+            item-value="value"
+            density="compact"
+            variant="outlined"
+            hide-details
+            class="discipline-filter"
+          />
 
-        <v-btn color="primary" class="discipline-toolbar__create" @click="createDialog.open = true">
-          <Icon name="mdi-plus" size="16" class="mr-1" />
-          Crear sancion
-        </v-btn>
+          <v-select
+            v-model="teamFilter"
+            :items="teamItems"
+            :disabled="loading.meta"
+            item-title="title"
+            item-value="value"
+            density="compact"
+            variant="outlined"
+            hide-details
+            class="discipline-filter"
+          />
+
+          <v-btn color="primary" class="discipline-toolbar__create" @click="createDialog.open = true">
+            <Icon name="mdi-plus" size="16" class="mr-1" />
+            Crear sancion
+          </v-btn>
+        </div>
       </div>
     </div>
 
-    <v-card class="discipline-cases futzo-rounded" variant="outlined">
-      <v-skeleton-loader v-if="loading.cases" type="table" class="ma-4" />
+    <div class="discipline-cases-shell">
+      <v-card class="discipline-cases futzo-rounded">
+        <v-card-title class="discipline-cases__title">Casos disciplinarios</v-card-title>
+        <v-skeleton-loader v-if="loading.cases" type="table" class="ma-4" />
 
-      <template v-else-if="cases.length">
-        <div class="discipline-table-wrapper d-none d-md-block">
-          <table class="discipline-table" data-testid="discipline-table">
-            <thead>
-              <tr>
-                <th>Caso</th>
-                <th>Detalle</th>
-                <th>Tipo de falta</th>
-                <th>Equipo / Jugador</th>
-                <th>Estado</th>
-                <th></th>
-              </tr>
-            </thead>
+        <template v-else-if="cases.length">
+          <div class="discipline-table-wrapper d-none d-md-block">
+            <table class="discipline-table" data-testid="discipline-table">
+              <thead>
+                <tr>
+                  <th>Caso</th>
+                  <th>Detalle</th>
+                  <th>Tipo de falta</th>
+                  <th>Equipo / Jugador</th>
+                  <th>Estado</th>
+                  <th></th>
+                </tr>
+              </thead>
 
-            <tbody>
-              <tr v-for="item in cases" :key="item.id" class="discipline-table__row" @click="openCaseDetail(item)">
-                <td>
-                  <div class="discipline-case-id">{{ item.case_id }}</div>
-                  <small>{{ parseDateOnly(item.created_at) }}</small>
-                </td>
-                <td class="discipline-table__detail">{{ item.detail_snippet || item.description || '-' }}</td>
-                <td>{{ item.violation_type?.name || '-' }}</td>
-                <td>
-                  <div class="discipline-table__team">{{ item.team?.name || '-' }}</div>
-                  <small v-if="item.player?.name">- {{ item.player?.name }}</small>
-                </td>
-                <td>
-                  <span class="discipline-status" :class="parseStatusClass(item.status)">
-                    {{ parseStatusLabel(item) }}
-                  </span>
-                </td>
-                <td class="discipline-table__action">
-                  <Icon name="mdi-chevron-right" size="16" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
+              <tbody>
+                <tr v-for="item in cases" :key="item.id" class="discipline-table__row" @click="openCaseDetail(item)">
+                  <td>
+                    <div class="discipline-case-id">{{ item.case_id }}</div>
+                    <small>{{ parseDateOnly(item.created_at) }}</small>
+                  </td>
+                  <td class="discipline-table__detail">{{ item.detail_snippet || item.description || '-' }}</td>
+                  <td>{{ item.violation_type?.name || '-' }}</td>
+                  <td>
+                    <div class="discipline-table__team">{{ item.team?.name || '-' }}</div>
+                    <small v-if="item.player?.name">- {{ item.player?.name }}</small>
+                  </td>
+                  <td>
+                    <span class="discipline-status" :class="parseStatusClass(item.status)">
+                      {{ parseStatusLabel(item) }}
+                    </span>
+                  </td>
+                  <td class="discipline-table__action">
+                    <Icon name="mdi-chevron-right" size="16" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="discipline-mobile d-md-none">
+            <button
+              v-for="item in cases"
+              :key="`mobile-${item.id}`"
+              type="button"
+              class="discipline-mobile__item"
+              @click="openCaseDetail(item)"
+            >
+              <div class="discipline-mobile__top">
+                <strong>{{ item.case_id }}</strong>
+                <span class="discipline-status" :class="parseStatusClass(item.status)">
+                  {{ parseStatusLabel(item) }}
+                </span>
+              </div>
+
+              <p>{{ item.detail_snippet || item.description || '-' }}</p>
+
+              <div class="discipline-mobile__bottom">
+                <span>{{ item.violation_type?.name || '-' }}</span>
+                <span>{{ item.team?.name || '-' }}</span>
+              </div>
+            </button>
+          </div>
+        </template>
+
+        <div v-else class="discipline-empty">
+          <Icon name="lucide:shield-off" size="28" />
+          <p>Sin casos disciplinarios</p>
+          <span>No hay casos registrados o no hay resultados para los filtros actuales.</span>
         </div>
-
-        <div class="discipline-mobile d-md-none">
-          <button
-            v-for="item in cases"
-            :key="`mobile-${item.id}`"
-            type="button"
-            class="discipline-mobile__item"
-            @click="openCaseDetail(item)"
-          >
-            <div class="discipline-mobile__top">
-              <strong>{{ item.case_id }}</strong>
-              <span class="discipline-status" :class="parseStatusClass(item.status)">
-                {{ parseStatusLabel(item) }}
-              </span>
-            </div>
-
-            <p>{{ item.detail_snippet || item.description || '-' }}</p>
-
-            <div class="discipline-mobile__bottom">
-              <span>{{ item.violation_type?.name || '-' }}</span>
-              <span>{{ item.team?.name || '-' }}</span>
-            </div>
-          </button>
-        </div>
-      </template>
-
-      <div v-else class="discipline-empty">
-        <Icon name="lucide:shield-off" size="28" />
-        <p>Sin casos disciplinarios</p>
-        <span>No hay casos registrados o no hay resultados para los filtros actuales.</span>
-      </div>
-    </v-card>
+      </v-card>
+    </div>
 
     <v-dialog v-model="createDialog.open" max-width="680">
       <v-card class="futzo-rounded">
@@ -1675,6 +1680,9 @@
     flex-direction: column
     gap: 12px
 
+  .discipline-toolbar-shell
+    padding: 12px
+
   .discipline-toolbar
     display: grid
     grid-template-columns: 1fr
@@ -1691,8 +1699,19 @@
   .discipline-toolbar__create
     grid-column: span 2
 
+  .discipline-cases-shell
+    display: flex
+    min-height: 0
+
   .discipline-cases
+    width: 100%
     overflow: hidden
+
+  .discipline-cases__title
+    font-size: 16px
+    font-weight: 600
+    color: #101828
+    border-bottom: 1px solid #f2f4f7
 
   .discipline-table-wrapper
     overflow-x: auto

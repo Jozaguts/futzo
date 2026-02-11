@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import {z} from 'zod'
 
 const teamSchema = z.object({
   name: z.string(),
@@ -18,7 +18,7 @@ const tournamentSchema = z.object({
 export const nextGameItemSchema = z.object({
   id: z.number(),
   match_date: z.string(),
-  match_time: z.string(),
+  match_time: z.string().nullable(),
   home_team: teamSchema,
   away_team: teamSchema,
   location: locationSchema.nullable().optional(),

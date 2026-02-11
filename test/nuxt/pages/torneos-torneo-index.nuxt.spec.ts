@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { ref } from 'vue'
-import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
+import {beforeEach, describe, expect, it, vi} from 'vitest'
+import {ref} from 'vue'
+import {mockNuxtImport, mountSuspended} from '@nuxt/test-utils/runtime'
 import TorneoIndexPage from '~/pages/torneos/[torneo]/index.vue'
 
 const standings = ref([] as any[])
@@ -21,6 +21,15 @@ const tournament = ref({
 
 const getStandings = vi.fn()
 const getTournamentBySlug = vi.fn()
+const tournamentApi = vi.hoisted(() => ({
+  getTournamentMetrics: vi.fn(),
+  getTournamentRegistrationQRCode: vi.fn(),
+}))
+
+vi.mock('~/http/api/tournament', () => ({
+  getTournamentMetrics: tournamentApi.getTournamentMetrics,
+  getTournamentRegistrationQRCode: tournamentApi.getTournamentRegistrationQRCode,
+}))
 
 mockNuxtImport('useTournamentStore', () => () => ({
   standings,
@@ -43,13 +52,23 @@ describe('Torneo admin index page', () => {
     getTournamentBySlug.mockClear()
     getStandings.mockResolvedValue(undefined)
     getTournamentBySlug.mockResolvedValue(undefined)
+    tournamentApi.getTournamentMetrics.mockReset()
+    tournamentApi.getTournamentMetrics.mockResolvedValue({
+      data: {
+        registeredTeams: { total: 10, current: 5, dailyData: [], label: 'vs último mes' },
+        registeredPlayers: { total: 87, current: 4, dailyData: [], label: 'vs último mes' },
+        matchesPlayed: { total: 8, targetTotal: 15, current: 3, dailyData: [], label: 'vs último mes' },
+        disciplinaryCases: { total: 2, current: -10, dailyData: [], label: 'vs último mes' },
+      },
+    })
   })
 
   it('renders header and tabs without next/last games', async () => {
     const wrapper = await mountSuspended(TorneoIndexPage, {
       global: {
         stubs: {
-          PageLayout: { template: '<div><slot name="default" /></div>' },
+          PageLayout: { template: '<div><slot name="app-bar" /><slot name="default" /></div>' },
+          AppBar: { template: '<div><slot name="title" /></div>' },
           StatsTableContainer: { template: '<div data-testid="stats-table"></div>' },
           StatsTable: { template: '<div></div>' },
           Vue3EasyDataTable: { template: '<div data-testid="standings"></div>' },
@@ -81,9 +100,13 @@ describe('Torneo admin index page', () => {
       },
     })
 
+    expect(wrapper.find('[data-testid="tournament-page-shell"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="tournament-page-intro"]').exists()).toBe(true)
     expect(wrapper.text()).toContain('Inactivos 2026 Apertura')
     expect(wrapper.text()).toContain('8/15')
     expect(wrapper.find('[data-testid="stats-table"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="tournament-sections"]').exists()).toBe(true)
+    expect(tournamentApi.getTournamentMetrics).toHaveBeenCalledWith(1, 'lastMonth')
 
     const disciplinaButton = wrapper.findAll('button').find((button) => button.text().includes('Disciplina'))
     expect(disciplinaButton).toBeTruthy()

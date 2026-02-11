@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-  import { useDebounceFn } from '@vueuse/core'
-  import SearchInput from '~/components/shared/SearchInput.vue'
-  import type { TournamentStatus } from '~/models/tournament'
+import {useDebounceFn} from '@vueuse/core'
+import SearchInput from '~/components/shared/SearchInput.vue'
+import type {TournamentStatus} from '~/models/tournament'
 
-  type StatusFilterKey = 'all' | 'active' | 'upcoming' | 'finished'
+type StatusFilterKey = 'all' | 'active' | 'upcoming' | 'finished'
   type FormatFilterKey = 'all' | 'liga' | 'eliminatoria' | 'liga_y_eliminatoria'
 
   const tournamentStore = useTournamentStore()
@@ -85,45 +85,56 @@
 </script>
 
 <template>
-  <div class="tournament-filters">
-    <div class="tournament-filters__inputs">
-      <SearchInput placeholder="Buscar torneo..." :min-width="240" @searching="updateSearch" />
-      <v-select
-        v-model="statusModel"
-        :items="statusOptions"
-        item-title="title"
-        item-value="value"
-        hide-details
-        density="compact"
-        variant="outlined"
-        class="tournament-filters__select"
-        label="Estado"
-      />
-      <v-select
-        v-model="formatModel"
-        :items="formatOptions"
-        item-title="title"
-        item-value="value"
-        hide-details
-        density="compact"
-        variant="outlined"
-        class="tournament-filters__select"
-        label="Formato"
-      />
+  <div class="tournament-filters" data-testid="tournament-filters">
+    <div class="tournament-filters__toolbar">
+      <div class="tournament-filters__inputs">
+        <SearchInput
+          class="tournament-filters__search"
+          placeholder="Buscar torneo..."
+          :min-width="240"
+          @searching="updateSearch"
+        />
+        <div class="tournament-filters__selects">
+          <v-select
+            v-model="statusModel"
+            :items="statusOptions"
+            item-title="title"
+            item-value="value"
+            hide-details
+            density="compact"
+            variant="outlined"
+            class="tournament-filters__select"
+            label="Estado"
+          />
+          <v-select
+            v-model="formatModel"
+            :items="formatOptions"
+            item-title="title"
+            item-value="value"
+            hide-details
+            density="compact"
+            variant="outlined"
+            class="tournament-filters__select"
+            label="Formato"
+          />
+        </div>
+      </div>
+      <v-btn color="primary" class="tournament-primary-btn" data-testid="tournament-create-button" @click="dialog = true">
+        + Nuevo Torneo
+      </v-btn>
     </div>
-    <v-btn color="primary" class="tournament-primary-btn" @click="dialog = true">
-      + Nuevo Torneo
-    </v-btn>
   </div>
 </template>
 
 <style scoped>
-
   .tournament-filters {
+    width: 100%;
+  }
+
+  .tournament-filters__toolbar {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    width: 100%;
   }
 
   .tournament-filters__inputs {
@@ -132,20 +143,61 @@
     gap: 12px;
   }
 
+  .tournament-filters__selects {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .tournament-filters__search {
+    min-width: 0;
+  }
+
   .tournament-filters__select {
-    min-width: 200px;
+    min-width: 0;
+  }
+
+  .tournament-primary-btn {
+    align-self: stretch;
+    height: 40px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  @media (max-width: 359px) {
+    .tournament-filters__selects {
+      grid-template-columns: 1fr;
+    }
   }
 
   @media (min-width: 960px) {
-    .tournament-filters {
+    .tournament-filters__toolbar {
       flex-direction: row;
       align-items: center;
+      justify-content: space-between;
     }
 
     .tournament-filters__inputs {
       flex-direction: row;
       align-items: center;
-      flex-wrap: wrap;
+      gap: 10px;
+      flex: 1 1 auto;
+    }
+
+    .tournament-filters__search {
+      flex: 1 1 280px;
+      max-width: 420px;
+    }
+
+    .tournament-filters__selects {
+      grid-template-columns: repeat(2, minmax(0, 220px));
+    }
+
+    .tournament-primary-btn {
+      align-self: center;
+      flex-shrink: 0;
     }
   }
 </style>

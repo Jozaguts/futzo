@@ -1,7 +1,8 @@
-import type { LocationAvailability } from '~/models/Location';
-import type { League } from '~/models/league';
-import type { Team } from '~/models/Schedule';
-import type { Category } from '~/models/Team';
+import type {LocationAvailability} from '~/models/Location';
+import type {League} from '~/models/league';
+import type {Team} from '~/models/Schedule';
+import type {Category} from '~/models/Team';
+
 export type PreRegisterTournamentResponse = {
   category: Category;
   tournament: Tournament;
@@ -329,6 +330,31 @@ export type TournamentSummary = {
   active: number;
   upcoming: number;
   finished: number;
+};
+
+export type TournamentKpiMetric = {
+  total: number;
+  current: number;
+  dailyData: number[];
+  label: string;
+};
+
+export type TournamentMatchesKpiMetric = TournamentKpiMetric & {
+  targetTotal: number;
+};
+
+export type TournamentListKpis = {
+  tournamentsCreated: TournamentKpiMetric;
+  teamsRegistered: TournamentKpiMetric;
+  playersRegistered: TournamentKpiMetric;
+  matchesPlayed: TournamentKpiMetric;
+};
+
+export type TournamentDetailKpis = {
+  registeredTeams: TournamentKpiMetric;
+  registeredPlayers: TournamentKpiMetric;
+  matchesPlayed: TournamentMatchesKpiMetric;
+  disciplinaryCases: TournamentKpiMetric;
 };
 
 export type TournamentStatus = 'creado' | 'en curso' | 'completado' | 'cancelado';

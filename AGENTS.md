@@ -25,6 +25,14 @@
 - TypeScript is preferred for app logic; keep filenames descriptive and kebab-case for Vue files.
 - Any style need to be performance with mobile first method
 
+## UI Consistency Baseline (Obligatorio)
+- Baseline visual oficial: `app/pages/dashboard.vue` y `app/assets/scss/pages/dashboard.scss` para jerarquía de paneles, espaciado y densidad visual.
+- Estilo de tabs oficial para vistas de torneo: usar como referencia los tabs del modal de detalle de sanción en `app/components/pages/torneos/discipline/DisciplinePanel.vue` (`.discipline-case-tabs`, `.discipline-case-tabs__item`, `.discipline-case-tabs__item--active`).
+- Mobile-first obligatorio: diseñar primero <=600px, luego escalar a tablet/desktop con breakpoints consistentes (600/960/1200+).
+- En páginas de listado y detalle usar contenedores tipo panel consistentes: fondo blanco, borde suave `#eaecf0`, radio 12-16px, headers con jerarquía clara (`title`, `subtitle`, acciones).
+- Evitar variantes visuales ad-hoc entre módulos (tabs, cards, botones, filtros). Si existe patrón equivalente en dashboard o disciplina, se reutiliza.
+- Al modificar shells de página o componentes visibles en página, actualizar/agregar tests Nuxt para validar estructura clave y comportamiento de interacción.
+
 ## Testing Guidelines
 - Frameworks: Vitest for unit/nuxt tests, Playwright for browser E2E.
 - Naming: `*.nuxt.spec.ts` for Nuxt/UI tests, `*.e2e.ts` for headless E2E.

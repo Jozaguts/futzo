@@ -1,12 +1,18 @@
 import {useRequestFetch, useRuntimeConfig, useSanctumClient} from '#imports';
-import type {ExportType, PreRegisterTournamentResponse, Tournament, TournamentStats,} from '~/models/tournament';
+import type {
+    ExportType,
+    PreRegisterTournamentResponse,
+    Tournament,
+    TournamentDetailKpis,
+    TournamentStats,
+} from '~/models/tournament';
 import type {Game} from '~/models/Game';
 import {parseBlobResponse} from '~/utils/prepareFormData';
 import type {BracketPreview, ConfirmBracketPayload} from '~/models/Bracket';
 import type {
-  ScheduleRegenerationAnalysis,
-  ScheduleRegenerationPayload,
-  ScheduleRegenerationResult,
+    ScheduleRegenerationAnalysis,
+    ScheduleRegenerationPayload,
+    ScheduleRegenerationResult,
 } from '~/models/Schedule';
 import type {PublicTournamentStatusData} from '~/models/PublicTournament';
 
@@ -52,6 +58,12 @@ export const getStandings = async (tournamentId: number) => {
 export const getBySlug = async (slug: string) => {
   const client = useSanctumClient();
   return await client<Tournament>(`/api/v1/admin/tournaments/${slug}`);
+};
+export const getTournamentMetrics = async (tournamentId: number, range: 'lastMonth' = 'lastMonth') => {
+  const client = useSanctumClient();
+  return await client<{ data: TournamentDetailKpis }>(`/api/v1/admin/tournaments/${tournamentId}/metrics`, {
+    query: { range },
+  });
 };
 export const getTournamentStats = async (tournamentId: number) => {
   const client = useSanctumClient();

@@ -1,17 +1,19 @@
 import type {
-  BasicInfoForm,
-  CalendarStoreRequest,
-  DetailsInfoForm,
-  ExportType,
-  FormSteps,
-  Tournament,
-  TournamentForm,
-  TournamentLocation,
-  TournamentLocationStoreRequest,
-  TournamentStats,
-  TournamentStatus,
-  TournamentStoreRequest,
-  TournamentSummary,
+    BasicInfoForm,
+    CalendarStoreRequest,
+    DetailsInfoForm,
+    ExportType,
+    FormSteps,
+    Tournament,
+    TournamentForm,
+    TournamentKpiMetric,
+    TournamentListKpis,
+    TournamentLocation,
+    TournamentLocationStoreRequest,
+    TournamentStats,
+    TournamentStatus,
+    TournamentStoreRequest,
+    TournamentSummary,
 } from '~/models/tournament';
 import type {Game} from '~/models/Game';
 import type {User} from '~/models/User';
@@ -22,19 +24,50 @@ import type {Field} from '~/models/Schedule';
 import type {CreateTeamForm} from '~/models/Team';
 import {defineStore, skipHydrate} from 'pinia';
 import {
-  storeToRefs,
-  useCategoryStore,
-  useOnboardingStore,
-  useSanctumClient,
-  useSanctumUser,
-  useTeamStore,
-  useToast,
+    storeToRefs,
+    useCategoryStore,
+    useOnboardingStore,
+    useSanctumClient,
+    useSanctumUser,
+    useTeamStore,
+    useToast,
 } from '#imports';
 import type {TourStep} from '#nuxt-tour/props';
 import {useTourController} from '~/composables/useTourController';
 
 // @ts-ignore
 export const useTournamentStore = defineStore('tournamentStore', () => {
+  const KPI_RANGE = 'lastMonth' as const;
+  const DEFAULT_KPI_LABEL = 'vs último mes';
+
+  const createZeroKpi = () => ({
+    total: 0,
+    current: 0,
+    dailyData: [] as number[],
+    label: DEFAULT_KPI_LABEL,
+  });
+
+  const createDefaultListKpis = (): TournamentListKpis => ({
+    tournamentsCreated: createZeroKpi(),
+    teamsRegistered: createZeroKpi(),
+    playersRegistered: createZeroKpi(),
+    matchesPlayed: createZeroKpi(),
+  });
+
+  const normalizeKpi = (metric?: Partial<TournamentKpiMetric>) => ({
+    total: Number(metric?.total ?? 0),
+    current: Number(metric?.current ?? 0),
+    dailyData: Array.isArray(metric?.dailyData) ? metric?.dailyData.map((value) => Number(value ?? 0)) : [],
+    label: metric?.label || DEFAULT_KPI_LABEL,
+  });
+
+  const normalizeListKpis = (kpis?: Partial<TournamentListKpis>): TournamentListKpis => ({
+    tournamentsCreated: normalizeKpi(kpis?.tournamentsCreated),
+    teamsRegistered: normalizeKpi(kpis?.teamsRegistered),
+    playersRegistered: normalizeKpi(kpis?.playersRegistered),
+    matchesPlayed: normalizeKpi(kpis?.matchesPlayed),
+  });
+
   // @ts-ignore
   const { registerTourRef, startTour, resetTour, recalculateTour } = useTourController();
   const tourSteps = ref<TourStep[]>([
@@ -157,6 +190,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     upcoming: 0,
     finished: 0,
   });
+  const listKpis = ref<TournamentListKpis>(createDefaultListKpis());
   const calendarDialog = ref(false);
   const tournamentStoreRequest = ref<TournamentStoreRequest>({
     basic: {} as BasicInfoForm,
@@ -239,7 +273,41 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     };
   }
 
-  type TournamentListMeta = IPagination & { summary?: TournamentSummary };
+  const extractPlayedGames = (item: Tournament) => {
+    if (item?.games_progress && typeof item.games_progress.played === 'number') {
+      return item.games_progress.played;
+    }
+    return 0;
+  };
+
+  const computeFallbackListKpis = (items: Tournament[], nextSummary: TournamentSummary): TournamentListKpis => ({
+    tournamentsCreated: {
+      total: nextSummary.total ?? items.length,
+      current: 0,
+      dailyData: [],
+      label: DEFAULT_KPI_LABEL,
+    },
+    teamsRegistered: {
+      total: items.reduce((acc, item) => acc + Number(item?.teams_count ?? 0), 0),
+      current: 0,
+      dailyData: [],
+      label: DEFAULT_KPI_LABEL,
+    },
+    playersRegistered: {
+      total: items.reduce((acc, item) => acc + Number(item?.players_count ?? 0), 0),
+      current: 0,
+      dailyData: [],
+      label: DEFAULT_KPI_LABEL,
+    },
+    matchesPlayed: {
+      total: items.reduce((acc, item) => acc + extractPlayedGames(item), 0),
+      current: 0,
+      dailyData: [],
+      label: DEFAULT_KPI_LABEL,
+    },
+  });
+
+  type TournamentListMeta = IPagination & { summary?: TournamentSummary; kpis?: TournamentListKpis };
 
   async function loadTournaments() {
     loading.value = true;
@@ -247,6 +315,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     const params = new URLSearchParams({
       per_page: String(pagination.value.per_page),
       page: String(pagination.value.current_page),
+      range: KPI_RANGE,
     });
     if (search.value) {
       params.set('search', search.value);
@@ -263,9 +332,11 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
       );
       tournaments.value = response.data;
       pagination.value = { ...pagination.value, ...response?.meta };
-      if (response?.meta?.summary) {
-        summary.value = response.meta.summary;
-      }
+      const nextSummary = response?.meta?.summary ?? summary.value;
+      summary.value = nextSummary;
+      listKpis.value = response?.meta?.kpis
+        ? normalizeListKpis(response.meta.kpis)
+        : computeFallbackListKpis(response.data, nextSummary);
     } finally {
       loading.value = false;
     }
@@ -440,6 +511,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
     statusFilters,
     formatFilter,
     summary,
+    listKpis,
     steps,
     tournamentStoreRequest,
     calendarDialog,

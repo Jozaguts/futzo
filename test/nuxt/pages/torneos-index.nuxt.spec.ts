@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { ref } from 'vue'
-import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { ensureVuetifyApp } from '../utils/vuetify-stubs'
+import {beforeEach, describe, expect, it, vi} from 'vitest'
+import {ref} from 'vue'
+import {mockNuxtImport, mountSuspended} from '@nuxt/test-utils/runtime'
+import {ensureVuetifyApp} from '../utils/vuetify-stubs'
 import TorneosPage from '~/pages/torneos/index.vue'
 
 const loadTournaments = vi.fn()
@@ -36,7 +36,7 @@ describe('Torneos index page', () => {
     loadTournaments.mockClear()
   })
 
-  it('renders header and loads tournaments', async () => {
+  it('renders intro layout and loads tournaments', async () => {
     const wrapper = await mountSuspended(TorneosPage, {
       global: {
         stubs: {
@@ -53,6 +53,9 @@ describe('Torneos index page', () => {
       },
     })
 
+    expect(wrapper.find('[data-testid="torneos-page-intro"]').exists()).toBe(true)
+    expect(wrapper.text()).toContain('Torneos')
+    expect(wrapper.find('[data-testid="torneos-filters-panel"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="kpis"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="filters"]').exists()).toBe(true)
     expect(loadTournaments).toHaveBeenCalled()

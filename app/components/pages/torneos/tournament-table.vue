@@ -1,18 +1,18 @@
 <script lang="ts" setup>
-  import type { Header } from 'vue3-easy-data-table'
-  import type { Tournament } from '~/models/tournament'
-  import { useRouter } from '#app'
-  import { getTournamentRegistrationQRCode } from '~/http/api/tournament'
-  import { Icon } from '#components'
-  import Vue3EasyDataTable from 'vue3-easy-data-table'
-  import 'vue3-easy-data-table/dist/style.css'
+import type {Header} from 'vue3-easy-data-table'
+import Vue3EasyDataTable from 'vue3-easy-data-table'
+import type {Tournament} from '~/models/tournament'
+import {useRouter} from '#app'
+import {getTournamentRegistrationQRCode} from '~/http/api/tournament'
+import {Icon} from '#components'
+import 'vue3-easy-data-table/dist/style.css'
 
-  const router = useRouter()
+const router = useRouter()
   const tournamentStore = useTournamentStore()
   const { noTournaments, tournaments, tournamentId, tournament, loading } = storeToRefs(tournamentStore)
 
   const headers = computed<Header[]>(() => [
-    { text: 'Torneo', value: 'name', fixed: true, width: 220 },
+    { text: 'Torneo', value: 'name', fixed: true, width: 120 },
     { text: 'Formato', value: 'format_label' },
     { text: 'Tipo', value: 'football_type_label' },
     { text: 'Equipos', value: 'teams_count' },
@@ -124,10 +124,10 @@
         class="futzo-rounded tournament-table__grid"
         :headers="headers"
         :items="tableItems"
-        hide-footer
         :rows-per-page="tableItems.length"
         :table-min-height="0"
         fixed-header
+        border-cell
         alternating
       >
         <template #item-name="item">
@@ -138,8 +138,8 @@
               @click="handleShowTournament(item as Tournament)"
               v-tooltip:top="item?.name"
             >
-              <template #prepend v-if="item?.image">
-                <v-avatar :image="item?.image" density="compact" />
+              <template #prepend v-if="item?.image" >
+                <v-avatar :image="item?.image" density="compact" class="d-none d-md-block d-lg-block" />
               </template>
               <span class="d-inline-block text-truncate mx-4" style="max-width: 120px">{{ item?.name }}</span>
             </v-btn>
