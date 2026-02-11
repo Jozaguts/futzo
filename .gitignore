@@ -20,3 +20,4 @@ yarn-error.log
 playwright/.auth
 test-results
 playwright-report
+react/*

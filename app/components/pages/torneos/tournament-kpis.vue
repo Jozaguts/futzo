@@ -40,23 +40,25 @@
 
 <template>
   <v-card class="tournament-kpis futzo-rounded" >
-    <div class="tournament-kpis__row">
-      <div v-for="card in cards" :key="card.key" class="tournament-kpis__item">
-        <div class="tournament-kpis__icon" :class="`tournament-kpis__icon--${card.tone}`">
-          <Icon :name="card.icon" size="16" />
-        </div>
-        <div class="tournament-kpis__content">
-          <div class="tournament-kpis__value">{{ card.value }}</div>
-          <div class="tournament-kpis__label">{{ card.label }}</div>
+    <v-card-text>
+      <div class="tournament-kpis__row">
+        <div v-for="card in cards" :key="card.key" class="tournament-kpis__item">
+          <div class="tournament-kpis__icon" :class="`tournament-kpis__icon--${card.tone}`">
+            <Icon :name="card.icon" size="16" />
+          </div>
+          <div class="tournament-kpis__content">
+            <div class="tournament-kpis__value">{{ card.value }}</div>
+            <div class="tournament-kpis__label">{{ card.label }}</div>
+          </div>
         </div>
       </div>
-    </div>
+    </v-card-text>
   </v-card>
 </template>
 
 <style scoped>
   .tournament-kpis {
-    padding: 10px 16px;
+    //padding: 8px 16px;
     border-radius: 14px;
   }
 
@@ -64,7 +66,8 @@
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 120px));
     gap: 16px;
-    padding: 12px 24px;
+    grid-template-rows: 80px;
+    //padding: 12px 24px;
   }
 
   .tournament-kpis__item {

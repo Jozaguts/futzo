@@ -122,7 +122,9 @@ export function last5Handler(last_5: string) {
       case 'W':
         return { icon: 'mdi:checkbox-marked-circle', color: 'green', label: 'Ganó' };
       case 'L':
-        return { icon: 'mdi:close-circle', color: 'red', label: 'Perdió' };
+        return { icon: 'mdi:close-circle', color: 'red', label: 'Perdió' }
+      case 'S':
+        return { icon: 'mdi:close-circle', color: 'orange', label: 'Sancionado' };
       case 'D':
         return { icon: 'ic:outline-remove-circle', color: 'gray', label: 'Empate' };
     }

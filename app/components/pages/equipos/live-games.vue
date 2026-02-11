@@ -56,7 +56,7 @@
 </template>
 <style lang="scss" scoped>
   .live-games-table {
-    height: auto;
+    height: 100%;
     display: flex;
     width: 100%;
     padding: 1rem;
