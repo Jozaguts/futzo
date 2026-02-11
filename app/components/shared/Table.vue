@@ -104,6 +104,22 @@
       color: result?.color,
     }
   }
+
+  const resolveTournamentProgress = (item: any) => {
+    const gamesProgress = item?.games_progress
+    if (gamesProgress && typeof gamesProgress === 'object') {
+      return {
+        percent: Number(gamesProgress.percent ?? 0),
+        label: gamesProgress.label ?? '0/0',
+      }
+    }
+
+    const legacyProgress = item?.progress
+    return {
+      percent: Number(legacyProgress?.percent ?? 0),
+      label: legacyProgress?.label ?? '0/0',
+    }
+  }
 </script>
 <template>
   <v-data-table
@@ -228,13 +244,13 @@
     <template #[`item.progress`]="{item}">
       <div class="tournament-progress">
         <v-progress-linear
-            :model-value="item?.progress?.percent ?? 0"
+            :model-value="resolveTournamentProgress(item).percent"
             height="6"
             rounded
             color="primary"
             class="tournament-progress__bar"
         />
-        <span class="tournament-progress__label">{{ item?.progress?.label ?? '0/0' }}</span>
+        <span class="tournament-progress__label">{{ resolveTournamentProgress(item).label }}</span>
       </div>
     </template>
     <template #item.actions="{ item }">

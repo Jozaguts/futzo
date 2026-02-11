@@ -78,6 +78,7 @@ export interface Tournament {
     id?: number;
     name?: string;
   } | null;
+  location?: Location | null;
   teams_count?: number | null;
   players_count?: number | null;
   format_label?: string | null;
@@ -85,6 +86,12 @@ export interface Tournament {
   progress?: {
     percent: number;
     label: string;
+  } | null;
+  games_progress?: {
+    played: number;
+    total: number;
+    label: string;
+    percent: number;
   } | null;
   substitutions_per_team: number;
   format: {

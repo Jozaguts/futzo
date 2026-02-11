@@ -14,6 +14,7 @@ const tournaments = ref([
     football_type_label: 'Fútbol 7',
     teams_count: 10,
     players_count: 87,
+    games_progress: { percent: 40, label: '18/45', played: 18, total: 45 },
     progress: { percent: 40, label: '18/45' },
   },
 ])
@@ -37,7 +38,7 @@ mockNuxtImport('useTournamentStore', () => () => ({
 }))
 
 mockNuxtImport('storeToRefs', () => (store: any) => store)
-mockNuxtImport('useRouter', () => () => ({ push: vi.fn() }))
+mockNuxtImport('useRouter', () => () => ({ push: vi.fn(), replace: vi.fn() }))
 
 vi.mock('vuetify', () => ({
   useDisplay: () => ({ mobile: { value: false } }),
@@ -71,7 +72,7 @@ const TableStub = defineComponent({
             h('div', item.football_type_label),
             h('div', String(item.teams_count ?? item.teams)),
             h('div', String(item.players_count ?? item.players)),
-            h('div', item.progress?.label ?? ''),
+            h('div', item.games_progress?.label ?? item.progress?.label ?? ''),
             h('div', (props.statusHandler ? props.statusHandler(item.status)?.label : item.status) ?? ''),
             slots.actions?.({ item }),
           ])

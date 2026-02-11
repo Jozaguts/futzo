@@ -1,0 +1,86 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { ref } from 'vue'
+import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
+import TorneoIndexPage from '~/pages/torneos/[torneo]/index.vue'
+
+const standings = ref([] as any[])
+const tournamentId = ref<number | undefined>(1)
+const tournament = ref({
+  name: 'Inactivos 2026 Apertura',
+  status: 'en curso',
+  format_label: 'Liga y Eliminatoria',
+  football_type_label: 'Fútbol 7',
+  location: { name: 'Cancha Los Olivos' },
+  teams_count: 10,
+  players_count: 87,
+  games_progress: { percent: 53, label: '8/15', played: 8, total: 15 },
+  progress: { percent: 40, label: '18/45' },
+  start_date_to_string: '15 Ene 2026',
+  end_date_to_string: '30 May 2026',
+})
+
+const getStandings = vi.fn()
+const getTournamentBySlug = vi.fn()
+
+mockNuxtImport('useTournamentStore', () => () => ({
+  standings,
+  tournamentId,
+  tournament,
+  getStandings,
+  getTournamentBySlug,
+}))
+mockNuxtImport('storeToRefs', () => (store: any) => store)
+mockNuxtImport('useRoute', () => () => ({ params: { torneo: 'inactivos-2026-apertura' } }))
+mockNuxtImport('useToast', () => () => ({ toast: vi.fn() }))
+
+vi.mock('vuetify', () => ({
+  useDisplay: () => ({ mobile: { value: false } }),
+}))
+
+describe('Torneo admin index page', () => {
+  beforeEach(() => {
+    getStandings.mockClear()
+    getTournamentBySlug.mockClear()
+    getStandings.mockResolvedValue(undefined)
+    getTournamentBySlug.mockResolvedValue(undefined)
+  })
+
+  it('renders header and tabs without next/last games', async () => {
+    const wrapper = await mountSuspended(TorneoIndexPage, {
+      global: {
+        stubs: {
+          PageLayout: { template: '<div><slot name="default" /></div>' },
+          StatsTableContainer: { template: '<div data-testid="stats-table"></div>' },
+          StatsTable: { template: '<div></div>' },
+          Vue3EasyDataTable: { template: '<div data-testid="standings"></div>' },
+          CreateTournamentDialog: { template: '<div></div>' },
+          DisciplinePanel: { template: '<div data-testid="discipline-panel"></div>' },
+          TransitionFade: { template: '<div><slot /></div>' },
+          Icon: { template: '<i></i>' },
+          'v-btn-group': { template: '<div><slot /></div>' },
+          'v-chip': { template: '<span><slot /></span>' },
+          'v-btn': { template: '<button><slot /></button>' },
+          'v-progress-linear': { template: '<div data-testid="progress"></div>' },
+          'v-card': { template: '<div><slot /></div>' },
+          'v-card-text': { template: '<div><slot /></div>' },
+          'v-card-title': { template: '<div><slot /></div>' },
+          'v-tooltip': { template: '<div><slot /></div>' },
+          'v-dialog': { template: '<div><slot /></div>' },
+          'v-alert': { template: '<div><slot /></div>' },
+          'v-img': { template: '<div></div>' },
+          'v-card-actions': { template: '<div><slot /></div>' },
+        },
+      },
+    })
+
+    expect(wrapper.text()).toContain('Inactivos 2026 Apertura')
+    expect(wrapper.text()).toContain('8/15')
+    expect(wrapper.find('[data-testid="stats-table"]').exists()).toBe(true)
+
+    const disciplinaButton = wrapper.findAll('button').find((button) => button.text().includes('Disciplina'))
+    expect(disciplinaButton).toBeTruthy()
+    await disciplinaButton?.trigger('click')
+
+    expect(wrapper.find('[data-testid="discipline-panel"]').exists()).toBe(true)
+  })
+})
