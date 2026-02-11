@@ -132,6 +132,7 @@ describe('DisciplinePanel', () => {
           'v-textarea': { template: '<textarea />' },
           'v-skeleton-loader': { template: '<div />' },
           'v-card-actions': { template: '<div><slot /></div>' },
+          KpisMetricsSection: { template: '<div data-testid="kpis-metrics"></div>' },
         },
       },
     })
@@ -160,6 +161,7 @@ describe('DisciplinePanel', () => {
           'v-textarea': { template: '<textarea />' },
           'v-skeleton-loader': { template: '<div />' },
           'v-card-actions': { template: '<div><slot /></div>' },
+          KpisMetricsSection: { template: '<div data-testid="kpis-metrics"></div>' },
         },
       },
     })
@@ -188,6 +190,7 @@ describe('DisciplinePanel', () => {
           'v-textarea': { template: '<textarea />' },
           'v-skeleton-loader': { template: '<div />' },
           'v-card-actions': { template: '<div><slot /></div>' },
+          KpisMetricsSection: { template: '<div data-testid="kpis-metrics"></div>' },
         },
       },
     })

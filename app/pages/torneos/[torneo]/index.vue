@@ -2,6 +2,7 @@
   import StatsTableContainer from '~/components/pages/equipos/live-games.vue'
   import CreateTournamentDialog from '~/components/pages/torneos/dialog/index.vue'
   import DisciplinePanel from '~/components/pages/torneos/discipline/DisciplinePanel.vue'
+  import KpisMetricsSection from '~/components/shared/kpis-metrics-section.vue'
   import PageLayout from '~/components/shared/PageLayout.vue'
   import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
   import Vue3EasyDataTable from 'vue3-easy-data-table'
@@ -11,6 +12,7 @@
   import { last5Handler } from '~/utils/headers-table'
   import { getTournamentRegistrationQRCode } from '~/http/api/tournament'
   import { useToast } from '#imports'
+  import AppBar from "~/components/layout/AppBar.vue";
 
   const { standings, tournamentId, tournament } = storeToRefs(useTournamentStore())
   const { start, finish } = useLoadingIndicator()
@@ -61,6 +63,32 @@
   const progressStart = computed(() => tournament.value?.start_date_to_string ?? '')
   const progressEnd = computed(() => tournament.value?.end_date_to_string ?? '')
   const currentTournamentId = computed(() => tournament.value?.id ?? tournamentId.value ?? null)
+  const tournamentKpiItems = computed(() => [
+    {
+      title: 'Equipos',
+      value: tournament.value?.teams_count ?? 0,
+      icon: 'futzo-icon:shirt-sharp',
+      iconTone: 'green',
+    },
+    {
+      title: 'Jugadores',
+      value: tournament.value?.players_count ?? 0,
+      icon: 'futzo-icon:players',
+      iconTone: 'blue',
+    },
+    {
+      title: 'Partidos',
+      value: gamesProgressLabel.value,
+      icon: 'futzo-icon:calendar',
+      iconTone: 'orange',
+    },
+    {
+      title: 'Sede',
+      value: tournament.value?.location?.name || '-',
+      icon: 'lucide:map-pin',
+      iconTone: 'purple',
+    },
+  ])
 
   onMounted(() => {
     if (tournamentId.value) {
@@ -165,47 +193,54 @@
 </script>
 <template>
   <PageLayout>
+    <template #app-bar>
+      <AppBar :extended="true">
+       <template #title>
+         <div class="tournament-page__header">
+           <div class="tournament-page__title">
+             <div class="title-row d-flex flex-md-row flex-column align-start">
+               <h1 class="text-body-2 text-md-h5">{{ tournamentName }}</h1>
+               <v-chip size="small" :color="statusLabel.color" variant="tonal" >{{ statusLabel.text }}</v-chip>
+             </div>
+             <p class="tournament-meta">{{ tournamentMeta }}</p>
+           </div>
+           <div class="tournament-page__actions">
+             <v-tooltip text="Copiar enlace de inscripción" location="bottom">
+               <template #activator="{ props }">
+                 <v-btn icon variant="text" v-bind="props" @click="copyRegisterLink">
+                   <Icon name="mdi-link" size="18" />
+                 </v-btn>
+               </template>
+             </v-tooltip>
+             <v-tooltip text="Generar QR" location="bottom">
+               <template #activator="{ props }">
+                 <v-btn icon variant="text" v-bind="props" :disabled="share.isLoading" @click="qrCodeHandler">
+                   <Icon name="mdi-qrcode" size="18" />
+                 </v-btn>
+               </template>
+             </v-tooltip>
+             <v-tooltip text="Vista pública" location="bottom">
+               <template #activator="{ props }">
+                 <v-btn icon variant="text" v-bind="props" @click="goToPublic">
+                   <Icon name="mdi-eye-outline" size="18" />
+                 </v-btn>
+               </template>
+             </v-tooltip>
+             <v-tooltip text="Calendario" location="bottom">
+               <template #activator="{ props }">
+                 <v-btn icon variant="text" v-bind="props" @click="goToCalendar">
+                   <Icon name="futzo-icon:calendar" size="18" />
+                 </v-btn>
+               </template>
+             </v-tooltip>
+           </div>
+         </div>
+       </template>
+      </AppBar>
+    </template>
     <template #default>
       <div class="tournament-page border-top ">
-        <div class="tournament-page__header">
-          <div class="tournament-page__title">
-            <div class="title-row d-flex flex-md-row flex-column align-start">
-              <h1 class="text-body-2 text-md-h5">{{ tournamentName }}</h1>
-              <v-chip size="small" :color="statusLabel.color" variant="tonal" >{{ statusLabel.text }}</v-chip>
-            </div>
-            <p class="tournament-meta">{{ tournamentMeta }}</p>
-          </div>
-          <div class="tournament-page__actions">
-            <v-tooltip text="Copiar enlace de inscripción" location="bottom">
-              <template #activator="{ props }">
-                <v-btn icon variant="text" v-bind="props" @click="copyRegisterLink">
-                  <Icon name="mdi-link" size="18" />
-                </v-btn>
-              </template>
-            </v-tooltip>
-            <v-tooltip text="Generar QR" location="bottom">
-              <template #activator="{ props }">
-                <v-btn icon variant="text" v-bind="props" :disabled="share.isLoading" @click="qrCodeHandler">
-                  <Icon name="mdi-qrcode" size="18" />
-                </v-btn>
-              </template>
-            </v-tooltip>
-            <v-tooltip text="Vista pública" location="bottom">
-              <template #activator="{ props }">
-                <v-btn icon variant="text" v-bind="props" @click="goToPublic">
-                  <Icon name="mdi-eye-outline" size="18" />
-                </v-btn>
-              </template>
-            </v-tooltip>
-            <v-tooltip text="Calendario" location="bottom">
-              <template #activator="{ props }">
-                <v-btn icon variant="text" v-bind="props" @click="goToCalendar">
-                  <Icon name="futzo-icon:calendar" size="18" />
-                </v-btn>
-              </template>
-            </v-tooltip>
-          </div>
-        </div>
+
 
         <v-card class="d-flex pa-2 bg-blue-grey-lighten-5 rounded-md" variant="text" density="compact">
           <v-btn-group data-testid="tournament-sections" density="compact" class="w-100" variant="text">
@@ -226,36 +261,7 @@
             <div class="tournament-window">
               <TransitionFade group>
               <template v-if="tab==='resumen'">
-                <div class="kpi-row">
-                  <v-card class="kpi-card futzo-rounded" >
-                    <div class="kpi-icon"><Icon name="lucide:users" size="18" /></div>
-                    <div>
-                      <p>Equipos</p>
-                      <strong>{{ tournament?.teams_count ?? 0 }}</strong>
-                    </div>
-                  </v-card>
-                  <v-card class="kpi-card futzo-rounded" >
-                    <div class="kpi-icon"><Icon name="lucide:user-check" size="18" /></div>
-                    <div>
-                      <p>Jugadores</p>
-                      <strong>{{ tournament?.players_count ?? 0 }}</strong>
-                    </div>
-                  </v-card>
-                  <v-card class="kpi-card futzo-rounded" >
-                    <div class="kpi-icon"><Icon name="lucide:swords" size="18" /></div>
-                    <div>
-                      <p>Partidos</p>
-                      <strong>{{ gamesProgressLabel }}</strong>
-                    </div>
-                  </v-card>
-                  <v-card class="kpi-card futzo-rounded" >
-                    <div class="kpi-icon"><Icon name="lucide:map-pin" size="18" /></div>
-                    <div>
-                      <p>Sede</p>
-                      <strong>{{ tournament?.location?.name || '-' }}</strong>
-                    </div>
-                  </v-card>
-                </div>
+                <KpisMetricsSection class="tournament-kpis" :items="tournamentKpiItems" test-id-prefix="tournament-kpis" />
 
                 <v-card class="tournament-progress-card futzo-rounded" >
                   <div class="progress-header">
@@ -405,34 +411,8 @@
   .tournament-window
     margin-top: 12px
 
-  .kpi-row
-    display: grid
-    grid-template-columns: repeat(4, minmax(0, 1fr))
-    gap: 12px
+  .tournament-kpis
     margin-bottom: 16px
-
-  .kpi-card
-    display: flex
-    align-items: center
-    gap: 12px
-    padding: 12px
-
-  .kpi-card p
-    margin: 0
-    color: #667085
-    font-size: 12px
-
-  .kpi-card strong
-    font-size: 16px
-
-  .kpi-icon
-    width: 36px
-    height: 36px
-    border-radius: 10px
-    display: grid
-    place-items: center
-    background: rgba(var(--v-theme-primary), 0.12)
-    color: rgb(var(--v-theme-primary))
 
   .tournament-progress-card
     padding: 16px
@@ -469,7 +449,4 @@
       grid-template-columns: 70% 30%
       align-items: stretch
 
-  @media (max-width: 900px)
-    .kpi-row
-      grid-template-columns: repeat(2, minmax(0, 1fr))
 </style>

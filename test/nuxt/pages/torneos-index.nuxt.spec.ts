@@ -18,6 +18,7 @@ const tournamentStoreMock = {
   recalculateTour,
   tournamentId: ref<number | undefined>(undefined),
   noTournaments: ref(false),
+  loading: ref(false),
   tourSteps: ref([]),
   summary: ref({ total: 0, active: 0, upcoming: 0, finished: 0 }),
 }
@@ -39,18 +40,19 @@ describe('Torneos index page', () => {
     const wrapper = await mountSuspended(TorneosPage, {
       global: {
         stubs: {
-          PageLayout: { template: '<div><slot name="default" /><slot name="tour" /></div>' },
+          PageLayout: { template: '<div><slot name="app-bar" /><slot /><slot name="tour" /></div>' },
+          AppBar: { template: '<div></div>' },
           TournamentKpis: { template: '<div data-testid="kpis"></div>' },
           TournamentFilters: { template: '<div data-testid="filters"></div>' },
           TournamentTable: { template: '<div data-testid="table"></div>' },
           NoTournaments: { template: '<div></div>' },
           TournamentDialog: { template: '<div></div>' },
           LazyTour: { template: '<div></div>' },
+          Tour: { template: '<div></div>' },
         },
       },
     })
 
-    expect(wrapper.text()).toContain('Torneos')
     expect(wrapper.find('[data-testid="kpis"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="filters"]').exists()).toBe(true)
     expect(loadTournaments).toHaveBeenCalled()

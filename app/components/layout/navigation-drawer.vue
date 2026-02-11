@@ -81,7 +81,7 @@ const globalStore =  useGlobalStore()
     :app="!isMobile"
     @click.stop="!isMobile && (rail = false)"
     rail-width="56"
-    style="min-height: 100vh"
+    style="min-height: 100vh; z-index: 3000;"
   >
     <template #prepend>
       <v-list-item nav ref="drawerRef">

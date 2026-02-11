@@ -55,6 +55,14 @@ describe('Torneo admin index page', () => {
           Vue3EasyDataTable: { template: '<div data-testid="standings"></div>' },
           CreateTournamentDialog: { template: '<div></div>' },
           DisciplinePanel: { template: '<div data-testid="discipline-panel"></div>' },
+          KpisMetricsSection: {
+            props: ['items'],
+            template: `
+              <div data-testid="kpis-metrics">
+                <span v-for="item in items" :key="item.title">{{ item.value }}</span>
+              </div>
+            `,
+          },
           TransitionFade: { template: '<div><slot /></div>' },
           Icon: { template: '<i></i>' },
           'v-btn-group': { template: '<div><slot /></div>' },

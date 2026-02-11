@@ -5,12 +5,13 @@ import TournamentDialog from '~/components/pages/torneos/dialog/index.vue'
 import TournamentKpis from '~/components/pages/torneos/tournament-kpis.vue'
 import TournamentFilters from '~/components/pages/torneos/tournament-filters.vue'
 import {storeToRefs} from '#imports'
+import AppBar from "~/components/layout/AppBar.vue";
 
 definePageMeta({
   middleware: ['sanctum:auth'],
 })
 const tournamentStore = useTournamentStore()
-  const { tournamentId, noTournaments, tourSteps, summary } = storeToRefs(tournamentStore)
+  const { tournamentId, noTournaments, tourSteps, summary, loading } = storeToRefs(tournamentStore)
   const { registerTourRef, startTour, resetTour, recalculateTour } = tournamentStore
   const { setActiveController, clearActiveController } = useTourHub()
   const tourController = { registerTourRef, startTour, resetTour, recalculateTour }
@@ -25,14 +26,15 @@ const tournamentStore = useTournamentStore()
 </script>
 <template>
   <PageLayout styles="main torneos-page">
+    <template #app-bar>
+      <AppBar :extended="false" />
+    </template>
     <template #default>
-      <div class="torneos-page__header">
-        <h1 class="torneos-page__title">Torneos</h1>
-      </div>
+
       <TournamentKpis :summary="summary" />
       <TournamentFilters />
-      <NoTournaments />
-      <div v-if="!noTournaments" class="table torneos-page__table">
+      <NoTournaments v-if="!loading" />
+      <div v-if="!noTournaments || loading" class="table torneos-page__table">
         <div class="table-wrapper">
           <TournamentTable />
         </div>
@@ -46,7 +48,10 @@ const tournamentStore = useTournamentStore()
 </template>
 <style scoped>
   .table-wrapper {
-    max-height: 100%;
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex: 1 1 auto;
   }
 
   .torneos-page__header {
@@ -64,11 +69,8 @@ const tournamentStore = useTournamentStore()
 
   .torneos-page__table {
     margin-top: 12px;
-    flex: 1 1 calc(100% - 32px);
-  }
-  @media (width <= 600px) {
-    .torneos-page__table {
-      flex: 0 1 400px
-    }
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
   }
 </style>

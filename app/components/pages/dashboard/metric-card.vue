@@ -59,3 +59,92 @@ const props = defineProps({
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #eaecf0;
+  border-radius: 16px;
+  background: #fff;
+  min-height: 120px;
+}
+
+.metric-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.metric-card__title {
+  color: #475467;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.metric-card__value {
+  color: #101828;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.metric-card__trend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.metric-card__trend-value.positive {
+  color: #079455;
+  font-weight: 600;
+}
+
+.metric-card__trend-value.negative {
+  color: #d92d20;
+  font-weight: 600;
+}
+
+.metric-card__trend-label {
+  color: #667085;
+}
+
+.metric-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.metric-card__icon--purple {
+  color: #7c3aed;
+  background: rgba(124, 58, 237, 0.12);
+}
+
+.metric-card__icon--green {
+  color: #16a34a;
+  background: rgba(22, 163, 74, 0.12);
+}
+
+.metric-card__icon--blue {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.12);
+}
+
+.metric-card__icon--orange {
+  color: #ea580c;
+  background: rgba(234, 88, 12, 0.12);
+}
+
+.metric-card__icon--red {
+  color: #d92d20;
+  background: rgba(217, 45, 32, 0.12);
+}
+</style>

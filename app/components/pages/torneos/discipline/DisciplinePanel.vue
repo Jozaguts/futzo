@@ -2,6 +2,7 @@
   import { useDebounceFn } from '@vueuse/core'
   import { useToast } from '#imports'
   import { notifyApiError } from '~/utils/apiToast'
+  import KpisMetricsSection from '~/components/shared/kpis-metrics-section.vue'
   import {
     applyDisciplinaryCase,
     createDisciplinaryCase,
@@ -256,6 +257,33 @@
         return 'Este caso aun no tiene una sancion definida.'
     }
   })
+
+  const summaryKpiItems = computed(() => ([
+    {
+      title: 'Total casos',
+      value: loading.summary ? '-' : summary.value.total,
+      icon: 'lucide:shield',
+      iconTone: 'purple',
+    },
+    {
+      title: 'Pendientes',
+      value: loading.summary ? '-' : summary.value.pending,
+      icon: 'lucide:clock-3',
+      iconTone: 'orange',
+    },
+    {
+      title: 'Aplicadas',
+      value: loading.summary ? '-' : summary.value.applied,
+      icon: 'lucide:triangle-alert',
+      iconTone: 'red',
+    },
+    {
+      title: 'Cerradas',
+      value: loading.summary ? '-' : summary.value.closed,
+      icon: 'lucide:check-circle-2',
+      iconTone: 'green',
+    },
+  ]))
 
   const previewHighlights = computed(() => {
     const preview = caseDialog.preview
@@ -1096,47 +1124,7 @@
 
 <template>
   <div class="discipline-panel" data-testid="discipline-panel">
-    <div class="discipline-stats">
-      <v-card class="discipline-stat futzo-rounded" variant="outlined">
-        <div class="discipline-stat__icon discipline-stat__icon--total">
-          <Icon name="lucide:shield" size="16" />
-        </div>
-        <div>
-          <p>Total casos</p>
-          <strong>{{ loading.summary ? '-' : summary.total }}</strong>
-        </div>
-      </v-card>
-
-      <v-card class="discipline-stat futzo-rounded" variant="outlined">
-        <div class="discipline-stat__icon discipline-stat__icon--pending">
-          <Icon name="lucide:clock-3" size="16" />
-        </div>
-        <div>
-          <p>Pendientes</p>
-          <strong>{{ loading.summary ? '-' : summary.pending }}</strong>
-        </div>
-      </v-card>
-
-      <v-card class="discipline-stat futzo-rounded" variant="outlined">
-        <div class="discipline-stat__icon discipline-stat__icon--applied">
-          <Icon name="lucide:triangle-alert" size="16" />
-        </div>
-        <div>
-          <p>Aplicadas</p>
-          <strong>{{ loading.summary ? '-' : summary.applied }}</strong>
-        </div>
-      </v-card>
-
-      <v-card class="discipline-stat futzo-rounded" variant="outlined">
-        <div class="discipline-stat__icon discipline-stat__icon--closed">
-          <Icon name="lucide:check-circle-2" size="16" />
-        </div>
-        <div>
-          <p>Cerradas</p>
-          <strong>{{ loading.summary ? '-' : summary.closed }}</strong>
-        </div>
-      </v-card>
-    </div>
+    <KpisMetricsSection :items="summaryKpiItems" test-id-prefix="discipline-metrics" />
 
     <div class="discipline-toolbar">
       <v-text-field
@@ -1687,49 +1675,6 @@
     flex-direction: column
     gap: 12px
 
-  .discipline-stats
-    display: grid
-    grid-template-columns: repeat(2, minmax(0, 1fr))
-    gap: 10px
-
-  .discipline-stat
-    display: flex
-    align-items: center
-    gap: 10px
-    padding: 12px
-
-  .discipline-stat p
-    margin: 0
-    color: #667085
-    font-size: 12px
-
-  .discipline-stat strong
-    font-size: 18px
-    line-height: 1.1
-
-  .discipline-stat__icon
-    width: 34px
-    height: 34px
-    border-radius: 10px
-    display: grid
-    place-items: center
-
-  .discipline-stat__icon--total
-    background: rgba(var(--v-theme-primary), 0.12)
-    color: rgb(var(--v-theme-primary))
-
-  .discipline-stat__icon--pending
-    background: rgba(253, 176, 34, 0.16)
-    color: #b54708
-
-  .discipline-stat__icon--applied
-    background: rgba(240, 68, 56, 0.14)
-    color: #d92d20
-
-  .discipline-stat__icon--closed
-    background: rgba(18, 183, 106, 0.14)
-    color: #039855
-
   .discipline-toolbar
     display: grid
     grid-template-columns: 1fr
@@ -2137,9 +2082,6 @@
     font-size: 11px
 
   @media (min-width: 920px)
-    .discipline-stats
-      grid-template-columns: repeat(4, minmax(0, 1fr))
-
     .discipline-toolbar
       grid-template-columns: 1fr auto
       align-items: center

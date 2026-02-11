@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import AppBar from '~/components/layout/AppBar.vue'
 import DashboardNextGames from '~/components/pages/dashboard/dashboard-next-games.vue'
-import MetricCard from '~/components/pages/dashboard/metric-card.vue'
-import MetricsCarousel from '~/components/pages/dashboard/metrics-carousel.vue'
 import ActivityFeed from '~/components/pages/dashboard/activity-feed.vue'
 import TournamentDialog from '~/components/pages/torneos/dialog/index.vue'
 import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
 import JugadoresForm from '~/components/pages/jugadores/form/index.vue'
 import NoGames from '~/components/shared/empty-states/NoGames.vue'
-import {useDisplay} from 'vuetify'
+import KpisMetricsSection from '~/components/shared/kpis-metrics-section.vue'
 import type {Tournament} from '~/models/tournament'
 
 const dashboardStore = useDashboardStore()
@@ -16,7 +14,6 @@ const { teamStats, nextGames, activity, tourSteps } = storeToRefs(dashboardStore
 const { registerTourRef, startTour, resetTour, recalculateTour } = dashboardStore
 const { setActiveController, clearActiveController } = useTourHub()
 const tourController = { registerTourRef, startTour, resetTour, recalculateTour }
-const { mobile } = useDisplay()
 const router = useRouter()
 
 const tournamentStore = useTournamentStore()
@@ -176,22 +173,7 @@ const goToSchedule = () => {
     <template #default>
       <client-only>
         <div class="dashboard-shell">
-          <section class="metrics-grid" v-if="!mobile" data-testid="dashboard-metrics-grid">
-            <MetricCard
-              v-for="metric in metrics"
-              :key="metric.title"
-              :title="metric.title"
-              :value="metric.value"
-              :icon="metric.icon"
-              :icon-tone="metric.iconTone"
-              :trend-value="metric.trendValue"
-              :trend-label="metric.trendLabel"
-              :trend-as-percent="true"
-            />
-          </section>
-          <section v-else class="metrics-carousel-wrapper" data-testid="dashboard-metrics-carousel">
-            <MetricsCarousel :items="metrics" />
-          </section>
+          <KpisMetricsSection :items="metrics" test-id-prefix="dashboard-metrics" />
           <div class="dashboard-body">
             <section class="panel panel--next-games" data-testid="dashboard-next-games">
               <div class="panel__header">

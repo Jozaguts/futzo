@@ -6,7 +6,7 @@ type MetricItem = {
     title: string
     value: string | number
     icon: string
-    iconTone?: 'purple' | 'green' | 'orange' | 'blue'
+    iconTone?: 'purple' | 'green' | 'orange' | 'blue' | 'red'
     trendValue?: number | null
     trendLabel?: string
   }
@@ -106,6 +106,10 @@ type MetricItem = {
 
   .metrics-carousel__slide--orange {
     background: linear-gradient(160deg, rgba(234, 88, 12, 0.22), rgba(255, 255, 255, 1));
+  }
+
+  .metrics-carousel__slide--red {
+    background: linear-gradient(160deg, rgba(217, 45, 32, 0.22), rgba(255, 255, 255, 1));
   }
 
   .metrics-carousel__overlay {

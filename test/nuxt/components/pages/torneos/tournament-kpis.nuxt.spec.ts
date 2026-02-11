@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { ensureVuetifyApp, vuetifyStubs, iconStub } from '../../../utils/vuetify-stubs'
+import { ensureVuetifyApp } from '../../../utils/vuetify-stubs'
 import TournamentKpis from '~/components/pages/torneos/tournament-kpis.vue'
 
 describe('TournamentKpis', () => {
@@ -18,8 +18,17 @@ describe('TournamentKpis', () => {
       },
       global: {
         stubs: {
-          ...vuetifyStubs,
-          Icon: iconStub,
+          KpisMetricsSection: {
+            props: ['items'],
+            template: `
+              <div>
+                <div v-for="item in items" :key="item.title">
+                  <span>{{ item.title }}</span>
+                  <span>{{ item.value }}</span>
+                </div>
+              </div>
+            `,
+          },
         },
       },
     })
