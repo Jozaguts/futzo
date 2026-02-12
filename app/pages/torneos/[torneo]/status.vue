@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import TournamentHeader from '~/components/pages/torneos/status/TournamentHeader.vue'
 import PublicStatsTabs from '~/components/pages/torneos/status/PublicStatsTabs.vue'
+import TournamentStandingsTable from '~/components/pages/torneos/tournament-standings-table.vue'
 import NextGamesToday from '~/components/pages/equipos/next-games-today.vue'
 import LastGames from '~/components/pages/equipos/equipo/last-games.vue'
 import StatsTableContainer from '~/components/pages/equipos/live-games.vue'
 import {usePublicTournamentStatus} from '~/composables/usePublicTournamentStatus'
 import ScheduleRoundsInfiniteScroll from '~/components/pages/torneos/torneo/schedule/ScheduleRoundsInfiniteScroll.vue'
 import {usePublicTournamentSchedule} from '~/composables/usePublicTournamentSchedule'
-import {publicTournamentStandingsHeaders} from '~/utils/publicTournamentStandingsHeaders'
 import {getBySlug, getTournamentScheduleQRCode} from '~/http/api/tournament'
 import {useDisplay} from 'vuetify'
-import Vue3EasyDataTable from 'vue3-easy-data-table'
-import 'vue3-easy-data-table/dist/style.css'
 import {Icon} from '#components'
 
 useHead({
@@ -25,7 +23,7 @@ useHead({
   })
   const route = useRoute()
   const slug = computed(() => String(route.params.torneo || ''))
-  const tab = ref('general')
+  const tab = ref<'general' | 'calendario'>('general')
   const open = ref(false)
   const qr = reactive({
     show: false,
@@ -53,7 +51,6 @@ useHead({
     loadMore: loadSchedule,
     reset: resetSchedule,
   } = usePublicTournamentSchedule(slug)
-  const hasStandings = computed(() => Boolean(data.value?.standings?.length))
   watch(
     () => slug.value,
     () => {
@@ -87,20 +84,10 @@ useHead({
       }
     }
   )
-  const last5Handler = (last_5: string) => {
-    return last_5.split('').map((value: string) => {
-      switch (value) {
-        case '-':
-          return { icon: 'mdi:checkbox-blank-circle-outline', color: 'gray', label: 'No jugó' }
-        case 'W':
-          return { icon: 'mdi:checkbox-marked-circle', color: 'green', label: 'Ganó' }
-        case 'L':
-          return { icon: 'mdi:close-circle', color: 'red', label: 'Perdió' }
-        case 'D':
-          return { icon: 'ic:outline-remove-circle', color: 'gray', label: 'Empate' }
-      }
-    })
-  }
+  const sections: Array<{ value: 'general' | 'calendario'; label: string }> = [
+    { value: 'general', label: 'Vista General' },
+    { value: 'calendario', label: 'Calendario' },
+  ]
 
   const copyPublicLink = async () => {
     try {
@@ -178,119 +165,89 @@ useHead({
       </v-container>
     </template>
     <template #default>
-      <v-container fluid class="pa-0">
-        <v-card>
-          <v-tabs v-model="tab" color="primary">
-            <v-tab value="general">Vista General</v-tab>
-            <v-tab value="calendario">Calendario</v-tab>
-          </v-tabs>
-        </v-card>
-        <v-window v-model="tab" class="mt-4">
-          <v-window-item value="general">
-            <div class="t-container">
-              <div class="t-table">
-                <v-card class="futzo-rounded" height="100%">
-                  <v-card-title>Tabla de posiciones</v-card-title>
-                  <v-card-text>
-                    <client-only>
-                      <Vue3EasyDataTable
-                        v-if="data && hasStandings"
-                        header-text-direction="center"
-                        body-text-direction="center"
-                        :headers="publicTournamentStandingsHeaders"
-                        :items="data.standings"
-                        hide-footer
-                        :rows-per-page="20"
-                        alternating
-                      >
-                        <template #item-team.name="values">
-                          <div class="d-flex">
-                            <span class="mr-2">{{ values.rank }}</span>
-                            <span>
-                              {{ values.team.name }}
-                            </span>
-                          </div>
-                        </template>
-                        <template #item-last_5="item">
-                          <span v-for="color in last5Handler(item.last_5)" :key="item.id" class="text-lowercase">
-                            <v-tooltip :text="color?.label" location="bottom">
-                              <template v-slot:activator="{ props }">
-                                <Icon
-                                  v-bind="props"
-                                  :name="color?.icon"
-                                  :class="`text-${color?.color}`"
-                                  :size="16"
-                                  class="cursor-pointer"
-                                />
-                              </template>
-                            </v-tooltip>
-                          </span>
-                        </template>
-                      </Vue3EasyDataTable>
+      <div class="status-page" data-testid="public-status-page">
+        <section class="tournament-sections-tabs-shell">
+          <div class="tournament-sections-tabs" data-testid="public-status-tabs">
+            <button
+              v-for="section in sections"
+              :key="section.value"
+              type="button"
+              class="tournament-sections-tabs__item"
+              :class="{ 'tournament-sections-tabs__item--active': tab === section.value }"
+              :aria-pressed="tab === section.value"
+              @click="tab = section.value"
+            >
+              {{ section.label }}
+            </button>
+          </div>
+        </section>
 
-                      <v-skeleton-loader v-else-if="loading" type="table" class="mb-6" />
-                      <v-empty-state
-                        v-else
-                        title="Tabla de posiciones no disponible"
-                        text="La tabla aún no está lista. Vuelve más tarde."
-                        image="/junior-soccer.svg"
+        <div class="status-window">
+          <TransitionFade group>
+            <template v-if="tab === 'general'">
+              <div class="t-container">
+                <div class="t-table">
+                  <TournamentStandingsTable
+                    :standings="data?.standings || []"
+                    :loading="loading"
+                    wrapper-test-id="status-standings-table-wrapper"
+                    :rows-per-page="20"
+                  />
+                </div>
+                <div class="t-stats">
+                  <NextGamesToday title="Últimos resultados">
+                    <template #content>
+                      <LastGames v-if="data" :last-games="data.lastResults" />
+                    </template>
+                  </NextGamesToday>
+                  <StatsTableContainer title="Líderes de estadísticas" :show-export="false">
+                    <template #content>
+                      <PublicStatsTabs
+                        v-if="data"
+                        :goals="data.stats.goals"
+                        :assistance="data.stats.assistance"
+                        :yellow-cards="data.stats.yellow_cards"
+                        :red-cards="data.stats.red_cards"
                       />
-                    </client-only>
-                  </v-card-text>
-                </v-card>
+                    </template>
+                  </StatsTableContainer>
+                </div>
               </div>
-              <div class="t-stats">
-                <NextGamesToday title="Últimos resultados">
-                  <template #content>
-                    <LastGames v-if="data" :last-games="data.lastResults" />
-                  </template>
-                </NextGamesToday>
-                <StatsTableContainer title="Líderes de estadísticas" :show-export="false">
-                  <template #content>
-                    <PublicStatsTabs
-                      v-if="data"
-                      :goals="data.stats.goals"
-                      :assistance="data.stats.assistance"
-                      :yellow-cards="data.stats.yellow_cards"
-                      :red-cards="data.stats.red_cards"
-                    />
-                  </template>
-                </StatsTableContainer>
+            </template>
+
+            <template v-else-if="tab === 'calendario'">
+              <div class="status-calendar">
+                <v-alert v-if="scheduleError" type="warning" variant="tonal" class="mb-4">
+                  {{ scheduleError }}
+                </v-alert>
+                <ScheduleRoundsInfiniteScroll
+                  v-if="tab === 'calendario'"
+                  :rounds="scheduleRounds"
+                  :public="true"
+                  :loading="scheduleLoading"
+                  @load="loadSchedule"
+                />
               </div>
-            </div>
-          </v-window-item>
-          <v-window-item value="calendario">
-            <v-alert v-if="scheduleError" type="warning" variant="tonal" class="mb-4">
-              {{ scheduleError }}
-            </v-alert>
-            <ScheduleRoundsInfiniteScroll
-              v-if="tab === 'calendario'"
-              :rounds="scheduleRounds"
-              :public="true"
-              :loading="scheduleLoading"
-              @load="loadSchedule"
-            />
-          </v-window-item>
-        </v-window>
-      </v-container>
-    </template>
-    <template #footer>
-      <v-footer height="100%">
-        <div class="d-flex flex-column flex-md-row flex-lg-row justify-space-between align-items-center w-100 px-4">
-          <div class="d-flex order-2 order-md-1 order-lg-1 flex-column my-2 my-md-0 my-lg-0 text-body-2">
-            <p>La información mostrada es gestionada directamente por la organización del torneo.</p>
-            <div>
-              ¿Organizas una liga? Crea tu torneo gratis en <nuxt-link class="text-primary" to="/">Futzo</nuxt-link>
-            </div>
-          </div>
-          <div class="d-flex order-1 order-md-2 order-lg-2 flex-column align-items-end text-body-2">
-            <div class="d-flex flex-column align-end mb-2 pr-2">
-              <Icon name="futzo-icon:futzo-horizontal" size="60"></Icon>
-              <p class="text-caption mt-2">Gestión inteligente de ligas y torneos deportivos.</p>
-            </div>
-          </div>
+            </template>
+          </TransitionFade>
         </div>
-      </v-footer>
+        <footer class="status-footer futzo-rounded">
+          <div class="status-footer__content">
+            <div class="status-footer__left">
+              <p>La información mostrada es gestionada directamente por la organización del torneo.</p>
+              <div>
+                ¿Organizas una liga? Crea tu torneo gratis en <nuxt-link class="text-primary" to="/">Futzo</nuxt-link>
+              </div>
+            </div>
+            <div class="status-footer__right">
+              <div class="status-footer__brand">
+                <Icon name="futzo-icon:futzo-horizontal" size="60"></Icon>
+                <p class="text-caption mt-2">Gestión inteligente de ligas y torneos deportivos.</p>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
     </template>
     <template v-if="isAdmin && mobile" #fab>
       <v-fab color="primary" icon @click="open = !open">
@@ -328,6 +285,60 @@ useHead({
   .futzo-page-container {
     grid-template-rows: auto;
   }
+
+  .status-page {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+    overflow-x: hidden;
+    padding-bottom: max(84px, calc(84px + env(safe-area-inset-bottom)));
+  }
+
+  .tournament-sections-tabs-shell {
+    border: 1px solid #eaecf0;
+    border-radius: 12px;
+    background: #fff;
+    padding: 8px;
+  }
+
+  .tournament-sections-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 4px;
+    border-radius: 10px;
+    background: #f2f4f7;
+  }
+
+  .tournament-sections-tabs__item {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #667085;
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: 0.18s ease;
+  }
+
+  .tournament-sections-tabs__item:focus-visible {
+    outline: 2px solid rgba(41, 112, 255, 0.42);
+    outline-offset: 1px;
+  }
+
+  .tournament-sections-tabs__item--active {
+    background: #fff;
+    color: #101828;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+  }
+
+  .status-window {
+    min-width: 0;
+  }
+
   .t-container {
     display: grid;
     grid-template-columns: 100%;
@@ -337,30 +348,79 @@ useHead({
       't-table'
       't-stats';
     align-items: stretch;
+    min-width: 0;
   }
+
   .t-next-games {
     grid-area: t-next-games;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 16px;
   }
+
   .t-stats {
     grid-area: t-stats;
     display: flex;
     flex-direction: column;
     gap: 16px;
+    min-width: 0;
   }
+
   .t-table {
     grid-area: t-table;
+    min-width: 0;
   }
+
+  .status-calendar {
+    min-width: 0;
+  }
+
   .t-table,
   .t-stats {
-    min-height: 520px;
+    min-height: 0;
   }
+
   .t-table > .v-card,
   .t-stats > .v-card,
   .t-stats > .next-games-today-table {
     height: 100%;
+    min-width: 0;
   }
+
+  .status-footer {
+    padding: 14px;
+  }
+
+  .status-footer__content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .status-footer__left {
+    order: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+    color: #475467;
+  }
+
+  .status-footer__left p {
+    margin: 0;
+  }
+
+  .status-footer__right {
+    order: 1;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .status-footer__brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   @media (width > 600px) {
     .t-container {
       display: grid;
@@ -371,9 +431,33 @@ useHead({
         't-table t-stats'
         't-table t-stats';
     }
+
+    .tournament-sections-tabs {
+      max-width: 360px;
+    }
+
+    .tournament-sections-tabs__item {
+      font-size: 13px;
+    }
+
     .t-table,
     .t-stats {
       min-height: 560px;
+    }
+
+    .status-footer__content {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .status-footer__left {
+      order: 1;
+    }
+
+    .status-footer__right {
+      order: 2;
+      justify-content: flex-end;
     }
   }
 </style>

@@ -6,16 +6,13 @@ import CreateTournamentDialog from '~/components/pages/torneos/dialog/index.vue'
 import DisciplinePanel from '~/components/pages/torneos/discipline/DisciplinePanel.vue'
 import TournamentCalendarTab from '~/components/pages/torneos/torneo/calendar-tab.vue'
 import TournamentShareMenu from '~/components/pages/torneos/tournament-share-menu.vue'
+import TournamentStandingsTable from '~/components/pages/torneos/tournament-standings-table.vue'
 import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
 import KpisMetricsSection from '~/components/shared/kpis-metrics-section.vue'
 import PageLayout from '~/components/shared/PageLayout.vue'
 import {getTournamentMetrics, getTournamentRegistrationQRCode, getTournamentScheduleQRCode} from '~/http/api/tournament'
 import type {TournamentDetailKpis, TournamentKpiMetric, TournamentShareAction} from '~/models/tournament'
-import {last5Handler} from '~/utils/headers-table'
-import {publicTournamentStandingsHeaders} from '~/utils/publicTournamentStandingsHeaders'
-import Vue3EasyDataTable from 'vue3-easy-data-table'
-import { useDisplay } from 'vuetify'
-import 'vue3-easy-data-table/dist/style.css'
+import {useDisplay} from 'vuetify'
 
 const tournamentStore = useTournamentStore()
   const { standings, tournamentId, tournament } = storeToRefs(tournamentStore)
@@ -456,59 +453,12 @@ const tournamentStore = useTournamentStore()
 
               <div class="tournament-content">
                 <div class="tournament-standings">
-                  <v-card class="futzo-rounded tournament-standings-card" height="100%">
-                    <v-card-title>Tabla de posiciones</v-card-title>
-                    <v-card-text class="tournament-standings-card__content">
-                      <div class="tournament-standings-table" data-testid="tournament-standings-table-wrapper">
-                        <client-only>
-                          <Vue3EasyDataTable
-                            v-if="standings?.length"
-                            header-text-direction="center"
-                            class="futzo-rounded tournament-standings-table__grid"
-                            body-text-direction="center"
-                            :headers="publicTournamentStandingsHeaders"
-                            :items="standings"
-                            hide-footer
-                            fixed-header
-                            :table-min-height="0"
-                            :rows-per-page="standings?.length"
-                            alternating
-                          >
-                            <template #item-team.name="values">
-                              <div class="d-flex">
-                                <span class="mr-2">{{ values.rank }}</span>
-                                <span class="d-inline-block text-truncate" style="max-width: 100px">
-                                  {{ values.team.name }}
-                                </span>
-                              </div>
-                            </template>
-                            <template #item-last_5="item">
-                              <span v-for="color in last5Handler(item.last_5)" :key="item.id" class="text-lowercase">
-                                <v-tooltip :text="color?.label" location="bottom">
-                                  <template #activator="{ props }">
-                                    <Icon
-                                      v-bind="props"
-                                      :name="color?.icon"
-                                      :class="`text-${color?.color}`"
-                                      :size="16"
-                                      class="cursor-pointer"
-                                    />
-                                  </template>
-                                </v-tooltip>
-                              </span>
-                            </template>
-                          </Vue3EasyDataTable>
-                          <v-skeleton-loader v-else-if="loading" type="table" class="mb-6" />
-                          <v-empty-state
-                            v-else
-                            title="Tabla de posiciones no disponible"
-                            text="La tabla aún no está lista. Vuelve más tarde."
-                            image="/junior-soccer.svg"
-                          />
-                        </client-only>
-                      </div>
-                    </v-card-text>
-                  </v-card>
+                  <TournamentStandingsTable
+                    :standings="standings"
+                    :loading="loading"
+                    wrapper-test-id="tournament-standings-table-wrapper"
+                    :rows-per-page="standings?.length || 0"
+                  />
                 </div>
                 <div class="tournament-stats">
                   <StatsTableContainer title="Líderes de estadísticas">
@@ -696,36 +646,6 @@ const tournamentStore = useTournamentStore()
   .tournament-standings
     min-height: 520px
     min-width: 0
-
-  .tournament-standings-card
-    display: flex
-    flex-direction: column
-    min-width: 0
-
-  .tournament-standings-card__content
-    display: flex
-    flex: 1 1 auto
-    min-width: 0
-    min-height: 0
-    padding: 0 12px 12px
-
-  .tournament-standings-table
-    display: flex
-    flex: 1 1 auto
-    min-width: 0
-    min-height: 0
-
-  .tournament-standings-table :deep(.vue3-easy-data-table)
-    display: flex
-    flex: 1 1 auto
-    flex-direction: column
-    min-width: 0
-    min-height: 0
-
-  .tournament-standings-table :deep(.vue3-easy-data-table__main)
-    flex: 1 1 auto
-    min-width: 0
-    min-height: 0
 
   .tournament-discipline-shell
     display: flex

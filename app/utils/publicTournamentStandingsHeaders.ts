@@ -8,5 +8,5 @@ export const publicTournamentStandingsHeaders = [
   { text: 'GF', value: 'goals_for' },
   { text: 'GC', value: 'goals_against' },
   { text: 'DG', value: 'goal_difference' },
-  { text: 'RACHA', value: 'last_5', align: 'center' },
+  { text: 'RACHA', value: 'last_5', align: 'left' },
 ];

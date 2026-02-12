@@ -77,7 +77,7 @@ describe('Torneo admin index page', () => {
           StatsTableContainer: { template: '<div data-testid="stats-table"></div>' },
           StatsTable: { template: '<div></div>' },
           TournamentCalendarTab: { template: '<div data-testid="calendar-tab"></div>' },
-          Vue3EasyDataTable: { template: '<div data-testid="standings"></div>' },
+          TournamentStandingsTable: { template: '<div data-testid="tournament-standings-table-wrapper"></div>' },
           CreateTournamentDialog: { template: '<div></div>' },
           DisciplinePanel: { template: '<div data-testid="discipline-panel"></div>' },
           TournamentShareMenu: { template: '<button data-testid="tournament-share-menu"></button>' },

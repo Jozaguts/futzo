@@ -1,14 +1,18 @@
-import type { LastGames, NextGames, Team as GameTeam } from '~/models/Game';
-import type { PlayerStats } from '~/models/tournament';
+import type {LastGames, NextGames, Team as GameTeam} from '~/models/Game';
+import type {PlayerStats} from '~/models/tournament';
 
 export type PublicTournamentHeader = {
   name: string;
-  tournamentName: string;
-  startDate: string;
-  location: string;
+  tournamentName?: string;
+  startDate?: string;
+  location?: string;
   teams: number;
-  status: string;
-  format: string;
+  status?: string;
+  format?: string;
+  footballType?: string;
+  football_type?: string;
+  tournamentFormatName?: string;
+  tournament_format_name?: string;
 };
 
 export type PublicStandingRow = {

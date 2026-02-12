@@ -1,7 +1,8 @@
 <script setup lang="ts">
-  import type { PublicTournamentHeader } from '~/models/PublicTournament'
-  import { useDisplay } from 'vuetify'
-  const { isAuthenticated } = useSanctumAuth()
+import type {PublicTournamentHeader} from '~/models/PublicTournament'
+import {useDisplay} from 'vuetify'
+
+const { isAuthenticated } = useSanctumAuth()
   const { mobile } = useDisplay()
 
   const props = defineProps<{
@@ -16,6 +17,15 @@
     return isAuthenticated.value ? '/dashboard' : '/'
   })
   const shareModel = ref<string | null>(null)
+  const footballTypeLabel = computed(() => props.header.footballType || props.header.football_type || '—')
+  const tournamentFormatLabel = computed(
+    () =>
+      props.header.tournamentFormatName ||
+      props.header.tournament_format_name ||
+      props.header.format ||
+      props.header.tournamentName ||
+      '—'
+  )
   const shareOptions = [
     { title: 'Enlace', value: 'link' },
     { title: 'QR', value: 'qr' },
@@ -34,18 +44,22 @@
         <v-avatar image="/images/futzo-icon.png" size="64" @click="$router.push(route)"> </v-avatar>
         <div>
           <div class="text-h5 font-weight-bold">{{ header.name }}</div>
-          <div class="d-flex align-center ga-2 mt-1">
+          <div class="d-flex align-center ga-2 mt-1" v-if="header.tournamentName">
             <v-chip size="small" variant="tonal" color="primary">{{ header.tournamentName }}</v-chip>
           </div>
         </div>
       </div>
       <div class="d-flex flex-wrap align-center justify-end ga-4 text-body-2 text-medium-emphasis">
         <div class="d-flex align-center ga-2">
-          <Icon name="mdi-calendar" size="18" />
-          <span>Inicio: {{ header.startDate }}</span>
+          <Icon name="lucide:trophy" size="18" />
+          <span>{{ tournamentFormatLabel }}</span>
         </div>
         <div class="d-flex align-center ga-2">
-          <Icon name="mdi-account-group" size="18" />
+          <Icon name="lucide:dribbble" size="18" />
+          <span>{{ footballTypeLabel }}</span>
+        </div>
+        <div class="d-flex align-center ga-2">
+          <Icon name="lucide:users" size="18" />
           <span>{{ header.teams }} equipos</span>
         </div>
         <v-select
