@@ -31,6 +31,8 @@
 - Mobile-first obligatorio: diseñar primero <=600px, luego escalar a tablet/desktop con breakpoints consistentes (600/960/1200+).
 - En páginas de listado y detalle usar contenedores tipo panel consistentes: fondo blanco, borde suave `#eaecf0`, radio 12-16px, headers con jerarquía clara (`title`, `subtitle`, acciones).
 - Evitar variantes visuales ad-hoc entre módulos (tabs, cards, botones, filtros). Si existe patrón equivalente en dashboard o disciplina, se reutiliza.
+- Íconos: priorizar `lucide:*` en nuevos cambios. Si ya existe un ícono en `futzo-icon:*` para el caso, se puede mantener. Evitar introducir nuevos `mdi*` salvo compatibilidad temporal.
+- Dependencias de íconos: no agregar nuevas librerías de iconos sin justificar uso real en UI. Limpiar dependencias no usadas cuando se complete una migración de íconos.
 - Al modificar shells de página o componentes visibles en página, actualizar/agregar tests Nuxt para validar estructura clave y comportamiento de interacción.
 
 ## Testing Guidelines
