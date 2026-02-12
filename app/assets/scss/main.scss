@@ -50,6 +50,12 @@ a {
   gap: 16px;
 }
 
+.main.equipos-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .futzo-page-container {
   display: grid;
   grid-template-areas:

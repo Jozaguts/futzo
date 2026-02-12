@@ -1,17 +1,15 @@
 <script lang="ts" setup>
 import AppBar from '~/components/layout/AppBar.vue'
-import AppBarButtons from '~/components/pages/equipos/team-navbar-buttons.vue'
 import NoTeams from '~/components/pages/equipos/NoTeams.vue'
 import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
 import TeamsTable from '~/components/pages/equipos/teams-table.vue'
 import ImportDialog from '~/components/pages/equipos/import-dialog/index.vue'
-import {useDisplay} from 'vuetify'
+import TeamKpis from '~/components/pages/equipos/team-kpis.vue'
 import SearchInput from '~/components/pages/equipos/app-bar-search-input.vue'
-import {Icon} from '#components'
 
 definePageMeta({   middleware: ['sanctum:auth']})
 const teamStore = useTeamStore()
-  const { noTeams, tourSteps } = storeToRefs(teamStore)
+  const { noTeams, tourSteps, listKpis, dialog, importModal } = storeToRefs(teamStore)
   const { registerTourRef, startTour, resetTour, recalculateTour } = teamStore
   const { setActiveController, clearActiveController } = useTourHub()
   const tourController = { registerTourRef, startTour, resetTour, recalculateTour }
@@ -22,24 +20,46 @@ const teamStore = useTeamStore()
   onBeforeUnmount(() => {
     clearActiveController(tourController)
   })
-  const { mobile } = useDisplay()
   const open = ref(false)
 </script>
 <template>
-  <PageLayout>
+  <PageLayout styles="main equipos-page">
     <template #app-bar>
-      <AppBar :extended="mobile">
-        <template #buttons> <AppBarButtons /></template>
-        <template #extension>
-          <div class="d-flex d-md-none d-lg-none flex-column w-100">
-            <SearchInput class="mx-4" />
-          </div>
-        </template>
-      </AppBar>
+      <AppBar :extended="false" />
     </template>
     <template #default>
+      <section class="equipos-page__top-shell futzo-rounded" data-testid="equipos-page-top-shell">
+        <header class="equipos-page__intro" data-testid="equipos-page-intro">
+          <div class="equipos-page__header">
+            <div class="equipos-page__title-wrapper">
+              <p class="equipos-page__eyebrow">Gestión de torneos</p>
+              <h1 class="equipos-page__title">Equipos</h1>
+              <p class="equipos-page__subtitle">Centraliza la operación de tus equipos desde una sola vista.</p>
+            </div>
+            <div class="equipos-page__actions" data-testid="equipos-page-actions">
+              <PrimaryBtn
+                text="Nuevo equipo"
+                icon="lucide:shirt"
+                class="equipos-page__quick-btn teams-primary-btn"
+                @click="dialog = true"
+              />
+              <SecondaryBtn
+                text="Importar equipos"
+                icon="lucide:upload"
+                class="equipos-page__quick-btn"
+                @btn-click="importModal = true"
+              />
+            </div>
+          </div>
+        </header>
+        <div class="equipos-page__top-divider" aria-hidden="true"></div>
+        <section class="equipos-page__controls" data-testid="equipos-filters-panel">
+          <SearchInput min-width="100%" placeholder="Buscar equipo..." class="equipos-page__search" />
+        </section>
+      </section>
+      <TeamKpis :kpis="listKpis" />
       <NoTeams />
-      <div v-if="!noTeams" class="table" style="height: 100%">
+      <div v-if="!noTeams" class="table equipos-page__table" data-testid="equipos-table-panel">
         <div class="table-wrapper">
           <TeamsTable />
         </div>
@@ -47,23 +67,158 @@ const teamStore = useTeamStore()
       <CreateTeamDialog />
       <ImportDialog />
     </template>
-    <template #fab>
-      <v-fab color="primary" icon @click="open = !open">
-        <Icon name="futzo-icon:plus" class="mobile-fab" :class="open ? 'opened' : ''" size="24"></Icon>
-        <v-speed-dial v-model="open" location="left center" transition="slide-y-reverse-transition" activator="parent">
-          <v-btn key="1" color="secondary" icon @click="teamStore.dialog = !teamStore.dialog">
-            <Icon name="fluent:people-team-20-regular" size="24"></Icon>
-          </v-btn>
-        </v-speed-dial>
-      </v-fab>
-    </template>
+<!--    <template #fab>-->
+<!--      <v-fab color="primary" icon @click="open = !open">-->
+<!--        <Icon name="futzo-icon:plus" class="mobile-fab" :class="open ? 'opened' : ''" size="24"></Icon>-->
+<!--        <v-speed-dial v-model="open" location="left center" transition="slide-y-reverse-transition" activator="parent">-->
+<!--          <v-btn key="1" color="secondary" icon @click="teamStore.dialog = !teamStore.dialog">-->
+<!--            <Icon name="fluent:people-team-20-regular" size="24"></Icon>-->
+<!--          </v-btn>-->
+<!--        </v-speed-dial>-->
+<!--      </v-fab>-->
+<!--    </template>-->
     <template #tour>
       <LazyTour name="equipos" :steps="tourSteps" @register="registerTourRef" />
     </template>
   </PageLayout>
 </template>
 <style scoped>
+  .equipos-page__top-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .equipos-page__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .equipos-page__header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .equipos-page__title-wrapper {
+    min-width: 0;
+  }
+
+  .equipos-page__eyebrow {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .03em;
+    color: #667085;
+    text-transform: uppercase;
+  }
+
+  .equipos-page__title {
+    margin: 2px 0 0;
+    color: #101828;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .equipos-page__subtitle {
+    margin: 4px 0 0;
+    color: #667085;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .equipos-page__actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .equipos-page__quick-btn {
+    width: 100%;
+  }
+
+  .equipos-page__top-divider {
+    width: 100%;
+    height: 1px;
+    background: #eaecf0;
+  }
+
+  .equipos-page__controls {
+    width: 100%;
+  }
+
+  .equipos-page__search {
+    width: 100%;
+  }
+
   .table-wrapper {
+    height: auto;
+    min-height: 260px;
+    display: flex;
+    flex: 1 1 auto;
+    padding: 12px;
     max-height: 100%;
+  }
+
+  .equipos-page__table {
+    flex: 0 0 auto;
+    min-height: 292px;
+    display: flex;
+    border: 1px solid #eaecf0;
+    border-radius: 16px;
+    background: #fff;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  @media (min-width: 960px) {
+    .equipos-page__intro {
+      gap: 4px;
+    }
+
+    .equipos-page__header {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .equipos-page__title-wrapper {
+      max-width: 680px;
+    }
+
+    .equipos-page__title {
+      font-size: 28px;
+    }
+
+    .equipos-page__subtitle {
+      font-size: 14px;
+    }
+
+    .equipos-page__actions {
+      width: auto;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .equipos-page__quick-btn {
+      width: auto;
+    }
+
+    .table-wrapper {
+      height: 100%;
+      min-height: 0;
+    }
+
+    .equipos-page__table {
+      flex: 1 1 0;
+      min-height: 0;
+    }
   }
 </style>

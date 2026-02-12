@@ -1,9 +1,27 @@
-import type { Position } from '~/models/Position';
-import type { IPagination } from '~/interfaces';
+import type {Position} from '~/models/Position';
+import type {IPagination} from '~/interfaces';
 
 export type TeamsPaginatedResponse = {
   data: Team[];
-  meta: IPagination;
+  meta: TeamsPaginationMeta;
+};
+
+export type TeamKpiMetric = {
+  total: number;
+  current: number;
+  dailyData: number[];
+  label: string;
+};
+
+export type TeamListKpis = {
+  teamsRegistered: TeamKpiMetric;
+  playersRegistered: TeamKpiMetric;
+  activeTournaments: TeamKpiMetric;
+  teamsWithHomeVenue: TeamKpiMetric;
+};
+
+export type TeamsPaginationMeta = IPagination & {
+  kpis?: TeamListKpis;
 };
 
 export type PreRegisterTeamResponse = {
@@ -91,6 +109,18 @@ export type Team = {
   id: number;
   name: string;
   slug: string;
+  short_name?: string | null;
+  players_count?: number | null;
+  register_link?: string | null;
+  matches_played?: number | null;
+  wins?: number | null;
+  draws?: number | null;
+  losses?: number | null;
+  goals_for?: number | null;
+  goals_against?: number | null;
+  goal_difference?: number | null;
+  points?: number | null;
+  tournaments?: TeamTournamentBadge[] | null;
   category: Category;
   tournament: Tournament;
   image: string;
@@ -142,6 +172,12 @@ export interface Colors {
 export interface Away {
   primary: string;
   secondary: string;
+}
+
+export interface TeamTournamentBadge {
+  id?: number;
+  name: string;
+  status?: string | null;
 }
 
 export interface Tournament {

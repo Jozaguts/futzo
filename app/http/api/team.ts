@@ -117,10 +117,10 @@ export const initPreRegister = async (slug: string) => {
     }
   );
 };
-export const getTeams = async (pagination: IPagination) => {
+export const getTeams = async (pagination: IPagination, range: string = 'lastMonth') => {
   const client = useSanctumClient();
   return await client<TeamsPaginatedResponse>(
-    `/api/v1/admin/teams?per_page=${pagination.per_page}&page=${pagination.current_page}&sort=${pagination.sort}`
+    `/api/v1/admin/teams?per_page=${pagination.per_page}&page=${pagination.current_page}&sort=${pagination.sort}&range=${range}`
   );
 };
 export const searchTeams = async (value: string = '') => {

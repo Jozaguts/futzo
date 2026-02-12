@@ -94,21 +94,22 @@ onBeforeUnmount(() => {
   }
 
   .table-wrapper {
-    height: 100%;
-    min-height: 0;
+    height: auto;
+    min-height: 260px;
     display: flex;
     flex: 1 1 auto;
     padding: 12px;
   }
 
   .torneos-page__table {
-    flex: 1 1 0;
-    min-height: 0;
+    flex: 0 0 auto;
+    min-height: 292px;
     display: flex;
     border: 1px solid #eaecf0;
     border-radius: 16px;
     background: #fff;
     padding: 0;
+    overflow: hidden;
   }
 
   @media (min-width: 960px) {
@@ -126,6 +127,16 @@ onBeforeUnmount(() => {
 
     .torneos-page__filters {
       padding: 16px;
+    }
+
+    .table-wrapper {
+      height: 100%;
+      min-height: 0;
+    }
+
+    .torneos-page__table {
+      flex: 1 1 0;
+      min-height: 0;
     }
   }
 </style>

@@ -1,5 +1,5 @@
 import {defineStore, skipHydrate} from 'pinia';
-import type {Formation, FormSteps, HomePreferences, Team, TeamStoreRequest} from '~/models/Team';
+import type {Formation, FormSteps, HomePreferences, Team, TeamKpiMetric, TeamListKpis, TeamStoreRequest} from '~/models/Team';
 import type {IPagination} from '~/interfaces';
 import * as teamAPI from '~/http/api/team';
 import prepareForm, {parseBlobResponse} from '~/utils/prepareFormData';
@@ -11,6 +11,37 @@ import type {TourStep} from '#nuxt-tour/props';
 import {useTourController} from '~/composables/useTourController';
 
 export const useTeamStore = defineStore('teamStore', () => {
+  const KPI_RANGE = 'lastMonth' as const;
+  const DEFAULT_KPI_LABEL = 'vs último mes';
+
+  const createZeroKpi = (): TeamKpiMetric => ({
+    total: 0,
+    current: 0,
+    dailyData: [],
+    label: DEFAULT_KPI_LABEL,
+  });
+
+  const createDefaultListKpis = (): TeamListKpis => ({
+    teamsRegistered: createZeroKpi(),
+    playersRegistered: createZeroKpi(),
+    activeTournaments: createZeroKpi(),
+    teamsWithHomeVenue: createZeroKpi(),
+  });
+
+  const normalizeKpi = (metric?: Partial<TeamKpiMetric>): TeamKpiMetric => ({
+    total: Number(metric?.total ?? 0),
+    current: Number(metric?.current ?? 0),
+    dailyData: Array.isArray(metric?.dailyData) ? metric?.dailyData.map((value) => Number(value ?? 0)) : [],
+    label: metric?.label || DEFAULT_KPI_LABEL,
+  });
+
+  const normalizeListKpis = (kpis?: Partial<TeamListKpis>): TeamListKpis => ({
+    teamsRegistered: normalizeKpi(kpis?.teamsRegistered),
+    playersRegistered: normalizeKpi(kpis?.playersRegistered),
+    activeTournaments: normalizeKpi(kpis?.activeTournaments),
+    teamsWithHomeVenue: normalizeKpi(kpis?.teamsWithHomeVenue),
+  });
+
   const { registerTourRef, startTour, resetTour, recalculateTour } = useTourController();
   const INIT_STEPS: FormSteps = {
     current: 'createTeam',
@@ -62,6 +93,7 @@ export const useTeamStore = defineStore('teamStore', () => {
     sort: 'asc',
   });
   const teamStoreRequest = ref<Partial<TeamStoreRequest>>({} as TeamStoreRequest);
+  const listKpis = ref<TeamListKpis>(createDefaultListKpis());
   const client = useSanctumClient();
   const steps = ref<FormSteps>(INIT_STEPS);
   const isEdition = ref(false);
@@ -293,15 +325,63 @@ export const useTeamStore = defineStore('teamStore', () => {
         });
       });
   };
+  const computeFallbackListKpis = (items: Team[]): TeamListKpis => {
+    const playersRegistered = items.reduce((acc, item) => acc + Number((item as any)?.players_count ?? 0), 0);
+    const activeTournaments = new Set(
+      items
+        .filter((item) => String(item?.tournament?.status ?? '').toLowerCase() === 'en curso')
+        .map((item) => item?.tournament?.id)
+        .filter((id): id is number => typeof id === 'number')
+    );
+    const teamsWithHomeVenue = items.filter((item) => {
+      const hasLocationId =
+        item?.home_preferences?.location_id !== null && item?.home_preferences?.location_id !== undefined;
+      const hasLocationObjectId =
+        item?.home_preferences?.location?.id !== null && item?.home_preferences?.location?.id !== undefined;
+      return hasLocationId || hasLocationObjectId;
+    }).length;
+
+    return {
+      teamsRegistered: {
+        total: Number(pagination.value.total ?? items.length),
+        current: 0,
+        dailyData: [],
+        label: DEFAULT_KPI_LABEL,
+      },
+      playersRegistered: {
+        total: playersRegistered,
+        current: 0,
+        dailyData: [],
+        label: DEFAULT_KPI_LABEL,
+      },
+      activeTournaments: {
+        total: activeTournaments.size,
+        current: 0,
+        dailyData: [],
+        label: DEFAULT_KPI_LABEL,
+      },
+      teamsWithHomeVenue: {
+        total: teamsWithHomeVenue,
+        current: 0,
+        dailyData: [],
+        label: DEFAULT_KPI_LABEL,
+      },
+    };
+  };
+
   const getTeams = async () => {
-    const response = await teamAPI.getTeams(pagination.value);
+    const response = await teamAPI.getTeams(pagination.value, KPI_RANGE);
     teams.value = response.data;
     pagination.value = { ...pagination.value, ...response.meta };
+    listKpis.value = response?.meta?.kpis ? normalizeListKpis(response.meta.kpis) : computeFallbackListKpis(response.data);
   };
   const searchTeams = async (value: string = '') => {
     const response = await teamAPI.searchTeams(value);
     teams.value = response.data || [];
     pagination.value = { ...pagination.value, ...response.meta };
+    if (response.meta?.kpis) {
+      listKpis.value = normalizeListKpis(response.meta.kpis);
+    }
   };
   const list = async () => {
     try {
@@ -395,6 +475,7 @@ export const useTeamStore = defineStore('teamStore', () => {
     teamStoreRequest,
     teamId,
     pagination,
+    listKpis,
     search,
     importModal,
     loading,
