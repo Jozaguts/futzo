@@ -47,13 +47,10 @@ vi.mock('vuetify', () => ({
   useDisplay: () => ({ mobile: isMobile }),
 }))
 
-const CopyLinkStub = defineComponent({
-  name: 'CopyLink',
-  props: {
-    iconOnly: { type: Boolean, default: false },
-  },
-  setup(props) {
-    return () => h('button', { 'data-testid': 'copy-link', 'data-icon-only': String(props.iconOnly) })
+const TournamentShareMenuStub = defineComponent({
+  name: 'TournamentShareMenu',
+  setup() {
+    return () => h('button', { 'data-testid': 'tournament-share-menu' })
   },
 })
 
@@ -121,7 +118,7 @@ describe('TournamentTable', () => {
           ...vuetifyStubs,
           ClientOnly: { template: '<div><slot /></div>' },
           Vue3EasyDataTable: EasyDataTableStub,
-          CopyLink: CopyLinkStub,
+          TournamentShareMenu: TournamentShareMenuStub,
           Icon: iconStub,
           'v-tooltip': TooltipStub,
           'v-avatar': { template: '<div></div>' },
@@ -141,9 +138,7 @@ describe('TournamentTable', () => {
     expect(wrapper.text()).toContain('18/45')
     expect(wrapper.text()).toContain('Activo')
 
-    const copyLink = wrapper.find('[data-testid="copy-link"]')
-    expect(copyLink.exists()).toBe(true)
-    expect(copyLink.attributes('data-icon-only')).toBe('true')
+    expect(wrapper.find('[data-testid="tournament-share-menu"]').exists()).toBe(true)
   })
 
   it('renders skeleton while loading without items', async () => {
@@ -157,7 +152,7 @@ describe('TournamentTable', () => {
           ...vuetifyStubs,
           ClientOnly: { template: '<div><slot /></div>' },
           Vue3EasyDataTable: EasyDataTableStub,
-          CopyLink: CopyLinkStub,
+          TournamentShareMenu: TournamentShareMenuStub,
           Icon: iconStub,
           'v-tooltip': TooltipStub,
           'v-avatar': { template: '<div></div>' },

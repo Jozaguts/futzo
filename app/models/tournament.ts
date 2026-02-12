@@ -358,6 +358,7 @@ export type TournamentDetailKpis = {
 };
 
 export type TournamentStatus = 'creado' | 'en curso' | 'completado' | 'cancelado';
+export type TournamentShareAction = 'registration_link' | 'registration_qr' | 'public_link' | 'public_qr';
 export type TournamentStatusText = 'Creado' | 'En curso' | 'Completado' | 'Cancelado';
 export type TournamentStatusItem = {
   disabled: boolean;

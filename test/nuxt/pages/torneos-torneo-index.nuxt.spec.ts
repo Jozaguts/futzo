@@ -24,11 +24,13 @@ const getTournamentBySlug = vi.fn()
 const tournamentApi = vi.hoisted(() => ({
   getTournamentMetrics: vi.fn(),
   getTournamentRegistrationQRCode: vi.fn(),
+  getTournamentScheduleQRCode: vi.fn(),
 }))
 
 vi.mock('~/http/api/tournament', () => ({
   getTournamentMetrics: tournamentApi.getTournamentMetrics,
   getTournamentRegistrationQRCode: tournamentApi.getTournamentRegistrationQRCode,
+  getTournamentScheduleQRCode: tournamentApi.getTournamentScheduleQRCode,
 }))
 
 mockNuxtImport('useTournamentStore', () => () => ({
@@ -53,6 +55,7 @@ describe('Torneo admin index page', () => {
     getStandings.mockResolvedValue(undefined)
     getTournamentBySlug.mockResolvedValue(undefined)
     tournamentApi.getTournamentMetrics.mockReset()
+    tournamentApi.getTournamentScheduleQRCode.mockReset()
     tournamentApi.getTournamentMetrics.mockResolvedValue({
       data: {
         registeredTeams: { total: 10, current: 5, dailyData: [], label: 'vs último mes' },
@@ -61,6 +64,7 @@ describe('Torneo admin index page', () => {
         disciplinaryCases: { total: 2, current: -10, dailyData: [], label: 'vs último mes' },
       },
     })
+    tournamentApi.getTournamentScheduleQRCode.mockResolvedValue({ image: 'data:image/png;base64,mock' })
   })
 
   it('renders header and tabs without next/last games', async () => {
@@ -74,6 +78,7 @@ describe('Torneo admin index page', () => {
           Vue3EasyDataTable: { template: '<div data-testid="standings"></div>' },
           CreateTournamentDialog: { template: '<div></div>' },
           DisciplinePanel: { template: '<div data-testid="discipline-panel"></div>' },
+          TournamentShareMenu: { template: '<button data-testid="tournament-share-menu"></button>' },
           KpisMetricsSection: {
             props: ['items'],
             template: `
@@ -103,6 +108,7 @@ describe('Torneo admin index page', () => {
     expect(wrapper.find('[data-testid="tournament-page-shell"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="tournament-page-top-shell"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="tournament-page-intro"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="tournament-share-menu"]').exists()).toBe(true)
     expect(wrapper.text()).toContain('Inactivos 2026 Apertura')
     expect(wrapper.text()).toContain('8/15')
     expect(wrapper.find('[data-testid="stats-table"]').exists()).toBe(true)

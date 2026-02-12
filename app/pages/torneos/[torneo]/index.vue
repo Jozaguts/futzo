@@ -4,14 +4,16 @@ import AppBar from '~/components/layout/AppBar.vue'
 import StatsTableContainer from '~/components/pages/equipos/live-games.vue'
 import CreateTournamentDialog from '~/components/pages/torneos/dialog/index.vue'
 import DisciplinePanel from '~/components/pages/torneos/discipline/DisciplinePanel.vue'
+import TournamentShareMenu from '~/components/pages/torneos/tournament-share-menu.vue'
 import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
 import KpisMetricsSection from '~/components/shared/kpis-metrics-section.vue'
 import PageLayout from '~/components/shared/PageLayout.vue'
-import {getTournamentMetrics, getTournamentRegistrationQRCode} from '~/http/api/tournament'
-import type {TournamentDetailKpis, TournamentKpiMetric} from '~/models/tournament'
+import {getTournamentMetrics, getTournamentRegistrationQRCode, getTournamentScheduleQRCode} from '~/http/api/tournament'
+import type {TournamentDetailKpis, TournamentKpiMetric, TournamentShareAction} from '~/models/tournament'
 import {last5Handler} from '~/utils/headers-table'
 import {publicTournamentStandingsHeaders} from '~/utils/publicTournamentStandingsHeaders'
 import Vue3EasyDataTable from 'vue3-easy-data-table'
+import { useDisplay } from 'vuetify'
 import 'vue3-easy-data-table/dist/style.css'
 
 const tournamentStore = useTournamentStore()
@@ -20,9 +22,12 @@ const tournamentStore = useTournamentStore()
   const { toast } = useToast()
   const route = useRoute()
   const router = useRouter()
+  const runtimeConfig = useRuntimeConfig()
+  const { mobile } = useDisplay()
   const loading = ref(false)
   const tab = ref('resumen')
   const share = ref({
+    title: '',
     image: '',
     isLoading: false,
     hasError: false,
@@ -36,6 +41,9 @@ const tournamentStore = useTournamentStore()
     const location = tournament.value?.location?.name
     return [format, type, location].filter((value) => Boolean(value)).join(' · ')
   })
+  const publicBaseUrl = computed(() => runtimeConfig.public.baseUrl || useRequestURL().origin)
+  const tournamentSlug = computed(() => tournament.value?.slug ?? String(route.params.torneo ?? ''))
+  const publicStatusUrl = computed(() => `${publicBaseUrl.value}/torneos/${tournamentSlug.value}/status`)
   const statusLabel = computed(() => {
     switch (tournament.value?.status) {
       case 'creado':
@@ -171,51 +179,113 @@ const tournamentStore = useTournamentStore()
       })
   })
 
-  const copyRegisterLink = async () => {
+  const copyTextToClipboard = async (text: string) => {
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(text)
+      return
+    }
+    const textArea = document.createElement('textarea')
+    textArea.value = text
+    textArea.style.position = 'fixed'
+    document.body.appendChild(textArea)
+    textArea.select()
+    document.execCommand('copy')
+    document.body.removeChild(textArea)
+  }
+
+  const copyRegistrationLink = async () => {
     if (!tournament.value?.register_link) {
       toast({ type: 'warning', msg: 'No hay enlace de inscripción disponible' })
       return
     }
-
     try {
-      if (navigator.clipboard) {
-        await navigator.clipboard.writeText(tournament.value.register_link)
-      } else {
-        const textArea = document.createElement('textarea')
-        textArea.value = tournament.value.register_link
-        textArea.style.position = 'fixed'
-        document.body.appendChild(textArea)
-        textArea.select()
-        document.execCommand('copy')
-        document.body.removeChild(textArea)
-      }
-
-      toast({ type: 'success', msg: 'Enlace copiado' })
+      await copyTextToClipboard(tournament.value.register_link)
+      toast({ type: 'success', msg: 'Enlace de inscripción copiado' })
     } catch {
-      toast({ type: 'error', msg: 'No se pudo copiar el enlace' })
+      toast({ type: 'error', msg: 'No se pudo copiar el enlace de inscripción' })
     }
   }
 
-  const qrCodeHandler = async () => {
+  const copyPublicLink = async () => {
+    if (!tournamentSlug.value) {
+      toast({ type: 'warning', msg: 'No se pudo generar el enlace público' })
+      return
+    }
+    try {
+      await copyTextToClipboard(publicStatusUrl.value)
+      toast({ type: 'success', msg: 'Enlace público copiado' })
+    } catch {
+      toast({ type: 'error', msg: 'No se pudo copiar el enlace público' })
+    }
+  }
+
+  const openRegistrationQr = async () => {
     if (!tournament.value?.id) {
       toast({ type: 'warning', msg: 'No se pudo obtener el ID del torneo' })
       return
     }
-
     start()
     share.value.hasError = false
+    share.value.image = ''
     share.value.isLoading = true
-
     try {
       const data = await getTournamentRegistrationQRCode(tournament.value.id)
-      share.value.image = data.image
-      share.value.showQr = true
+      if (data?.image) {
+        share.value.image = data.image
+        share.value.title = 'QR de inscripción'
+        share.value.showQr = true
+        return
+      }
+      throw new Error('QR no disponible')
     } catch {
       share.value.hasError = true
-      toast({ type: 'error', msg: 'No se pudo generar el QR' })
+      toast({ type: 'error', msg: 'No se pudo generar el QR de inscripción' })
     } finally {
       share.value.isLoading = false
       finish()
+    }
+  }
+
+  const openPublicQr = async () => {
+    if (!tournament.value?.id) {
+      toast({ type: 'warning', msg: 'No se pudo obtener el ID del torneo' })
+      return
+    }
+    start()
+    share.value.hasError = false
+    share.value.image = ''
+    share.value.isLoading = true
+    try {
+      const data = await getTournamentScheduleQRCode(tournament.value.id, 'tournament_status')
+      if (data?.image) {
+        share.value.image = data.image
+        share.value.title = 'QR de página pública'
+        share.value.showQr = true
+        return
+      }
+      throw new Error('QR no disponible')
+    } catch {
+      share.value.hasError = true
+      toast({ type: 'error', msg: 'No se pudo generar el QR de página pública' })
+    } finally {
+      share.value.isLoading = false
+      finish()
+    }
+  }
+
+  const shareActionHandler = async (action: TournamentShareAction) => {
+    switch (action) {
+      case 'registration_link':
+        await copyRegistrationLink()
+        return
+      case 'registration_qr':
+        await openRegistrationQr()
+        return
+      case 'public_link':
+        await copyPublicLink()
+        return
+      case 'public_qr':
+        await openPublicQr()
     }
   }
 
@@ -279,35 +349,13 @@ const tournamentStore = useTournamentStore()
                 <p class="tournament-meta">{{ tournamentMeta || 'Control general del torneo, calendario y disciplina.' }}</p>
               </div>
               <div class="tournament-page__actions">
-                <v-tooltip text="Copiar enlace de inscripción" location="bottom">
-                  <template #activator="{ props }">
-                    <v-btn
-                      icon
-                      variant="text"
-                      v-bind="props"
-                      class="tournament-page__action-btn"
-                      aria-label="Copiar enlace de inscripción"
-                      @click="copyRegisterLink"
-                    >
-                      <Icon name="lucide:link-2" size="18" />
-                    </v-btn>
-                  </template>
-                </v-tooltip>
-                <v-tooltip text="Generar QR" location="bottom">
-                  <template #activator="{ props }">
-                    <v-btn
-                      icon
-                      variant="text"
-                      v-bind="props"
-                      class="tournament-page__action-btn"
-                      aria-label="Generar código QR del torneo"
-                      :disabled="share.isLoading"
-                      @click="qrCodeHandler"
-                    >
-                      <Icon name="lucide:qr-code" size="18" />
-                    </v-btn>
-                  </template>
-                </v-tooltip>
+                <TournamentShareMenu
+                  label="Compartir"
+                  test-id="tournament-header-share"
+                  :icon-only="mobile"
+                  :loading="share.isLoading"
+                  @select="shareActionHandler"
+                />
                 <v-tooltip text="Vista pública" location="bottom">
                   <template #activator="{ props }">
                     <v-btn
@@ -456,7 +504,7 @@ const tournamentStore = useTournamentStore()
 
   <v-dialog v-model="share.showQr" max-width="500">
     <v-card>
-      <v-card-title>Compartir torneo</v-card-title>
+      <v-card-title>{{ share.title || 'Compartir torneo' }}</v-card-title>
       <v-card-text>
         <v-alert v-if="share.hasError" type="warning" variant="tonal" class="mb-4">
           No se pudo generar el código QR.
