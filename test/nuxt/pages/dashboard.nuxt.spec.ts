@@ -70,6 +70,8 @@ describe('Dashboard page', () => {
 
     expect(wrapper.find('[data-testid="dashboard-metrics-grid"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="dashboard-metrics-carousel"]').exists()).toBe(false)
+    expect(wrapper.text()).toContain('Ver todos los partidos')
+    expect(wrapper.text()).toContain('Ver toda la actividad')
   })
 
   it('renders metrics carousel on mobile', async () => {

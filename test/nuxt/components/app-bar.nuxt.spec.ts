@@ -32,6 +32,7 @@ describe('AppBar', () => {
           stubs: {
             Breadcrumbs: { template: '<div class="breadcrumbs-stub"></div>' },
             Logo: { template: '<div class="logo-stub"></div>' },
+            Icon: { template: '<i class="icon-stub"></i>' },
           },
         },
       }
@@ -55,6 +56,7 @@ describe('AppBar', () => {
           stubs: {
             Breadcrumbs: { template: '<div class="breadcrumbs-stub"></div>' },
             Logo: { template: '<div class="logo-stub"></div>' },
+            Icon: { template: '<i class="icon-stub"></i>' },
           },
         },
       }

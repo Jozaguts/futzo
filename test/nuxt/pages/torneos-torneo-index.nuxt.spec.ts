@@ -101,6 +101,7 @@ describe('Torneo admin index page', () => {
     })
 
     expect(wrapper.find('[data-testid="tournament-page-shell"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="tournament-page-top-shell"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="tournament-page-intro"]').exists()).toBe(true)
     expect(wrapper.text()).toContain('Inactivos 2026 Apertura')
     expect(wrapper.text()).toContain('8/15')
