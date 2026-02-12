@@ -1,113 +1,60 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { nextTick } from 'vue'
 import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
 import TorneoCalendarioPage from '../../../app/pages/torneos/[torneo]/calendario.vue'
 
-const publicRounds = vi.hoisted(() => ({ value: [] as any[] }))
-const publicLoading = vi.hoisted(() => ({ value: false }))
-const publicError = vi.hoisted(() => ({ value: null as string | null }))
-const loadPublicSchedule = vi.hoisted(() => vi.fn())
-const resetPublicSchedule = vi.hoisted(() => vi.fn())
 const sanctumUser = vi.hoisted(() => ({ value: null as any }))
-const hasSchedule = vi.hoisted(() => ({ value: false }))
-const scheduleDrawerOpen = vi.hoisted(() => ({ value: false }))
-const getTournamentSchedules = vi.hoisted(() => vi.fn())
-const resetScheduleStore = vi.hoisted(() => vi.fn())
-
-vi.mock('~/composables/usePublicTournamentSchedule', () => ({
-  usePublicTournamentSchedule: () => ({
-    rounds: publicRounds,
-    loading: publicLoading,
-    error: publicError,
-    loadMore: loadPublicSchedule,
-    reset: resetPublicSchedule,
-  }),
-}))
-
-vi.mock('vuetify', () => ({
-  useDisplay: () => ({ mobile: { value: false } }),
-}))
+const navigateToMock = vi.hoisted(() => vi.fn(() => Promise.resolve()))
 
 mockNuxtImport('useRoute', () => () => ({ params: { torneo: 'liga-1' } }))
 mockNuxtImport('useSanctumUser', () => () => sanctumUser)
-mockNuxtImport('useScheduleStore', () => () => ({
-  hasSchedule,
-  scheduleDrawerOpen,
-  getTournamentSchedules,
-  $resetScheduleStore: resetScheduleStore,
-}))
-mockNuxtImport('storeToRefs', () => (store: any) => store)
+mockNuxtImport('navigateTo', () => navigateToMock)
 
-describe('Torneo calendario page', () => {
+describe('Torneo calendario redirect page', () => {
   beforeEach(() => {
-    publicRounds.value = []
-    publicLoading.value = false
-    publicError.value = null
-    loadPublicSchedule.mockClear()
-    resetPublicSchedule.mockClear()
-    getTournamentSchedules.mockClear()
-    resetScheduleStore.mockClear()
     sanctumUser.value = null
+    navigateToMock.mockClear()
   })
 
-  it('renders public schedule for guests', async () => {
+  it('redirects guests to public status page', async () => {
     sanctumUser.value = null
 
-    const wrapper = await mountSuspended(TorneoCalendarioPage, {
+    await mountSuspended(TorneoCalendarioPage, {
       global: {
         stubs: {
-          PageLayout: { template: '<div><slot name="app-bar" /><slot name="default" /><slot name="fab" /></div>' },
-          AppBar: { template: '<div><slot name="buttons" /><slot name="extension" /></div>' },
-          Schedule: { template: '<div data-testid="admin-schedule"></div>' },
-          ScheduleRoundsInfiniteScroll: { template: '<div data-testid="public-schedule"></div>' },
-          AppBarBtn: { template: '<div></div>' },
-          SearchGame: { template: '<div></div>' },
-          LazyPagesTorneosCalendarioDialog: { template: '<div></div>' },
-          Icon: { template: '<div></div>' },
-          'v-alert': { template: '<div><slot /></div>' },
-          'v-fab': { template: '<div><slot /></div>' },
-          'v-speed-dial': { template: '<div><slot /></div>' },
-          'v-btn': { template: '<button><slot /></button>' },
-          'v-icon': { template: '<i></i>' },
+          NuxtLayout: { template: '<div><slot /></div>' },
+          NuxtPage: { template: '<div></div>' },
         },
       },
     })
 
-    await nextTick()
-
-    expect(wrapper.find('[data-testid="public-schedule"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="admin-schedule"]').exists()).toBe(false)
-    expect(loadPublicSchedule).toHaveBeenCalled()
-    expect(getTournamentSchedules).not.toHaveBeenCalled()
+    expect(navigateToMock).toHaveBeenCalledWith(
+      {
+        name: 'torneos-torneo-status',
+        params: { torneo: 'liga-1' },
+      },
+      { replace: true }
+    )
   })
 
-  it('renders admin schedule for authenticated users', async () => {
+  it('redirects authenticated users to torneo index calendario tab', async () => {
     sanctumUser.value = { email: 'admin@futzo.test' }
 
-    const wrapper = await mountSuspended(TorneoCalendarioPage, {
+    await mountSuspended(TorneoCalendarioPage, {
       global: {
         stubs: {
-          PageLayout: { template: '<div><slot name="app-bar" /><slot name="default" /><slot name="fab" /></div>' },
-          AppBar: { template: '<div><slot name="buttons" /><slot name="extension" /></div>' },
-          Schedule: { template: '<div data-testid="admin-schedule"></div>' },
-          ScheduleRoundsInfiniteScroll: { template: '<div data-testid="public-schedule"></div>' },
-          AppBarBtn: { template: '<div></div>' },
-          SearchGame: { template: '<div></div>' },
-          LazyPagesTorneosCalendarioDialog: { template: '<div></div>' },
-          Icon: { template: '<div></div>' },
-          'v-alert': { template: '<div><slot /></div>' },
-          'v-fab': { template: '<div><slot /></div>' },
-          'v-speed-dial': { template: '<div><slot /></div>' },
-          'v-btn': { template: '<button><slot /></button>' },
-          'v-icon': { template: '<i></i>' },
+          NuxtLayout: { template: '<div><slot /></div>' },
+          NuxtPage: { template: '<div></div>' },
         },
       },
     })
 
-    await nextTick()
-
-    expect(wrapper.find('[data-testid="admin-schedule"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="public-schedule"]').exists()).toBe(false)
-    expect(getTournamentSchedules).toHaveBeenCalled()
+    expect(navigateToMock).toHaveBeenCalledWith(
+      {
+        name: 'torneos-torneo',
+        params: { torneo: 'liga-1' },
+        query: { tab: 'calendario' },
+      },
+      { replace: true }
+    )
   })
 })

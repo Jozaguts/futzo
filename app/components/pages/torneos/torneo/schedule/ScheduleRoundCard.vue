@@ -66,60 +66,203 @@
     }
     return props.round.matches.filter((game) => isPendingManualMatch(game))
   })
+
+  const roundStatus = computed(() => {
+    switch (props.round.status) {
+      case 'completado':
+        return { text: 'Completada', color: 'success' as const }
+      case 'en_progreso':
+        return { text: 'En progreso', color: 'warning' as const }
+      case 'cancelado':
+        return { text: 'Cancelada', color: 'error' as const }
+      case 'aplazado':
+        return { text: 'Aplazada', color: 'orange' as const }
+      default:
+        return { text: 'Programada', color: 'grey-lighten-1' as const }
+    }
+  })
+
+  const parsedRoundDate = computed(() => {
+    if (!props.round?.date) {
+      return '-'
+    }
+    if (typeof props.round.date === 'string') {
+      return props.round.date
+    }
+    try {
+      return new Date(props.round.date).toISOString().slice(0, 10)
+    } catch {
+      return '-'
+    }
+  })
 </script>
 
 <template>
-  <v-container fluid>
-    <v-row>
-      <!--      <v-col v-if="showRegeneratedSeparator" cols="12" class="pt-0 pb-4">-->
-      <!--        <v-alert variant="tonal" type="info" density="comfortable" border="start" icon="mdi-calendar-refresh">-->
-      <!--          📅 A partir de aquí, se muestran los partidos regenerados por registro tardío.-->
-      <!--        </v-alert>-->
-      <!--      </v-col>-->
-      <v-col cols="12" class="pa-0">
-        <div class="title-container">
-          <p class="title">
-            Jornada: {{ round.round }}
-            <span class="title">Fecha: {{ round.date }}</span>
-          </p>
-          <div class="d-flex align-center" v-auto-animate>
-            <v-btn variant="outlined" v-if="showSave" :loading="loading" @click="emit('save-round', round.round)">
-              Guardar cambios
-            </v-btn>
-            <ScheduleRoundActionsMenu
-              :round="round"
-              :schedule-round-status="scheduleRoundStatus"
-              :is-exporting="isExporting"
-              :public="public"
-              @export-round="emit('export-round', $event)"
-              @edit-round="emit('edit-round', $event)"
-              @open-round-edit="emit('open-round-edit', $event)"
-              @status-change="emit('status-change', $event)"
-            />
-          </div>
+  <article class="schedule-round-card futzo-rounded" data-testid="schedule-round-card">
+    <div v-if="showRegeneratedSeparator" class="schedule-round-card__regenerated-note">
+      <Icon name="lucide:sparkles" size="14" />
+      <span>A partir de esta jornada se muestran los partidos regenerados por registro tardío.</span>
+    </div>
+
+    <header class="schedule-round-card__header">
+      <div class="schedule-round-card__meta">
+        <div class="schedule-round-card__title-row">
+          <h3 class="schedule-round-card__title">Jornada {{ round.round }}</h3>
+          <v-chip :color="roundStatus.color" size="small" variant="tonal" class="schedule-round-card__status">
+            {{ roundStatus.text }}
+          </v-chip>
         </div>
-      </v-col>
-      <v-col v-if="round.bye_team" cols="12" class="pt-0 pb-4 pl-0">
-        <v-alert variant="plain" density="compact" border="start" border-color="primary" class="pr-0">
-          {{ round.bye_team.name }} descansa esta jornada.
-        </v-alert>
-      </v-col>
-      <v-col v-for="game in matchesToShow" :key="game.id" cols="12" md="2" lg="4" class="game-container">
-        <ScheduleRoundMatchCard
-          :game="game"
-          :round-id="round.round"
-          :is-editable="isEditable"
+        <p class="schedule-round-card__subtitle">Fecha: {{ parsedRoundDate }}</p>
+      </div>
+
+      <div class="schedule-round-card__actions" v-auto-animate>
+        <v-btn
+          v-if="!public && !showSave"
+          variant="text"
+          color="primary"
+          size="small"
+          class="schedule-round-card__edit"
+          @click="emit('edit-round', round.round)"
+        >
+          <template #prepend>
+            <Icon name="lucide:pencil" size="14" />
+          </template>
+          Editar
+        </v-btn>
+        <v-btn
+          v-if="showSave"
+          variant="elevated"
+          color="primary"
+          size="small"
+          :loading="loading"
+          @click="emit('save-round', round.round)"
+        >
+          <template #prepend>
+            <Icon name="lucide:save" size="14" />
+          </template>
+          Guardar
+        </v-btn>
+        <ScheduleRoundActionsMenu
+          :round="round"
+          :schedule-round-status="scheduleRoundStatus"
+          :is-exporting="isExporting"
           :public="public"
-          :should-show-penalty-inputs="shouldShowPenaltyInputs"
-          :penalty-winner-name="penaltyWinnerName"
-          @update-game="emit('update-game', $event)"
-          @open-modal="emit('open-modal', $event)"
+          @export-round="emit('export-round', $event)"
+          @edit-round="emit('edit-round', $event)"
+          @open-round-edit="emit('open-round-edit', $event)"
+          @status-change="emit('status-change', $event)"
         />
-      </v-col>
-    </v-row>
-  </v-container>
+      </div>
+    </header>
+
+    <div v-if="round.bye_team" class="schedule-round-card__bye">
+      {{ round.bye_team.name }} descansa esta jornada.
+    </div>
+
+    <div class="schedule-round-card__matches">
+      <ScheduleRoundMatchCard
+        v-for="game in matchesToShow"
+        :key="game.id"
+        :game="game"
+        :round-id="round.round"
+        :is-editable="isEditable"
+        :public="public"
+        :should-show-penalty-inputs="shouldShowPenaltyInputs"
+        :penalty-winner-name="penaltyWinnerName"
+        @update-game="emit('update-game', $event)"
+        @open-modal="emit('open-modal', $event)"
+      />
+    </div>
+  </article>
 </template>
 
 <style lang="sass" scoped>
-  @use '~/assets/scss/pages/schedule.sass'
+  .schedule-round-card
+    border: 1px solid #eaecf0
+    background: #fff
+    overflow: hidden
+    min-width: 0
+
+  .schedule-round-card__header
+    display: flex
+    gap: 8px
+    justify-content: space-between
+    align-items: center
+    border-bottom: 1px solid #eaecf0
+    background: #fcfcfd
+    padding: 10px 14px
+    flex-wrap: wrap
+
+  .schedule-round-card__meta
+    min-width: 0
+
+  .schedule-round-card__title-row
+    display: flex
+    align-items: center
+    gap: 8px
+    flex-wrap: wrap
+
+  .schedule-round-card__title
+    margin: 0
+    font-size: 18px
+    line-height: 1
+    font-weight: 700
+    color: #1d2939
+
+  .schedule-round-card__subtitle
+    margin: 4px 0 0
+    color: #667085
+    font-size: 12px
+
+  .schedule-round-card__status
+    font-size: 11px
+    font-weight: 600
+
+  .schedule-round-card__actions
+    display: flex
+    align-items: center
+    gap: 4px
+
+  .schedule-round-card__edit
+    text-transform: none
+    letter-spacing: normal
+
+  .schedule-round-card__regenerated-note
+    border: 1px solid #eaecf0
+    background: #f8fafc
+    border-radius: 10px
+    min-height: 34px
+    display: flex
+    align-items: center
+    gap: 8px
+    font-size: 12px
+    color: #475467
+    padding: 0 10px
+    margin-bottom: 10px
+
+  .schedule-round-card__bye
+    border-bottom: 1px solid #eaecf0
+    background: #f8fafc
+    color: #475467
+    font-size: 13px
+    font-style: italic
+    padding: 8px 14px
+
+  .schedule-round-card__matches
+    display: grid
+    grid-template-columns: minmax(0, 1fr)
+    gap: 12px
+    padding: 12px
+
+  @media (min-width: 900px)
+    .schedule-round-card__matches
+      grid-template-columns: repeat(2, minmax(0, 1fr))
+
+  @media (min-width: 1260px)
+    .schedule-round-card__matches
+      grid-template-columns: repeat(3, minmax(0, 1fr))
+
+  @media (max-width: 600px)
+    .schedule-round-card__title
+      font-size: 16px
 </style>

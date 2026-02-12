@@ -35,6 +35,9 @@ useHead({
     }
   }
   const { priceMode, setPriceMode, loading, kickoffPlan, proPlayPlan, eliteLeaguePlan, load } = useProductPrices()
+  const hasRequestedPrices = ref(false)
+  const hasTrackedPricingView = ref(false)
+  const pricingRef = ref<HTMLElement | null>(null)
   watch(
     kickoffPlan,
     (newVal) => {
@@ -43,39 +46,52 @@ useHead({
     { deep: true }
   )
 
-  onMounted(async () => {
-    updateUrl(kickoffPlan.value)
+  const loadPricesNearViewport = async () => {
+    if (hasRequestedPrices.value || kickoffPlan.value || loading.value) {
+      return
+    }
+    hasRequestedPrices.value = true
     await load()
-  })
+  }
+
   const { gtag } = useGtag()
   const { isAuthenticated } = useSanctumAuth()
   const textButton = computed(() => (isAuthenticated?.value ? 'Ir al Dashboard' : 'Comenzar'))
   const mainRoute = computed(() => (isAuthenticated?.value ? '/dashboard' : '/login'))
 const {$fbq} = useNuxtApp()
-const pricingRef = ref(null)
-const pricingRefIsVisible = ref(false)
   const trackCta = (location: 'hero' | 'nav') => {
     if (isAuthenticated?.value) return
     gtag('event', 'sign_up', { method: location, event_label: 'Comenzar' })
   }
-const {stop} = useIntersectionObserver(
+const { stop: stopPricingPrefetchObserver } = useIntersectionObserver(
     pricingRef,
-    ([{isIntersecting}], observerElement) => {
-      pricingRefIsVisible.value = isIntersecting
+    ([entry]) => {
+      if (!entry?.isIntersecting) return
+      void loadPricesNearViewport()
+      stopPricingPrefetchObserver()
     },
+    {
+      rootMargin: '200px 0px',
+    }
 )
-const unWatch = watch(() => pricingRefIsVisible.value, (value) => {
-  if (value) {
-    $fbq('track', 'ViewContent', {
-      content_name: 'pricing',
-      content_category: 'plans',
-      content_type: 'pricing'
-    })
-    stop()
-    unWatch()
-  }
-})
+const { stop: stopPricingPixelObserver } = useIntersectionObserver(
+    pricingRef,
+    ([entry]) => {
+      if (!entry?.isIntersecting || hasTrackedPricingView.value) return
+      hasTrackedPricingView.value = true
+      $fbq('track', 'ViewContent', {
+        content_name: 'pricing',
+        content_category: 'plans',
+        content_type: 'pricing'
+      })
+      stopPricingPixelObserver()
+    },
+    {
+      threshold: 0.2,
+    }
+)
 onMounted(()=>{
+  updateUrl(kickoffPlan.value)
   window.onload = function() { window.Calendly?.initBadgeWidget({ url: 'https://calendly.com/futzo', text: 'Agenda tu demo con Futzo ⚽', color: '#9155FD', textColor: '#ffffff', branding: false }); }
 
 })

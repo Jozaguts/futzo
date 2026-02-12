@@ -41,7 +41,8 @@ mockNuxtImport('useTournamentStore', () => () => ({
   getTournamentBySlug,
 }))
 mockNuxtImport('storeToRefs', () => (store: any) => store)
-mockNuxtImport('useRoute', () => () => ({ params: { torneo: 'inactivos-2026-apertura' } }))
+mockNuxtImport('useRoute', () => () => ({ params: { torneo: 'inactivos-2026-apertura' }, query: {} }))
+mockNuxtImport('useRouter', () => () => ({ push: vi.fn(), replace: vi.fn() }))
 mockNuxtImport('useToast', () => () => ({ toast: vi.fn() }))
 
 vi.mock('vuetify', () => ({
@@ -75,6 +76,7 @@ describe('Torneo admin index page', () => {
           AppBar: { template: '<div><slot name="title" /></div>' },
           StatsTableContainer: { template: '<div data-testid="stats-table"></div>' },
           StatsTable: { template: '<div></div>' },
+          TournamentCalendarTab: { template: '<div data-testid="calendar-tab"></div>' },
           Vue3EasyDataTable: { template: '<div data-testid="standings"></div>' },
           CreateTournamentDialog: { template: '<div></div>' },
           DisciplinePanel: { template: '<div data-testid="discipline-panel"></div>' },
@@ -109,6 +111,7 @@ describe('Torneo admin index page', () => {
     expect(wrapper.find('[data-testid="tournament-page-top-shell"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="tournament-page-intro"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="tournament-share-menu"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="tournament-standings-table-wrapper"]').exists()).toBe(true)
     expect(wrapper.text()).toContain('Inactivos 2026 Apertura')
     expect(wrapper.text()).toContain('8/15')
     expect(wrapper.find('[data-testid="stats-table"]').exists()).toBe(true)

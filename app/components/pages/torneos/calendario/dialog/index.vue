@@ -4,80 +4,123 @@
   import { useScheduleStore } from '~/stores/useScheduleStore'
   import { storeToRefs } from '#imports'
 
-  const { calendarSteps, scheduleDialog } = storeToRefs(useScheduleStore())
+  const scheduleStore = useScheduleStore()
+  const { calendarSteps, scheduleDialog } = storeToRefs(scheduleStore)
   const isFetching = ref(false)
   const loading = ref(false)
+  const totalSteps = computed(() => Object.keys(calendarSteps.value.steps).length)
+  const currentStep = computed(() => calendarSteps.value.steps[calendarSteps.value.current])
+  const currentStepNumber = computed(() => currentStep.value?.number ?? 1)
+
   const leaveHandler = () => {
-    useScheduleStore().$resetScheduleStore()
+    scheduleStore.$resetScheduleStore()
   }
+
   const disabled = computed(() => {
-    return calendarSteps.value.steps[calendarSteps.value.current].disable
+    return currentStep.value.disable
   })
+
   const next = () => {
-    if (calendarSteps.value.steps[calendarSteps.value.current].next_step === 'save') {
+    if (currentStep.value.next_step === 'save') {
       loading.value = true
-      useScheduleStore()
+      scheduleStore
         .generateSchedule()
         .finally(() => {
           loading.value = false
         })
     } else {
-      calendarSteps.value.current = calendarSteps.value.steps[calendarSteps.value.current]
-        .next_step as CurrentCalendarStep
+      calendarSteps.value.current = currentStep.value.next_step as CurrentCalendarStep
     }
   }
+
   const back = () => {
-    if (calendarSteps.value.steps[calendarSteps.value.current].back_step === 'close') {
+    if (currentStep.value.back_step === 'close') {
       scheduleDialog.value = false
     } else {
-      calendarSteps.value.current = calendarSteps.value.steps[calendarSteps.value.current]
-        .back_step as CurrentCalendarStep
+      calendarSteps.value.current = currentStep.value.back_step as CurrentCalendarStep
     }
   }
 </script>
+
 <template>
   <Dialog
     minHeight="90vh"
-    title="Crear un calendario"
-    subtitle="Completa los detalles del calendario."
+    title="Crear calendario"
+    subtitle="Configura las opciones para generar el calendario de jornadas."
+    icon-name="lucide:settings"
+    width="640px"
     :loading="isFetching"
     v-model="scheduleDialog"
     @leaving="leaveHandler"
+    data-testid="create-calendar-dialog"
   >
     <template #v-card-text>
       <StepperContainer />
     </template>
     <template #actions>
-      <v-container>
-        <v-row>
-          <v-col cols="6">
-            <v-btn
-              variant="outlined"
-              block
-              color="secondary"
-              class="text-capitalize"
-              density="comfortable"
-              size="large"
-              @click="back"
-              >{{ calendarSteps.steps[calendarSteps.current].back_label }}
-            </v-btn>
-          </v-col>
-          <v-col cols="6">
-            <v-btn
-              :disabled="disabled || loading"
-              variant="elevated"
-              block
-              color="primary"
-              density="comfortable"
-              size="large"
-              :loading="loading"
-              @click="next"
-              class="text-caption text-md-body-1 text-lg-body-1"
-              >{{ calendarSteps.steps[calendarSteps.current].next_label }}
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-container>
+      <div class="calendar-dialog-footer">
+        <v-btn
+          variant="text"
+          color="secondary"
+          class="calendar-dialog-footer__back"
+          density="comfortable"
+          @click="back"
+        >
+          <template #prepend>
+            <Icon name="lucide:chevron-left" size="16" />
+          </template>
+          {{ currentStep.back_label }}
+        </v-btn>
+
+        <span class="calendar-dialog-footer__step">Paso {{ currentStepNumber }} de {{ totalSteps }}</span>
+
+        <v-btn
+          :disabled="disabled || loading"
+          variant="elevated"
+          color="primary"
+          density="comfortable"
+          :loading="loading"
+          @click="next"
+          class="calendar-dialog-footer__next"
+        >
+          {{ currentStep.next_label }}
+          <template #append v-if="currentStep.next_step !== 'save'">
+            <Icon name="lucide:chevron-right" size="16" />
+          </template>
+        </v-btn>
+      </div>
     </template>
   </Dialog>
 </template>
+
+<style scoped lang="sass">
+  .calendar-dialog-footer
+    width: 100%
+    display: grid
+    grid-template-columns: auto 1fr auto
+    align-items: center
+    gap: 12px
+    border-top: 1px solid #eaecf0
+    padding-top: 4px
+
+  .calendar-dialog-footer__back
+    text-transform: none
+    letter-spacing: normal
+
+  .calendar-dialog-footer__step
+    text-align: center
+    color: #667085
+    font-size: 12px
+    font-weight: 500
+
+  .calendar-dialog-footer__next
+    text-transform: none
+    letter-spacing: normal
+
+  @media (max-width: 600px)
+    .calendar-dialog-footer
+      grid-template-columns: 1fr
+
+    .calendar-dialog-footer__step
+      order: -1
+</style>

@@ -28,7 +28,9 @@
 <template>
   <v-menu v-if="!public" location="bottom" transition="slide-x-transition" :close-on-content-click="false">
     <template #activator="{ props: menuProps }">
-      <v-btn icon="mdi-dots-vertical" variant="text" v-bind="menuProps" />
+      <v-btn variant="text" icon v-bind="menuProps" class="schedule-round-actions__trigger" aria-label="Abrir acciones">
+        <Icon name="lucide:ellipsis-vertical" size="18" />
+      </v-btn>
     </template>
     <v-list density="compact" nav>
       <v-list-subheader>Exportar</v-list-subheader>
@@ -37,13 +39,13 @@
         @click="emit('export-round', { type: 'excel', round: round.round })"
       >
         <template #prepend>
-          <Icon name="futzo-icon:file-type-excel" class="mr-2" />
+          <Icon name="lucide:file-spreadsheet" class="mr-2" />
         </template>
         <v-list-item-title>Excel</v-list-item-title>
       </v-list-item>
       <v-list-item @click="emit('export-round', { type: 'img', round: round.round })">
         <template #prepend>
-          <Icon name="futzo-icon:file-type-img-primary" class="mr-2" />
+          <Icon name="lucide:image" class="mr-2" />
         </template>
         <v-list-item-title>Imagen</v-list-item-title>
       </v-list-item>
@@ -75,3 +77,10 @@
     </v-list>
   </v-menu>
 </template>
+
+<style lang="sass" scoped>
+  .schedule-round-actions__trigger
+    width: 30px
+    height: 30px
+    min-width: 30px
+</style>

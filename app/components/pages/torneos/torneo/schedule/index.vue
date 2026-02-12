@@ -7,7 +7,6 @@
   import { useToast } from '~/composables/useToast'
   import { useSchedulePenaltyRules } from '~/composables/useSchedulePenaltyRules'
   import type { Match, MatchAway, RoundStatus, ScheduleRoundDetails } from '~/models/Schedule'
-  import { useDisplay } from 'vuetify'
   import NoCalendar from '~/components/pages/torneos/no-calendar.vue'
   import RegeneateRoundModalComponent from '~/components/pages/calendario/RegeneateRoundModalComponent.vue'
   import { getScheduleRoundDetails, updateScheduleRoundDetails } from '~/http/api/schedule'
@@ -113,7 +112,6 @@
             ? (winnerId === game.home.id && homeGoals > awayGoals) ||
               (winnerId === game.away.id && awayGoals > homeGoals)
             : false
-          console.log({ homeGoals, awayGoals, winnerId, validWinner, validGoals, consistent })
           if (!validGoals || !consistent) {
             toast({
               type: 'error',
@@ -206,7 +204,6 @@
       showReScheduleDialog.value = true
     }
   }
-  const { mobile } = useDisplay()
   const showBracketDialog = ref(false)
   const openBracketDialog = () => {
     showBracketDialog.value = true
@@ -286,49 +283,55 @@
       scheduleDrawerOpen.value = value
     },
   })
+  const regenerationBannerTone = computed(() => regenerationBanner.value?.type ?? 'success')
 </script>
 <template>
-  <v-sheet class="futzo-rounded" style="height: calc(100% - 56px)">
-    <v-layout class="d-flex justify-center items-center h-100">
-      <v-alert
-        v-if="regenerationBanner"
-        :type="regenerationBanner.type === 'warning' ? 'warning' : 'success'"
-        variant="tonal"
-        border="start"
-        density="comfortable"
-        class="mb-4"
-        closable
-        @click:close="handleDismissBanner"
-      >
-        {{ regenerationBanner.message }}
-      </v-alert>
-      <NoCalendar v-if="noSchedules" />
-      <ScheduleRoundsInfiniteScroll
-        v-else
-        :rounds="schedules.rounds"
-        :schedule-round-status="scheduleRoundStatus"
-        :loading="loading"
-        :is-exporting="isExporting"
-        :show-only-pending-manual="showOnlyPendingManual"
-        :regenerated-from-round="regeneratedFromRound"
-        :should-show-penalty-inputs="shouldShowPenaltyInputs"
-        :penalty-winner-name="penaltyWinnerName"
-        @load="load"
-        @save-round="saveHandler"
-        @edit-round="editRound"
-        @open-round-edit="showRoundModalEdit"
-        @status-change="({ status, round }) => statusHandler(status, round)"
-        @export-round="({ type, round }) => scheduleStore.exportTournamentRoundScheduleAs(type, round)"
-        @update-game="({ action, gameId, type, roundId }) => updateGame(action, gameId, type, roundId)"
-        @open-modal="
-          ({ type, gameId, fieldId, date, locationId }) => openModal(type, gameId, fieldId, date, locationId)
-        "
-      />
-      <v-navigation-drawer v-model="drawer" location="right" temporary width="400">
-        <PhaseProgressCard @open-bracket="openBracketDialog" />
-      </v-navigation-drawer>
-    </v-layout>
-  </v-sheet>
+  <section class="schedule-board" data-testid="schedule-board">
+    <div
+      v-if="regenerationBanner"
+      class="schedule-board__banner futzo-rounded"
+      :class="`schedule-board__banner--${regenerationBannerTone}`"
+      data-testid="schedule-regeneration-banner"
+    >
+      <div class="schedule-board__banner-main">
+        <Icon name="lucide:history" size="15" />
+        <span>{{ regenerationBanner.message }}</span>
+      </div>
+      <v-btn icon variant="text" size="x-small" class="schedule-board__banner-close" @click="handleDismissBanner">
+        <Icon name="lucide:x" size="14" />
+      </v-btn>
+    </div>
+
+    <NoCalendar v-if="noSchedules" />
+
+    <ScheduleRoundsInfiniteScroll
+      v-else
+      :rounds="schedules.rounds"
+      :schedule-round-status="scheduleRoundStatus"
+      :loading="loading"
+      :is-exporting="isExporting"
+      :show-only-pending-manual="showOnlyPendingManual"
+      :regenerated-from-round="regeneratedFromRound"
+      :should-show-penalty-inputs="shouldShowPenaltyInputs"
+      :penalty-winner-name="penaltyWinnerName"
+      height="auto"
+      @load="load"
+      @save-round="saveHandler"
+      @edit-round="editRound"
+      @open-round-edit="showRoundModalEdit"
+      @status-change="({ status, round }) => statusHandler(status, round)"
+      @export-round="({ type, round }) => scheduleStore.exportTournamentRoundScheduleAs(type, round)"
+      @update-game="({ action, gameId, type, roundId }) => updateGame(action, gameId, type, roundId)"
+      @open-modal="
+        ({ type, gameId, fieldId, date, locationId }) => openModal(type, gameId, fieldId, date, locationId)
+      "
+    />
+
+    <v-navigation-drawer v-model="drawer" location="right" temporary width="400">
+      <PhaseProgressCard @open-bracket="openBracketDialog" />
+    </v-navigation-drawer>
+  </section>
+
   <ReScheduleGame v-model:show="showReScheduleDialog" />
   <GameReport />
   <BracketSchedulerDialog v-model="showBracketDialog" />
@@ -339,3 +342,44 @@
     @save="handleRoundSave"
   />
 </template>
+
+<style lang="sass" scoped>
+  .schedule-board
+    display: flex
+    flex-direction: column
+    gap: 12px
+    min-width: 0
+
+  .schedule-board__banner
+    margin-bottom: 0
+    min-height: 40px
+    border: 1px solid #eaecf0
+    background: #f8fafc
+    color: #344054
+    display: flex
+    align-items: center
+    justify-content: space-between
+    gap: 8px
+    padding: 0 8px 0 12px
+    font-size: 13px
+
+  .schedule-board__banner-main
+    display: inline-flex
+    align-items: center
+    gap: 8px
+    min-width: 0
+
+  .schedule-board__banner-main span
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis
+
+  .schedule-board__banner--warning
+    border-left: 3px solid #fdb022
+
+  .schedule-board__banner--success
+    border-left: 3px solid #12b76a
+
+  .schedule-board__banner-close
+    color: #667085
+</style>

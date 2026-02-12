@@ -14,27 +14,27 @@ const globalStore =  useGlobalStore()
   const desktopRail = ref(false)
 
   const links = reactive([
-    { icon: 'futzo-icon:home', title: 'Dashboard', to: '/dashboard', class: 'mr-2 drawer-icon filled' },
+    { icon: 'lucide:layout-dashboard', title: 'Dashboard', to: '/dashboard', class: 'mr-2 drawer-icon filled' },
     {
-      icon: 'futzo-icon:trophy',
+      icon: 'lucide:trophy',
       title: 'Torneos',
       to: '/torneos',
       class: 'mr-2 drawer-icon filled',
     },
     {
-      icon: 'futzo-icon:shirt-sharp',
+      icon: 'lucide:shirt',
       title: 'Equipos',
       to: '/equipos',
       class: 'mr-2 drawer-icon filled',
     },
     {
-      icon: 'futzo-icon:players',
+      icon: 'lucide:users',
       title: 'Jugadores',
       to: '/jugadores',
       class: 'mr-2 drawer-icon filled',
     },
     {
-      icon: 'futzo-icon:location',
+      icon: 'lucide:map-pin-house',
       title: 'Ubicaciones',
       to: '/ubicaciones',
       class: 'mr-2 drawer-icon',
@@ -138,7 +138,7 @@ const globalStore =  useGlobalStore()
                 density="compact"
                 key="support"
                 title="Contacto y soporte"
-                :prepend-icon="() => h(Icon, { name:'material-symbols-light:support-agent-outline-sharp', class:'text-primary' })"
+                :prepend-icon="() => h(Icon, { name:'lucide:messages-square' })"
                 v-bind="props"
               >
               </v-list-item>
@@ -174,7 +174,7 @@ const globalStore =  useGlobalStore()
               density="compact"
               key="tutorial"
               title="Tutorial"
-              prepend-icon="lucide:graduation-cap"
+              :prepend-icon="() => h(Icon, { name: 'lucide-graduation-cap'})"
               @click.stop="showTutorialHandler"
           >
           </v-list-item>
@@ -186,7 +186,7 @@ const globalStore =  useGlobalStore()
             to="/configuracion"
             :disabled="false"
             title="Configuración"
-            :prepend-icon="() => h(Icon, { name: 'futzo-icon:settings-01', class: 'mr-2 config-icon', mode: 'svg' })"
+            :prepend-icon="() => h(Icon, { name: 'lucide:monitor-cog', class: 'mr-2 config-icon', mode: 'svg' })"
           >
           </v-list-item>
         </v-list>

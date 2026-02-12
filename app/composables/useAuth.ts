@@ -73,9 +73,6 @@ export default function useAuth() {
     isLoading.value = true;
     const { login } = useSanctumAuth();
     await login({ ...form })
-      .then(async () => {
-        await useLocationStore().reloadLocations();
-      })
       .catch((error: FetchError) => {
         const { message } = useApiError(error);
         errorMessage.value = message;

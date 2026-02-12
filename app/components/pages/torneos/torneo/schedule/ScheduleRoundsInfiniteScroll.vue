@@ -11,7 +11,7 @@
       showOnlyPendingManual?: boolean
       regeneratedFromRound?: number | null
       public?: boolean
-      height?: string | number
+      height?: string | number | 'auto'
       emptyText?: string
       shouldShowPenaltyInputs?: (game: Match, isEditable: boolean) => boolean
       penaltyWinnerName?: (game: Match) => string
@@ -23,7 +23,7 @@
       regeneratedFromRound: null,
       public: false,
       scheduleRoundStatus: () => [],
-      height: '80vh',
+      height: 'auto',
       emptyText: 'No hay mas jornadas',
     }
   )
@@ -55,18 +55,22 @@
 
   const penaltyWinnerName = computed(() => props.penaltyWinnerName ?? defaultPenaltyName)
   const shouldShowPenaltyInputs = computed(() => props.shouldShowPenaltyInputs ?? defaultPenaltyInputs)
+  const resolvedHeight = computed(() => (props.height === 'auto' ? undefined : props.height))
 </script>
 
 <template>
   <v-infinite-scroll
     :items="rounds"
-    @load="emit('load', $event)"
-    :height="height"
-    class="bg-surface pa-4 futzo-rounded"
+    :height="resolvedHeight"
     :empty-text="emptyText"
+    class="schedule-rounds"
+    data-testid="schedule-rounds-list"
+    @load="emit('load', $event)"
   >
-    <template v-for="round in rounds" :key="round.round">
+    <div class="schedule-rounds__content">
       <ScheduleRoundCard
+        v-for="round in rounds"
+        :key="round.round"
         :round="round"
         :schedule-round-status="scheduleRoundStatus"
         :loading="loading"
@@ -84,6 +88,20 @@
         @update-game="emit('update-game', $event)"
         @open-modal="emit('open-modal', $event)"
       />
-    </template>
+    </div>
   </v-infinite-scroll>
 </template>
+
+<style lang="sass" scoped>
+  .schedule-rounds
+    border: 1px solid #eaecf0
+    background: #fff
+    border-radius: 14px
+    padding: 10px
+    min-width: 0
+
+  .schedule-rounds__content
+    display: flex
+    flex-direction: column
+    gap: 12px
+</style>

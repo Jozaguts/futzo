@@ -54,135 +54,219 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="game">
-    <div class="team home">
-      <v-avatar :image="game.home.image" size="24" class="image" />
-      <span class="name d-inline-block text-truncate" style="max-width: 150px">{{ game.home.name }}</span>
-      <Score
-        :game-id="game.id"
-        :round-id="roundId"
-        :is-editable="isEditable"
-        @update:game="onUpdateGame"
-        type="home"
-        :value="game.home.goals"
-      />
-      <Icon v-if="winnerSide === 'home'" class="flag bg-primary" name="futzo-icon:match-polygon" />
-    </div>
-    <div class="team away">
-      <v-avatar class="image" size="24" :image="game.away.image" />
-      <span class="name d-inline-block text-truncate" style="max-width: 150px">{{ game.away.name }}</span>
-      <Score
-        :game-id="game.id"
-        :value="game.away.goals"
-        :round-id="roundId"
-        :is-editable="isEditable"
-        @update:game="onUpdateGame"
-        type="away"
-      />
-      <Icon v-if="winnerSide === 'away'" class="flag bg-primary" name="futzo-icon:match-polygon" />
-    </div>
-    <div v-if="shouldShowPenaltyInputs(game, isEditable)" class="penalty-container">
-      <p class="text-body-2 font-weight-medium mb-2">Desempate por penales</p>
-      <div class="d-flex flex-column mb-2">
-        <div class="d-flex justify-space-between">
-          <span class="mr-2 text-body-2">{{ game.home.name }}</span>
-          <v-text-field
-            v-model.number="game.penalties.home_goals"
-            type="number"
-            min="0"
-            density="compact"
-            hide-details
-            class="penalty-input"
-          />
+  <article class="schedule-match-card futzo-rounded" data-testid="schedule-match-card">
+    <div class="schedule-match-card__teams">
+      <div class="schedule-match-card__team">
+        <div class="schedule-match-card__team-main">
+          <v-avatar :image="game.home.image" size="30" class="schedule-match-card__avatar" />
+          <span class="schedule-match-card__team-name">{{ game.home.name }}</span>
+          <Icon v-if="winnerSide === 'home'" class="schedule-match-card__winner" name="lucide:flag" size="12" />
         </div>
-        <div class="d-flex justify-space-between">
-          <span class="mr-2 text-body-2">{{ game.away.name }}</span>
-          <v-text-field
-            v-model.number="game.penalties.away_goals"
-            type="number"
-            min="0"
-            density="compact"
-            hide-details
-            class="penalty-input"
-          />
-        </div>
+        <Score
+          :game-id="game.id"
+          :round-id="roundId"
+          :is-editable="isEditable"
+          type="home"
+          :value="game.home.goals"
+          @update:game="onUpdateGame"
+        />
       </div>
-      <p class="text-body-2 font-weight-medium mb-2">Ganador</p>
-      <v-radio-group v-model="game.penalties.winner_team_id" density="compact" class="mt-1">
+
+      <div class="schedule-match-card__team">
+        <div class="schedule-match-card__team-main">
+          <v-avatar class="schedule-match-card__avatar" size="30" :image="game.away.image" />
+          <span class="schedule-match-card__team-name">{{ game.away.name }}</span>
+          <Icon v-if="winnerSide === 'away'" class="schedule-match-card__winner" name="lucide:flag" size="12" />
+        </div>
+        <Score
+          :game-id="game.id"
+          :round-id="roundId"
+          :is-editable="isEditable"
+          type="away"
+          :value="game.away.goals"
+          @update:game="onUpdateGame"
+        />
+      </div>
+    </div>
+
+    <div v-if="shouldShowPenaltyInputs(game, isEditable)" class="schedule-match-card__penalties">
+      <p class="schedule-match-card__penalties-title">Desempate por penales</p>
+      <div class="schedule-match-card__penalty-row">
+        <span>{{ game.home.name }}</span>
+        <v-text-field
+          v-model.number="game.penalties.home_goals"
+          type="number"
+          min="0"
+          density="compact"
+          hide-details
+          class="schedule-match-card__penalty-input"
+        />
+      </div>
+      <div class="schedule-match-card__penalty-row">
+        <span>{{ game.away.name }}</span>
+        <v-text-field
+          v-model.number="game.penalties.away_goals"
+          type="number"
+          min="0"
+          density="compact"
+          hide-details
+          class="schedule-match-card__penalty-input"
+        />
+      </div>
+      <v-radio-group v-model="game.penalties.winner_team_id" density="compact" hide-details class="mt-2">
         <v-radio :value="game.home.id" :label="game.home.name" />
         <v-radio :value="game.away.id" :label="game.away.name" />
       </v-radio-group>
-      <p class="text-caption text-medium-emphasis mt-2">El ganador suma 2 puntos; el otro equipo suma 1 punto.</p>
     </div>
-    <div v-else-if="game.penalties?.decided" class="penalty-summary">
-      Penales: {{ game.penalties.home_goals }} - {{ game.penalties.away_goals }} · Ganador:
-      {{ penaltyWinnerName(game) }}
+
+    <div v-else-if="game.penalties?.decided" class="schedule-match-card__penalty-summary">
+      Penales: {{ game.penalties.home_goals }} - {{ game.penalties.away_goals }} · Ganador: {{ penaltyWinnerName(game) }}
     </div>
-    <div class="details" :class="{ 'details--pending': isPendingManualMatch }">
-      <template v-if="!isPendingManualMatch">
-        <p>
-          {{ game.details?.date }}
-          <span>{{ game.details?.raw_time }}</span>
-        </p>
-        <p>{{ game.details?.location?.name }}</p>
-        <p>{{ game.details?.field?.name }}</p>
-      </template>
-      <template v-else>
-        <p class="text-body-2 font-weight-medium mb-2">Horario por confirmar.</p>
-      </template>
-      <div v-if="!public" class="d-flex justify-space-between w-75 align-center">
-        <v-btn
-          icon
-          v-tooltip:bottom="'Reprogramar'"
-          variant="text"
-          density="compact"
-          size="small"
-          :ripple="true"
-          :disabled="
-            (game.status as RoundStatus) === 'en_progreso' ||
-            (game.status as RoundStatus) === 'completado' ||
-            (game.status as RoundStatus) === 'cancelado'
-          "
-          @click="openModal('ReScheduleGame')"
-        >
-          <Icon name="lucide:calendar-days" size="25" />
-        </v-btn>
-        <v-btn
-          icon
-          v-tooltip:bottom-left="'Actualizar marcador'"
-          variant="text"
-          density="compact"
-          :ripple="true"
-          :disabled="isPendingManualMatch"
-          @click="openModal('GameReport')"
-        >
-          <Icon name="lucide:notebook-pen" size="25" />
-        </v-btn>
+
+    <footer class="schedule-match-card__footer" :class="{ 'schedule-match-card__footer--pending': isPendingManualMatch }">
+      <div class="schedule-match-card__details">
+        <template v-if="!isPendingManualMatch">
+          {{ game.details?.date }} · {{ game.details?.raw_time }} · {{ game.details?.location?.name }} · {{ game.details?.field?.name }}
+        </template>
+        <template v-else>Horario por confirmar.</template>
       </div>
-    </div>
-  </div>
+
+      <div v-if="!public" class="schedule-match-card__actions">
+        <v-tooltip text="Reprogramar partido" location="bottom">
+          <template #activator="{ props: tooltipProps }">
+            <v-btn
+              icon
+              variant="text"
+              density="compact"
+              size="small"
+              v-bind="tooltipProps"
+              :disabled="
+                (game.status as RoundStatus) === 'en_progreso' ||
+                (game.status as RoundStatus) === 'completado' ||
+                (game.status as RoundStatus) === 'cancelado'
+              "
+              @click="openModal('ReScheduleGame')"
+            >
+              <Icon name="lucide:calendar-clock" size="17" />
+            </v-btn>
+          </template>
+        </v-tooltip>
+
+        <v-tooltip text="Acta de partido" location="bottom">
+          <template #activator="{ props: tooltipProps }">
+            <v-btn
+              icon
+              variant="text"
+              density="compact"
+              size="small"
+              v-bind="tooltipProps"
+              :disabled="isPendingManualMatch"
+              @click="openModal('GameReport')"
+            >
+              <Icon name="lucide:notebook-pen" size="17" />
+            </v-btn>
+          </template>
+        </v-tooltip>
+      </div>
+    </footer>
+  </article>
 </template>
 
 <style lang="sass" scoped>
-  @use '~/assets/scss/pages/schedule.sass'
+  .schedule-match-card
+    border: 1px solid #eaecf0
+    background: #fff
+    display: flex
+    flex-direction: column
+    overflow: hidden
+    min-width: 0
 
-  .penalty-container
-    background-color: rgba(var(--v-theme-surface-variant), 0.3)
-    border-radius: 8px
+  .schedule-match-card__teams
     padding: 12px
-    margin-bottom: 12px
+    display: flex
+    flex-direction: column
+    gap: 10px
 
-  .penalty-input
-    max-width: 80px
+  .schedule-match-card__team
+    display: flex
+    align-items: center
+    justify-content: space-between
+    gap: 8px
 
-  .penalty-summary
-    margin-bottom: 12px
-    font-size: .85rem
+  .schedule-match-card__team-main
+    display: flex
+    align-items: center
+    gap: 8px
+    min-width: 0
+
+  .schedule-match-card__avatar
+    flex-shrink: 0
+
+  .schedule-match-card__team-name
+    font-size: 14px
     font-weight: 500
-    color: rgba(var(--v-theme-on-surface), 0.65)
+    line-height: 1.2
+    color: #1d2939
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap
 
-  .details--pending
-    background-color: rgba(var(--v-theme-warning), 0.12)
-    border-radius: 8px
-    padding: 12px
+  .schedule-match-card__winner
+    color: #6941c6
+    flex-shrink: 0
+
+  .schedule-match-card__penalties
+    border-top: 1px solid #eaecf0
+    padding: 10px 12px 0
+    background: #f9fafb
+
+  .schedule-match-card__penalties-title
+    margin: 0 0 8px
+    color: #344054
+    font-size: 12px
+    font-weight: 600
+
+  .schedule-match-card__penalty-row
+    display: flex
+    align-items: center
+    justify-content: space-between
+    gap: 8px
+    margin-bottom: 8px
+    font-size: 12px
+    color: #344054
+
+  .schedule-match-card__penalty-input
+    max-width: 88px
+
+  .schedule-match-card__penalty-summary
+    border-top: 1px solid #eaecf0
+    background: #f9fafb
+    color: #475467
+    font-size: 12px
+    padding: 8px 12px
+
+  .schedule-match-card__footer
+    border-top: 1px solid #eaecf0
+    background: #fcfcfd
+    padding: 8px 10px
+    display: flex
+    align-items: center
+    justify-content: space-between
+    gap: 8px
+
+  .schedule-match-card__footer--pending
+    background: #f8fafc
+    border-top-color: #eaecf0
+
+  .schedule-match-card__details
+    font-size: 12px
+    color: #667085
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap
+
+  .schedule-match-card__actions
+    display: flex
+    align-items: center
+    gap: 2px
 </style>

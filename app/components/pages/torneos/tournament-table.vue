@@ -77,8 +77,9 @@ const router = useRouter()
     tournamentId.value = model.id as number
     tournament.value = model
     void router.push({
-      name: 'torneos-torneo-calendario',
+      name: 'torneos-torneo',
       params: { torneo: model.slug },
+      query: { tab: 'calendario' },
     })
   }
 

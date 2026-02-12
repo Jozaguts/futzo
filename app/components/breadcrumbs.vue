@@ -28,6 +28,25 @@
           },
         ]
       case 'torneos-torneo':
+        if (useRoute().query.tab === 'calendario') {
+          return [
+            {
+              title: 'Torneos',
+              href: '/torneos',
+              disabled: false,
+            },
+            {
+              title: useRoute().params.torneo.toString().replace(/-/g, ' ') as string,
+              href: ('/torneos/' + useRoute().params.torneo) as string,
+              disabled: false,
+            },
+            {
+              title: 'Calendario',
+              href: 'calendario',
+              disabled: true,
+            },
+          ]
+        }
         return [
           {
             title: 'Torneos',

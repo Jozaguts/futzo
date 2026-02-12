@@ -4,6 +4,7 @@ import AppBar from '~/components/layout/AppBar.vue'
 import StatsTableContainer from '~/components/pages/equipos/live-games.vue'
 import CreateTournamentDialog from '~/components/pages/torneos/dialog/index.vue'
 import DisciplinePanel from '~/components/pages/torneos/discipline/DisciplinePanel.vue'
+import TournamentCalendarTab from '~/components/pages/torneos/torneo/calendar-tab.vue'
 import TournamentShareMenu from '~/components/pages/torneos/tournament-share-menu.vue'
 import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
 import KpisMetricsSection from '~/components/shared/kpis-metrics-section.vue'
@@ -25,7 +26,15 @@ const tournamentStore = useTournamentStore()
   const runtimeConfig = useRuntimeConfig()
   const { mobile } = useDisplay()
   const loading = ref(false)
-  const tab = ref('resumen')
+  const validSectionTabs = ['resumen', 'calendario', 'disciplina'] as const
+  type SectionTab = (typeof validSectionTabs)[number]
+  const resolveSectionTab = (value: unknown): SectionTab => {
+    if (typeof value !== 'string') {
+      return 'resumen'
+    }
+    return (validSectionTabs as readonly string[]).includes(value) ? (value as SectionTab) : 'resumen'
+  }
+  const tab = ref<SectionTab>(resolveSectionTab(route.query.tab))
   const share = ref({
     title: '',
     image: '',
@@ -311,10 +320,7 @@ const tournamentStore = useTournamentStore()
   }
 
   const goToCalendar = () => {
-    router.push({
-      name: 'torneos-torneo-calendario',
-      params: { torneo: route.params.torneo },
-    })
+    tab.value = 'calendario'
   }
 
   const goToPublic = () => {
@@ -324,7 +330,34 @@ const tournamentStore = useTournamentStore()
     })
   }
 
-  const sections = [
+  watch(
+    () => route.query.tab,
+    (queryTab) => {
+      const nextTab = resolveSectionTab(queryTab)
+      if (tab.value !== nextTab) {
+        tab.value = nextTab
+      }
+    }
+  )
+
+  watch(tab, (currentTab) => {
+    const tabQuery = currentTab === 'resumen' ? undefined : currentTab
+    const currentQueryTab = typeof route.query.tab === 'string' ? route.query.tab : undefined
+    if (currentQueryTab === tabQuery) {
+      return
+    }
+    const nextQuery: Record<string, unknown> = { ...route.query }
+    if (tabQuery) {
+      nextQuery.tab = tabQuery
+    } else {
+      delete nextQuery.tab
+    }
+    router.replace({
+      query: nextQuery,
+    })
+  })
+
+  const sections: Array<{ value: SectionTab; label: string }> = [
     { value: 'resumen', label: 'Resumen' },
     { value: 'calendario', label: 'Calendario' },
     { value: 'disciplina', label: 'Disciplina' },
@@ -423,53 +456,57 @@ const tournamentStore = useTournamentStore()
 
               <div class="tournament-content">
                 <div class="tournament-standings">
-                  <v-card class="futzo-rounded" height="100%">
+                  <v-card class="futzo-rounded tournament-standings-card" height="100%">
                     <v-card-title>Tabla de posiciones</v-card-title>
-                    <v-card-text>
-                      <client-only>
-                        <Vue3EasyDataTable
-                          v-if="standings?.length"
-                          header-text-direction="center"
-                          class="futzo-rounded"
-                          body-text-direction="center"
-                          :headers="publicTournamentStandingsHeaders"
-                          :items="standings"
-                          hide-footer
-                          :rows-per-page="standings?.length"
-                          alternating
-                        >
-                          <template #item-team.name="values">
-                            <div class="d-flex">
-                              <span class="mr-2">{{ values.rank }}</span>
-                              <span class="d-inline-block text-truncate" style="max-width: 100px">
-                                {{ values.team.name }}
+                    <v-card-text class="tournament-standings-card__content">
+                      <div class="tournament-standings-table" data-testid="tournament-standings-table-wrapper">
+                        <client-only>
+                          <Vue3EasyDataTable
+                            v-if="standings?.length"
+                            header-text-direction="center"
+                            class="futzo-rounded tournament-standings-table__grid"
+                            body-text-direction="center"
+                            :headers="publicTournamentStandingsHeaders"
+                            :items="standings"
+                            hide-footer
+                            fixed-header
+                            :table-min-height="0"
+                            :rows-per-page="standings?.length"
+                            alternating
+                          >
+                            <template #item-team.name="values">
+                              <div class="d-flex">
+                                <span class="mr-2">{{ values.rank }}</span>
+                                <span class="d-inline-block text-truncate" style="max-width: 100px">
+                                  {{ values.team.name }}
+                                </span>
+                              </div>
+                            </template>
+                            <template #item-last_5="item">
+                              <span v-for="color in last5Handler(item.last_5)" :key="item.id" class="text-lowercase">
+                                <v-tooltip :text="color?.label" location="bottom">
+                                  <template #activator="{ props }">
+                                    <Icon
+                                      v-bind="props"
+                                      :name="color?.icon"
+                                      :class="`text-${color?.color}`"
+                                      :size="16"
+                                      class="cursor-pointer"
+                                    />
+                                  </template>
+                                </v-tooltip>
                               </span>
-                            </div>
-                          </template>
-                          <template #item-last_5="item">
-                            <span v-for="color in last5Handler(item.last_5)" :key="item.id" class="text-lowercase">
-                              <v-tooltip :text="color?.label" location="bottom">
-                                <template #activator="{ props }">
-                                  <Icon
-                                    v-bind="props"
-                                    :name="color?.icon"
-                                    :class="`text-${color?.color}`"
-                                    :size="16"
-                                    class="cursor-pointer"
-                                  />
-                                </template>
-                              </v-tooltip>
-                            </span>
-                          </template>
-                        </Vue3EasyDataTable>
-                        <v-skeleton-loader v-else-if="loading" type="table" class="mb-6" />
-                        <v-empty-state
-                          v-else
-                          title="Tabla de posiciones no disponible"
-                          text="La tabla aún no está lista. Vuelve más tarde."
-                          image="/junior-soccer.svg"
-                        />
-                      </client-only>
+                            </template>
+                          </Vue3EasyDataTable>
+                          <v-skeleton-loader v-else-if="loading" type="table" class="mb-6" />
+                          <v-empty-state
+                            v-else
+                            title="Tabla de posiciones no disponible"
+                            text="La tabla aún no está lista. Vuelve más tarde."
+                            image="/junior-soccer.svg"
+                          />
+                        </client-only>
+                      </div>
                     </v-card-text>
                   </v-card>
                 </div>
@@ -484,10 +521,7 @@ const tournamentStore = useTournamentStore()
             </template>
 
             <template v-else-if="tab === 'calendario'">
-              <v-card class="futzo-rounded pa-6">
-                <p class="text-body-2 text-medium-emphasis">Abre el calendario para editar o revisar jornadas.</p>
-                <v-btn class="mt-4" color="primary" @click="goToCalendar">Ir a calendario</v-btn>
-              </v-card>
+              <TournamentCalendarTab />
             </template>
 
             <template v-else-if="tab === 'disciplina'">
@@ -652,14 +686,46 @@ const tournamentStore = useTournamentStore()
 
   .tournament-content
     display: grid
-    grid-template-columns: 1fr
+    grid-template-columns: minmax(0, 1fr)
     gap: 16px
 
   .tournament-stats
     min-height: 520px
+    min-width: 0
 
   .tournament-standings
     min-height: 520px
+    min-width: 0
+
+  .tournament-standings-card
+    display: flex
+    flex-direction: column
+    min-width: 0
+
+  .tournament-standings-card__content
+    display: flex
+    flex: 1 1 auto
+    min-width: 0
+    min-height: 0
+    padding: 0 12px 12px
+
+  .tournament-standings-table
+    display: flex
+    flex: 1 1 auto
+    min-width: 0
+    min-height: 0
+
+  .tournament-standings-table :deep(.vue3-easy-data-table)
+    display: flex
+    flex: 1 1 auto
+    flex-direction: column
+    min-width: 0
+    min-height: 0
+
+  .tournament-standings-table :deep(.vue3-easy-data-table__main)
+    flex: 1 1 auto
+    min-width: 0
+    min-height: 0
 
   .tournament-discipline-shell
     display: flex
@@ -680,7 +746,7 @@ const tournamentStore = useTournamentStore()
 
   @media (min-width: 900px)
     .tournament-content
-      grid-template-columns: 70% 30%
+      grid-template-columns: minmax(0, 7fr) minmax(0, 3fr)
       align-items: stretch
 
     .tournament-page__headline

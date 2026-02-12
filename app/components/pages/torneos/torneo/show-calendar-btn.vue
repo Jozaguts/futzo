@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   const route = useRoute()
+  const isCalendarTabActive = computed(() => route.name === 'torneos-torneo' && route.query.tab === 'calendario')
 </script>
 <template>
   <PrimaryBtn
@@ -7,11 +8,12 @@
     icon="futzo-icon:calendar-white"
     text="Calendario"
     iconPosition="right"
-    :disabled="route.name === 'torneos-torneo-calendario'"
+    :disabled="isCalendarTabActive"
     @click="
       $router.push({
-        name: 'torneos-torneo-calendario',
+        name: 'torneos-torneo',
         params: { torneo: route.params.torneo },
+        query: { tab: 'calendario' },
       })
     "
   />

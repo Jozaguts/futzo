@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import '@vuepic/vue-datepicker/dist/main.css'
-import dayjs from 'dayjs'
-import {useToast} from '~/composables/useToast'
-import {useLeaguesStore} from '~/stores/useLeaguesStore'
-import type {Field as ScheduleField, HourAvailableInterval} from '~/models/Schedule'
+  import '@vuepic/vue-datepicker/dist/main.css'
+  import dayjs from 'dayjs'
+  import { useToast } from '~/composables/useToast'
+  import { useLeaguesStore } from '~/stores/useLeaguesStore'
+  import type { Field as ScheduleField, HourAvailableInterval } from '~/models/Schedule'
 
-const gameStore = useGameStore()
+  const gameStore = useGameStore()
   const tournamentStore = useTournamentStore()
   const leaguesStore = useLeaguesStore()
   const { toast } = useToast()
   const { getLeagueLocations } = leaguesStore
-
   const { tournamentId } = storeToRefs(tournamentStore)
   const { showReScheduleDialog, game, gameDetailsRequest } = storeToRefs(gameStore)
   const { reScheduleGame } = gameStore
@@ -27,11 +26,14 @@ const gameStore = useGameStore()
     name: string
   }
 
-  const loading = ref(true)
+  const loading = ref(false)
   const isInitializing = ref(false)
+  const hasCheckedAvailableSlots = ref(false)
   const fieldsSource = ref<'tournament' | 'league' | null>(null)
   const fields = ref<FieldOption[]>([])
   const locations = ref<LocationOption[]>([])
+
+  const badgePalette = ['#ef4444', '#f97316', '#3b82f6', '#10b981', '#8b5cf6', '#f59e0b']
 
   const onLeaving = () => {
     showReScheduleDialog.value = false
@@ -40,6 +42,46 @@ const gameStore = useGameStore()
     fieldsSource.value = null
   }
 
+  const closeDialog = () => {
+    showReScheduleDialog.value = false
+  }
+
+  const resolveTeamShort = (teamName?: string) => {
+    if (!teamName) {
+      return '---'
+    }
+    return teamName
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((part) => part[0])
+      .join('')
+      .slice(0, 3)
+      .toUpperCase()
+  }
+
+  const resolveTeamColor = (teamId?: number) => {
+    if (!teamId) {
+      return badgePalette[0]
+    }
+    return badgePalette[Math.abs(teamId) % badgePalette.length]
+  }
+
+  const homeShort = computed(() => resolveTeamShort(game.value?.home?.name))
+  const awayShort = computed(() => resolveTeamShort(game.value?.away?.name))
+  const homeColor = computed(() => resolveTeamColor(game.value?.home?.id))
+  const awayColor = computed(() => resolveTeamColor(game.value?.away?.id))
+  const currentSchedule = computed(() => {
+    const chunks = [
+      game.value?.details?.date,
+      game.value?.details?.raw_time,
+      game.value?.details?.location?.name,
+      game.value?.details?.field?.name,
+    ].filter((value) => Boolean(value))
+    return chunks.join(' · ') || 'Horario pendiente por confirmar.'
+  })
+  const dialogLoading = computed(() => loading.value && isInitializing.value)
+  const todayIsoDate = computed(() => dayjs().format('YYYY-MM-DD'))
+
   const fetchLocations = async () => {
     try {
       const data = await getLeagueLocations()
@@ -47,7 +89,7 @@ const gameStore = useGameStore()
         id: location.id,
         name: location.name,
       }))
-    } catch (error) {
+    } catch {
       locations.value = []
       toast({
         type: 'error',
@@ -81,20 +123,14 @@ const gameStore = useGameStore()
       }
 
       const matchingField = previousFieldId !== 0 ? fields.value.find((field) => field.id === previousFieldId) : null
-
-      if (matchingField) {
-        gameDetailsRequest.value.field_id = matchingField.id
-      } else {
-        gameDetailsRequest.value.field_id = fields.value[0].id
-      }
+      gameDetailsRequest.value.field_id = matchingField ? matchingField.id : fields.value[0].id
 
       const selectedField = fields.value.find((field) => field.id === gameDetailsRequest.value.field_id)
       if (selectedField?.location?.id) {
         gameDetailsRequest.value.location_id = selectedField.location.id
       }
-
       return true
-    } catch (error) {
+    } catch {
       fields.value = []
       fieldsSource.value = null
       gameDetailsRequest.value.field_id = 0
@@ -111,20 +147,45 @@ const gameStore = useGameStore()
   }
 
   const fetchMatch = async () => {
-    if (gameDetailsRequest.value.game_id && gameDetailsRequest.value.field_id && gameDetailsRequest.value.date) {
-      loading.value = true
-      try {
-        await gameStore.getGameDetails()
-      } catch (error) {
-        toast({
-          type: 'error',
-          msg: 'Error al obtener el partido',
-          description: 'Hubo un problema al recuperar la información del partido. Intenta nuevamente.',
-        })
-      } finally {
-        loading.value = false
+    const canFetch =
+      Boolean(gameDetailsRequest.value.game_id) &&
+      Boolean(gameDetailsRequest.value.field_id) &&
+      Boolean(gameDetailsRequest.value.date)
+
+    if (!canFetch) {
+      loading.value = false
+      hasCheckedAvailableSlots.value = false
+      if (game.value) {
+        game.value.options = []
       }
-    } else if (game.value) {
+      return
+    }
+
+    loading.value = true
+    try {
+      await gameStore.getGameDetails()
+      hasCheckedAvailableSlots.value = true
+    } catch {
+      hasCheckedAvailableSlots.value = true
+      toast({
+        type: 'error',
+        msg: 'Error al obtener el partido',
+        description: 'Hubo un problema al recuperar la información del partido. Intenta nuevamente.',
+      })
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const bootstrapSearchDate = () => {
+    gameDetailsRequest.value.date = todayIsoDate.value
+    gameDetailsRequest.value.selected_time = null
+    hasCheckedAvailableSlots.value = false
+  }
+
+  const clearAvailableSlots = () => {
+    hasCheckedAvailableSlots.value = false
+    if (game.value) {
       game.value.options = []
     }
   }
@@ -137,13 +198,14 @@ const gameStore = useGameStore()
         locations.value = []
         fieldsSource.value = null
         gameDetailsRequest.value.selected_time = null
+        hasCheckedAvailableSlots.value = false
         loading.value = false
         return
       }
 
       isInitializing.value = true
       loading.value = true
-      gameDetailsRequest.value.selected_time = null
+      bootstrapSearchDate()
 
       await fetchLocations()
 
@@ -156,17 +218,16 @@ const gameStore = useGameStore()
 
       let hasFields = false
       try {
-        hasFields = await fetchFields(gameDetailsRequest.value.location_id ?? null, {
-          preserveSelection: true,
-        })
+        hasFields = await fetchFields(gameDetailsRequest.value.location_id ?? null, { preserveSelection: true })
         if (hasFields) {
           await fetchMatch()
         } else {
+          clearAvailableSlots()
           loading.value = false
         }
       } finally {
         isInitializing.value = false
-        if (!hasFields && loading.value) {
+        if (loading.value) {
           loading.value = false
         }
       }
@@ -179,11 +240,12 @@ const gameStore = useGameStore()
     }
     gameDetailsRequest.value.location_id = locationId ?? null
     gameDetailsRequest.value.selected_time = null
+    hasCheckedAvailableSlots.value = false
     const hasFields = await fetchFields(locationId ?? null, { preserveSelection: false })
     if (hasFields) {
       await fetchMatch()
-    } else if (game.value) {
-      game.value.options = []
+    } else {
+      clearAvailableSlots()
     }
   }
 
@@ -195,11 +257,13 @@ const gameStore = useGameStore()
     if (by === 'by-date' && dayjs(value).isValid()) {
       gameDetailsRequest.value.date = value as string
       gameDetailsRequest.value.selected_time = null
+      hasCheckedAvailableSlots.value = false
     }
 
     if (by === 'by-field_id') {
       gameDetailsRequest.value.field_id = value as number
       gameDetailsRequest.value.selected_time = null
+      hasCheckedAvailableSlots.value = false
       const selectedField = fields.value.find((field) => field.id === gameDetailsRequest.value.field_id)
       if (selectedField?.location?.id) {
         gameDetailsRequest.value.location_id = selectedField.location.id
@@ -271,131 +335,231 @@ const gameStore = useGameStore()
 </script>
 <template>
   <Dialog
-    :loading="loading"
+    :loading="dialogLoading"
     title="Reprogramar partido"
-    subtitle="Modificá la fecha, hora o campo de juego para este partido. <br />
-    Los cambios se aplicarán manteniendo la jornada original."
+    subtitle="Ajusta fecha, hora o campo para este partido."
     :model-value="showReScheduleDialog"
     @leaving="onLeaving"
-    icon-name="lucide:calendar-days"
-    min-height="910"
-    max-height="910"
+    icon-name="lucide:calendar-clock"
+    min-height="90vh"
+    width="760px"
+    data-testid="reschedule-dialog"
   >
     <template #v-card-text>
-      <v-container>
-        <v-row>
-          <v-col cols="12">
-            <label class="text-subtitle-2">Programado:</label>
-            <p class="font-weight-bold">
-              {{ game?.details?.date }}
-              {{ game?.details?.raw_time }}
-            </p>
-          </v-col>
-          <v-col cols="12">
-            <div class="d-flex align-center">
-              <v-card class="flex-grow-1" variant="text" border="sm" rounded="lg" width="50%">
-                <v-card-text>
-                  <div class="team flex-grow-1 team_local d-flex flex-column align-center">
-                    <v-avatar :image="game?.home?.image" size="24" class="image" />
-                    <span class="team team_home mx-2">{{ game?.home?.name }}</span>
-                  </div>
-                </v-card-text>
-              </v-card>
-              <div class="d-flex flex-column align-center justify-center">
-                <p>vs</p>
-              </div>
-              <v-card class="flex-grow-1 futzo-rounded" variant="text" border="sm" rounded="lg" width="50%">
-                <v-card-text>
-                  <div class="team team_away d-flex flex-column align-center">
-                    <v-avatar :image="game?.away?.image" size="24" class="image" />
-                    <span class="team team_home mx-2">
-                      {{ game?.away?.name }}
-                    </span>
-                  </div>
-                </v-card-text>
-              </v-card>
+      <section class="reschedule-content">
+        <article class="reschedule-content__summary futzo-rounded">
+          <p class="reschedule-content__summary-label">Actualmente programado</p>
+          <div class="reschedule-content__teams">
+            <div class="reschedule-content__team">
+              <div class="reschedule-content__team-badge" :style="{ backgroundColor: homeColor }">{{ homeShort }}</div>
+              <span class="reschedule-content__team-name">{{ game?.home?.name ?? 'Local' }}</span>
             </div>
-          </v-col>
-          <v-col cols="12" md="4" lg="4">
-            <label class="text-subtitle-2">Fecha</label>
-            <BaseCalendarInput
-              v-model:start_date="gameDetailsRequest.date"
-              :multiCalendar="false"
-              :min-date="false"
-              @update:start_date="(value) => fetchFieldAvailabilities('by-date', value as Date)"
-            />
-          </v-col>
-          <v-col cols="12" md="4" lg="4">
-            <label class="text-subtitle-2">Sede</label>
-            <v-select
-              v-model="gameDetailsRequest.location_id"
-              :items="locations"
-              item-title="name"
-              item-value="id"
-              label="Selecciona una sede"
-              :disabled="!locations.length"
-              @update:model-value="(value) => onLocationChange(value as number | null)"
-            />
-          </v-col>
-          <v-col cols="12" md="4" lg="4">
-            <label class="text-subtitle-2">Campo</label>
-            <v-select
-              v-model="gameDetailsRequest.field_id"
-              :items="fields"
-              item-title="name"
-              item-value="id"
-              label="Selecciona un campo"
-              :disabled="!fields.length"
-              @update:model-value="(value) => fetchFieldAvailabilities('by-field_id', value as number)"
-            />
-          </v-col>
-          <v-col cols="12" v-if="fieldsSource === 'league'">
-            <v-alert type="info" variant="tonal" density="compact" border="start">
-              Utilizando campos de la liga (sin campos del torneo).
-            </v-alert>
-          </v-col>
-          <v-col cols="12" v-if="fields.length === 0">
-            <v-alert type="warning" variant="tonal" density="compact" border="start">
-              Sin campos disponibles en esta sede.
-            </v-alert>
-          </v-col>
-          <v-col cols="12" md="8" lg="8" v-else-if="availableIntervalHours.length">
-            <label class="text-subtitle-2">Horas disponibles</label>
-            <v-chip-group v-model="gameDetailsRequest.selected_time" column>
-              <v-chip
-                base-color="primary"
-                filter
-                v-for="hour in availableIntervalHours"
-                :value="hour"
-                :key="hour.start"
+            <span class="reschedule-content__versus">vs</span>
+            <div class="reschedule-content__team">
+              <div class="reschedule-content__team-badge" :style="{ backgroundColor: awayColor }">{{ awayShort }}</div>
+              <span class="reschedule-content__team-name">{{ game?.away?.name ?? 'Visita' }}</span>
+            </div>
+          </div>
+          <p class="reschedule-content__summary-meta">{{ currentSchedule }}</p>
+          <p class="reschedule-content__hint">Se consulta disponibilidad con la fecha de hoy al abrir este modal.</p>
+        </article>
+
+        <div class="reschedule-content__form futzo-rounded">
+          <v-row>
+            <v-col cols="12" md="4">
+              <label class="reschedule-content__label">Fecha</label>
+              <BaseCalendarInput
+                v-model:start_date="gameDetailsRequest.date"
+                :multi-calendar="false"
+                :min-date="false"
+                @update:start_date="(value) => fetchFieldAvailabilities('by-date', value as Date)"
+              />
+            </v-col>
+
+            <v-col cols="12" md="4">
+              <label class="reschedule-content__label">Sede</label>
+              <v-select
+                v-model="gameDetailsRequest.location_id"
+                :items="locations"
+                item-title="name"
+                item-value="id"
+                label="Selecciona una sede"
+                :disabled="!locations.length"
+                @update:model-value="(value) => onLocationChange(value as number | null)"
+              />
+            </v-col>
+
+            <v-col cols="12" md="4">
+              <label class="reschedule-content__label">Campo</label>
+              <v-select
+                v-model="gameDetailsRequest.field_id"
+                :items="fields"
+                item-title="name"
+                item-value="id"
+                label="Selecciona un campo"
+                :disabled="!fields.length"
+                @update:model-value="(value) => fetchFieldAvailabilities('by-field_id', value as number)"
+              />
+            </v-col>
+
+            <v-col v-if="fieldsSource === 'league'" cols="12">
+              <v-alert type="info" variant="tonal" density="compact" border="start">
+                Utilizando campos de la liga (sin campos configurados en el torneo).
+              </v-alert>
+            </v-col>
+
+            <v-col v-if="fields.length === 0" cols="12">
+              <v-alert type="warning" variant="tonal" density="compact" border="start">
+                Sin campos disponibles en esta sede.
+              </v-alert>
+            </v-col>
+
+            <v-col v-else cols="12">
+              <label class="reschedule-content__label">Horas disponibles</label>
+              <v-alert v-if="loading && !isInitializing" type="info" variant="tonal" density="compact" border="start">
+                Consultando horarios disponibles...
+              </v-alert>
+
+              <v-chip-group
+                v-else-if="availableIntervalHours.length"
+                v-model="gameDetailsRequest.selected_time"
+                class="reschedule-content__chips"
+                column
               >
-                {{ hour.start }} - {{ hour.end }}
-              </v-chip>
-            </v-chip-group>
-          </v-col>
-          <v-col cols="12" v-else>
-            <v-empty-state
-              size="120"
-              headline="No hay horas disponibles"
-              title="No hay horas disponibles para la fecha seleccionada"
-              text="Por favor, selecciona otra fecha o campo."
-              image="/futzo/logos/circular/logo-22.png"
-            ></v-empty-state>
-          </v-col>
-        </v-row>
-      </v-container>
+                <v-chip
+                  v-for="hour in availableIntervalHours"
+                  :key="hour.start"
+                  :value="hour"
+                  base-color="primary"
+                  filter
+                >
+                  {{ hour.start }} - {{ hour.end }}
+                </v-chip>
+              </v-chip-group>
+
+              <v-empty-state
+                v-else-if="hasCheckedAvailableSlots"
+                size="120"
+                headline="No hay horas disponibles"
+                title="No hay horas disponibles para la fecha seleccionada"
+                text="Selecciona otra fecha o campo."
+                image="/futzo/logos/circular/logo-22.png"
+              />
+
+              <v-alert v-else type="info" variant="tonal" density="compact" border="start">
+                Selecciona fecha y campo para consultar horarios disponibles.
+              </v-alert>
+            </v-col>
+          </v-row>
+        </div>
+      </section>
     </template>
     <template #actions>
-      <v-btn class="ml-auto mr-4" variant="elevated" :disabled="!canReschedule" @click="handleReschedule">
-        Reprogramar
-      </v-btn>
+      <div class="reschedule-content__actions">
+        <v-btn variant="outlined" color="secondary" @click="closeDialog">Cancelar</v-btn>
+        <v-btn variant="elevated" color="primary" :disabled="!canReschedule" @click="handleReschedule">
+          Reprogramar partido
+        </v-btn>
+      </div>
     </template>
   </Dialog>
 </template>
 
-<style scoped>
-  label {
-    display: block;
-    margin-bottom: 4px;
-  }
+<style scoped lang="sass">
+  .reschedule-content
+    display: flex
+    flex-direction: column
+    gap: 14px
+
+  .reschedule-content__summary
+    border: 1px solid #eaecf0
+    background: #fff
+    padding: 14px
+
+  .reschedule-content__summary-label
+    margin: 0
+    font-size: 12px
+    font-weight: 600
+    color: #667085
+
+  .reschedule-content__teams
+    margin-top: 10px
+    display: flex
+    align-items: center
+    justify-content: center
+    gap: 16px
+
+  .reschedule-content__team
+    min-width: 0
+    text-align: center
+    display: flex
+    flex-direction: column
+    align-items: center
+    gap: 6px
+
+  .reschedule-content__team-badge
+    width: 42px
+    height: 42px
+    border-radius: 10px
+    color: #fff
+    display: inline-flex
+    align-items: center
+    justify-content: center
+    font-size: 14px
+    font-weight: 700
+
+  .reschedule-content__team-name
+    font-size: 13px
+    color: #101828
+    font-weight: 600
+    max-width: 180px
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap
+
+  .reschedule-content__versus
+    font-size: 12px
+    color: #667085
+    font-weight: 600
+    text-transform: uppercase
+
+  .reschedule-content__summary-meta
+    margin: 10px 0 0
+    text-align: center
+    font-size: 13px
+    color: #667085
+
+  .reschedule-content__hint
+    margin: 6px 0 0
+    text-align: center
+    font-size: 11px
+    color: #98a2b3
+
+  .reschedule-content__form
+    border: 1px solid #eaecf0
+    background: #fcfcfd
+    padding: 12px
+
+  .reschedule-content__label
+    display: block
+    margin-bottom: 4px
+    font-size: 12px
+    font-weight: 600
+    color: #475467
+
+  .reschedule-content__chips
+    margin-top: 4px
+
+  .reschedule-content__actions
+    width: 100%
+    display: flex
+    justify-content: flex-end
+    gap: 8px
+
+  @media (max-width: 600px)
+    .reschedule-content__actions
+      flex-direction: column-reverse
+
+    .reschedule-content__actions > .v-btn
+      width: 100%
 </style>

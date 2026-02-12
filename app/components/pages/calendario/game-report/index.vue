@@ -1,8 +1,14 @@
 <script lang="ts" setup>
 import ContentSection from '~/components/pages/calendario/game-report/ContentSection.vue'
-import type {GameDetailsRequest} from '~/models/Game'
+import type { GameDetailsRequest } from '~/models/Game'
 
-const { gameReportDialog, gameDetailsRequest, game } = storeToRefs(useGameStore())
+const gameStore = useGameStore()
+const { gameReportDialog, gameDetailsRequest, game } = storeToRefs(gameStore)
+const completing = ref(false)
+const completeButtonLabel = computed(() =>
+  game.value?.status === 'completado' ? 'Partido finalizado' : 'Marcar como finalizado'
+)
+
   const onLeaving = () => {
     gameReportDialog.value = false
     gameDetailsRequest.value = null as unknown as GameDetailsRequest
@@ -12,45 +18,57 @@ const { gameReportDialog, gameDetailsRequest, game } = storeToRefs(useGameStore(
     () => gameDetailsRequest.value?.game_id,
     async (newGameId) => {
       if (newGameId) {
-        await useGameStore().getGameDetails()
+        await gameStore.getGameDetails()
       }
     },
     { immediate: true }
   )
-  const markAsCompletedHandler = () => {
-    useGameStore()
-      .markAsComplete()
-      .then(() => (gameReportDialog.value = false))
+
+  const markAsCompletedHandler = async () => {
+    if (game.value?.status === 'completado') {
+      return
+    }
+    completing.value = true
+    try {
+      await gameStore.markAsComplete()
+      gameReportDialog.value = false
+    } finally {
+      completing.value = false
+    }
   }
 </script>
 <template>
   <Dialog
     title="Acta de partido"
-    subtitle="Registra los detalles del partido, incluyendo goles, tarjetas y otros eventos importantes."
+    subtitle="Registra goles, tarjetas y eventos del partido."
     :model-value="gameReportDialog"
     @leaving="onLeaving"
     icon-name="lucide:calendar-days"
-    min-height="95vh"
-    max-height="95vh"
-    width="800"
+    min-height="90vh"
+    width="720px"
+    data-testid="game-report-dialog"
   >
     <template #v-card-text>
       <ContentSection />
     </template>
     <template #actions>
-      <v-container class="py-0">
-        <v-row>
-          <v-col cols="12">
-            <v-btn
-              :disabled="game?.status === 'completado'"
-              text="Marcar como finalizado"
-              variant="outlined"
-              block
-              @click="markAsCompletedHandler"
-            />
-          </v-col>
-        </v-row>
-      </v-container>
+      <div class="game-report-dialog__actions">
+        <v-btn
+          :disabled="game?.status === 'completado' || completing"
+          :loading="completing"
+          :text="completeButtonLabel"
+          variant="outlined"
+          block
+          @click="markAsCompletedHandler"
+        />
+      </div>
     </template>
   </Dialog>
 </template>
+
+<style scoped lang="sass">
+  .game-report-dialog__actions
+    width: 100%
+    border-top: 1px solid #eaecf0
+    padding-top: 4px
+</style>
