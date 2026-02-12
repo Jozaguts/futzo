@@ -1,8 +1,8 @@
 <script setup lang="ts">
-  import type { Match, RoundStatus } from '~/models/Schedule'
-  import Score from './score.vue'
+import type {Match, RoundStatus} from '~/models/Schedule'
+import Score from './score.vue'
 
-  const props = defineProps<{
+const props = defineProps<{
     game: Match
     roundId: number
     isEditable: boolean
@@ -145,7 +145,7 @@
           "
           @click="openModal('ReScheduleGame')"
         >
-          <Icon name="ant-design:schedule-twotone" size="25" />
+          <Icon name="lucide:calendar-days" size="25" />
         </v-btn>
         <v-btn
           icon
@@ -156,7 +156,7 @@
           :disabled="isPendingManualMatch"
           @click="openModal('GameReport')"
         >
-          <Icon name="carbon:result-draft" size="25" />
+          <Icon name="lucide:notebook-pen" size="25" />
         </v-btn>
       </div>
     </div>

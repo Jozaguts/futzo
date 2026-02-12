@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-  import AuthProvider from '~/components/authentication/AuthProvider.vue'
-  import { ref } from 'vue'
-  import SearchCountry from '~/components/authentication/components/SearchCountry.vue'
-  import ErrorMessages from '~/components/authentication/components/ErrorMessages.vue'
-  import PasswordRules from '~/components/authentication/components/PasswordRules.vue'
-  import ForgotPassword from '~/components/authentication/ForgotPassword.vue'
+import AuthProvider from '~/components/authentication/AuthProvider.vue'
+import {ref} from 'vue'
+import SearchCountry from '~/components/authentication/components/SearchCountry.vue'
+import ErrorMessages from '~/components/authentication/components/ErrorMessages.vue'
+import PasswordRules from '~/components/authentication/components/PasswordRules.vue'
+import ForgotPassword from '~/components/authentication/ForgotPassword.vue'
 
-  const {
+const {
     name,
     password,
     username,
@@ -153,7 +153,7 @@
                     <template #label
                       ><span class="text-caption">
                         El código llegará al medio que seleccione: WhatsApp
-                        <Icon name="logos:whatsapp-icon"></Icon> o correo.
+                        <Icon name="mdi:whatsapp"></Icon> o correo.
                       </span>
                     </template>
                   </v-checkbox>

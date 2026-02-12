@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import Breadcrumbs from '~/components/breadcrumbs.vue'
+import {Icon} from '#components'
 import {useDisplay} from 'vuetify'
 
 const { mobile } = useDisplay()
@@ -22,10 +23,10 @@ const { mobile } = useDisplay()
 <template>
   <v-app-bar
     :density="props.density"
-    color="white"
+    color="#f9fafb"
     :border="false"
     elevation="0"
-    class="pt-2 pt-lg-0 pt-md-0"
+    class="app-bar-shell pt-2 pt-lg-0 pt-md-0"
     app
     :height="mobile ? 56 : props.height"
     :extension-height="mobile && props.extended ? 56 : 0"
@@ -40,7 +41,7 @@ const { mobile } = useDisplay()
           class="app-bar-mobile__toggle"
           @click.stop="toggleDrawer"
         >
-          <v-icon icon="mdi-menu" />
+          <Icon name="lucide:menu" size="20" />
         </v-btn>
         <Logo class="app-bar-mobile__logo" max-width="120" />
       </div>
@@ -57,6 +58,11 @@ const { mobile } = useDisplay()
   </v-app-bar>
 </template>
 <style scoped>
+  .app-bar-shell {
+    border-bottom: 1px solid #eaecf0;
+    background: #f9fafb !important;
+  }
+
   .app-bar-mobile {
     display: flex;
     align-items: center;

@@ -37,10 +37,10 @@ type ActivityItem = {
 }
 
 const activityIconMap: Record<string, { icon: string; tone: ActivityItem['tone'] }> = {
-  game_result: { icon: 'futzo-icon:calendar', tone: 'orange' },
-  tournament_created: { icon: 'futzo-icon:trophy', tone: 'purple' },
-  team_registered: { icon: 'futzo-icon:shirt-sharp', tone: 'green' },
-  player_registered: { icon: 'futzo-icon:players', tone: 'blue' },
+  game_result: { icon: 'lucide:calendar-days', tone: 'orange' },
+  tournament_created: { icon: 'lucide:trophy', tone: 'purple' },
+  team_registered: { icon: 'lucide:shirt', tone: 'green' },
+  player_registered: { icon: 'lucide:users', tone: 'blue' },
 }
 
 const formatActivityTime = (value?: string) => {
@@ -88,7 +88,7 @@ const metrics = computed(() => {
       value: tournamentsValue,
       trendValue: activeTournaments?.current ?? null,
       trendLabel: activeTournaments?.label ?? '',
-      icon: 'futzo-icon:trophy',
+      icon: 'lucide:trophy',
       iconTone: 'purple',
     },
     {
@@ -96,7 +96,7 @@ const metrics = computed(() => {
       value: registeredTeams.total,
       trendValue: registeredTeams.current,
       trendLabel: registeredTeams.label,
-      icon: 'futzo-icon:shirt-sharp',
+      icon: 'lucide:shirt',
       iconTone: 'green',
     },
     {
@@ -104,7 +104,7 @@ const metrics = computed(() => {
       value: activePlayers.total,
       trendValue: activePlayers.current,
       trendLabel: activePlayers.label,
-      icon: 'futzo-icon:players',
+      icon: 'lucide:users',
       iconTone: 'blue',
     },
     {
@@ -112,7 +112,7 @@ const metrics = computed(() => {
       value: matchesValue,
       trendValue: matchesThisWeek?.current ?? completedGames.current,
       trendLabel: matchesThisWeek?.label ?? completedGames.label,
-      icon: 'futzo-icon:calendar',
+      icon: 'lucide:calendar-days',
       iconTone: 'orange',
     },
   ]
@@ -178,7 +178,6 @@ const goToSchedule = () => {
             <section class="panel panel--next-games" data-testid="dashboard-next-games">
               <div class="panel__header">
                 <h2 class="panel__title">Próximos partidos</h2>
-                <v-btn variant="text" to="/torneos">Ver todos</v-btn>
               </div>
               <div class="panel__body">
                 <div v-if="nextGames.length === 0" class="panel__empty">
@@ -187,6 +186,9 @@ const goToSchedule = () => {
                 <div v-else class="next-games-list">
                   <DashboardNextGames v-for="game in nextGames" :key="game.id" :game="game" />
                 </div>
+              </div>
+              <div class="panel__footer">
+                <v-btn variant="text" class="panel__footer-link" to="/torneos">Ver todos los partidos</v-btn>
               </div>
             </section>
             <div class="dashboard-side">
@@ -198,15 +200,15 @@ const goToSchedule = () => {
                   <div class="actions-grid">
                     <PrimaryBtn
                         text="Nuevo torneo"
-                        icon="mdi:trophy-outline"
+                        icon="lucide:trophy"
                         icon-position="right"
                         @click="tournamentDialog = true"
 
                     >
                     </PrimaryBtn>
-                    <SecondaryBtn @click="teamDialog = true" icon="futzo-icon:shirt-sharp" text="Agregar Equipo" icon-position="right" />
-                    <SecondaryBtn @click="playerDialog = true" icon="futzo-icon:players" text="Registrar Jugador" icon-position="right" />
-                    <SecondaryBtn @click="openScheduleDialog" icon="mdi-warning" text="Aplicar Sanción" icon-position="right" />
+                    <SecondaryBtn @click="teamDialog = true" icon="lucide:shirt" text="Agregar Equipo" icon-position="right" />
+                    <SecondaryBtn @click="playerDialog = true" icon="lucide:users" text="Registrar Jugador" icon-position="right" />
+                    <SecondaryBtn @click="openScheduleDialog" icon="lucide:triangle-alert" text="Aplicar Sanción" icon-position="right" />
                   </div>
                 </div>
               </section>
@@ -216,6 +218,9 @@ const goToSchedule = () => {
                 </div>
                 <div class="panel__body">
                   <ActivityFeed :items="activityItems" />
+                </div>
+                <div class="panel__footer">
+                  <v-btn variant="text" class="panel__footer-link" to="/torneos">Ver toda la actividad</v-btn>
                 </div>
               </section>
             </div>

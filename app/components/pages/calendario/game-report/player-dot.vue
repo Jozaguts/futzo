@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-  import type { FormationPlayer } from '~/models/Game'
-  import type { TeamLineupAvailablePlayers } from '~/models/Player'
-  import { getTeamFormation } from '~/http/api/team'
-  import type { Team } from '~/models/Team'
-  import { sortFormation } from '~/utils/sort-formation'
-  const { homeFormation, homePlayers } = storeToRefs(useTeamStore())
+import type {FormationPlayer} from '~/models/Game'
+import type {TeamLineupAvailablePlayers} from '~/models/Player'
+import {getTeamFormation} from '~/http/api/team'
+import type {Team} from '~/models/Team'
+import {sortFormation} from '~/utils/sort-formation'
+
+const { homeFormation, homePlayers } = storeToRefs(useTeamStore())
   const { game } = storeToRefs(useGameStore())
   const { isReport, players, field_location, player } = defineProps<{
     player: FormationPlayer
@@ -65,7 +66,7 @@
               :model-value="modelValue"
             >
               <template #badge>
-                <Icon name="tabler:switch-vertical"></Icon>
+                <Icon name="lucide:arrow-down-up"></Icon>
               </template>
               {{ !!player.name ? player.number : '+' }}</v-badge
             >

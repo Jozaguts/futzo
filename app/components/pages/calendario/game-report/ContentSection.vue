@@ -1,12 +1,13 @@
 <script setup lang="ts">
-  import GameDetailsSection from '~/components/pages/calendario/game-report/game-details-section.vue'
-  import GameEvents from '~/components/pages/calendario/game-report/game-events.vue'
-  import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
-  import type { Game } from '~/models/Game'
-  import { CARDS, GOALS, SUBSTITUTIONS } from '~/utils/constants'
-  import { useGame } from '~/composables/useGame'
-  import { storeToRefs } from 'pinia'
-  const gameStoreInstance = useGameStore()
+import GameDetailsSection from '~/components/pages/calendario/game-report/game-details-section.vue'
+import GameEvents from '~/components/pages/calendario/game-report/game-events.vue'
+import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
+import type {Game} from '~/models/Game'
+import {CARDS, GOALS, SUBSTITUTIONS} from '~/utils/constants'
+import {useGame} from '~/composables/useGame'
+import {storeToRefs} from 'pinia'
+
+const gameStoreInstance = useGameStore()
   const { game, showFabBtn, gameActionFormRequest } = storeToRefs(gameStoreInstance)
   const { homeTeam, awayTeam, homeFormation, awayFormation, formations, homePlayers, awayPlayers } =
     storeToRefs(useTeamStore())
@@ -99,7 +100,7 @@
     :title="dialogState.title"
     :loading="false"
     :subtitle="dialogState.subtitle"
-    icon-name="uil:schedule"
+    icon-name="lucide:calendar-days"
     min-height="700"
     max-height="700"
     @leaving="dialogState.show = false"

@@ -104,7 +104,7 @@ const tournamentStore = useTournamentStore()
     {
       title: 'Equipos',
       value: tournamentMetrics.value.registeredTeams.total,
-      icon: 'futzo-icon:shirt-sharp',
+      icon: 'lucide:shirt',
       iconTone: 'green',
       trendValue: tournamentMetrics.value.registeredTeams.current,
       trendLabel: tournamentMetrics.value.registeredTeams.label,
@@ -112,7 +112,7 @@ const tournamentStore = useTournamentStore()
     {
       title: 'Jugadores',
       value: tournamentMetrics.value.registeredPlayers.total,
-      icon: 'futzo-icon:players',
+      icon: 'lucide:users',
       iconTone: 'blue',
       trendValue: tournamentMetrics.value.registeredPlayers.current,
       trendLabel: tournamentMetrics.value.registeredPlayers.label,
@@ -120,7 +120,7 @@ const tournamentStore = useTournamentStore()
     {
       title: 'Partidos',
       value: matchesPlayedValue.value,
-      icon: 'futzo-icon:calendar',
+      icon: 'lucide:calendar-days',
       iconTone: 'orange',
       trendValue: tournamentMetrics.value.matchesPlayed.current,
       trendLabel: tournamentMetrics.value.matchesPlayed.label,
@@ -128,7 +128,7 @@ const tournamentStore = useTournamentStore()
     {
       title: 'Disciplina',
       value: tournamentMetrics.value.disciplinaryCases.total,
-      icon: 'mdi-shield-outline',
+      icon: 'lucide:shield',
       iconTone: 'red',
       trendValue: tournamentMetrics.value.disciplinaryCases.current,
       trendLabel: tournamentMetrics.value.disciplinaryCases.label,
@@ -267,90 +267,95 @@ const tournamentStore = useTournamentStore()
     </template>
     <template #default>
       <div class="tournament-page" data-testid="tournament-page-shell">
-        <header class="tournament-page__intro" data-testid="tournament-page-intro">
-          <div class="tournament-page__header">
-            <div class="tournament-page__title">
-              <p class="tournament-page__eyebrow">Gestión de torneos</p>
-              <div class="title-row">
-                <h1 class="tournament-page__headline">{{ tournamentName }}</h1>
-                <v-chip size="small" :color="statusLabel.color" variant="tonal">{{ statusLabel.text }}</v-chip>
+        <section class="tournament-page__top-shell futzo-rounded" data-testid="tournament-page-top-shell">
+          <header class="tournament-page__intro" data-testid="tournament-page-intro">
+            <div class="tournament-page__header">
+              <div class="tournament-page__title">
+                <p class="tournament-page__eyebrow">Gestión de torneos</p>
+                <div class="title-row">
+                  <h1 class="tournament-page__headline">{{ tournamentName }}</h1>
+                  <v-chip size="small" :color="statusLabel.color" variant="tonal">{{ statusLabel.text }}</v-chip>
+                </div>
+                <p class="tournament-meta">{{ tournamentMeta || 'Control general del torneo, calendario y disciplina.' }}</p>
               </div>
-              <p class="tournament-meta">{{ tournamentMeta || 'Control general del torneo, calendario y disciplina.' }}</p>
+              <div class="tournament-page__actions">
+                <v-tooltip text="Copiar enlace de inscripción" location="bottom">
+                  <template #activator="{ props }">
+                    <v-btn
+                      icon
+                      variant="text"
+                      v-bind="props"
+                      class="tournament-page__action-btn"
+                      aria-label="Copiar enlace de inscripción"
+                      @click="copyRegisterLink"
+                    >
+                      <Icon name="lucide:link-2" size="18" />
+                    </v-btn>
+                  </template>
+                </v-tooltip>
+                <v-tooltip text="Generar QR" location="bottom">
+                  <template #activator="{ props }">
+                    <v-btn
+                      icon
+                      variant="text"
+                      v-bind="props"
+                      class="tournament-page__action-btn"
+                      aria-label="Generar código QR del torneo"
+                      :disabled="share.isLoading"
+                      @click="qrCodeHandler"
+                    >
+                      <Icon name="lucide:qr-code" size="18" />
+                    </v-btn>
+                  </template>
+                </v-tooltip>
+                <v-tooltip text="Vista pública" location="bottom">
+                  <template #activator="{ props }">
+                    <v-btn
+                      icon
+                      variant="text"
+                      v-bind="props"
+                      class="tournament-page__action-btn"
+                      aria-label="Abrir vista pública del torneo"
+                      @click="goToPublic"
+                    >
+                      <Icon name="lucide:eye" size="18" />
+                    </v-btn>
+                  </template>
+                </v-tooltip>
+                <v-tooltip text="Calendario" location="bottom">
+                  <template #activator="{ props }">
+                    <v-btn
+                      icon
+                      variant="text"
+                      v-bind="props"
+                      class="tournament-page__action-btn"
+                      aria-label="Abrir calendario del torneo"
+                      @click="goToCalendar"
+                    >
+                      <Icon name="lucide:calendar-days" size="18" />
+                    </v-btn>
+                  </template>
+                </v-tooltip>
+              </div>
             </div>
-            <div class="tournament-page__actions">
-              <v-tooltip text="Copiar enlace de inscripción" location="bottom">
-                <template #activator="{ props }">
-                  <v-btn
-                    icon
-                    variant="text"
-                    v-bind="props"
-                    class="tournament-page__action-btn"
-                    aria-label="Copiar enlace de inscripción"
-                    @click="copyRegisterLink"
-                  >
-                    <Icon name="mdi-link" size="18" />
-                  </v-btn>
-                </template>
-              </v-tooltip>
-              <v-tooltip text="Generar QR" location="bottom">
-                <template #activator="{ props }">
-                  <v-btn
-                    icon
-                    variant="text"
-                    v-bind="props"
-                    class="tournament-page__action-btn"
-                    aria-label="Generar código QR del torneo"
-                    :disabled="share.isLoading"
-                    @click="qrCodeHandler"
-                  >
-                    <Icon name="mdi-qrcode" size="18" />
-                  </v-btn>
-                </template>
-              </v-tooltip>
-              <v-tooltip text="Vista pública" location="bottom">
-                <template #activator="{ props }">
-                  <v-btn
-                    icon
-                    variant="text"
-                    v-bind="props"
-                    class="tournament-page__action-btn"
-                    aria-label="Abrir vista pública del torneo"
-                    @click="goToPublic"
-                  >
-                    <Icon name="mdi-eye-outline" size="18" />
-                  </v-btn>
-                </template>
-              </v-tooltip>
-              <v-tooltip text="Calendario" location="bottom">
-                <template #activator="{ props }">
-                  <v-btn
-                    icon
-                    variant="text"
-                    v-bind="props"
-                    class="tournament-page__action-btn"
-                    aria-label="Abrir calendario del torneo"
-                    @click="goToCalendar"
-                  >
-                    <Icon name="futzo-icon:calendar" size="18" />
-                  </v-btn>
-                </template>
-              </v-tooltip>
+          </header>
+          <div class="tournament-page__top-divider" aria-hidden="true"></div>
+          <div class="tournament-sections-tabs-shell">
+            <div class="tournament-sections-tabs" data-testid="tournament-sections">
+              <button
+                v-for="section in sections"
+                :key="section.value"
+                type="button"
+                class="tournament-sections-tabs__item"
+                :class="{ 'tournament-sections-tabs__item--active': tab === section.value }"
+                :aria-pressed="tab === section.value"
+                @click="tab = section.value"
+              >
+                {{ section.label }}
+              </button>
             </div>
           </div>
-        </header>
-        <div class="tournament-sections-tabs" data-testid="tournament-sections">
-          <button
-            v-for="section in sections"
-            :key="section.value"
-            type="button"
-            class="tournament-sections-tabs__item"
-            :class="{ 'tournament-sections-tabs__item--active': tab === section.value }"
-            :aria-pressed="tab === section.value"
-            @click="tab = section.value"
-          >
-            {{ section.label }}
-          </button>
-        </div>
+        </section>
         <div class="tournament-window">
           <TransitionFade group>
             <template v-if="tab === 'resumen'">
@@ -470,11 +475,18 @@ const tournamentStore = useTournamentStore()
     display: flex
     flex-direction: column
     gap: 16px
+    padding-bottom: 20px
+
+  .tournament-page__top-shell
+    display: flex
+    flex-direction: column
+    gap: 12px
+    padding: 14px
 
   .tournament-page__intro
     display: flex
     flex-direction: column
-    gap: 10px
+    gap: 8px
 
   .tournament-page__header
     display: flex
@@ -522,6 +534,17 @@ const tournamentStore = useTournamentStore()
     height: 34px
     min-width: 34px
 
+  .tournament-page__top-divider
+    width: 100%
+    height: 1px
+    background: #f2f4f7
+
+  .tournament-sections-tabs-shell
+    border: 1px solid #eaecf0
+    border-radius: 12px
+    background: #fff
+    padding: 8px
+
   .tournament-sections-tabs
     display: grid
     grid-template-columns: repeat(3, minmax(0, 1fr))
@@ -553,6 +576,9 @@ const tournamentStore = useTournamentStore()
 
   .tournament-window
     margin-top: 0
+    display: flex
+    flex-direction: column
+    gap: 16px
 
   .tournament-kpis
     margin-bottom: 16px

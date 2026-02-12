@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-  import ContentSection from '~/components/pages/calendario/game-report/ContentSection.vue'
-  import type { GameDetailsRequest } from '~/models/Game'
+import ContentSection from '~/components/pages/calendario/game-report/ContentSection.vue'
+import type {GameDetailsRequest} from '~/models/Game'
 
-  const { gameReportDialog, gameDetailsRequest, game } = storeToRefs(useGameStore())
+const { gameReportDialog, gameDetailsRequest, game } = storeToRefs(useGameStore())
   const onLeaving = () => {
     gameReportDialog.value = false
     gameDetailsRequest.value = null as unknown as GameDetailsRequest
@@ -29,7 +29,7 @@
     subtitle="Registra los detalles del partido, incluyendo goles, tarjetas y otros eventos importantes."
     :model-value="gameReportDialog"
     @leaving="onLeaving"
-    icon-name="uil:schedule"
+    icon-name="lucide:calendar-days"
     min-height="95vh"
     max-height="95vh"
     width="800"

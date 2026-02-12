@@ -174,7 +174,7 @@ const globalStore =  useGlobalStore()
               density="compact"
               key="tutorial"
               title="Tutorial"
-              prepend-icon="mdi-school"
+              prepend-icon="lucide:graduation-cap"
               @click.stop="showTutorialHandler"
           >
           </v-list-item>

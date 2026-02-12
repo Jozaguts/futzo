@@ -32,7 +32,7 @@ type ActivityItem = {
       <div v-for="item in items" :key="item.id" class="activity-item">
         <div :class="['activity-item__icon', `activity-item__icon--${item.tone ?? 'purple'}`]">
           <Icon v-if="item.icon" :name="item.icon" />
-          <v-icon v-else size="16">mdi-bell-outline</v-icon>
+          <Icon v-else name="lucide:bell" size="16" />
         </div>
         <div class="activity-item__content">
           <p class="activity-item__title">{{ item.title }}</p>

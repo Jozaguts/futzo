@@ -193,21 +193,21 @@ const router = useRouter()
             <v-tooltip text="Generar QR" location="top">
               <template #activator="{ props }">
                 <v-btn icon variant="text" v-bind="props" @click="qrCodeHandler(item as Tournament)">
-                  <Icon name="mdi-qrcode" size="20" />
+                  <Icon name="lucide:qr-code" size="20" />
                 </v-btn>
               </template>
             </v-tooltip>
             <v-tooltip text="Ver torneo" location="top">
               <template #activator="{ props }">
                 <v-btn icon variant="text" v-bind="props" @click="handleShowTournament(item as Tournament)">
-                  <Icon name="mdi-trophy" size="20" />
+                  <Icon name="lucide:trophy" size="20" />
                 </v-btn>
               </template>
             </v-tooltip>
             <v-tooltip text="Ver calendario" location="top">
               <template #activator="{ props }">
                 <v-btn icon variant="text" v-bind="props" @click="scheduleHandler(item as Tournament)">
-                  <Icon name="futzo-icon:calendar" size="20" />
+                  <Icon name="lucide:calendar-days" size="20" />
                 </v-btn>
               </template>
             </v-tooltip>

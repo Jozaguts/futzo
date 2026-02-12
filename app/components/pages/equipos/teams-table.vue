@@ -1,12 +1,12 @@
 <script setup lang="ts">
-  import getHeaders from '~/utils/headers-table'
-  import { Icon } from '#components'
-  import type { Team } from '~/models/Team'
-  import { getTeamRegistrationQRCode, updateHomePreferences } from '~/http/api/team'
-  import { useLeaguesStore } from '~/stores/useLeaguesStore'
-  import { useDisplay } from 'vuetify'
+import getHeaders from '~/utils/headers-table'
+import {Icon} from '#components'
+import type {Team} from '~/models/Team'
+import {getTeamRegistrationQRCode, updateHomePreferences} from '~/http/api/team'
+import {useLeaguesStore} from '~/stores/useLeaguesStore'
+import {useDisplay} from 'vuetify'
 
-  type LeagueLocationOption = {
+type LeagueLocationOption = {
     id: number
     name: string
   }
@@ -276,7 +276,7 @@
               </template>
               <v-list-item-title class="ml-1"> QR </v-list-item-title>
               <template #append>
-                <Icon v-show="qr.isLoading" name="line-md:downloading-loop" class="text-primary"></Icon>
+                <Icon v-show="qr.isLoading" name="lucide:download" class="text-primary"></Icon>
               </template>
             </v-list-item>
           </v-list>

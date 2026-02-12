@@ -33,7 +33,7 @@
     subtitle="Selecciona un equipo para asignar al jugador"
     :loading="false"
     v-model="showAssignTeam"
-    icon-name="game-icons:babyfoot-players"
+    icon-name="lucide:users"
   >
     <template #v-card-text>
       <v-container>

@@ -277,7 +277,7 @@ const gameStore = useGameStore()
     Los cambios se aplicarán manteniendo la jornada original."
     :model-value="showReScheduleDialog"
     @leaving="onLeaving"
-    icon-name="uil:schedule"
+    icon-name="lucide:calendar-days"
     min-height="910"
     max-height="910"
   >

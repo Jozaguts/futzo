@@ -54,8 +54,8 @@ const [parent] = useAutoAnimate();
           <v-switch
               inset
               density="compact"
-              false-icon="mdi-lightbulb-off"
-              true-icon="mdi-lightbulb-on"
+              false-icon="lucide:lightbulb-off"
+              true-icon="lucide:lightbulb"
               v-model="tiebreaker.is_active"
               base-color="white"
               color="white"

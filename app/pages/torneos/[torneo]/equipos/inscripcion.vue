@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-  import HeaderCard from '~/components/pages/equipos/CreateTeamDialog/Header.vue'
-  import StepperContainer from '~/components/pages/equipos/stepper/index.vue'
-  import { usePlayerStore } from '~/stores/usePlayerStore'
-  import type { CurrentStep } from '~/models/Team'
-  import { useTeamStore } from '#imports'
+import HeaderCard from '~/components/pages/equipos/CreateTeamDialog/Header.vue'
+import StepperContainer from '~/components/pages/equipos/stepper/index.vue'
+import type {CurrentStep} from '~/models/Team'
+import {useTeamStore} from '#imports'
 
-  definePageMeta({
+definePageMeta({
     layout: 'blank',
     sanctum: {
       excluded: true,
@@ -121,7 +120,7 @@
       :model-value="registeredTeam"
       title="Equipo registrado con éxito"
       subtitle="El equipo ha sido creado y la solicitud de registro fue enviada correctamente."
-      icon-name="game-icons:babyfoot-players"
+      icon-name="lucide:users"
     >
       <template #v-card-text>
         <v-card-text>

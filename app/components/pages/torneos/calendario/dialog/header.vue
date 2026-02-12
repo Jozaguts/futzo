@@ -12,7 +12,7 @@
         height="45"
         width="45"
       >
-        <Icon name="line-md:calendar"></Icon>
+        <Icon name="lucide:calendar-days"></Icon>
       </v-sheet>
     </template>
     <template #title

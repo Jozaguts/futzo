@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-  defineProps({
+import {Icon} from '#components'
+
+defineProps({
     game: {
       type: Object,
       required: true,
@@ -25,7 +27,7 @@
     </div>
     <div class="next-game-card__meta">
       <div class="next-game-card__field">
-        <v-icon size="14">mdi-map-marker-outline</v-icon>
+        <Icon name="lucide:map-pin" size="14" />
         <span>{{ game.location?.name ?? 'Sin sede' }}</span>
       </div>
       <v-chip class="next-game-card__chip" size="small" variant="tonal" color="primary">

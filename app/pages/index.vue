@@ -936,21 +936,21 @@ onMounted(()=>{
                     <!-- Social Icons -->
                     <div class="social-icons d-flex">
                       <a class="facebook" href="https://www.facebook.com/futzo.io" aria-label="Visit Futzo on Facebook">
-                        <Icon name="fa7-brands:facebook" class="mx-auto my-auto" size="42"></Icon>
+                        <Icon name="lucide:facebook" class="mx-auto my-auto" size="42"></Icon>
                       </a>
                       <a
                           class="bg-danger"
                           href="https://www.instagram.com/futzo.io/"
                           aria-label="Visit Futzo on Instagram"
                       >
-                        <Icon name="fa7-brands:instagram" class="mx-auto my-auto" size="42"></Icon>
+                        <Icon name="lucide:instagram" class="mx-auto my-auto" size="42"></Icon>
                       </a>
                       <a
                           class="bg-danger"
                           href="https://www.youtube.com/@futzo-oficial"
                           aria-label="Visit Futzo on Youtube"
                       >
-                        <Icon name="fa7-brands:youtube" class="mx-auto my-auto" size="42"></Icon>
+                        <Icon name="lucide:youtube" class="mx-auto my-auto" size="42"></Icon>
                       </a>
                     </div>
                   </div>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-  import type { ExportListItem } from '~/models/tournament'
+import type {ExportListItem} from '~/models/tournament'
 
-  type Props = {
+type Props = {
     title?: string
     showExport?: boolean
   }
@@ -30,7 +30,9 @@
           :close-on-content-click="false"
         >
           <template v-slot:activator="{ props }">
-            <v-btn icon="mdi-dots-vertical" variant="plain" v-bind="props" :ripple="false" />
+            <v-btn variant="plain" v-bind="props" :ripple="false" icon>
+              <Icon name="lucide:ellipsis-vertical" size="18" />
+            </v-btn>
           </template>
           <v-list density="compact" nav :disabled="loading">
             <v-list-subheader> Exportar </v-list-subheader>

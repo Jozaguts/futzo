@@ -20,7 +20,7 @@ defineProps({
   },
   iconName: {
     type: String,
-    default: 'line-md:map-marker-loop',
+    default: 'lucide:map-pin',
   },
   persistent: {
     type: Boolean,
