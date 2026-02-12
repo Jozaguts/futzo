@@ -46,12 +46,31 @@ jobs:
             trap 'echo "[frontend-deploy] Failed at line $LINENO" >&2' ERR
             cd "$DEPLOY_PATH"
 
+            # Ensure Node from nvm first when available
+            if [ -s "$HOME/.nvm/nvm.sh" ]; then
+              . "$HOME/.nvm/nvm.sh"
+              nvm use --lts || true
+            fi
+
+            command -v node >/dev/null 2>&1 || { echo 'ERROR: Node.js is not installed on VPS'; exit 1; }
+
             # Ensure clean working tree and latest code
             git fetch --prune
             git checkout main
             git reset --hard
             git clean -fd
             git pull --ff-only origin main
+
+            # Ensure pnpm is available (prefer corepack)
+            if command -v corepack >/dev/null 2>&1; then
+              corepack enable
+              corepack prepare pnpm@9.15.5 --activate
+            elif ! command -v pnpm >/dev/null 2>&1; then
+              npm install -g pnpm@9.15.5
+            fi
+
+            command -v pnpm >/dev/null 2>&1 || { echo 'ERROR: pnpm is not available on VPS'; exit 1; }
+            pnpm --version
 
             # Compute semantic version
             LAST_TAG=$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null || echo 'v0.0.0')
@@ -97,8 +116,8 @@ jobs:
               echo "NUXT_PUBLIC_UMAMI_HOST=$NUXT_PUBLIC_UMAMI_HOST"
             ) > .env.prod
 
-            yarn install --frozen-lockfile
-            NODE_OPTIONS=--max-old-space-size=4096 node node_modules/.bin/nuxt build --dotenv .env.prod
+            pnpm install --frozen-lockfile
+            NODE_OPTIONS=--max-old-space-size=4096 pnpm exec nuxt build --dotenv .env.prod
 
             # Verify build artifact exists (fail early if not)
             [ -f .output/server/index.mjs ] || { echo 'ERROR: Nuxt build output missing (.output/server/index.mjs)'; exit 1; }
