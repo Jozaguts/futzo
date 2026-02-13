@@ -16,7 +16,9 @@ const emits = defineEmits(['click'])
         width="120"
     >
       <template v-slot:activator="{ props }">
-        <v-btn class="menu-btn" color="black" icon="mdi-dots-horizontal" variant="text" v-bind="props"></v-btn>
+        <v-btn class="menu-btn" color="black" variant="text" icon v-bind="props">
+          <Icon name="lucide:ellipsis" size="16" />
+        </v-btn>
       </template>
       <v-list density="compact" class="pa-0">
         <v-list-item
@@ -37,14 +39,12 @@ const emits = defineEmits(['click'])
 </template>
 <style scoped lang="sass">
 .menu-container
-  position: absolute
-  right: 8px
-  top: 8px
-  z-index: 9999
+  position: relative
+  z-index: 3
 
-  &-btn
-    background-color: rgba(236, 236, 236, 0.50)
-    box-shadow: 0 2px 2px -1
+.menu-btn
+  background-color: rgba(236, 236, 236, 0.50)
+  box-shadow: 0 2px 2px -1
 
 .menu-item-container
   display: flex

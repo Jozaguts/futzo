@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import Dialog from '~/components/shared/Dialog.vue'
 import StepperContainer from '~/components/pages/jugadores/stepper/index.vue'
-import type { CurrentStep } from '~/models/Player'
-import { storeToRefs, usePlayerStore, useTournamentStore } from '#imports'
+import type {CurrentStep} from '~/models/Player'
+import {storeToRefs, usePlayerStore, useTournamentStore} from '#imports'
 
 const playerStore = usePlayerStore()
 const tournamentStore = useTournamentStore()
@@ -54,7 +54,7 @@ const next = () => {
   if (steps.value.steps[steps.value.current].next_step === 'save') {
     loading.value = true
     if (isEdition.value) {
-      playerStore.updatePlayer(playerId.value as number).finally(() => (loading.value = false))
+      playerStore.updatePlayerFromForm().finally(() => (loading.value = false))
     } else {
       playerStore
         .createPlayer()

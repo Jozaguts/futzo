@@ -1,120 +1,242 @@
 <script lang="ts" setup>
-  import type { LocationCard } from '~/models/Location'
-  import CardMenu from '~/components/pages/ubicaciones/CardMenu.vue'
+import type {LocationCard as LocationCardModel} from '~/models/Location'
+import CardMenu from '~/components/pages/ubicaciones/CardMenu.vue'
+import {Icon} from '#components'
 
-  const { isEdition, locationDialog, locationToDelete, locationStoreRequest, locationCard, formSteps } =
-    storeToRefs(useLocationStore())
-  const { location } = defineProps<{ location: LocationCard }>()
-  const clickHandler = (action: 'Eliminar' | 'Editar') => {
-    if (action === 'Editar') {
-      locationStoreRequest.value = {
-        id: location.id,
-        name: location.name,
-        address: location.address,
-        place_id: location.place_id,
-        position: location.position,
-        tags: location.tags,
-        fields: location.fields,
-        fields_count: location.fields.length ?? 0,
-        steps: {
-          location: {
-            completed: true,
-          },
-          fields: {
-            completed: false,
-          },
+const { isEdition, locationDialog, locationToDelete, locationStoreRequest, locationCard } = storeToRefs(useLocationStore())
+const { location } = defineProps<{ location: LocationCardModel }>()
+const emits = defineEmits<{
+  (event: 'open-detail', location: LocationCardModel): void
+}>()
+
+const clickHandler = (action: 'Eliminar' | 'Editar') => {
+  if (action === 'Editar') {
+    locationStoreRequest.value = {
+      id: location.id,
+      name: location.name,
+      address: location.address,
+      place_id: location.place_id,
+      position: location.position,
+      tags: location.tags,
+      fields: location.fields,
+      fields_count: Array.isArray(location.fields) ? location.fields.length : 0,
+      steps: {
+        location: {
+          completed: true,
         },
-      }
-      isEdition.value = true
-      locationDialog.value = true
-      locationCard.value.id = location.id
-    } else if (action === 'Eliminar') {
-      locationToDelete.value.id = location.id as number
-      locationToDelete.value.show = true
+        fields: {
+          completed: false,
+        },
+      },
     }
+    isEdition.value = true
+    locationDialog.value = true
+    locationCard.value.id = location.id
+  } else if (action === 'Eliminar') {
+    locationToDelete.value.id = location.id as number
+    locationToDelete.value.show = true
   }
+}
+
+const mapPreviewUrl = computed(() => {
+  const lat = Number(location?.position?.lat)
+  const lng = Number(location?.position?.lng)
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    return ''
+  }
+  const key = useRuntimeConfig().public.googleMapsAPIKey
+  if (!key) {
+    return ''
+  }
+  return `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=15&size=280x180&scale=2&markers=color:0x7c3aed|${lat},${lng}&key=${key}`
+})
+
+const fieldsCount = computed(() => Number(location?.fields_count ?? location?.fields?.length ?? 0))
+
+const activeDays = computed(() => {
+  const fields = Array.isArray(location?.fields) ? location.fields : []
+  const days = new Set<string>()
+  const dayLabels: Record<string, string> = {
+    mon: 'Lun',
+    tue: 'Mar',
+    wed: 'Mie',
+    thu: 'Jue',
+    fri: 'Vie',
+    sat: 'Sab',
+    sun: 'Dom',
+  }
+
+  fields.forEach((field: any) => {
+    const windows = field?.windows
+    if (!windows) return
+
+    if (Array.isArray(windows)) {
+      windows.flat().forEach((range: any) => {
+        const dayText = String(range?.day ?? '').trim()
+        if (dayText) {
+          days.add(dayText.slice(0, 3))
+        }
+      })
+      return
+    }
+
+    if (typeof windows === 'object') {
+      Object.keys(dayLabels).forEach((key) => {
+        const ranges = Array.isArray(windows[key]) ? windows[key] : []
+        const hasEnabled = ranges.some((range: any) => range?.enabled || (range?.start && range?.end))
+        if (hasEnabled) {
+          days.add(dayLabels[key])
+        }
+      })
+    }
+  })
+
+  return Array.from(days).slice(0, 6)
+})
 </script>
+
 <template>
-  <v-card class="futzo-rounded pa-2" max-width="330" min-height="550" flat>
-    <CardMenu @click="clickHandler" />
-    <v-img :src="`/locations/${location.image}.png`" max-width="330" max-height="250" min-height="250" cover />
-    <v-card-item>
-      <v-card-title class="card-title">
-        <span class="d-inline-block text-truncate" style="max-width: 300px">{{ location.name }}</span>
-      </v-card-title>
-      <v-card-subtitle class="card-subtitle">
-        <span class="d-inline-block text-truncate" style="max-width: 300px">
-          {{ location.address }}
-        </span>
-      </v-card-subtitle>
-    </v-card-item>
-    <v-card-text class="pt-2">
-      <p class="card-content-title">Horarios de Campos</p>
-      <v-expansion-panels :ripple="true" color="grey-100" :elevation="1" variant="accordion">
-        <v-expansion-panel v-for="info in location.fields" :key="info?.id" :title="info.name">
-          <v-expansion-panel-text eager class="pa-0">
-            <v-container fluid class="pa-0">
-              <v-row no-gutters>
-                <v-col cols="6" v-for="(value, idx) in info.windows" :key="idx" class="font-weight-bold my-1">
-                  <div>
-                    <p class="text-left">{{ value[0]?.label?.toString().substring(0, 3) }}</p>
-                    <span class="text-medium-emphasis mr-1">{{ value[0]?.start }}</span
-                    >-<span class="text-medium-emphasis ml-1">{{ value[0]?.end }}</span>
-                  </div>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-      </v-expansion-panels>
-    </v-card-text>
-    <v-divider />
-    <v-card-actions>
-      <div class="pa-3">
-        <span class="text-caption font-weight-bold text-medium-emphasis">Etiquetas</span>
+  <article class="location-card futzo-rounded">
+    <div class="location-card__menu" @click.stop>
+      <CardMenu @click="clickHandler" />
+    </div>
+
+    <button type="button" class="location-card__button" @click="emits('open-detail', location)">
+      <div class="location-card__thumbnail">
+        <img v-if="mapPreviewUrl" :src="mapPreviewUrl" :alt="location.name" class="location-card__thumb-image" />
+        <div class="location-card__thumb-fallback">
+          <Icon name="lucide:map-pin" size="30" />
+        </div>
       </div>
-      <v-chip-group variant="elevated" v-if="location.tags.length">
-        <v-chip
-          v-for="tag in location.tags"
-          :key="tag"
-          class="ma-1 tags-rounded"
-          base-color="primary"
-          :ripple="false"
-          :elevation="0"
-          >{{ tag }}</v-chip
-        >
-      </v-chip-group>
-    </v-card-actions>
-  </v-card>
+
+      <div class="location-card__content">
+        <div class="location-card__header">
+          <h3>{{ location.name }}</h3>
+          <v-chip size="x-small" variant="tonal" color="primary">
+            <Icon name="lucide:grid-2x2" size="12" />
+            {{ fieldsCount }}
+          </v-chip>
+        </div>
+
+        <p class="location-card__address">
+          <Icon name="lucide:map-pin" size="12" />
+          {{ location.address }}
+        </p>
+
+        <div class="location-card__meta">
+          <template v-if="activeDays.length">
+            <span v-for="day in activeDays" :key="`${location.id}-${day}`" class="location-card__day">{{ day }}</span>
+          </template>
+          <span v-else class="location-card__empty">Sin horarios configurados</span>
+        </div>
+      </div>
+    </button>
+  </article>
 </template>
-<style scoped lang="sass">
-  .card
-    &-title
-      color: #181D27
-      font-size: 20px
-      font-weight: 600
-      line-height: 30px
 
-    &-subtitle
-      color: #414651
-      font-size: 14px
-      font-weight: 400
-      line-height: 20px
+<style scoped>
+.location-card {
+  border: 1px solid #eaecf0;
+  background: #fff;
+  position: relative;
+}
 
-    &-content
-      &-title
-        color: #414651
-        line-height: 24px
-        font-size: 16px
-        font-weight: 600
+.location-card__menu {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 3;
+}
 
-      &-text
-        color: #181D27
-        line-height: 20px
-        font-size: 14px
-        font-weight: 400
+.location-card__button {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  gap: 12px;
+  text-align: left;
+  cursor: pointer;
+}
 
-  .tags-rounded
-    border: 1px solid #D5D7DA
-    border-radius: 6px
+.location-card__thumbnail {
+  width: 86px;
+  height: 86px;
+  border-radius: 10px;
+  border: 1px solid #eaecf0;
+  overflow: hidden;
+  position: relative;
+  background: #f2f4f7;
+}
+
+.location-card__thumb-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.location-card__thumb-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7c3aed;
+  background: linear-gradient(135deg, #f5f3ff 0%, #eef4ff 100%);
+}
+
+.location-card__content {
+  min-width: 0;
+}
+
+.location-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-right: 30px;
+}
+
+.location-card__header h3 {
+  margin: 0;
+  color: #101828;
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.location-card__address {
+  margin: 6px 0 0;
+  color: #667085;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.location-card__meta {
+  margin-top: 9px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.location-card__day {
+  border-radius: 999px;
+  background: #eef4ff;
+  color: #3538cd;
+  border: 1px solid #c7d7fe;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+}
+
+.location-card__empty {
+  color: #98a2b3;
+  font-size: 12px;
+}
 </style>

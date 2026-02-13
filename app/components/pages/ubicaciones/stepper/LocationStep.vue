@@ -2,10 +2,10 @@
 import type {Prediction} from '~/interfaces'
 import {getPlaceDetails, usePlaceSearch} from '~/utils/googleSearch'
 import type {AutocompletePrediction} from '~/models/Schedule'
-import {AdvancedMarker, GoogleMap} from 'vue3-google-map'
 import type {LocationStoreRequest} from '~/models/Location'
 import {array, number, object, string} from 'yup'
 import {vuetifyConfig} from '~/utils/constants'
+import {Icon} from '#components'
 
 const searchString = ref<AutocompletePrediction>()
   let foundedLocations = ref([] as AutocompletePrediction[])
@@ -55,8 +55,19 @@ const searchString = ref<AutocompletePrediction>()
       }
     }
   }
-  const markerOptions = computed(() => {
-    return { position: position.value, title: 'test' }
+  const locationPreviewUrl = computed(() => {
+    const lat = Number(position.value?.lat)
+    const lng = Number(position.value?.lng)
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return ''
+    const key = useRuntimeConfig().public.googleMapsAPIKey
+    if (!key) return ''
+    return `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=15&size=720x440&scale=2&markers=color:0x7c3aed|${lat},${lng}&key=${key}`
+  })
+  const locationCoordinates = computed(() => {
+    const lat = Number(position.value?.lat)
+    const lng = Number(position.value?.lng)
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return ''
+    return `${lat.toFixed(5)}, ${lng.toFixed(5)}`
   })
 
   const { defineField, meta, values } = useForm<
@@ -217,22 +228,73 @@ const searchString = ref<AutocompletePrediction>()
         </v-chip-group>
       </v-col>
       <v-col lg="7" md="7" cols="12" class="pa-2">
-        <GoogleMap
-          :api-key="useRuntimeConfig().public.googleMapsAPIKey"
-          :mapId="useRuntimeConfig().public.googleMapId"
-          class="futzo-rounded"
-          :center="position"
-          :camera-control="false"
-          :disable-double-click-zoom="true"
-          :clickable-icons="false"
-          :disable-default-ui="true"
-          :zoom="15"
-          id="map"
-          style="width: 100%; height: 100%; min-height: 400px"
-        >
-          <AdvancedMarker :options="markerOptions" />
-        </GoogleMap>
+        <div class="location-preview-card futzo-rounded">
+          <div class="location-preview-card__map">
+            <img v-if="locationPreviewUrl" :src="locationPreviewUrl" :alt="name || 'Ubicacion'" />
+            <div v-else class="location-preview-card__fallback">
+              <Icon name="lucide:map-pin" size="34" />
+              <span>Selecciona una direccion para ver la vista previa</span>
+            </div>
+          </div>
+          <div class="location-preview-card__meta">
+            <p>{{ name || 'Ubicacion sin nombre' }}</p>
+            <span>{{ address || 'Sin direccion seleccionada' }}</span>
+            <small v-if="locationCoordinates">{{ locationCoordinates }}</small>
+          </div>
+        </div>
       </v-col>
     </v-row>
   </v-container>
 </template>
+<style scoped lang="sass">
+  .location-preview-card
+    border: 1px solid #EAECF0
+    background: #fff
+    overflow: hidden
+
+  .location-preview-card__map
+    min-height: 280px
+    background: #F2F4F7
+    border-bottom: 1px solid #EAECF0
+
+    img
+      width: 100%
+      height: 100%
+      object-fit: cover
+      min-height: 280px
+
+  .location-preview-card__fallback
+    min-height: 280px
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    gap: 8px
+    color: #7C3AED
+    text-align: center
+    padding: 14px
+
+    span
+      color: #667085
+      font-size: 13px
+
+  .location-preview-card__meta
+    padding: 10px 12px
+    display: flex
+    flex-direction: column
+    gap: 4px
+
+    p
+      margin: 0
+      color: #101828
+      font-size: 14px
+      font-weight: 600
+
+    span
+      color: #667085
+      font-size: 12px
+
+    small
+      color: #98A2B3
+      font-size: 11px
+</style>

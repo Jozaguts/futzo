@@ -1,13 +1,13 @@
 import {defineStore, skipHydrate} from 'pinia';
 import type {
-  All,
-  Field,
-  FormSteps,
-  LocationCard,
-  LocationPosition,
-  LocationResponse,
-  LocationStoreRequest,
-  Windows,
+    All,
+    Field,
+    FormSteps,
+    LocationCard,
+    LocationPosition,
+    LocationResponse,
+    LocationStoreRequest,
+    Windows,
 } from '~/models/Location';
 import {useApiError} from '~/composables/useApiError';
 import type {IPagination} from '~/interfaces';
@@ -110,6 +110,7 @@ export const useLocationStore = defineStore('locationStore', () => {
     total: 0,
     sort: 'asc',
   });
+  const search = ref('');
   const formSteps = ref<FormSteps>(INIT_STEPS);
   const tourSteps = ref<TourStep[]>([
     {
@@ -171,7 +172,7 @@ export const useLocationStore = defineStore('locationStore', () => {
       total: 0,
       sort: 'asc',
     };
-    await getLocations();
+    await getLocations(undefined, false);
   }
 
   function resetLocationStoreRequest() {
@@ -191,11 +192,15 @@ export const useLocationStore = defineStore('locationStore', () => {
     } as LocationStoreRequest;
   }
 
-  async function getLocations(search?: string): Promise<void> {
+  async function getLocations(searchValue?: string, append = false): Promise<void> {
     const client = useSanctumClient();
+    if (typeof searchValue === 'string') {
+      search.value = searchValue.trim();
+    }
     const url = `/api/v1/admin/locations?per_page=${pagination.value.per_page}&page=${pagination.value.current_page}&sort=${pagination.value.sort}`;
+    const query = search.value ? `&search=${encodeURIComponent(search.value)}` : '';
 
-    await client<LocationResponse>(url + (search ? `&search=${search}` : '')).then(({ data, meta }) => {
+    await client<LocationResponse>(url + query).then(({ data, meta }) => {
       pagination.value = {
         current_page: meta.current_page,
         last_page: meta.last_page,
@@ -203,7 +208,7 @@ export const useLocationStore = defineStore('locationStore', () => {
         total: meta.total,
         sort: pagination.value.sort,
       };
-      if (pagination.value.current_page > 1) {
+      if (append && pagination.value.current_page > 1) {
         locations.value = [...(locations.value as LocationCard[]), ...data];
       } else {
         locations.value = data;
@@ -285,6 +290,7 @@ export const useLocationStore = defineStore('locationStore', () => {
     locationCard,
     locationToDelete,
     pagination,
+    search,
     formSteps,
     tourSteps: skipHydrate(tourSteps),
     stepsCompleted,

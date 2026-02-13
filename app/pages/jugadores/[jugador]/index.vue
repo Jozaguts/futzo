@@ -672,14 +672,10 @@ dayjs.extend(customParseFormat)
 <template>
   <PageLayout>
     <template #app-bar>
-      <AppBar :extended="false">
-        <template #buttons>
-          <v-btn variant="text" prepend-icon="mdi-arrow-left" class="text-capitalize" @click="goBack">Volver</v-btn>
-        </template>
-      </AppBar>
+      <AppBar :extended="false" />
     </template>
     <template #default>
-      <div class="player-detail-page">
+      <div class="player-detail-page" data-testid="jugador-detail-page">
         <v-skeleton-loader
           v-if="loading"
           type="card, list-item-two-line@3, image"
@@ -693,7 +689,7 @@ dayjs.extend(customParseFormat)
         ></v-empty-state>
         <div v-else class="player-detail-grid">
           <div class="player-detail-grid__main d-flex flex-column ga-4">
-            <v-card class="player-hero futzo-rounded" variant="flat">
+            <v-card class="player-hero futzo-rounded" variant="flat" data-testid="jugador-detail-hero">
               <div class="player-hero__info">
                 <v-avatar size="84" rounded="lg" :image="avatar" color="primary" variant="tonal">
                   <span class="text-h5">{{ initials }}</span>

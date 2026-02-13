@@ -47,7 +47,10 @@ a {
   gap: 16px;
 }
 
-.main.equipos-page {
+
+.main.ubicaciones-page,
+.main.equipos-page,
+.main.jugadores-page {
   display: flex;
   flex-direction: column;
   gap: 16px;

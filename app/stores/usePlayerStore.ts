@@ -49,6 +49,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
       },
     },
   };
+  const cloneSteps = () => JSON.parse(JSON.stringify(INIT_STEPS)) as FormSteps;
   const players = ref<Player[]>([]);
   const dialog = ref<boolean>(false);
   const search = ref<string>('');
@@ -69,7 +70,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
   const isImporting = ref(false);
   const showAssignTeam = ref(false);
   const player = ref<Player>(null as unknown as Player);
-  const steps = ref<FormSteps>(INIT_STEPS);
+  const steps = ref<FormSteps>(cloneSteps());
   const tourSteps = ref<TourStep[]>([
     {
       title: 'Registra a un jugador',
@@ -181,6 +182,95 @@ export const usePlayerStore = defineStore('playerStore', () => {
       });
       throw error;
     }
+  };
+  const buildEditPayload = () => {
+    const basic = playerStoreRequest.value.basic ?? {};
+    const details = playerStoreRequest.value.details ?? {};
+    const contact = playerStoreRequest.value.contact ?? {};
+    const guardian = playerStoreRequest.value.guardian ?? {};
+
+    const payload: Record<string, any> = {
+      name: basic.name ?? null,
+      last_name: basic.last_name ?? null,
+      birthdate: basic.birthdate ?? null,
+      nationality: basic.nationality ?? null,
+      team_id: basic.team_id ?? null,
+      category_id: basic.category_id ?? null,
+      curp: basic.curp ?? null,
+      is_minor: basic.is_minor ?? null,
+      position_id: details.position_id ?? null,
+      number: details.number ?? null,
+      height: details.height ?? null,
+      weight: details.weight ?? null,
+      dominant_foot: details.dominant_foot ?? null,
+      medical_notes: details.medical_notes ?? null,
+      email: contact.email ?? null,
+      phone: contact.phone ?? null,
+      notes: contact.notes ?? null,
+      iso_code: contact.iso_code ?? null,
+      guardian: {
+        name: guardian.name ?? null,
+        email: guardian.email ?? null,
+        phone: guardian.phone ?? null,
+        relationship: guardian.relationship ?? null,
+      },
+    };
+
+    return payload;
+  };
+  const updatePlayerFromForm = async () => {
+    if (!playerId.value) {
+      return null;
+    }
+    const payload = buildEditPayload();
+    return await updatePlayer(playerId.value, payload);
+  };
+  const openPlayerEdition = async (id: number) => {
+    await getPlayer(String(id));
+    const playerData = player.value as any;
+    if (!playerData?.id) {
+      return;
+    }
+
+    playerId.value = Number(playerData.id);
+    isEdition.value = true;
+    steps.value.current = 'basic-info';
+    steps.value.steps['contact-info'].next_label = 'Guardar cambios';
+    playerStoreRequest.value = {
+      basic: {
+        id: playerData.id,
+        name: playerData.name ?? '',
+        last_name: playerData.last_name ?? null,
+        birthdate: playerData.birthdate ?? null,
+        nationality: playerData.nationality ?? null,
+        image: playerData.image ?? playerData.user?.image ?? '',
+        team_id: playerData.team?.id ?? null,
+        category_id: playerData.category?.id ?? playerData.team?.category?.id ?? null,
+        curp: playerData.curp ?? null,
+        is_minor: playerData.is_minor ?? null,
+      },
+      details: {
+        position_id: playerData.position?.id ?? null,
+        number: playerData.number ?? null,
+        height: playerData.height ?? null,
+        weight: playerData.weight ?? null,
+        dominant_foot: playerData.dominant_foot ?? null,
+        medical_notes: playerData.medical_notes ?? null,
+      },
+      contact: {
+        email: playerData.email ?? null,
+        phone: playerData.phone ?? null,
+        notes: playerData.notes ?? null,
+        iso_code: playerData.iso_code ?? null,
+      },
+      guardian: {
+        name: playerData.guardian?.name ?? null,
+        email: playerData.guardian?.email ?? null,
+        phone: playerData.guardian?.phone ?? null,
+        relationship: playerData.guardian?.relationship ?? null,
+      },
+    };
+    dialog.value = true;
   };
   const createPlayer = async () => {
     const form = prepareForm(playerStoreRequest);
@@ -366,7 +456,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
     players.value = await playerAPI.search(search);
   };
   const $storeReset = () => {
-    steps.value = INIT_STEPS;
+    steps.value = cloneSteps();
     playerStoreRequest.value = {} as PlayerStoreRequest;
     isEdition.value = false;
   };
@@ -395,6 +485,8 @@ export const usePlayerStore = defineStore('playerStore', () => {
     tourSteps: skipHydrate(tourSteps),
     $storeReset,
     updatePlayer,
+    updatePlayerFromForm,
+    openPlayerEdition,
     createPlayer,
     getPlayers,
     importPlayersHandler,
