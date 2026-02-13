@@ -1,4 +1,11 @@
-import type {Formation, PreRegisterTeamResponse, Team, TeamsPaginatedResponse} from '~/models/Team';
+import type {
+    Formation,
+    PreRegisterTeamResponse,
+    Team,
+    TeamDetailMetricsResponse,
+    TeamMetricsRange,
+    TeamsPaginatedResponse,
+} from '~/models/Team';
 import type {TeamLineupAvailablePlayers} from '~/models/Player';
 import type {FormationPlayer, LastGames, NextGames, TeamFormation} from '~/models/Game';
 import type {IPagination} from '~/interfaces';
@@ -10,6 +17,12 @@ export const getTeamBy = async (term: number | string) => {
 export const getDefaultLineupAvailableTeemPlayers = async (team: Team) => {
   const client = useSanctumClient();
   return await client<TeamLineupAvailablePlayers[]>(`/api/v1/admin/teams/${team.id}/available-players`);
+};
+export const getTeamMetrics = async (teamId: number, range: TeamMetricsRange = 'lastMonth') => {
+  const client = useSanctumClient();
+  return await client<TeamDetailMetricsResponse>(`/api/v1/admin/teams/${teamId}/metrics`, {
+    query: { range },
+  });
 };
 export const getTeamFormation = async (team: Team) => {
   const client = useSanctumClient();

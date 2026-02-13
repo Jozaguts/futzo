@@ -13,11 +13,31 @@ export type TeamKpiMetric = {
   label: string;
 };
 
+export type TeamMetricsRange = 'lastMonth';
+
 export type TeamListKpis = {
   teamsRegistered: TeamKpiMetric;
   playersRegistered: TeamKpiMetric;
   activeTournaments: TeamKpiMetric;
   teamsWithHomeVenue: TeamKpiMetric;
+};
+
+export type TeamDetailKpis = {
+  matchesPlayed: TeamKpiMetric;
+  wins: TeamKpiMetric;
+  draws: TeamKpiMetric;
+  losses: TeamKpiMetric;
+  goalsFor: TeamKpiMetric;
+  goalsAgainst: TeamKpiMetric;
+  goalDifference: TeamKpiMetric;
+  points: TeamKpiMetric;
+};
+
+export type TeamDetailMetricsResponse = {
+  data: {
+    range: TeamMetricsRange;
+    kpis: TeamDetailKpis;
+  };
 };
 
 export type TeamsPaginationMeta = IPagination & {

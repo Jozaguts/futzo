@@ -1,7 +1,4 @@
-@use 'vuetify' with (
-  $utilities: false,
-  $color-pack: false
-);
+
 @layer base, vuetify, overrides;
 
 @layer overrides {

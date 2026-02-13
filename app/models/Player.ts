@@ -1,6 +1,6 @@
-import type { User } from '~/models/User';
-import type { Team } from '~/models/Team';
-import type { Position } from '~/models/Position';
+import type {User} from '~/models/User';
+import type {Team} from '~/models/Team';
+import type {Position} from '~/models/Position';
 
 export type TeamLineupAvailablePlayers = {
   player_id: number;
@@ -8,6 +8,15 @@ export type TeamLineupAvailablePlayers = {
   name: string;
   number: number;
   position: string;
+  stats?: TeamLineupPlayerStats | null;
+};
+
+export type TeamLineupPlayerStats = {
+  matches_played: number;
+  goals: number;
+  assists: number;
+  yellow_cards: number;
+  red_cards: number;
 };
 
 export type PlayerVerificationStatus = 'not_required' | 'pending' | 'approved' | 'rejected';

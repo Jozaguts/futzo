@@ -599,7 +599,7 @@ const handlePageChange = async (page: number) => {
 
 .team-card__name {
   margin: 0;
-  font-size: 18px;
+  font-size: 14px;
   line-height: 1.3;
   color: #101828;
   font-weight: 700;
@@ -653,9 +653,9 @@ const handlePageChange = async (page: number) => {
 }
 
 .team-stat__value {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.2;
-  color: #101828;
+  color: #475467;
   font-weight: 700;
 }
 
