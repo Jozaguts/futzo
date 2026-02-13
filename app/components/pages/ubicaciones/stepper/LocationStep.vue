@@ -233,7 +233,7 @@ const searchString = ref<AutocompletePrediction>()
             <img v-if="locationPreviewUrl" :src="locationPreviewUrl" :alt="name || 'Ubicacion'" />
             <div v-else class="location-preview-card__fallback">
               <Icon name="lucide:map-pin" size="34" />
-              <span>Selecciona una direccion para ver la vista previa</span>
+              <span>Selecciona una dirección para ver la vista previa</span>
             </div>
           </div>
           <div class="location-preview-card__meta">

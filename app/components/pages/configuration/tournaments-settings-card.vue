@@ -94,7 +94,7 @@ const { toast } = useToast()
     try {
       const payload: TournamentConfigurationSettings = {
         ...configuration.value,
-        player_verification_method: null,
+        player_verification_method: 'curp',
       }
       configuration.value = await settingsAPI.updateTournamentConfiguration(selectedTournamentId.value, payload)
       toast({
@@ -130,7 +130,7 @@ const { toast } = useToast()
 </script>
 
 <template>
-  <v-layout height="100%">
+  <v-layout height="100%" v-if="configuration">
     <v-navigation-drawer permanent>
       <v-list density="compact" variant="plain" nav>
         <v-list-item
@@ -300,9 +300,9 @@ const { toast } = useToast()
                     </BaseInput>
                   </v-form>
                   <v-form v-else-if="section === 'verification'" class="pa-4">
-                    <BaseInput label="Verificación de jugador">
+                    <BaseInput label="Verificación de jugador" sublabel="Se verificaran solo a los jugadores del torneo seleccionado">
                       <template #input>
-                        <v-switch density="compact" v-model="configuration.requires_player_verification" color="primary"/>
+                        <v-switch density="compact" v-model="configuration.requires_player_verification" :trueValue="1" color="primary"   />
                       </template>
                     </BaseInput>
                   </v-form>

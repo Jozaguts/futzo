@@ -94,12 +94,15 @@ const { toast } = useToast()
     <v-card-text class="pt-6">
       <v-skeleton-loader v-if="loading" type="heading, text, actions" />
       <div v-else class="d-flex flex-column ga-4">
-        <v-switch
-          v-model="settings.requires_player_verification"
-          color="primary"
-          label="Requerir validación de jugador"
-          inset
-        />
+        <BaseInput label="Requerir validación de jugador" sublabel="Aplica para todos los jugadores de la liga">
+          <template #input>
+            <v-switch
+                v-model="settings.requires_player_verification"
+                color="primary"
+            />
+          </template>
+        </BaseInput>
+
         <BaseInput label="Métodos de validación" sublabel="Selecciona los métodos permitidos">
           <template #input>
             <v-select
