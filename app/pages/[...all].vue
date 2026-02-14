@@ -1,5 +1,19 @@
 <script setup lang="ts">
-  const handleError = () => clearError({ redirect: '/' })
+definePageMeta({
+  layout: 'blank',
+  sanctum: {
+    excluded: true,
+  },
+});
+
+useHead({
+  meta: [{ name: 'robots', content: 'noindex,nofollow' }],
+});
+
+useResponseHeader('x-robots-tag', 'noindex, nofollow');
+setResponseStatus(404, 'Not Found');
+
+const backToHome = () => navigateTo('/');
 </script>
 
 <template>
@@ -9,7 +23,7 @@
       title="Pagina no encontrada"
       text="La página que buscas no existe o ha sido movida."
       image="/images/logo-07.png"
-      @click:action="handleError"
+      @click:action="backToHome"
       action-text="Volver al inicio"
     ></v-empty-state>
   </div>

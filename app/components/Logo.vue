@@ -3,10 +3,12 @@ const hydrated = ref(true)
 
   export interface Props {
     maxWidth?: string | number
+    class?: string
   }
 
   const props = withDefaults(defineProps<Props>(), {
     maxWidth: '100%',
+    class: '',
   })
   const goToHome = () => {
     if (useRoute().name !== 'dashboard') {
@@ -29,5 +31,6 @@ const hydrated = ref(true)
       sizes="200px sm:120px md:120px"
       @click="goToHome"
       class="cursor-pointer"
+      :class="props?.class"
   />
 </template>

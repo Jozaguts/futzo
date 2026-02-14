@@ -3,11 +3,17 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   if (to.name === 'equipos-equipo-jugadores-inscripcion') {
     const slug = to.params.equipo as string;
+    const config = useRuntimeConfig();
+    const backendPrefix = String(config.public.backendPrefix || 'api/v1').replace(/^\/+|\/+$/g, '');
 
     try {
       // Call backend API
-      const { canRegister } = await useSanctumClient()<{ canRegister: boolean }>(
-        `/api/v1/public/teams/${slug}/can-register`
+      const { canRegister } = await $fetch<{ canRegister: boolean }>(
+        `/${backendPrefix}/public/teams/${slug}/can-register`,
+        {
+          baseURL: config.public.baseURLBackend,
+          credentials: 'omit',
+        }
       );
 
       if (!canRegister) {

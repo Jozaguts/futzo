@@ -77,7 +77,7 @@ const {
         elevation="0"
       >
         <v-card-item class="justify-center text-center">
-          <Logo width="165" class="mx-auto" />
+          <Logo max-width="165" class="mx-auto" />
           <v-card-title class="text-black text-h4">{{ title }}</v-card-title>
           <v-card-subtitle>Administra torneos y ligas fácilmente.</v-card-subtitle>
         </v-card-item>

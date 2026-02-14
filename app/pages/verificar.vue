@@ -120,7 +120,7 @@ type ComponentNames = 'OtpCard' | 'VerifiedCard'
 </script>
 <template>
   <div class="verify-email-main-container">
-    <Logo width="200" class="mx-auto"></Logo>
+    <Logo max-width="200" class="mx-auto"></Logo>
     <div class="verify-email-container">
       <component
         :is="components[currentComponent]"
