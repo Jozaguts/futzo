@@ -1,0 +1,81 @@
+import {describe, expect, it, vi} from 'vitest'
+
+vi.stubGlobal('defineNuxtConfig', (config: unknown) => config)
+
+const { default: nuxtConfig } = await import('../../../nuxt.config')
+
+type RouteRule = {
+  ssr?: boolean
+  headers?: Record<string, string>
+}
+
+describe('Nuxt SEO config', () => {
+  it('applies noindex + ssr false on protected route rules', () => {
+    const routeRules = (nuxtConfig as any).routeRules as Record<string, RouteRule>
+    const protectedRoutes = [
+      '/dashboard',
+      '/dashboard/**',
+      '/equipos',
+      '/equipos/**',
+      '/jugadores',
+      '/jugadores/**',
+      '/ubicaciones',
+      '/ubicaciones/**',
+      '/login',
+      '/login/**',
+      '/torneos',
+      '/torneos/**',
+      '/bienvenido',
+      '/bienvenido/**',
+      '/authorize',
+      '/authorize/**',
+      '/configuracion',
+      '/configuracion/**',
+      '/suscripcion',
+      '/suscripcion/**',
+      '/verificar',
+      '/verificar/**',
+    ]
+
+    for (const route of protectedRoutes) {
+      expect(routeRules[route]).toBeTruthy()
+      expect(routeRules[route]?.ssr).toBe(false)
+      expect(routeRules[route]?.headers?.['x-robots-tag']).toBe('noindex, nofollow')
+    }
+  })
+
+  it('keeps robots.txt aligned with protected paths and public landing', () => {
+    const robots = (nuxtConfig as any).robots as { disallow: string[]; sitemap: string }
+
+    expect(robots.sitemap).toBe('https://futzo.io/sitemap.xml')
+    expect(robots.disallow).not.toContain('/')
+    expect(robots.disallow.every((path) => path.startsWith('/'))).toBe(true)
+  })
+
+  it('uses explicit sitemap URLs only and disables sitemap index mode', () => {
+    const sitemap = (nuxtConfig as any).sitemap as {
+      urls: string[]
+      exclude: string[]
+      excludeAppSources: boolean
+      sitemaps: boolean
+    }
+
+    expect(sitemap.urls).toEqual(['/', '/politica-de-privacidad', '/terminos-de-servicio'])
+    expect(sitemap.exclude).toEqual(expect.arrayContaining(['/torneos/**', '/dashboard/**', '/login/**']))
+    expect(sitemap.excludeAppSources).toBe(true)
+    expect(sitemap.sitemaps).toBe(false)
+  })
+
+  it('enables GA4 only in production', () => {
+    const gtag = (nuxtConfig as any).gtag as { enabled: boolean; id: string }
+
+    expect(gtag.id).toBe('G-6B315LGN56')
+    expect(gtag.enabled).toBe(process.env.NODE_ENV === 'production')
+  })
+
+  it('disables Sanctum initial user fetch for public routes', () => {
+    const sanctum = (nuxtConfig as any).sanctum as { client: { initialRequest: boolean } }
+
+    expect(sanctum.client.initialRequest).toBe(false)
+  })
+})

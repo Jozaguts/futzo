@@ -4,6 +4,10 @@ import defaults from './config/vuetify/defaults';
 import theme from './config/vuetify/theme';
 
 const isTest = process.env.NODE_ENV === 'test' || Boolean(process.env.VITEST) || process.env.NUXT_TEST === '1';
+const protectedNoIndexRule = {
+  ssr: false,
+  headers: { 'x-robots-tag': 'noindex, nofollow' },
+};
 
 // @ts-ignore
 export default defineNuxtConfig({
@@ -105,28 +109,28 @@ export default defineNuxtConfig({
     }),
   },
   routeRules: {
-    '/dashboard': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/dashboard/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/equipos': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/equipos/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/jugadores': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/jugadores/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/ubicaciones': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/ubicaciones/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/login': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/login/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/torneos': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/torneos/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/bienvenido': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/bienvenido/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/authorize': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/authorize/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/configuracion': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/configuracion/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/suscripcion': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/suscripcion/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/verificar': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
-    '/verificar/**': { headers: { 'x-robots-tag': 'noindex, nofollow' } },
+    '/dashboard': protectedNoIndexRule,
+    '/dashboard/**': protectedNoIndexRule,
+    '/equipos': protectedNoIndexRule,
+    '/equipos/**': protectedNoIndexRule,
+    '/jugadores': protectedNoIndexRule,
+    '/jugadores/**': protectedNoIndexRule,
+    '/ubicaciones': protectedNoIndexRule,
+    '/ubicaciones/**': protectedNoIndexRule,
+    '/login': protectedNoIndexRule,
+    '/login/**': protectedNoIndexRule,
+    '/torneos': protectedNoIndexRule,
+    '/torneos/**': protectedNoIndexRule,
+    '/bienvenido': protectedNoIndexRule,
+    '/bienvenido/**': protectedNoIndexRule,
+    '/authorize': protectedNoIndexRule,
+    '/authorize/**': protectedNoIndexRule,
+    '/configuracion': protectedNoIndexRule,
+    '/configuracion/**': protectedNoIndexRule,
+    '/suscripcion': protectedNoIndexRule,
+    '/suscripcion/**': protectedNoIndexRule,
+    '/verificar': protectedNoIndexRule,
+    '/verificar/**': protectedNoIndexRule,
   },
   robots: {
     disallow: [
@@ -145,7 +149,9 @@ export default defineNuxtConfig({
     sitemap: 'https://futzo.io/sitemap.xml',
   },
   sitemap:{
-    debug: true,
+    debug: process.env.NODE_ENV !== 'production',
+    excludeAppSources: true,
+    zeroRuntime: true,
     urls: [
       '/',
       '/politica-de-privacidad',
@@ -164,8 +170,12 @@ export default defineNuxtConfig({
       '/suscripcion/**',
       '/verificar/**'
     ],
+    sitemaps: false,
   },
-  // vite: {
+  vite: {
+    server:{
+      allowedHosts: ['futzo.test','futzo.io'],
+    }
     // css: {
     //   preprocessorOptions: {
     //     // Use modern Sass compiler API (mejor rendimiento y menos edge-cases con PNPM)
@@ -183,7 +193,7 @@ export default defineNuxtConfig({
     //     '@formkit/auto-animate$': path.resolve(__dirname, 'app/shims/auto-animate.ts'),
     //   },
     // },
-  // },
+  },
   runtimeConfig: {
     public: {
       stripe: {
@@ -233,7 +243,7 @@ export default defineNuxtConfig({
     },
     client: {
       retry: false, // ofetch retry option (number | false)
-      initialRequest: true,
+      initialRequest: false,
     },
     redirect: {
       keepRequestedRoute: false, // Keep requested route in the URL for later redirect
