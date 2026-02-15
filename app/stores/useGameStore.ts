@@ -1,22 +1,23 @@
 import {defineStore} from 'pinia';
 
 import type {
-  ActionGameReportState,
-  DialogHandlerActionsNames,
-  Game,
-  GameDetailsRequest,
-  GameEvent,
-  GameTeam,
-  GameTeamFormRequest,
-  HeadAndSubsGamePlayers,
-  TeamSubstitutions,
-  TeamType,
+    ActionGameReportState,
+    DialogHandlerActionsNames,
+    Game,
+    GameDetailsRequest,
+    GameEvent,
+    GameTeam,
+    GameTeamFormRequest,
+    HeadAndSubsGamePlayers,
+    TeamSubstitutions,
+    TeamType,
 } from '~/models/Game';
 import type {PenaltyAttempt} from '~/models/Schedule';
 import * as gameAPI from '~/http/api/game';
 import dayjs from 'dayjs';
 import {useToast} from '~/composables/useToast';
-import {useSanctumClient} from '#imports';
+import {useSanctumClient, useTournamentStore} from '#imports';
+import {ga4Event} from '~/utils/ga4';
 
 export const useGameStore = defineStore('gameStore', () => {
   const game = ref<Game>(null as unknown as Game);
@@ -500,6 +501,11 @@ export const useGameStore = defineStore('gameStore', () => {
       .markAsComplete(game.value.id)
       .then(async () => {
         await getGameDetails();
+        ga4Event('match_result_updated', {
+          tournament_id: useTournamentStore().tournamentId?.value ?? null,
+          game_id: game.value?.id ?? null,
+          status: 'completed',
+        });
       })
       .finally(() => {
         useToast().toast({

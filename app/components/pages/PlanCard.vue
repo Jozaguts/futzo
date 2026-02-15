@@ -93,7 +93,7 @@ const { isAnnuallyPrice } = useProductPrices()
     </div>
 
     <!-- CTA -->
-    <CardCTA :cta="cta" :url="url" />
+    <CardCTA :cta="cta" :url="url" :plan="title" :billing-cycle="isAnnuallyPrice ? 'year' : 'month'" />
 
     <!-- Nota de confianza -->
   </article>

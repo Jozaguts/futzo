@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia';
-import { FetchError } from 'ofetch';
+import {defineStore} from 'pinia';
+import {FetchError} from 'ofetch';
 import type {
   CalendarStepsForm,
   EliminationPhase,
@@ -22,13 +22,14 @@ import type {
   ScheduleTeamSummary,
   TournamentSchedule,
 } from '~/models/Schedule';
-import type { Tournament } from '~/models/tournament';
-import type { IPagination } from '~/interfaces';
+import type {Tournament} from '~/models/tournament';
+import type {IPagination} from '~/interfaces';
 import * as scheduleAPI from '~/http/api/schedule';
 import * as tournamentAPI from '~/http/api/tournament';
-import { useTournamentStore } from '~/stores/useTournamentStore';
-import { useApiError, useSanctumClient, useToast } from '#imports';
-import type { BracketPreview, ConfirmBracketMatch } from '~/models/Bracket';
+import {useTournamentStore} from '~/stores/useTournamentStore';
+import {useApiError, useSanctumClient, useToast} from '#imports';
+import type {BracketPreview, ConfirmBracketMatch} from '~/models/Bracket';
+import {ga4Event} from '~/utils/ga4';
 
 export const useScheduleStore = defineStore('scheduleStore', () => {
   const INIT_CALENDAR_STEPS: CalendarStepsForm = {
@@ -702,6 +703,11 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       schedulePagination.value.current_page = 1;
       schedules.value.rounds = [];
       await getTournamentSchedules();
+      ga4Event('schedule_generated', {
+        tournament_id: tournamentStore.tournamentId ?? null,
+        rounds: Number(schedulePagination.value.last_page ?? 0) || null,
+        teams_count: scheduleStoreRequest.value?.general?.total_teams ?? scheduleSettings.value?.teams ?? null,
+      });
       scheduleDialog.value = false;
     } catch (error) {
       const { message } = useApiError(error as FetchError);

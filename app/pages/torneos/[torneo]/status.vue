@@ -11,6 +11,7 @@ import {usePublicTournamentSchedule} from '~/composables/usePublicTournamentSche
 import {getBySlug, getTournamentScheduleQRCode} from '~/http/api/tournament'
 import {useDisplay} from 'vuetify'
 import {Icon} from '#components'
+import {ga4Event} from '~/utils/ga4'
 
 useHead({
     meta: [{ name: 'robots', content: 'noindex,follow' }]
@@ -23,6 +24,12 @@ useHead({
   })
   const route = useRoute()
   const slug = computed(() => String(route.params.torneo || ''))
+  const viewSource = computed(() => {
+    const raw = String((route.query as any)?.source || '').toLowerCase()
+    if (raw === 'qr' || raw === 'share') return raw
+    return 'direct'
+  })
+  const hasTrackedOpen = ref(false)
   const tab = ref<'general' | 'calendario'>('general')
   const open = ref(false)
   const qr = reactive({
@@ -57,6 +64,25 @@ useHead({
       load()
       resetSchedule()
       adminTournamentId.value = null
+      hasTrackedOpen.value = false
+    },
+    { immediate: true }
+  )
+  watch(
+    () => [slug.value, isAdmin.value, adminTournamentId.value, viewSource.value] as const,
+    ([nextSlug, nextIsAdmin, nextAdminId, nextSource]) => {
+      if (!nextSlug || hasTrackedOpen.value) return
+
+      // Admins: wait for adminTournamentId so we can send tournament_id.
+      // Public users: track immediately with tournament_slug.
+      if (nextIsAdmin && !nextAdminId) return
+
+      hasTrackedOpen.value = true
+      ga4Event('public_calendar_opened', {
+        tournament_id: nextAdminId ?? null,
+        tournament_slug: nextSlug,
+        source: nextSource,
+      })
     },
     { immediate: true }
   )
@@ -91,11 +117,15 @@ useHead({
 
   const copyPublicLink = async () => {
     try {
+      const url = new URL(publicStatusUrl.value, publicBaseUrl.value)
+      if (!url.searchParams.get('source')) {
+        url.searchParams.set('source', 'share')
+      }
       if (navigator.clipboard) {
-        await navigator.clipboard.writeText(publicStatusUrl.value)
+        await navigator.clipboard.writeText(url.toString())
       } else {
         const ta = document.createElement('textarea')
-        ta.value = publicStatusUrl.value
+        ta.value = url.toString()
         ta.style.position = 'fixed'
         document.body.appendChild(ta)
         ta.select()
@@ -119,6 +149,10 @@ useHead({
       const data = await getTournamentScheduleQRCode(adminTournamentId.value, 'tournament_status')
       qr.image = data.image
       qr.show = true
+      ga4Event('qr_generated', {
+        type: 'public_calendar',
+        tournament_id: adminTournamentId.value,
+      })
     } catch {
       qr.hasError = true
       toast({ type: 'error', msg: 'No se pudo generar el QR' })

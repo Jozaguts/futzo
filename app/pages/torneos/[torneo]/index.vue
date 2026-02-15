@@ -13,6 +13,7 @@ import PageLayout from '~/components/shared/PageLayout.vue'
 import {getTournamentMetrics, getTournamentRegistrationQRCode, getTournamentScheduleQRCode} from '~/http/api/tournament'
 import type {TournamentDetailKpis, TournamentKpiMetric, TournamentShareAction} from '~/models/tournament'
 import {useDisplay} from 'vuetify'
+import {ga4Event} from '~/utils/ga4'
 
 const tournamentStore = useTournamentStore()
   const { standings, tournamentId, tournament } = storeToRefs(tournamentStore)
@@ -218,7 +219,11 @@ const tournamentStore = useTournamentStore()
       return
     }
     try {
-      await copyTextToClipboard(publicStatusUrl.value)
+      const url = new URL(publicStatusUrl.value, publicBaseUrl.value)
+      if (!url.searchParams.get('source')) {
+        url.searchParams.set('source', 'share')
+      }
+      await copyTextToClipboard(url.toString())
       toast({ type: 'success', msg: 'Enlace público copiado' })
     } catch {
       toast({ type: 'error', msg: 'No se pudo copiar el enlace público' })
@@ -240,6 +245,10 @@ const tournamentStore = useTournamentStore()
         share.value.image = data.image
         share.value.title = 'QR de inscripción'
         share.value.showQr = true
+        ga4Event('qr_generated', {
+          type: 'registration',
+          tournament_id: tournament.value.id,
+        })
         return
       }
       throw new Error('QR no disponible')
@@ -267,6 +276,10 @@ const tournamentStore = useTournamentStore()
         share.value.image = data.image
         share.value.title = 'QR de página pública'
         share.value.showQr = true
+        ga4Event('qr_generated', {
+          type: 'public_calendar',
+          tournament_id: tournament.value.id,
+        })
         return
       }
       throw new Error('QR no disponible')

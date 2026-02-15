@@ -3,6 +3,7 @@ import {Icon} from '#components'
 import type {Team} from '~/models/Team'
 import {getTeamRegistrationQRCode, updateHomePreferences} from '~/http/api/team'
 import {useLeaguesStore} from '~/stores/useLeaguesStore'
+import {ga4Event} from '~/utils/ga4'
 
 type LeagueLocationOption = {
   id: number
@@ -311,6 +312,10 @@ const qrCodeHandler = async (team: Team) => {
     if (data.image) {
       qr.value.image = data.image
       qr.value.showQrCode = true
+      ga4Event('qr_generated', {
+        type: 'registration',
+        tournament_id: (team as any)?.tournament_id ?? (team as any)?.tournament?.id ?? null,
+      })
       return
     }
     throw new Error('QR no disponible')

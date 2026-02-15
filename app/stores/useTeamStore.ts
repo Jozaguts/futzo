@@ -1,5 +1,13 @@
 import {defineStore, skipHydrate} from 'pinia';
-import type {Formation, FormSteps, HomePreferences, Team, TeamKpiMetric, TeamListKpis, TeamStoreRequest} from '~/models/Team';
+import type {
+  Formation,
+  FormSteps,
+  HomePreferences,
+  Team,
+  TeamKpiMetric,
+  TeamListKpis,
+  TeamStoreRequest
+} from '~/models/Team';
 import type {IPagination} from '~/interfaces';
 import * as teamAPI from '~/http/api/team';
 import prepareForm, {parseBlobResponse} from '~/utils/prepareFormData';
@@ -9,6 +17,7 @@ import {sortFormation} from '~/utils/sort-formation';
 import {useToast} from '~/composables/useToast';
 import type {TourStep} from '#nuxt-tour/props';
 import {useTourController} from '~/composables/useTourController';
+import {ga4Event} from '~/utils/ga4';
 
 export const useTeamStore = defineStore('teamStore', () => {
   const KPI_RANGE = 'lastMonth' as const;
@@ -289,11 +298,16 @@ export const useTeamStore = defineStore('teamStore', () => {
       method: 'POST',
       body: form,
     })
-      .then(async () => {
+      .then(async (response) => {
         if (!isPreRegister) {
           await getTeams();
         }
         toast({ type: 'success', msg: 'Equipo Creado', description: 'El nuevo equipo se ha creado exitosamente.' });
+        ga4Event('team_created', {
+          team_id: (response as any)?.id ?? (response as any)?.data?.id ?? null,
+          tournament_id:
+            teamStoreRequest.value.team?.tournament_id ?? (response as any)?.tournament_id ?? (response as any)?.data?.tournament_id ?? null,
+        });
         dialog.value = false;
       })
       .catch((error) => {

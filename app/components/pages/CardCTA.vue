@@ -1,6 +1,24 @@
 <script setup lang="ts">
-const { $fbq, $buildAppUrl, $attribution } = useNuxtApp() as any
-const { cta, url } = defineProps<{ cta?: string, url?: string }>()
+import {ga4Event} from '~/utils/ga4'
+
+const nuxtApp = useNuxtApp() as any
+const resolveFn = <T extends (...args: any[]) => any>(candidate: any, fallback: T): T => {
+  return typeof candidate === 'function' ? (candidate as T) : fallback
+}
+const $fbq = typeof ((globalThis as any).$fbq ?? nuxtApp?.$fbq) === 'function'
+  ? ((globalThis as any).$fbq ?? nuxtApp?.$fbq)
+  : undefined
+const $buildAppUrl = resolveFn(
+  (globalThis as any).$buildAppUrl ?? nuxtApp?.$buildAppUrl,
+  ((baseUrl?: string) => baseUrl || '') as any
+)
+const $attribution = (globalThis as any).$attribution ?? nuxtApp?.$attribution
+const { cta, url, plan, billingCycle } = defineProps<{
+  cta?: string
+  url?: string
+  plan?: string
+  billingCycle?: 'month' | 'year'
+}>()
 
 const generateEventId = () => {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -13,6 +31,13 @@ const clickHandler = () => {
   const eventId = generateEventId()
   const destination = $buildAppUrl(url, { eventId })
   const attr = $attribution?.get?.() || {}
+
+  if (destination) {
+    ga4Event('checkout_started', {
+      plan: plan || '',
+      billing_cycle: billingCycle || '',
+    })
+  }
 
   if (typeof $fbq === 'function') {
     $fbq('trackCustom', 'StartRegistration', {

@@ -7,6 +7,7 @@ const type = ref<'yearly' | 'monthly'>('yearly')
   const isYearly = computed(() => type.value === 'yearly')
   const isMonthly = computed(() => type.value === 'monthly')
   const { isSubscribed, user, stripeDialog } = storeToRefs(useAuthStore())
+  const { gtag } = useGtag()
   const productPrices = ref()
   const { mobile } = useDisplay()
   const page = ref(1)
@@ -24,10 +25,18 @@ const type = ref<'yearly' | 'monthly'>('yearly')
     }
     if (useRoute().query.payment === 'success') {
       await useSanctumAuth().refreshIdentity()
+      // UI-confirmed activation after returning from checkout.
+      if (user.value?.subscribed && user.value?.plan?.product?.sku) {
+        gtag?.('event', 'subscription_activated', {
+          plan: user.value.plan.product.sku,
+          billing_cycle: user.value.plan.billing_period,
+        })
+      }
     }
   })
 
   const handleCheckout = (p: { sku: string; period: 'month' | 'year'; name: string }) => {
+    gtag?.('event', 'checkout_started', { plan: p.sku, billing_cycle: p.period })
     stripeDialog.value.sku = p.sku
     stripeDialog.value.period = p.period
     stripeDialog.value.name = p.name

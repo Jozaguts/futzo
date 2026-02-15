@@ -1,7 +1,9 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest'
 import {nextTick} from 'vue'
 import {mockNuxtImport, mountSuspended} from '@nuxt/test-utils/runtime'
-import TorneoStatusPage from '~/pages/torneos/[torneo]/status.vue'
+
+const ga4EventMock = vi.hoisted(() => vi.fn())
+vi.mock('~/utils/ga4', () => ({ ga4Event: ga4EventMock }))
 
 const statusComposable = vi.hoisted(() => ({
   data: {
@@ -78,6 +80,7 @@ mockNuxtImport('useRuntimeConfig', () => () => ({ public: { baseUrl: 'https://fu
 mockNuxtImport('useRequestURL', () => () => new URL('https://futzo.test'))
 
 const mountPage = async () => {
+  const { default: TorneoStatusPage } = await import('~/pages/torneos/[torneo]/status.vue')
   return await mountSuspended(TorneoStatusPage, {
     global: {
       stubs: {
@@ -137,6 +140,7 @@ describe('Torneo public status page', () => {
     scheduleComposable.reset.mockClear()
     scheduleComposable.rounds.value = []
     ;(window as any).scrollTo = vi.fn()
+    ga4EventMock.mockReset()
   })
 
   it('renders shared tabs structure and mobile standings headers', async () => {
@@ -154,6 +158,12 @@ describe('Torneo public status page', () => {
     expect(tabButtons).toHaveLength(2)
     expect(tabButtons[0]?.text()).toBe('Vista General')
     expect(tabButtons[1]?.text()).toBe('Calendario')
+
+    expect(ga4EventMock).toHaveBeenCalledWith('public_calendar_opened', {
+      tournament_id: null,
+      tournament_slug: 'inactivos-2026-apertura',
+      source: 'direct',
+    })
   })
 
   it('loads schedule when switching to calendario tab and no rounds are loaded yet', async () => {

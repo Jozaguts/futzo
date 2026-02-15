@@ -1,19 +1,19 @@
 import type {
-    BasicInfoForm,
-    CalendarStoreRequest,
-    DetailsInfoForm,
-    ExportType,
-    FormSteps,
-    Tournament,
-    TournamentForm,
-    TournamentKpiMetric,
-    TournamentListKpis,
-    TournamentLocation,
-    TournamentLocationStoreRequest,
-    TournamentStats,
-    TournamentStatus,
-    TournamentStoreRequest,
-    TournamentSummary,
+  BasicInfoForm,
+  CalendarStoreRequest,
+  DetailsInfoForm,
+  ExportType,
+  FormSteps,
+  Tournament,
+  TournamentForm,
+  TournamentKpiMetric,
+  TournamentListKpis,
+  TournamentLocation,
+  TournamentLocationStoreRequest,
+  TournamentStats,
+  TournamentStatus,
+  TournamentStoreRequest,
+  TournamentSummary,
 } from '~/models/tournament';
 import type {Game} from '~/models/Game';
 import type {User} from '~/models/User';
@@ -24,16 +24,17 @@ import type {Field} from '~/models/Schedule';
 import type {CreateTeamForm} from '~/models/Team';
 import {defineStore, skipHydrate} from 'pinia';
 import {
-    storeToRefs,
-    useCategoryStore,
-    useOnboardingStore,
-    useSanctumClient,
-    useSanctumUser,
-    useTeamStore,
-    useToast,
+  storeToRefs,
+  useCategoryStore,
+  useOnboardingStore,
+  useSanctumClient,
+  useSanctumUser,
+  useTeamStore,
+  useToast,
 } from '#imports';
 import type {TourStep} from '#nuxt-tour/props';
 import {useTourController} from '~/composables/useTourController';
+import {ga4Event} from '~/utils/ga4';
 
 // @ts-ignore
 export const useTournamentStore = defineStore('tournamentStore', () => {
@@ -365,6 +366,12 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
           type: 'success',
           msg: 'Torneo Creado',
           description: 'El nuevo torneo se ha creado exitosamente.',
+        });
+        ga4Event('tournament_created', {
+          tournament_id: (response as any)?.id ?? (response as any)?.data?.id ?? null,
+          format: tournamentStoreRequest.value.basic?.tournament_format_id ?? null,
+          category: tournamentStoreRequest.value.basic?.category_id ?? null,
+          teams_count: (response as any)?.teams_count ?? null,
         });
         dialog.value = false;
         $reset();

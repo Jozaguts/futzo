@@ -9,7 +9,8 @@ import type {FormationPlayer} from '~/models/Game';
 import {useToast} from '~/composables/useToast';
 import type {TourStep} from '#nuxt-tour/props';
 import {useTourController} from '~/composables/useTourController';
-import {useCategoryStore, useSanctumClient, useTeamStore} from '#imports';
+import {useCategoryStore, useSanctumClient, useTeamStore, useTournamentStore} from '#imports';
+import {ga4Event} from '~/utils/ga4';
 
 export const usePlayerStore = defineStore('playerStore', () => {
   const { toast } = useToast();
@@ -337,6 +338,10 @@ export const usePlayerStore = defineStore('playerStore', () => {
           type: 'success',
           msg: 'Jugadores importados',
           description: `Importados: ${imported}. Omitidos: ${skipped}.`,
+        });
+        ga4Event('players_bulk_imported', {
+          tournament_id: useTeamStore().team?.tournament_id ?? useTournamentStore().tournamentId?.value ?? null,
+          players_count: imported,
         });
         importModal.value = false;
         await getPlayers();
