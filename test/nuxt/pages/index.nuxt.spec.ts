@@ -1,10 +1,20 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
+import {beforeEach, describe, expect, it, vi} from 'vitest'
+import {mockNuxtImport, mountSuspended} from '@nuxt/test-utils/runtime'
 import IndexPage from '~/pages/index.vue'
 
 const loadPricesMock = vi.hoisted(() => vi.fn(async () => undefined))
 const setPriceModeMock = vi.hoisted(() => vi.fn())
 const gtagMock = vi.hoisted(() => vi.fn())
+const fbqMock = vi.hoisted(() => vi.fn())
+const buildAppUrlMock = vi.hoisted(() => vi.fn((baseUrl: string, opts?: { eventId?: string }) => `${baseUrl}?event_id=${opts?.eventId || 'evt'}`))
+const attributionGetMock = vi.hoisted(() =>
+  vi.fn(() => ({
+    fbclid: 'fbclid-1',
+    fbp: '_fbp-1',
+    fbc: '_fbc-1',
+    utm: { utm_source: 'meta' },
+  }))
+)
 const intersectionObservers = vi.hoisted(
   () =>
     [] as Array<{
@@ -20,6 +30,12 @@ const eliteLeaguePlanRef = vi.hoisted(() => ({ value: null, __v_isRef: true } as
 const loadingRef = vi.hoisted(() => ({ value: false, __v_isRef: true } as any))
 const priceModeRef = vi.hoisted(() => ({ value: 'monthly', __v_isRef: true } as any))
 const isAuthenticatedRef = vi.hoisted(() => ({ value: false, __v_isRef: true } as any))
+
+const NuxtLinkStub = {
+  props: ['to'],
+  emits: ['click'],
+  template: `<a :href="to" @click="$emit('click', $event)"><slot /></a>`,
+}
 
 mockNuxtImport('useProductPrices', () => () => ({
   priceMode: priceModeRef,
@@ -47,6 +63,9 @@ describe('Landing page pricing lazy load', () => {
     loadPricesMock.mockResolvedValue(undefined)
     setPriceModeMock.mockReset()
     gtagMock.mockReset()
+    fbqMock.mockReset()
+    buildAppUrlMock.mockReset()
+    attributionGetMock.mockReset()
     intersectionObservers.splice(0, intersectionObservers.length)
     kickoffPlanRef.value = null
     proPlayPlanRef.value = null
@@ -54,6 +73,11 @@ describe('Landing page pricing lazy load', () => {
     loadingRef.value = false
     priceModeRef.value = 'monthly'
     isAuthenticatedRef.value = false
+
+    // Provide the fb pixel helpers via globalThis fallbacks (index.vue supports them).
+    ;(globalThis as any).$fbq = fbqMock
+    ;(globalThis as any).$buildAppUrl = buildAppUrlMock
+    ;(globalThis as any).$attribution = { get: attributionGetMock }
   })
 
   it('loads product prices only when pricing section intersects', async () => {
@@ -64,7 +88,7 @@ describe('Landing page pricing lazy load', () => {
           PlanCard: { template: '<div data-testid="plan-card"></div>' },
           Icon: { template: '<i></i>' },
           'client-only': { template: '<div><slot /></div>' },
-          'nuxt-link': { template: '<a><slot /></a>' },
+          'nuxt-link': NuxtLinkStub,
         },
       },
     })
@@ -79,5 +103,54 @@ describe('Landing page pricing lazy load', () => {
 
     pricingObserver?.callback([{ isIntersecting: true }])
     expect(loadPricesMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('fires Meta ViewContent when pricing section intersects (once)', async () => {
+    await mountSuspended(IndexPage, {
+      global: {
+        stubs: {
+          PageLayout: { template: '<div><slot name="default" /></div>' },
+          PlanCard: { template: '<div data-testid="plan-card"></div>' },
+          Icon: { template: '<i></i>' },
+          'client-only': { template: '<div><slot /></div>' },
+          'nuxt-link': NuxtLinkStub,
+        },
+      },
+    })
+
+    const pricingPixelObserver = intersectionObservers.find((entry) => entry.options?.threshold === 0.2)
+    expect(pricingPixelObserver).toBeTruthy()
+
+    pricingPixelObserver?.callback([{ isIntersecting: true }])
+    expect(fbqMock).toHaveBeenCalledWith('track', 'ViewContent', {
+      content_name: 'pricing',
+      content_category: 'plans',
+      content_type: 'pricing',
+    })
+
+    pricingPixelObserver?.callback([{ isIntersecting: true }])
+    expect(fbqMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('fires Meta StartRegistration when clicking both landing CTAs (nav + hero)', async () => {
+    const wrapper = await mountSuspended(IndexPage, {
+      global: {
+        stubs: {
+          PageLayout: { template: '<div><slot name="default" /></div>' },
+          PlanCard: { template: '<div data-testid="plan-card"></div>' },
+          Icon: { template: '<i></i>' },
+          'client-only': { template: '<div><slot /></div>' },
+          'nuxt-link': NuxtLinkStub,
+        },
+      },
+    })
+
+    await wrapper.find('[data-testid="landing-cta-nav"]').trigger('click')
+    expect(fbqMock.mock.calls.some((c) => c?.[0] === 'trackCustom' && c?.[1] === 'StartRegistration')).toBe(true)
+
+    await wrapper.find('[data-testid="landing-cta-hero"]').trigger('click')
+    expect(
+      fbqMock.mock.calls.filter((c) => c?.[0] === 'trackCustom' && c?.[1] === 'StartRegistration').length
+    ).toBe(2)
   })
 })

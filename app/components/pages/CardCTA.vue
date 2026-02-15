@@ -15,7 +15,7 @@ const clickHandler = () => {
   const attr = $attribution?.get?.() || {}
 
   if (typeof $fbq === 'function') {
-    $fbq('trackCustom', 'StartTrialClick', {
+    $fbq('trackCustom', 'StartRegistration', {
       source: 'landing',
       placement: 'card_cta',
       fbclid: attr.fbclid,
@@ -38,7 +38,6 @@ const clickHandler = () => {
     <button type="button" class="btn bg-primary px-4 py-2 rounded-lg mt-4" @click="clickHandler">{{cta}} </button>
     <p class="trial-note mt-3" aria-live="polite">
       No se te cobrará durante la prueba.
-      Elige tu plan al finalizar los 7 días.
     </p>
   </div>
 </template>

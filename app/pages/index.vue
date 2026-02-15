@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import {useProductPrices} from '~/composables/useProductPrices'
 import PlanCard from '~/components/pages/PlanCard.vue'
+import {capiContext} from '~/utils/capi'
 
 definePageMeta({
   layout: 'legacy',
@@ -26,7 +27,8 @@ useHead({
   ]
 })
   const imgSrc = '/futzo/logos/logo-17.png'
-  const { $buildAppUrl } = useNuxtApp() as any
+  const { $buildAppUrl, $fbq, $attribution } = useNuxtApp() as any
+  const router = useRouter()
   const url = ref('')
 
   const updateUrl = (value: { url?: string } | null | undefined) => {
@@ -58,11 +60,73 @@ useHead({
   const { isAuthenticated } = useSanctumAuth()
   const textButton = computed(() => (isAuthenticated?.value ? 'Ir al Dashboard' : 'Comenzar'))
   const mainRoute = computed(() => (isAuthenticated?.value ? '/dashboard' : '/login'))
-const {$fbq} = useNuxtApp()
   const trackCta = (location: 'hero' | 'nav') => {
     if (isAuthenticated?.value) return
     gtag('event', 'sign_up', { method: location, event_label: 'Comenzar' })
   }
+
+  const generateEventId = () => {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID()
+    }
+    return `evt-${Date.now()}-${Math.random().toString(16).slice(2)}`
+  }
+
+  const toInternalUrl = (maybeAbsoluteUrl: string) => {
+    if (!maybeAbsoluteUrl) return maybeAbsoluteUrl
+    try {
+      const u = new URL(maybeAbsoluteUrl, window.location.origin)
+      return `${u.pathname}${u.search}${u.hash}`
+    } catch {
+      return maybeAbsoluteUrl
+    }
+  }
+
+  const trackStartRegistration = (placement: 'hero' | 'nav', eventId: string) => {
+    if (isAuthenticated?.value) return
+    const attr = $attribution?.get?.() || (globalThis as any).$attribution?.get?.() || {}
+    const fbq = typeof $fbq === 'function' ? $fbq : (globalThis as any).$fbq
+
+    if (typeof fbq === 'function') {
+      fbq(
+        'trackCustom',
+        'StartRegistration',
+        {
+          source: 'landing',
+          placement,
+          fbclid: attr.fbclid,
+          fbp: attr.fbp,
+          fbc: attr.fbc,
+          ...attr.utm,
+        },
+        { eventID: eventId }
+      )
+    }
+  }
+
+  const startRegistrationClick = async (placement: 'hero' | 'nav') => {
+    if (isAuthenticated?.value) {
+      await router.push('/dashboard')
+      return
+    }
+
+    trackCta(placement)
+    const eventId = generateEventId()
+    trackStartRegistration(placement, eventId)
+
+    // Propagate event_id into /login so registration can reuse it (CAPI/Px dedupe).
+    const buildUrl = typeof $buildAppUrl === 'function' ? $buildAppUrl : (globalThis as any).$buildAppUrl
+    const destination =
+      buildUrl?.('/login', { eventId }) || `/login?event_id=${encodeURIComponent(eventId)}`
+
+    // Keep capiContext aligned even if plugins haven't run yet.
+    try {
+      capiContext()
+    } catch {}
+
+    await router.push(toInternalUrl(destination))
+  }
+
 const { stop: stopPricingPrefetchObserver } = useIntersectionObserver(
     pricingRef,
     ([entry]) => {
@@ -79,11 +143,14 @@ const { stop: stopPricingPixelObserver } = useIntersectionObserver(
     ([entry]) => {
       if (!entry?.isIntersecting || hasTrackedPricingView.value) return
       hasTrackedPricingView.value = true
-      $fbq('track', 'ViewContent', {
-        content_name: 'pricing',
-        content_category: 'plans',
-        content_type: 'pricing'
-      })
+      const fbq = typeof $fbq === 'function' ? $fbq : (globalThis as any).$fbq
+      if (typeof fbq === 'function') {
+        fbq('track', 'ViewContent', {
+          content_name: 'pricing',
+          content_category: 'plans',
+          content_type: 'pricing'
+        })
+      }
       stopPricingPixelObserver()
     },
     {
@@ -92,7 +159,7 @@ const { stop: stopPricingPixelObserver } = useIntersectionObserver(
 )
 onMounted(()=>{
   updateUrl(kickoffPlan.value)
-  window.onload = function() { window.Calendly?.initBadgeWidget({ url: 'https://calendly.com/futzo', text: 'Agenda tu demo con Futzo ⚽', color: '#9155FD', textColor: '#ffffff', branding: false }); }
+  // window.onload = function() { window.Calendly?.initBadgeWidget({ url: 'https://calendly.com/futzo', text: 'Agenda tu demo con Futzo ⚽', color: '#9155FD', textColor: '#ffffff', branding: false }); }
 
 })
 </script>
@@ -147,7 +214,8 @@ onMounted(()=>{
                   <nuxt-link
                     class="nav-link bg-white futzo-rounded px-3 py-2 ma-6 text-primary font-weight-bold"
                     :to="mainRoute"
-                    @click="trackCta('nav')"
+                    data-testid="landing-cta-nav"
+                    @click.prevent="startRegistrationClick('nav')"
                     >{{ textButton }}</nuxt-link
                   >
                 </li>
@@ -178,7 +246,12 @@ onMounted(()=>{
                   <li>✅ Estadísticas automáticas sin trabajo manual</li>
                 </ul>
                 <div class="hero-ctas">
-                  <nuxt-link class="btn btn-primary" to="/login" @click="trackCta('hero')">Comenzar</nuxt-link>
+                  <nuxt-link
+                    class="btn btn-primary"
+                    to="/login"
+                    data-testid="landing-cta-hero"
+                    @click.prevent="startRegistrationClick('hero')"
+                  >Comenzar</nuxt-link>
                 </div>
                 <small class="hero-note"> Sin instalación. Prueba rápida. Soporte por chat. </small>
               </div>
