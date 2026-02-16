@@ -1,12 +1,12 @@
 import {defineStore, skipHydrate} from 'pinia';
 import type {
-  Formation,
-  FormSteps,
-  HomePreferences,
-  Team,
-  TeamKpiMetric,
-  TeamListKpis,
-  TeamStoreRequest
+    Formation,
+    FormSteps,
+    HomePreferences,
+    Team,
+    TeamKpiMetric,
+    TeamListKpis,
+    TeamStoreRequest
 } from '~/models/Team';
 import type {IPagination} from '~/interfaces';
 import * as teamAPI from '~/http/api/team';
@@ -248,12 +248,7 @@ export const useTeamStore = defineStore('teamStore', () => {
       loading.value = true;
       const blob = await client<Blob>('/api/v1/admin/teams/template');
       parseBlobResponse(blob, 'plantilla de equipos', 'excel');
-    } catch (error) {
-      toast({
-        type: 'error',
-        msg: 'Error al descargar la plantilla',
-        description: 'No se pudo descargar la plantilla. Inténtalo de nuevo.',
-      });
+    } catch {
     } finally {
       loading.value = false;
     }
@@ -277,14 +272,7 @@ export const useTeamStore = defineStore('teamStore', () => {
         importModal.value = false;
         await getTeams();
       })
-      .catch((error) => {
-        toast({
-          type: 'error',
-          msg: 'Error al importar equipos',
-          description:
-            error.data?.message ?? 'No se pudieron importar los equipos. Verifica tu archivo e inténtalo de nuevo.',
-        });
-      });
+      .catch(() => {});
   }
 
   const createTeam = async () => {
@@ -310,14 +298,7 @@ export const useTeamStore = defineStore('teamStore', () => {
         });
         dialog.value = false;
       })
-      .catch((error) => {
-        toast({
-          type: 'error',
-          msg: 'Error al crear el equipo',
-          description:
-            error.data?.message ?? 'No se pudo crear el equipo. Verifica tu información e inténtalo de nuevo.',
-        });
-      });
+      .catch(() => {});
   };
   const updateTeam = async (teamId: number) => {
     let form = prepareForm(teamStoreRequest);
@@ -330,14 +311,7 @@ export const useTeamStore = defineStore('teamStore', () => {
         toast({ type: 'success', msg: 'Equipo actualizado', description: 'El equipo se ha actualizado exitosamente' });
         dialog.value = false;
       })
-      .catch((error) => {
-        toast({
-          type: 'error',
-          msg: 'Error al actualizar el equipo',
-          description:
-            error.data?.message ?? 'No se pudo actualizar el equipo. Verifica tu información e inténtalo de nuevo.',
-        });
-      });
+      .catch(() => {});
   };
   const computeFallbackListKpis = (items: Team[]): TeamListKpis => {
     const playersRegistered = items.reduce((acc, item) => acc + Number((item as any)?.players_count ?? 0), 0);

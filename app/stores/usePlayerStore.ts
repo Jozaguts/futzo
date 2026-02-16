@@ -137,11 +137,6 @@ export const usePlayerStore = defineStore('playerStore', () => {
       player.value = response.data;
     } catch (error: any) {
       console.error(error);
-      toast({
-        type: 'error',
-        msg: 'Error al obtener el jugadores',
-        description: error?.data?.message ?? 'No se pudo obtener la información del jugadores. Inténtalo de nuevo.',
-      });
     } finally {
     }
   };
@@ -151,12 +146,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
       loading.value = true;
       const blob = await client<Blob>('/api/v1/admin/players/template');
       parseBlobResponse(blob, 'plantilla de jugadores', 'excel');
-    } catch (error) {
-      toast({
-        type: 'error',
-        msg: 'Error al descargar la plantilla',
-        description: 'No se pudo descargar la plantilla. Inténtalo de nuevo.',
-      });
+    } catch {
     } finally {
       loading.value = false;
     }
@@ -176,11 +166,6 @@ export const usePlayerStore = defineStore('playerStore', () => {
       return response.data;
     } catch (error: any) {
       console.error(error);
-      toast({
-        type: 'error',
-        msg: 'No pudimos guardar los cambios',
-        description: error?.data?.message ?? 'Inténtalo nuevamente en unos minutos.',
-      });
       throw error;
     }
   };
@@ -297,12 +282,6 @@ export const usePlayerStore = defineStore('playerStore', () => {
       }
       return true;
     } catch (error: any) {
-      toast({
-        type: 'error',
-        msg: 'Error al crear al jugadores',
-        description:
-          error.data?.message ?? 'No se pudo crear al jugadores. Verifica tu información e inténtalo de nuevo.',
-      });
       return false;
     }
   };
@@ -348,12 +327,6 @@ export const usePlayerStore = defineStore('playerStore', () => {
       })
       .catch((error) => {
         console.error(error.data?.errors);
-        toast({
-          type: 'error',
-          msg: 'Error importar',
-          description:
-            error.data?.message ?? 'No se pudo importar el documento. Verifica su información e inténtalo de nuevo.',
-        });
       })
       .finally(() => (isImporting.value = false));
   };
@@ -367,11 +340,6 @@ export const usePlayerStore = defineStore('playerStore', () => {
         description: 'El jugador fue liberado correctamente.',
       });
     } catch (error: any) {
-      toast({
-        type: 'error',
-        msg: 'No se pudo liberar',
-        description: error?.data?.message ?? 'Inténtalo nuevamente.',
-      });
       throw error;
     }
   };
@@ -385,11 +353,6 @@ export const usePlayerStore = defineStore('playerStore', () => {
         description: 'La verificación fue enviada correctamente.',
       });
     } catch (error: any) {
-      toast({
-        type: 'error',
-        msg: 'Error al cargar documentos',
-        description: error?.data?.message ?? 'Inténtalo nuevamente.',
-      });
       throw error;
     }
   };
@@ -403,11 +366,6 @@ export const usePlayerStore = defineStore('playerStore', () => {
         description: 'La verificación fue aprobada.',
       });
     } catch (error: any) {
-      toast({
-        type: 'error',
-        msg: 'No se pudo aprobar',
-        description: error?.data?.message ?? 'Inténtalo nuevamente.',
-      });
       throw error;
     }
   };
@@ -421,11 +379,6 @@ export const usePlayerStore = defineStore('playerStore', () => {
         description: 'Se rechazó la verificación del jugador.',
       });
     } catch (error: any) {
-      toast({
-        type: 'error',
-        msg: 'No se pudo rechazar',
-        description: error?.data?.message ?? 'Inténtalo nuevamente.',
-      });
       throw error;
     }
   };

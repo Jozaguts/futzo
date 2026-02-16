@@ -1,19 +1,19 @@
 import type {
-  BasicInfoForm,
-  CalendarStoreRequest,
-  DetailsInfoForm,
-  ExportType,
-  FormSteps,
-  Tournament,
-  TournamentForm,
-  TournamentKpiMetric,
-  TournamentListKpis,
-  TournamentLocation,
-  TournamentLocationStoreRequest,
-  TournamentStats,
-  TournamentStatus,
-  TournamentStoreRequest,
-  TournamentSummary,
+    BasicInfoForm,
+    CalendarStoreRequest,
+    DetailsInfoForm,
+    ExportType,
+    FormSteps,
+    Tournament,
+    TournamentForm,
+    TournamentKpiMetric,
+    TournamentListKpis,
+    TournamentLocation,
+    TournamentLocationStoreRequest,
+    TournamentStats,
+    TournamentStatus,
+    TournamentStoreRequest,
+    TournamentSummary,
 } from '~/models/tournament';
 import type {Game} from '~/models/Game';
 import type {User} from '~/models/User';
@@ -24,13 +24,13 @@ import type {Field} from '~/models/Schedule';
 import type {CreateTeamForm} from '~/models/Team';
 import {defineStore, skipHydrate} from 'pinia';
 import {
-  storeToRefs,
-  useCategoryStore,
-  useOnboardingStore,
-  useSanctumClient,
-  useSanctumUser,
-  useTeamStore,
-  useToast,
+    storeToRefs,
+    useCategoryStore,
+    useOnboardingStore,
+    useSanctumClient,
+    useSanctumUser,
+    useTeamStore,
+    useToast,
 } from '#imports';
 import type {TourStep} from '#nuxt-tour/props';
 import {useTourController} from '~/composables/useTourController';
@@ -377,13 +377,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
         $reset();
         return response;
       })
-      .catch(() => {
-        useToast().toast({
-          type: 'error',
-          msg: 'Error al Crear Torneo',
-          description: 'No se pudo crear el torneo. Por favor, intenta nuevamente.',
-        });
-      });
+      .catch(() => {});
   }
 
   async function updateTournament() {

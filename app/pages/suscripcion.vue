@@ -1,9 +1,8 @@
 <script setup lang="ts">
-  import checkout from '~/http/api/checkout'
-  import { useToast } from '~/composables/useToast'
-  import { FetchError } from 'ofetch'
-  const { toast } = useToast()
-  const hydrated = ref(false)
+import checkout from '~/http/api/checkout'
+import {FetchError} from 'ofetch'
+
+const hydrated = ref(false)
   const loading = ref(true)
   definePageMeta({
     layout: 'blank',
@@ -31,11 +30,6 @@
             useRouter().push({ name: 'login', query: { email: error?.data?.identifier } })
             return
           }
-          // fallback
-          toast({
-            type: 'error',
-            msg: 'No se pudo iniciar el checkout.',
-          })
         })
     }
   })

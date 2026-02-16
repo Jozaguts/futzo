@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { useToast } from '~/composables/useToast'
-import { notifyApiError } from '~/utils/apiToast'
+import {useToast} from '~/composables/useToast'
 import type {
   DisciplineSettingsDefaults,
   DisciplineSettingsDefaultsPayload,
@@ -156,7 +155,6 @@ const mapError = (error: unknown) => {
 const notifyRequestError = (error: unknown, fallbackDescription: string) => {
   const parsed = mapError(error)
   if (parsed.status) {
-    notifyApiError(parsed.status, parsed.data)
     return
   }
 

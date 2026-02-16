@@ -26,13 +26,7 @@ definePageMeta({
         })
         currentComponent.value = 'CreatedLeague'
       })
-      .catch((error) => {
-        useToast().toast({
-          type: 'error',
-          msg: 'Error al Registrar Liga',
-          description: error?.data?.message ?? 'No se pudo registrar la liga. Por favor, intenta nuevamente.',
-        })
-      })
+      .catch(() => {})
       .finally(() => {})
   }
   const components = {

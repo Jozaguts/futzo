@@ -1,33 +1,32 @@
 import {defineStore} from 'pinia';
-import {FetchError} from 'ofetch';
 import type {
-  CalendarStepsForm,
-  EliminationPhase,
-  Field,
-  FootballType,
-  Format,
-  FormEliminationPhaseStep,
-  FormGeneralScheduleRequest,
-  FormRulesPhaseStep,
-  GroupConfigurationOptions,
-  LocationFieldsRequest,
-  RoundStatus,
-  ScheduleRegenerationAnalysis,
-  ScheduleRegenerationLogSummary,
-  ScheduleRegenerationPayload,
-  ScheduleRegenerationResult,
-  ScheduleRoundStatus,
-  ScheduleSettings,
-  ScheduleStoreRequest,
-  ScheduleTeamSummary,
-  TournamentSchedule,
+    CalendarStepsForm,
+    EliminationPhase,
+    Field,
+    FootballType,
+    Format,
+    FormEliminationPhaseStep,
+    FormGeneralScheduleRequest,
+    FormRulesPhaseStep,
+    GroupConfigurationOptions,
+    LocationFieldsRequest,
+    RoundStatus,
+    ScheduleRegenerationAnalysis,
+    ScheduleRegenerationLogSummary,
+    ScheduleRegenerationPayload,
+    ScheduleRegenerationResult,
+    ScheduleRoundStatus,
+    ScheduleSettings,
+    ScheduleStoreRequest,
+    ScheduleTeamSummary,
+    TournamentSchedule,
 } from '~/models/Schedule';
 import type {Tournament} from '~/models/tournament';
 import type {IPagination} from '~/interfaces';
 import * as scheduleAPI from '~/http/api/schedule';
 import * as tournamentAPI from '~/http/api/tournament';
 import {useTournamentStore} from '~/stores/useTournamentStore';
-import {useApiError, useSanctumClient, useToast} from '#imports';
+import {useSanctumClient, useToast} from '#imports';
 import type {BracketPreview, ConfirmBracketMatch} from '~/models/Bracket';
 import {ga4Event} from '~/utils/ga4';
 
@@ -481,12 +480,6 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       tournamentFields.value = response?.data ?? [];
     } catch (error) {
       tournamentFields.value = [];
-      const { message } = useApiError(error as FetchError);
-      useToast().toast({
-        type: 'error',
-        msg: 'Campos de juego',
-        description: message,
-      });
       throw error;
     } finally {
       isLoadingTournamentFields.value = false;
@@ -502,12 +495,6 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       regenerationAnalysis.value = analysis;
       return analysis;
     } catch (error) {
-      const { message } = useApiError(error as FetchError);
-      useToast().toast({
-        type: 'error',
-        msg: 'Regenerar calendario',
-        description: message,
-      });
       throw error;
     } finally {
       isAnalyzingRegeneration.value = false;
@@ -546,12 +533,6 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       });
       return response;
     } catch (error) {
-      const { message } = useApiError(error as FetchError);
-      useToast().toast({
-        type: 'error',
-        msg: 'Regenerar calendario',
-        description: message,
-      });
       throw error;
     } finally {
       isConfirmingRegeneration.value = false;
@@ -602,12 +583,6 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       bracketPreview.value = null;
       bracketPreviewPhase.value = null;
     } catch (error) {
-      const { message } = useApiError(error as FetchError);
-      useToast().toast({
-        type: 'error',
-        msg: 'Fase del torneo',
-        description: message,
-      });
       throw error;
     } finally {
       isAdvancingPhase.value = false;
@@ -647,12 +622,6 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
         })) ?? [];
     } catch (error) {
       resetBracketPreview();
-      const { message } = useApiError(error as FetchError);
-      useToast().toast({
-        type: 'error',
-        msg: 'Llaves de eliminación',
-        description: message,
-      });
       throw error;
     } finally {
       isLoadingBracketPreview.value = false;
@@ -681,12 +650,6 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       schedules.value.rounds = [];
       await getTournamentSchedules();
     } catch (error) {
-      const { message } = useApiError(error as FetchError);
-      useToast().toast({
-        type: 'error',
-        msg: 'Llaves de eliminación',
-        description: message,
-      });
       throw error;
     } finally {
       isConfirmingBracket.value = false;
@@ -709,13 +672,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
         teams_count: scheduleStoreRequest.value?.general?.total_teams ?? scheduleSettings.value?.teams ?? null,
       });
       scheduleDialog.value = false;
-    } catch (error) {
-      const { message } = useApiError(error as FetchError);
-      useToast().toast({
-        type: 'error',
-        msg: 'Calendario',
-        description: message,
-      });
+    } catch {
     }
   };
   const applyScheduleSettings = (data: ScheduleSettings) => {

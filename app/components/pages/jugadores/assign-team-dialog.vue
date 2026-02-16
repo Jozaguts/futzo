@@ -2,7 +2,6 @@
   const { showAssignTeam, playerId } = storeToRefs(usePlayerStore())
   const teamId = ref<number | null>(null)
   const { teams } = storeToRefs(useTeamStore())
-  const { toast } = useToast()
   const confirmAssignment = async () => {
     const client = useSanctumClient()
     if (teamId.value) {
@@ -14,12 +13,7 @@
         playerId.value = null
         showAssignTeam.value = false
         await usePlayerStore().getPlayers()
-      } catch (error: any) {
-        toast({
-          type: 'error',
-          msg: 'No se pudo asignar',
-          description: error?.data?.message ?? 'Inténtalo nuevamente.',
-        })
+      } catch {
       }
     }
   }

@@ -232,11 +232,6 @@ const ensureLeagueLocations = async () => {
       name: location.name,
     }))
   } catch {
-    toast({
-      type: 'error',
-      msg: 'Error al cargar sedes',
-      description: 'No pudimos obtener la lista de sedes. Intenta nuevamente.',
-    })
   }
 }
 
@@ -293,12 +288,7 @@ const saveHomePreferences = async () => {
       description: 'Guardamos las preferencias de localía del equipo.',
     })
     assignDialog.value = false
-  } catch (error: any) {
-    toast({
-      type: 'error',
-      msg: 'Error al guardar',
-      description: error?.data?.message ?? 'No pudimos guardar las preferencias. Intenta nuevamente.',
-    })
+  } catch {
   } finally {
     assignLoading.value = false
   }
@@ -321,11 +311,6 @@ const qrCodeHandler = async (team: Team) => {
     throw new Error('QR no disponible')
   } catch {
     qr.value.hasError = true
-    toast({
-      type: 'error',
-      msg: 'No se pudo generar el QR',
-      description: 'Intenta nuevamente en unos momentos.',
-    })
   } finally {
     qr.value.loadingTeamId = null
   }

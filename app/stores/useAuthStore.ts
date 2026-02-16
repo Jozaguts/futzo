@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia';
-import type { ResetPasswordState, UpdateUserForm, UpdateUserPasswordForm, User } from '~/models/User';
-import { useToast } from '~/composables/useToast';
+import {defineStore} from 'pinia';
+import type {ResetPasswordState, UpdateUserForm, UpdateUserPasswordForm, User} from '~/models/User';
+import {useToast} from '~/composables/useToast';
 
 export const useAuthStore = defineStore(
   'authStore',
@@ -63,12 +63,7 @@ export const useAuthStore = defineStore(
             description: 'Tu contraseña se ha actualizado exitosamente.',
           });
         })
-        .catch((error) => {
-          const message =
-            error?.data?.message ||
-            'No se pudo actualizar la contraseña. Verifica tu información e inténtalo de nuevo.';
-          toast({ type: 'error', msg: 'Error al Actualizar Contraseña', description: message });
-        });
+        .catch(() => {});
     };
     const updateImage = async (image: File) => {
       const client = useSanctumClient();
@@ -87,11 +82,7 @@ export const useAuthStore = defineStore(
             description: 'Tu imagen se ha actualizado exitosamente.',
           });
         })
-        .catch((error) => {
-          const message =
-            error?.data?.message || 'No se pudo actualizar tu imagen. Verifica tu información e inténtalo de nuevo.';
-          toast({ type: 'error', msg: 'Error al actualizar tu imagen', description: message });
-        });
+        .catch(() => {});
     };
     const reSendCode = async (param: string, type: string) => {
       resendingVerificationCode.value = true;
@@ -104,15 +95,7 @@ export const useAuthStore = defineStore(
             description: 'Tu código de verificación ha sido reenviado exitosamente.',
           });
         })
-        .catch((error) => {
-          toast({
-            type: 'error',
-            msg: 'Error al reenviar el código',
-            description:
-              error?.data?.message ??
-              'Ha ocurrido un error al intentar reenviar tu código de verificación. Por favor, intenta nuevamente más tarde.',
-          });
-        })
+        .catch(() => {})
         .finally(() => (resendingVerificationCode.value = false));
     };
     const isOperational = computed(() => !!user?.value?.is_operational);

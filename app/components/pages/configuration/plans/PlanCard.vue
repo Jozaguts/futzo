@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {Icon} from '#components'
 import type {FutzoPlan} from '~/models/Product'
-import {useToast} from '~/composables/useToast'
 import {createBillingPortalSession} from '~/http/api/stripe'
 
 const {
@@ -35,15 +34,8 @@ const {
         return
       }
       emit('checkout', { sku: plan.sku, period: isMonthlyPrice ? 'month' : 'year', name: plan.name })
-    } catch (error: any) {
+    } catch {
       loading.value = false
-      useToast().toast({
-        type: 'error',
-        msg: subscribed ? 'Portal de facturación' : 'Checkout',
-        description:
-          error?.data?.message ||
-          (subscribed ? 'No pudimos abrir el portal de facturación.' : 'No pudimos iniciar el pago. Intenta de nuevo.'),
-      })
     }
   }
   const catText = computed(() => {

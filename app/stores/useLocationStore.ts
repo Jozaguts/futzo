@@ -9,7 +9,6 @@ import type {
     LocationStoreRequest,
     Windows,
 } from '~/models/Location';
-import {useApiError} from '~/composables/useApiError';
 import type {IPagination} from '~/interfaces';
 import {ref} from 'vue';
 import {DEFAULT_POSITION} from '~/utils/constants';
@@ -233,15 +232,7 @@ export const useLocationStore = defineStore('locationStore', () => {
         });
         locationDialog.value = false;
       })
-      .catch((error) => {
-        const { message } = useApiError(error);
-        const { toast } = useToast();
-        toast({
-          type: 'error',
-          msg: 'Error al crear la ubicación',
-          description: message ?? 'Ocurrió un error al intentar crear la ubicación.',
-        });
-      });
+      .catch(() => {});
   }
 
   async function updateLocation(): Promise<void> {

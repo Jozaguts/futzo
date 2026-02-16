@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import {useDebounceFn} from '@vueuse/core'
 import {useToast} from '#imports'
-import {notifyApiError} from '~/utils/apiToast'
 import KpisMetricsSection from '~/components/shared/kpis-metrics-section.vue'
 import {
   applyDisciplinaryCase,
@@ -467,7 +466,6 @@ const props = defineProps<{
   const notifyRequestError = (error: unknown, fallbackDescription: string) => {
     const parsed = mapError(error)
     if (parsed.status) {
-      notifyApiError(parsed.status, parsed.data)
       return
     }
 

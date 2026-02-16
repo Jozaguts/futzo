@@ -50,12 +50,7 @@ const { toast } = useToast()
       if (!selectedTournamentId.value && list.length > 0) {
         selectedTournamentId.value = list[0]?.id as number
       }
-    } catch (error: any) {
-      toast({
-        type: 'error',
-        msg: 'No se pudieron cargar torneos',
-        description: error?.data?.message ?? 'Inténtalo nuevamente.',
-      })
+    } catch {
     } finally {
       loadingTournaments.value = false
     }
@@ -76,13 +71,8 @@ const { toast } = useToast()
         group_stage: response.group_stage ?? false,
         elimination_round_trip: response.elimination_round_trip ?? false,
       }
-    } catch (error: any) {
+    } catch {
       configuration.value = buildEmptyConfiguration(tournamentId)
-      toast({
-        type: 'error',
-        msg: 'No se pudo cargar la configuración',
-        description: error?.data?.message ?? 'Inténtalo nuevamente.',
-      })
     } finally {
       loadingConfig.value = false
     }
@@ -102,12 +92,7 @@ const { toast } = useToast()
         msg: 'Configuración guardada',
         description: 'Los ajustes del torneo se actualizaron correctamente.',
       })
-    } catch (error: any) {
-      toast({
-        type: 'error',
-        msg: 'No se pudo guardar',
-        description: error?.data?.message ?? 'Inténtalo nuevamente.',
-      })
+    } catch {
     } finally {
       saving.value = false
     }

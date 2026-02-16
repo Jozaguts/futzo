@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-  import ReScheduleGame from '~/components/pages/calendario/re-schedule-game.vue'
-  import GameReport from '~/components/pages/calendario/game-report/index.vue'
-  import PhaseProgressCard from './phase-progress-card.vue'
-  import BracketSchedulerDialog from './bracket-scheduler-dialog.vue'
-  import ScheduleRoundsInfiniteScroll from './ScheduleRoundsInfiniteScroll.vue'
-  import { useToast } from '~/composables/useToast'
-  import { useSchedulePenaltyRules } from '~/composables/useSchedulePenaltyRules'
-  import type { Match, MatchAway, RoundStatus, ScheduleRoundDetails } from '~/models/Schedule'
-  import NoCalendar from '~/components/pages/torneos/no-calendar.vue'
-  import RegeneateRoundModalComponent from '~/components/pages/calendario/RegeneateRoundModalComponent.vue'
-  import { getScheduleRoundDetails, updateScheduleRoundDetails } from '~/http/api/schedule'
+import ReScheduleGame from '~/components/pages/calendario/re-schedule-game.vue'
+import GameReport from '~/components/pages/calendario/game-report/index.vue'
+import PhaseProgressCard from './phase-progress-card.vue'
+import BracketSchedulerDialog from './bracket-scheduler-dialog.vue'
+import ScheduleRoundsInfiniteScroll from './ScheduleRoundsInfiniteScroll.vue'
+import {useToast} from '~/composables/useToast'
+import {useSchedulePenaltyRules} from '~/composables/useSchedulePenaltyRules'
+import type {Match, MatchAway, RoundStatus, ScheduleRoundDetails} from '~/models/Schedule'
+import NoCalendar from '~/components/pages/torneos/no-calendar.vue'
+import RegeneateRoundModalComponent from '~/components/pages/calendario/RegeneateRoundModalComponent.vue'
+import {getScheduleRoundDetails, updateScheduleRoundDetails} from '~/http/api/schedule'
 
-  const { tournamentId, loading, tournament } = storeToRefs(useTournamentStore())
+const { tournamentId, loading, tournament } = storeToRefs(useTournamentStore())
   const { gameReportDialog, showReScheduleDialog, gameDetailsRequest } = storeToRefs(useGameStore())
   const scheduleStore = useScheduleStore()
   const {
@@ -267,12 +267,7 @@
         description: 'Los cambios se guardaron correctamente.',
       })
       roundState.value.data = await getScheduleRoundDetails(tournamentId.value as number, roundState.value.round)
-    } catch (error) {
-      toast({
-        type: 'error',
-        msg: 'Error al guardar',
-        description: 'No se pudieron guardar los cambios. Intenta nuevamente.',
-      })
+    } catch {
     } finally {
       roundState.value.fetching = false
     }

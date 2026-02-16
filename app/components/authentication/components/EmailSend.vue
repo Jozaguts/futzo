@@ -26,13 +26,7 @@
           initCounter()
         }
       })
-      .catch((error) => {
-        useToast().toast({
-          type: 'error',
-          msg: 'Error',
-          description: error?.data?.message ?? 'El correo o número de teléfono no es válido',
-        })
-      })
+      .catch(() => {})
       .finally(() => (forgotPasswordState.value.isFetching = false))
   }
   const initCounter = () => {

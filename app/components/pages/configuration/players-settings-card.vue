@@ -34,12 +34,7 @@ const { toast } = useToast()
         ),
         player_lock_duration_days: response.player_lock_duration_days ?? null,
       }
-    } catch (error: any) {
-      toast({
-        type: 'error',
-        msg: 'No se pudieron cargar ajustes',
-        description: error?.data?.message ?? 'Inténtalo nuevamente.',
-      })
+    } catch {
     } finally {
       loading.value = false
     }
@@ -61,12 +56,7 @@ const { toast } = useToast()
         msg: 'Configuración guardada',
         description: 'Los ajustes de jugadores se actualizaron correctamente.',
       })
-    } catch (error: any) {
-      toast({
-        type: 'error',
-        msg: 'No se pudo guardar',
-        description: error?.data?.message ?? 'Inténtalo nuevamente.',
-      })
+    } catch {
     } finally {
       saving.value = false
     }

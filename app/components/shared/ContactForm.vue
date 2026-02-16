@@ -1,11 +1,12 @@
 <script setup lang="ts">
-  import { object, number, string } from 'yup'
-  import { useForm } from 'vee-validate'
-  import { ref } from 'vue'
-  import type { SupportTicketForm } from '~/models/User'
-  import { createTicket } from '~/http/api/support'
-  import { useToast } from '#imports'
-  const emits = defineEmits<{
+import {number, object, string} from 'yup'
+import {useForm} from 'vee-validate'
+import {ref} from 'vue'
+import type {SupportTicketForm} from '~/models/User'
+import {createTicket} from '~/http/api/support'
+import {useToast} from '#imports'
+
+const emits = defineEmits<{
     (e: 'submitted'): void
   }>()
   const { defineField, handleSubmit, meta } = useForm<SupportTicketForm>({
@@ -39,11 +40,6 @@
       })
       emits('submitted')
     } catch (e) {
-      useToast().toast({
-        msg: 'Error al enviar el mensaje',
-        description: e?.data?.message ?? 'Ha ocurrido un error al enviar tu mensaje, por favor intenta de nuevo.',
-        type: 'error',
-      })
     } finally {
       loading.value = false
     }

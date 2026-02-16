@@ -76,8 +76,6 @@ type ComponentNames = 'OtpCard' | 'VerifiedCard'
         refreshIdentity()
       })
       .catch((error) => {
-        const errorMessage =
-          error?.data?.message ?? 'La verificación de tu cuenta ha fallado. Por favor, vuelve a intentarlo.'
         if (error.response.status === 401) {
           toast({
             type: 'info',
@@ -87,12 +85,6 @@ type ComponentNames = 'OtpCard' | 'VerifiedCard'
           setTimeoutId = setTimeout(() => {
             useRouter().push({ name: 'login', params: { username: param.value.value as string } })
           }, 3000)
-        } else {
-          toast({
-            type: 'error',
-            msg: 'Cuenta No Verificada',
-            description: errorMessage,
-          })
         }
       })
       .finally(() => {

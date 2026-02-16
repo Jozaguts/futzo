@@ -292,14 +292,7 @@ export const useGameStore = defineStore('gameStore', () => {
           gameDetailsRequest.value.day = game.value.options[0].available_intervals.day;
         }
       })
-      .catch(() => {
-        useToast().toast({
-          type: 'error',
-          msg: 'Error al obtener el partido',
-          description:
-            'Hubo un error al intentar obtener los detalles del partido. Por favor, intente nuevamente más tarde.',
-        });
-      });
+      .catch(() => {});
   };
   const reScheduleGame = async () => {
     if (!gameDetailsRequest.value?.date) {
@@ -354,13 +347,7 @@ export const useGameStore = defineStore('gameStore', () => {
         });
         showReScheduleDialog.value = false;
       })
-      .catch(() => {
-        useToast().toast({
-          type: 'error',
-          msg: 'Error al reprogramar partido',
-          description: 'Hubo un error al intentar reprogramar el partido. Por favor, intente nuevamente más tarde.',
-        });
-      });
+      .catch(() => {});
   };
   const initializeGameReport = async (game_id: number) => {
     return await gameAPI.initializeGameReport(game_id);
@@ -459,12 +446,6 @@ export const useGameStore = defineStore('gameStore', () => {
       });
     } catch (error) {
       console.log({ error });
-      useToast().toast({
-        type: 'error',
-        msg: 'Error al guardar el evento',
-        description:
-          'Hubo un error al intentar guardar el evento del partido. Por favor, intente nuevamente más tarde.',
-      });
     } finally {
       dialogState.value.show = false;
     }

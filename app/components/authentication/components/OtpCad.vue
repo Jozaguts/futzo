@@ -23,13 +23,7 @@
           forgotPasswordState.value.step = 'confirm-password'
         }
       })
-      .catch((error) => {
-        useToast().toast({
-          type: 'error',
-          msg: 'Error',
-          description: error?.data?.message ?? 'El código de verificación no es válido',
-        })
-      })
+      .catch(() => {})
       .finally(() => (forgotPasswordState.value.isFetching = false))
   }
   const resendCode = () => {

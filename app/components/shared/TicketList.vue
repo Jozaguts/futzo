@@ -32,11 +32,6 @@ const { user } = storeToRefs(useAuthStore())
       ticket_id.value = ''
     } catch (e) {
       console.log(e)
-      useToast().toast({
-        type: 'error',
-        msg: 'Error al enviar la respuesta',
-        description: 'Ha ocurrido un error al enviar tu respuesta, por favor intenta de nuevo',
-      })
     } finally {
       loading.value = false
     }

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-  import { useForm } from 'vee-validate'
-  import { object, string } from 'yup'
-  import { specialCharacters } from '~/utils/constants'
+import {useForm} from 'vee-validate'
+import {object, string} from 'yup'
+import {specialCharacters} from '~/utils/constants'
 
-  const authStore = useAuthStore()
+const authStore = useAuthStore()
   const { forgotPasswordState } = storeToRefs(authStore)
   const { handleSubmit, defineField, errors, meta } = useForm({
     validationSchema: toTypedSchema(
@@ -45,13 +45,7 @@
           emits('backToLogin')
         }
       })
-      .catch((error) => {
-        useToast().toast({
-          type: 'error',
-          msg: 'Error',
-          description: error?.data?.message ?? 'Error al restablecer la contraseña',
-        })
-      })
+      .catch(() => {})
       .finally(() => (forgotPasswordState.value.isFetching = false))
   })
   const emits = defineEmits(['backToLogin'])
