@@ -11,7 +11,7 @@ export default function useAuth() {
   const isPhone = ref(false);
   const { handleSubmit, defineField, errors, meta, resetForm } = useForm({
     initialValues: {
-      isSignUp: true,
+      isSignUp: false,
     },
     validationSchema: toTypedSchema(
       object({
@@ -49,7 +49,7 @@ export default function useAuth() {
   const [username] = reactive(defineField('username'));
   const [remember] = reactive(defineField('remember'));
   const [isSignUp] = reactive(defineField('isSignUp'));
-  const showRegisterForm = ref(true);
+  const showRegisterForm = ref(false);
   const isLoading = ref(false);
   const errorMessage = ref('');
   const areaCode = ref('+52');

@@ -1,7 +1,16 @@
 
 .login-card{
-  padding: 2rem 0 0 0;
-  height: calc(100vh - 24px);
+  padding: 1.5rem 0 0 0;
+  width: 100%;
+  height: auto;
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.login-card__content {
+  overflow-y: auto;
+  padding-bottom: 1rem;
 }
 .auth-logo {
   position: absolute;
@@ -102,6 +111,6 @@
 @media screen and (width >= 600px) {
   .login-card{
     padding: 24px;
-    height: 100%;
+    max-height: calc(100dvh - 40px);
   }
 }

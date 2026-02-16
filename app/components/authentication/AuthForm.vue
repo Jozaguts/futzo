@@ -70,10 +70,8 @@ const {
       <v-card
         :key="1"
         v-if="!showForgotPassword"
-        class="futzo-rounded login-card"
+        class="futzo-rounded login-card d-flex flex-column"
         max-width="448"
-        min-height="80%"
-        height="100%"
         elevation="0"
       >
         <v-card-item class="justify-center text-center">
@@ -81,7 +79,7 @@ const {
           <v-card-title class="text-black text-h4">{{ title }}</v-card-title>
           <v-card-subtitle>Administra torneos y ligas fácilmente.</v-card-subtitle>
         </v-card-item>
-        <v-card-text>
+        <v-card-text class="login-card__content">
           <v-form @submit.prevent="submitHandler" class="px-4">
             <v-row>
               <AuthProvider />
@@ -89,6 +87,12 @@ const {
                 <VDivider />
                 <span class="mx-4 separator-text">o</span>
                 <VDivider />
+              </v-col>
+              <v-col cols="12" class="text-center text-base pt-0 pb-2 login-card__mode-switch">
+                <span>{{ showRegisterForm ? '¿Ya tienes cuenta?' : '¿No tienes cuenta? ' }}</span>
+                <a tabindex="5" href="#" class="text-primary ms-2" @click="showRegisterFormHandler">
+                  {{ showRegisterForm ? 'Iniciar sesión' : 'Crea una cuenta' }}
+                </a>
               </v-col>
               <v-expand-transition>
                 <v-col key="name" cols="12" v-if="showRegisterForm" class="pb-0">
@@ -190,12 +194,6 @@ const {
                 </div>
               </v-col>
               <ErrorMessages v-model:errors="errorMessage" :username="username" :area-code="areaCode" />
-              <v-col cols="12" class="text-center text-base pb-4">
-                <span>{{ showRegisterForm ? '¿Ya tienes cuenta?' : '¿No tienes cuenta? ' }}</span>
-                <a tabindex="5" href="#" class="text-primary ms-2" @click="showRegisterFormHandler">
-                  {{ showRegisterForm ? 'Iniciar sesión' : 'Crea una cuenta' }}
-                </a>
-              </v-col>
             </v-row>
           </v-form>
         </v-card-text>

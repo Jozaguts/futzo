@@ -25,9 +25,9 @@ const { errorMessage } = storeToRefs(useAuthStore())
   })
 </script>
 <template>
-  <v-container fluid class="fill-height py-0" v-if="!loadingPage">
+  <v-container fluid class="fill-height py-0 login-page-container" v-if="!loadingPage">
     <v-row class="fill-height">
-      <v-col cols="12" class="d-flex justify-center align-center">
+      <v-col cols="12" class="d-flex justify-center align-center py-4">
         <AuthForm />
       </v-col>
     </v-row>
@@ -35,4 +35,8 @@ const { errorMessage } = storeToRefs(useAuthStore())
 </template>
 <style lang="scss">
   @use '@/assets/scss/pages/page-auth.scss';
+
+  .login-page-container {
+    overflow-y: auto;
+  }
 </style>
