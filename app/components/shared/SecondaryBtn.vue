@@ -32,6 +32,9 @@
     size="large"
     :density="density"
     :variant="variant"
+    :disabled="props.disabled"
+    :loading="props.loading"
+    :color="props.color"
     @click="() => emits('btn-click')"
   >
     <template #prepend v-if="props.showIcon && props.iconPosition === 'left'">

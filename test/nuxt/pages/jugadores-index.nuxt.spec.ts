@@ -11,6 +11,10 @@ const registerTourRef = vi.fn()
 const startTour = vi.fn()
 const resetTour = vi.fn()
 const recalculateTour = vi.fn()
+const canCreatePlayerRef = ref(true)
+const canImportPlayersRef = ref(true)
+const isTeamScopedRoleRef = ref(false)
+const toastMock = vi.fn()
 
 const playerStoreMock = {
   getPlayers,
@@ -45,6 +49,12 @@ mockNuxtImport('useTourHub', () => () => ({
   setActiveController: vi.fn(),
   clearActiveController: vi.fn(),
 }))
+mockNuxtImport('useRoleAccess', () => () => ({
+  canCreatePlayer: canCreatePlayerRef,
+  canImportPlayers: canImportPlayersRef,
+  isTeamScopedRole: isTeamScopedRoleRef,
+}))
+mockNuxtImport('useToast', () => () => ({ toast: toastMock }))
 
 describe('Jugadores index page', () => {
   beforeEach(() => {
@@ -52,6 +62,10 @@ describe('Jugadores index page', () => {
     getPlayers.mockClear()
     listTeams.mockClear()
     fetchPositions.mockClear()
+    canCreatePlayerRef.value = true
+    canImportPlayersRef.value = true
+    isTeamScopedRoleRef.value = false
+    toastMock.mockClear()
   })
 
   it('renders intro shell, filters, kpis and players table section', async () => {
@@ -61,8 +75,14 @@ describe('Jugadores index page', () => {
           PageLayout: { template: '<div><slot name="app-bar" /><slot /><slot name="tour" /></div>' },
           AppBar: { template: '<div></div>' },
           SearchInput: { template: '<input />' },
-          PrimaryBtn: { template: '<button><slot /></button>' },
-          SecondaryBtn: { template: '<button><slot /></button>' },
+          PrimaryBtn: {
+            props: ['disabled'],
+            template: '<button data-testid="jugadores-new-player-btn" :data-disabled="String(!!disabled)"><slot /></button>',
+          },
+          SecondaryBtn: {
+            props: ['disabled'],
+            template: '<button data-testid="jugadores-import-btn" :data-disabled="String(!!disabled)"><slot /></button>',
+          },
           PlayerKpis: { template: '<div data-testid="jugadores-kpis"></div>' },
           NoPlayers: { template: '<div data-testid="no-players"></div>' },
           PlayersTable: { template: '<div data-testid="players-table"></div>' },
@@ -87,5 +107,40 @@ describe('Jugadores index page', () => {
     expect(getPlayers).toHaveBeenCalled()
     expect(listTeams).toHaveBeenCalled()
     expect(fetchPositions).toHaveBeenCalled()
+  })
+
+  it('disables actions when role access denies player management', async () => {
+    canCreatePlayerRef.value = false
+    canImportPlayersRef.value = false
+
+    const wrapper = await mountSuspended(JugadoresPage, {
+      global: {
+        stubs: {
+          PageLayout: { template: '<div><slot name="app-bar" /><slot /><slot name="tour" /></div>' },
+          AppBar: { template: '<div></div>' },
+          SearchInput: { template: '<input />' },
+          PrimaryBtn: {
+            props: ['disabled'],
+            template: '<button data-testid="jugadores-new-player-btn" :data-disabled="String(!!disabled)"></button>',
+          },
+          SecondaryBtn: {
+            props: ['disabled'],
+            template: '<button data-testid="jugadores-import-btn" :data-disabled="String(!!disabled)"></button>',
+          },
+          PlayerKpis: { template: '<div></div>' },
+          NoPlayers: { template: '<div></div>' },
+          PlayersTable: { template: '<div></div>' },
+          JugadoresForm: { template: '<div></div>' },
+          ImportDialog: { template: '<div></div>' },
+          AssignTeamDialog: { template: '<div></div>' },
+          'v-select': { template: '<select></select>' },
+          LazyTour: { template: '<div></div>' },
+          Tour: { template: '<div></div>' },
+        },
+      },
+    })
+
+    expect(wrapper.find('[data-testid="jugadores-new-player-btn"]').attributes('data-disabled')).toBe('true')
+    expect(wrapper.find('[data-testid="jugadores-import-btn"]').attributes('data-disabled')).toBe('true')
   })
 })

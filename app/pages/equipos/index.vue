@@ -9,6 +9,7 @@ import SearchInput from '~/components/pages/equipos/app-bar-search-input.vue'
 
 definePageMeta({   middleware: ['sanctum:auth']})
 const teamStore = useTeamStore()
+  const { canCreateTeam, canImportTeams } = useRoleAccess()
   const { noTeams, tourSteps, listKpis, dialog, importModal } = storeToRefs(teamStore)
   const { registerTourRef, startTour, resetTour, recalculateTour } = teamStore
   const { setActiveController, clearActiveController } = useTourHub()
@@ -41,13 +42,15 @@ const teamStore = useTeamStore()
                 text="Nuevo equipo"
                 icon="lucide:shirt"
                 class="equipos-page__quick-btn teams-primary-btn"
-                @click="dialog = true"
+                :disabled="!canCreateTeam"
+                @click="canCreateTeam && (dialog = true)"
               />
               <SecondaryBtn
                 text="Importar equipos"
                 icon="lucide:upload"
                 class="equipos-page__quick-btn"
-                @btn-click="importModal = true"
+                :disabled="!canImportTeams"
+                @btn-click="canImportTeams && (importModal = true)"
               />
             </div>
           </div>

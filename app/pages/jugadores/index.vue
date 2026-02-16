@@ -15,6 +15,8 @@ definePageMeta({
 const playerStore = usePlayerStore()
 const teamStore = useTeamStore()
 const positionsStore = usePositionsStore()
+const { canCreatePlayer, canImportPlayers, isTeamScopedRole } = useRoleAccess()
+const { toast } = useToast()
 const { dialog, tourSteps, importModal, players, noPlayers, pagination } = storeToRefs(playerStore)
 const { teams } = storeToRefs(teamStore)
 const { positions } = storeToRefs(positionsStore)
@@ -30,7 +32,45 @@ const searchHandler = useDebounceFn(async (search: string) => {
   await playerStore.getPlayers(search)
 }, 500)
 
+const hasAvailableRosterSlots = computed(() => {
+  if (!isTeamScopedRole.value) {
+    return true
+  }
+
+  const ownTeam = teams.value?.[0] as any
+  if (!ownTeam) {
+    return false
+  }
+
+  const playersCount = Number(ownTeam?.players_count ?? 0)
+  const maxPlayers = Number(
+    ownTeam?.tournament?.max_players_per_team ??
+      ownTeam?.tournament_configuration?.max_players_per_team ??
+      ownTeam?.max_players_per_team ??
+      0
+  )
+
+  if (!Number.isFinite(maxPlayers) || maxPlayers <= 0) {
+    return true
+  }
+
+  return playersCount < maxPlayers
+})
+
+const canOpenCreatePlayer = computed(() => canCreatePlayer.value && hasAvailableRosterSlots.value)
+
 const openCreatePlayer = () => {
+  if (!canCreatePlayer.value) {
+    return
+  }
+  if (!hasAvailableRosterSlots.value) {
+    toast({
+      type: 'warning',
+      msg: 'Sin cupos disponibles',
+      description: 'Tu equipo alcanzó el máximo de jugadores permitidos.',
+    })
+    return
+  }
   dialog.value = true
 }
 
@@ -65,13 +105,15 @@ onBeforeUnmount(() => {
                 text="Nuevo jugador"
                 icon="lucide:user-plus"
                 class="jugadores-page__quick-btn players-primary-btn"
+                :disabled="!canOpenCreatePlayer"
                 @click="openCreatePlayer"
               />
               <SecondaryBtn
                 text="Importar jugadores"
                 icon="lucide:upload"
                 class="jugadores-page__quick-btn"
-                @btn-click="importModal = true"
+                :disabled="!canImportPlayers"
+                @btn-click="canImportPlayers && (importModal = true)"
               />
             </div>
           </div>

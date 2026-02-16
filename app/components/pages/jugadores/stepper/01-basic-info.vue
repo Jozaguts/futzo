@@ -11,7 +11,8 @@ import type {User} from '~/models/User'
 import * as settingsAPI from '~/http/api/settings'
 import {storeToRefs, toTypedSchema, useCategoryStore, useI18n, usePlayerStore, useTeamStore} from '#imports'
 
-const { t } = useI18n()
+  const { t } = useI18n()
+  const { isTeamScopedRole } = useRoleAccess()
   const { isEdition, playerStoreRequest, steps } = storeToRefs(usePlayerStore())
   const { teams } = storeToRefs(useTeamStore())
   const { categories } = storeToRefs(useCategoryStore())
@@ -102,6 +103,7 @@ const { t } = useI18n()
   )
 
   const selectedTeam = computed(() => teams.value?.find((team: Team) => team.id === team_id.value))
+  const isTeamSelectionLocked = computed(() => isPreRegister.value || isEdition.value || isTeamScopedRole.value)
   const selectedTournamentId = computed(
     () => selectedTeam.value?.tournament?.id ?? (selectedTeam.value as any)?.tournament_id ?? null
   )
@@ -163,6 +165,22 @@ const { t } = useI18n()
     }
     fetchVerificationSettings()
   })
+
+  const syncTeamScopedDefaults = () => {
+    if (!isTeamScopedRole.value || isEdition.value || isPreRegister.value) {
+      return
+    }
+    const ownTeam = teams.value?.[0]
+    if (!ownTeam?.id) {
+      return
+    }
+    team_id.value = ownTeam.id
+    updateCategory(ownTeam.id)
+  }
+
+  watch(teams, () => {
+    syncTeamScopedDefaults()
+  }, { immediate: true })
 
   watch(
     selectedTournamentId,
@@ -288,7 +306,7 @@ const { t } = useI18n()
       <template #input>
         <v-autocomplete
           item-value="id"
-          :disabled="isPreRegister || isEdition"
+          :disabled="isTeamSelectionLocked"
           item-title="name"
           v-model="team_id"
           density="compact"

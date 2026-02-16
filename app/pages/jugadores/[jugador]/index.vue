@@ -76,6 +76,7 @@ dayjs.extend(customParseFormat)
   const route = useRoute()
   const router = useRouter()
   const playerStore = usePlayerStore()
+  const { isPlayerRole, canManageSensitivePlayerActions } = useRoleAccess()
   const { player } = storeToRefs(playerStore)
   const positionsStore = usePositionsStore()
   const { positions } = storeToRefs(positionsStore)
@@ -368,6 +369,19 @@ dayjs.extend(customParseFormat)
   })
 
   type EditableFields = ReturnType<typeof createDefaultEditableFields>
+  const playerEditableFields = new Set<keyof EditableFields>([
+    'name',
+    'last_name',
+    'birthdate',
+    'nationality',
+    'email',
+    'phone',
+    'height',
+    'weight',
+    'dominant_foot',
+    'medical_notes',
+    'notes',
+  ])
 
   type DetailSectionItem = {
     label: string
@@ -565,8 +579,14 @@ dayjs.extend(customParseFormat)
 
   const isSectionEditing = (sectionId: string) => Boolean(sectionEditState.value[sectionId])
   const isSectionSaving = (sectionId: string) => Boolean(sectionSavingState.value[sectionId])
+  const canEditFieldByRole = (field: keyof EditableFields) => !isPlayerRole.value || playerEditableFields.has(field)
+  const canSectionBeEdited = (sectionId: string) => {
+    const section = detailSections.find((item) => item.id === sectionId)
+    if (!section) return false
+    return section.items.some((item) => item.readonly !== true && item.updatable !== false && canEditFieldByRole(item.field))
+  }
   const isItemEditable = (sectionId: string, item: DetailSectionItem) =>
-    item.readonly !== true && isSectionEditing(sectionId)
+    item.readonly !== true && isSectionEditing(sectionId) && canEditFieldByRole(item.field)
   const numericFieldSet = new Set<keyof EditableFields>(['number', 'height', 'weight'] as (keyof EditableFields)[])
   const normalizeFieldValue = (field: keyof EditableFields, value: any) => {
     if (value === '' || value === undefined) {
@@ -593,6 +613,9 @@ dayjs.extend(customParseFormat)
     return section.items.reduce(
       (payload, item) => {
         if (item.updatable === false) {
+          return payload
+        }
+        if (!canEditFieldByRole(item.field)) {
           return payload
         }
         const field = item.field
@@ -625,6 +648,9 @@ dayjs.extend(customParseFormat)
   }
   const toggleSectionEditing = async (sectionId: string) => {
     if (isSectionSaving(sectionId)) {
+      return
+    }
+    if (!canSectionBeEdited(sectionId)) {
       return
     }
     if (isSectionEditing(sectionId)) {
@@ -744,7 +770,7 @@ dayjs.extend(customParseFormat)
                   variant="text"
                   :prepend-icon="isSectionEditing(section.id) ? 'mdi-check' : 'mdi-pencil'"
                   :loading="isSectionSaving(section.id)"
-                  :disabled="isSectionSaving(section.id)"
+                  :disabled="isSectionSaving(section.id) || !canSectionBeEdited(section.id)"
                   class="ml-auto"
                   @click="toggleSectionEditing(section.id)"
                 >
@@ -793,7 +819,7 @@ dayjs.extend(customParseFormat)
           </div>
 
           <div class="player-detail-grid__aside d-flex flex-column ga-4">
-            <v-card class="detail-card futzo-rounded" variant="flat">
+            <v-card v-if="canManageSensitivePlayerActions" class="detail-card futzo-rounded" variant="flat">
               <div class="detail-card__header">
                 <div>
                   <h3 class="text-subtitle-1 mb-1">Estadísticas</h3>
@@ -808,7 +834,7 @@ dayjs.extend(customParseFormat)
               </div>
             </v-card>
 
-            <v-card class="detail-card futzo-rounded" variant="flat">
+            <v-card v-if="canManageSensitivePlayerActions" class="detail-card futzo-rounded" variant="flat">
               <div class="detail-card__header">
                 <div>
                   <h3 class="text-subtitle-1 mb-1">Verificación</h3>
@@ -875,7 +901,7 @@ dayjs.extend(customParseFormat)
               </div>
             </v-card>
 
-            <v-card class="detail-card futzo-rounded" variant="flat">
+            <v-card v-if="canManageSensitivePlayerActions" class="detail-card futzo-rounded" variant="flat">
               <div class="detail-card__header">
                 <div>
                   <h3 class="text-subtitle-1 mb-1">Bloqueo de transferencia</h3>

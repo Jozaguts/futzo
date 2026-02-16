@@ -92,6 +92,9 @@ describe('Player stepper basic info', () => {
       steps,
       initPlayerForm,
     }))
+    mockNuxtImport('useRoleAccess', () => () => ({
+      isTeamScopedRole: ref(false),
+    }))
     mockNuxtImport('useTeamStore', () => () => ({ teams: ref([]) }))
     mockNuxtImport('useCategoryStore', () => () => ({ categories: ref([]) }))
     // useRoute and useSanctumUser are mocked at module scope
