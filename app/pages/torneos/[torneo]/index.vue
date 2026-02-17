@@ -141,9 +141,45 @@ const tournamentStore = useTournamentStore()
   const progressStart = computed(() => tournament.value?.start_date_to_string ?? '')
   const progressEnd = computed(() => tournament.value?.end_date_to_string ?? '')
   const currentTournamentId = computed(() => tournament.value?.id ?? tournamentId.value ?? null)
-  const tournamentTeams = computed<TournamentTeam[]>(() =>
-    Array.isArray(tournament.value?.teams) ? tournament.value.teams : []
-  )
+  const standingsRows = computed<any[]>(() => {
+    if (Array.isArray(standings.value)) {
+      return standings.value
+    }
+    if (Array.isArray((standings.value as any)?.data)) {
+      return (standings.value as any).data
+    }
+    if (Array.isArray((standings.value as any)?.standings)) {
+      return (standings.value as any).standings
+    }
+    return []
+  })
+  const fallbackTeamsFromStandings = computed<TournamentTeam[]>(() => {
+    const uniqueTeams = new Map<number, { id: number; name: string }>()
+    standingsRows.value.forEach((row: any) => {
+      const id = Number(row?.team?.id ?? row?.team_id ?? 0)
+      const name = String(row?.team?.name ?? row?.name ?? '').trim()
+      if (!id || !name || uniqueTeams.has(id)) {
+        return
+      }
+      uniqueTeams.set(id, { id, name })
+    })
+    return Array.from(uniqueTeams.values()).map(({ id, name }) => ({
+      id,
+      name,
+      pivot: {
+        tournament_id: Number(currentTournamentId.value ?? 0),
+        team_id: id,
+        is_active: true,
+        inactive_from_round: null,
+      },
+    }))
+  })
+  const tournamentTeams = computed<TournamentTeam[]>(() => {
+    if (Array.isArray(tournament.value?.teams) && tournament.value.teams.length > 0) {
+      return tournament.value.teams
+    }
+    return fallbackTeamsFromStandings.value
+  })
   const selectedCompetitionTeamId = ref<number | null>(null)
   const isUpdatingCompetitionStatus = ref(false)
   const tournamentTeamOptions = computed(() =>
