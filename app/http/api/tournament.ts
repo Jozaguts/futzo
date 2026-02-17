@@ -194,3 +194,21 @@ export const confirmScheduleRegeneration = async (tournamentId: number, payload?
     options
   );
 };
+
+export type UpdateTournamentTeamCompetitionStatusPayload = {
+  is_active: boolean;
+  effective_round?: number;
+};
+
+export const updateTournamentTeamCompetitionStatus = async (
+  tournamentId: number,
+  teamId: number,
+  payload: UpdateTournamentTeamCompetitionStatusPayload
+) => {
+  const client = useSanctumClient();
+  return await client(`/api/v1/admin/tournaments/${tournamentId}/teams/${teamId}/competition-status`, {
+    method: 'PATCH',
+    body: payload,
+    meta: { toast: false },
+  } as any);
+};

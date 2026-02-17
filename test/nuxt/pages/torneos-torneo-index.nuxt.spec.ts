@@ -6,6 +6,8 @@ import TorneoIndexPage from '~/pages/torneos/[torneo]/index.vue'
 const standings = ref([] as any[])
 const tournamentId = ref<number | undefined>(1)
 const tournament = ref({
+  id: 1,
+  slug: 'inactivos-2026-apertura',
   name: 'Inactivos 2026 Apertura',
   status: 'en curso',
   format_label: 'Liga y Eliminatoria',
@@ -17,6 +19,10 @@ const tournament = ref({
   progress: { percent: 40, label: '18/45' },
   start_date_to_string: '15 Ene 2026',
   end_date_to_string: '30 May 2026',
+  teams: [
+    { id: 9, name: 'Águilas', pivot: { tournament_id: 1, team_id: 9, is_active: true, inactive_from_round: null } },
+    { id: 11, name: 'Titanes', pivot: { tournament_id: 1, team_id: 11, is_active: false, inactive_from_round: 6 } },
+  ],
 })
 
 const getStandings = vi.fn()
@@ -25,12 +31,14 @@ const tournamentApi = vi.hoisted(() => ({
   getTournamentMetrics: vi.fn(),
   getTournamentRegistrationQRCode: vi.fn(),
   getTournamentScheduleQRCode: vi.fn(),
+  updateTournamentTeamCompetitionStatus: vi.fn(),
 }))
 
 vi.mock('~/http/api/tournament', () => ({
   getTournamentMetrics: tournamentApi.getTournamentMetrics,
   getTournamentRegistrationQRCode: tournamentApi.getTournamentRegistrationQRCode,
   getTournamentScheduleQRCode: tournamentApi.getTournamentScheduleQRCode,
+  updateTournamentTeamCompetitionStatus: tournamentApi.updateTournamentTeamCompetitionStatus,
 }))
 
 mockNuxtImport('useTournamentStore', () => () => ({
@@ -57,6 +65,7 @@ describe('Torneo admin index page', () => {
     getTournamentBySlug.mockResolvedValue(undefined)
     tournamentApi.getTournamentMetrics.mockReset()
     tournamentApi.getTournamentScheduleQRCode.mockReset()
+    tournamentApi.updateTournamentTeamCompetitionStatus.mockReset()
     tournamentApi.getTournamentMetrics.mockResolvedValue({
       data: {
         registeredTeams: { total: 10, current: 5, dailyData: [], label: 'vs último mes' },
@@ -66,6 +75,7 @@ describe('Torneo admin index page', () => {
       },
     })
     tournamentApi.getTournamentScheduleQRCode.mockResolvedValue({ image: 'data:image/png;base64,mock' })
+    tournamentApi.updateTournamentTeamCompetitionStatus.mockResolvedValue({})
   })
 
   it('renders header and tabs without next/last games', async () => {
@@ -93,7 +103,33 @@ describe('Torneo admin index page', () => {
           Icon: { template: '<i></i>' },
           'v-btn-group': { template: '<div><slot /></div>' },
           'v-chip': { template: '<span><slot /></span>' },
-          'v-btn': { template: '<button><slot /></button>' },
+          'v-btn': { template: '<button v-bind="$attrs"><slot /></button>' },
+          'v-select': {
+            props: ['modelValue', 'items'],
+            emits: ['update:modelValue'],
+            template: `
+              <select
+                data-testid="competition-select"
+                :value="modelValue"
+                @change="$emit('update:modelValue', Number($event.target.value))"
+              >
+                <option v-for="item in items" :key="item.value" :value="item.value">{{ item.title }}</option>
+              </select>
+            `,
+          },
+          VSelect: {
+            props: ['modelValue', 'items'],
+            emits: ['update:modelValue'],
+            template: `
+              <select
+                data-testid="competition-select"
+                :value="modelValue"
+                @change="$emit('update:modelValue', Number($event.target.value))"
+              >
+                <option v-for="item in items" :key="item.value" :value="item.value">{{ item.title }}</option>
+              </select>
+            `,
+          },
           'v-progress-linear': { template: '<div data-testid="progress"></div>' },
           'v-card': { template: '<div><slot /></div>' },
           'v-card-text': { template: '<div><slot /></div>' },
@@ -116,6 +152,7 @@ describe('Torneo admin index page', () => {
     expect(wrapper.text()).toContain('8/15')
     expect(wrapper.find('[data-testid="stats-table"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="tournament-sections"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="tournament-competition-config"]').exists()).toBe(true)
     expect(tournamentApi.getTournamentMetrics).toHaveBeenCalledWith(1, 'lastMonth')
 
     const disciplinaButton = wrapper.findAll('button').find((button) => button.text().includes('Disciplina'))
@@ -123,5 +160,69 @@ describe('Torneo admin index page', () => {
     await disciplinaButton?.trigger('click')
 
     expect(wrapper.find('[data-testid="discipline-panel"]').exists()).toBe(true)
+  })
+
+  it('updates competition status for selected team', async () => {
+    const wrapper = await mountSuspended(TorneoIndexPage, {
+      global: {
+        stubs: {
+          PageLayout: { template: '<div><slot name="app-bar" /><slot name="default" /></div>' },
+          AppBar: { template: '<div></div>' },
+          StatsTableContainer: { template: '<div></div>' },
+          StatsTable: { template: '<div></div>' },
+          TournamentCalendarTab: { template: '<div></div>' },
+          TournamentStandingsTable: { template: '<div></div>' },
+          CreateTournamentDialog: { template: '<div></div>' },
+          DisciplinePanel: { template: '<div></div>' },
+          TournamentShareMenu: { template: '<button></button>' },
+          KpisMetricsSection: { template: '<div></div>' },
+          TransitionFade: { template: '<div><slot /></div>' },
+          Icon: { template: '<i></i>' },
+          'v-chip': { template: '<span><slot /></span>' },
+          'v-btn': { template: '<button v-bind="$attrs"><slot /></button>' },
+          'v-select': {
+            props: ['modelValue', 'items'],
+            emits: ['update:modelValue'],
+            template: `
+              <select
+                data-testid="competition-select"
+                :value="modelValue"
+                @change="$emit('update:modelValue', Number($event.target.value))"
+              >
+                <option v-for="item in items" :key="item.value" :value="item.value">{{ item.title }}</option>
+              </select>
+            `,
+          },
+          VSelect: {
+            props: ['modelValue', 'items'],
+            emits: ['update:modelValue'],
+            template: `
+              <select
+                data-testid="competition-select"
+                :value="modelValue"
+                @change="$emit('update:modelValue', Number($event.target.value))"
+              >
+                <option v-for="item in items" :key="item.value" :value="item.value">{{ item.title }}</option>
+              </select>
+            `,
+          },
+          'v-progress-linear': { template: '<div></div>' },
+          'v-card': { template: '<div><slot /></div>' },
+          'v-card-text': { template: '<div><slot /></div>' },
+          'v-card-title': { template: '<div><slot /></div>' },
+          'v-tooltip': { template: '<div><slot /></div>' },
+          'v-dialog': { template: '<div><slot /></div>' },
+          'v-alert': { template: '<div><slot /></div>' },
+          'v-img': { template: '<div></div>' },
+          'v-card-actions': { template: '<div><slot /></div>' },
+        },
+      },
+    })
+
+    const toggleButton = wrapper.findAll('button').find((button) => button.text().includes('Retirar de competencia'))
+    expect(toggleButton).toBeTruthy()
+    await toggleButton?.trigger('click')
+
+    expect(tournamentApi.updateTournamentTeamCompetitionStatus).toHaveBeenCalledWith(1, 9, { is_active: false })
   })
 })

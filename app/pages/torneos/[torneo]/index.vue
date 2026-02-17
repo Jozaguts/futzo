@@ -10,7 +10,13 @@ import TournamentStandingsTable from '~/components/pages/torneos/tournament-stan
 import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
 import KpisMetricsSection from '~/components/shared/kpis-metrics-section.vue'
 import PageLayout from '~/components/shared/PageLayout.vue'
-import {getTournamentMetrics, getTournamentRegistrationQRCode, getTournamentScheduleQRCode} from '~/http/api/tournament'
+import {
+  getTournamentMetrics,
+  getTournamentRegistrationQRCode,
+  getTournamentScheduleQRCode,
+  updateTournamentTeamCompetitionStatus,
+} from '~/http/api/tournament'
+import type {Team as TournamentTeam} from '~/models/Schedule'
 import type {TournamentDetailKpis, TournamentKpiMetric, TournamentShareAction} from '~/models/tournament'
 import {useDisplay} from 'vuetify'
 import {ga4Event} from '~/utils/ga4'
@@ -115,6 +121,40 @@ const tournamentStore = useTournamentStore()
   const progressStart = computed(() => tournament.value?.start_date_to_string ?? '')
   const progressEnd = computed(() => tournament.value?.end_date_to_string ?? '')
   const currentTournamentId = computed(() => tournament.value?.id ?? tournamentId.value ?? null)
+  const tournamentTeams = computed<TournamentTeam[]>(() =>
+    Array.isArray(tournament.value?.teams) ? tournament.value.teams : []
+  )
+  const selectedCompetitionTeamId = ref<number | null>(null)
+  const isUpdatingCompetitionStatus = ref(false)
+  const tournamentTeamOptions = computed(() =>
+    tournamentTeams.value.map((team) => ({
+      title: team.name,
+      value: team.id,
+    }))
+  )
+  const selectedCompetitionTeam = computed(
+    () => tournamentTeams.value.find((team) => team.id === selectedCompetitionTeamId.value) ?? null
+  )
+  const isSelectedTeamActive = computed(() => selectedCompetitionTeam.value?.pivot?.is_active !== false)
+  const competitionStatusSummary = computed(() => {
+    if (!selectedCompetitionTeam.value) {
+      return 'Selecciona un equipo para actualizar su estado competitivo.'
+    }
+    if (isSelectedTeamActive.value) {
+      return 'Equipo activo en competencia.'
+    }
+    const inactiveFromRound = selectedCompetitionTeam.value.pivot?.inactive_from_round
+    if (typeof inactiveFromRound === 'number') {
+      return `Equipo retirado desde la jornada ${inactiveFromRound}.`
+    }
+    return 'Equipo retirado de la competencia.'
+  })
+  const competitionActionLabel = computed(() =>
+    isSelectedTeamActive.value ? 'Retirar de competencia' : 'Reactivar equipo'
+  )
+  const canToggleTeamCompetitionStatus = computed(
+    () => Boolean(currentTournamentId.value && selectedCompetitionTeam.value) && !isUpdatingCompetitionStatus.value
+  )
   const tournamentKpiItems = computed(() => [
     {
       title: 'Equipos',
@@ -163,23 +203,53 @@ const tournamentStore = useTournamentStore()
     }
   }
 
-  onMounted(() => {
+  const refreshTournamentSummary = async () => {
+    const slug = String(route.params.torneo ?? '')
+    if (!slug) {
+      return
+    }
+    await tournamentStore.getTournamentBySlug(slug)
     if (tournamentId.value) {
-      loading.value = true
-      void Promise.all([tournamentStore.getStandings(), loadTournamentMetrics(tournamentId.value)]).finally(() => {
-        loading.value = false
-      })
+      await Promise.all([tournamentStore.getStandings(), loadTournamentMetrics(tournamentId.value)])
+    }
+  }
+
+  const handleToggleTeamCompetitionStatus = async () => {
+    if (!canToggleTeamCompetitionStatus.value || !selectedCompetitionTeam.value || !currentTournamentId.value) {
       return
     }
 
+    const nextIsActive = !isSelectedTeamActive.value
+
+    isUpdatingCompetitionStatus.value = true
+    try {
+      await updateTournamentTeamCompetitionStatus(currentTournamentId.value, selectedCompetitionTeam.value.id, {
+        is_active: nextIsActive,
+      })
+      toast({
+        type: 'success',
+        msg: nextIsActive ? 'Equipo reactivado en competencia' : 'Equipo retirado de competencia',
+      })
+      await refreshTournamentSummary()
+    } catch {
+      toast({
+        type: 'error',
+        msg: 'No se pudo actualizar el estado competitivo del equipo',
+      })
+    } finally {
+      isUpdatingCompetitionStatus.value = false
+    }
+  }
+
+  onMounted(() => {
     loading.value = true
     void tournamentStore
       .getTournamentBySlug(route?.params?.torneo as string)
       .then(() => {
-        return Promise.all([
-          tournamentStore.getStandings(),
-          tournamentId.value ? loadTournamentMetrics(tournamentId.value) : Promise.resolve(),
-        ])
+        if (!tournamentId.value) {
+          return
+        }
+        return Promise.all([tournamentStore.getStandings(), loadTournamentMetrics(tournamentId.value)])
       })
       .finally(() => {
         loading.value = false
@@ -367,6 +437,21 @@ const tournamentStore = useTournamentStore()
     })
   })
 
+  watch(
+    tournamentTeamOptions,
+    (options) => {
+      if (!options.length) {
+        selectedCompetitionTeamId.value = null
+        return
+      }
+      const stillAvailable = options.some((option) => option.value === selectedCompetitionTeamId.value)
+      if (!stillAvailable) {
+        selectedCompetitionTeamId.value = options[0].value
+      }
+    },
+    { immediate: true }
+  )
+
   const sections: Array<{ value: SectionTab; label: string }> = [
     { value: 'resumen', label: 'Resumen' },
     { value: 'calendario', label: 'Calendario' },
@@ -452,17 +537,64 @@ const tournamentStore = useTournamentStore()
             <template v-if="tab === 'resumen'">
               <KpisMetricsSection class="tournament-kpis" :items="tournamentKpiItems" test-id-prefix="tournament-kpis" />
 
-              <v-card class="tournament-progress-card futzo-rounded">
-                <div class="progress-header">
-                  <p>Progreso</p>
-                  <span>{{ gamesProgressPercent }}%</span>
-                </div>
-                <v-progress-linear :model-value="gamesProgressPercent" height="6" rounded color="primary" />
-                <div class="progress-footer">
-                  <span>{{ progressStart }}</span>
-                  <span>{{ progressEnd }}</span>
-                </div>
-              </v-card>
+              <div class="tournament-resume-top">
+                <v-card class="tournament-progress-card futzo-rounded">
+                  <div class="progress-header">
+                    <p>Progreso</p>
+                    <span>{{ gamesProgressPercent }}%</span>
+                  </div>
+                  <v-progress-linear :model-value="gamesProgressPercent" height="6" rounded color="primary" />
+                  <div class="progress-footer">
+                    <span>{{ progressStart }}</span>
+                    <span>{{ progressEnd }}</span>
+                  </div>
+                </v-card>
+
+                <v-card class="tournament-config-card futzo-rounded" data-testid="tournament-competition-config">
+                  <div class="competition-config__header">
+                    <h3 class="competition-config__title">Configuración del torneo</h3>
+                    <p class="competition-config__subtitle">Activa o retira equipos de la competencia.</p>
+                  </div>
+
+                  <v-select
+                    v-model="selectedCompetitionTeamId"
+                    :items="tournamentTeamOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    label="Equipo del torneo"
+                    :disabled="!tournamentTeamOptions.length || isUpdatingCompetitionStatus"
+                    data-testid="tournament-competition-team-select"
+                  />
+
+                  <v-alert
+                    v-if="!tournamentTeamOptions.length"
+                    type="info"
+                    variant="tonal"
+                    density="comfortable"
+                    class="competition-config__empty"
+                  >
+                    No hay equipos disponibles para configurar.
+                  </v-alert>
+
+                  <template v-else>
+                    <p class="competition-config__status">{{ competitionStatusSummary }}</p>
+                    <v-btn
+                      :color="isSelectedTeamActive ? 'error' : 'success'"
+                      variant="tonal"
+                      block
+                      :loading="isUpdatingCompetitionStatus"
+                      :disabled="!canToggleTeamCompetitionStatus"
+                      data-testid="tournament-competition-toggle-btn"
+                      @click="handleToggleTeamCompetitionStatus"
+                    >
+                      {{ competitionActionLabel }}
+                    </v-btn>
+                  </template>
+                </v-card>
+              </div>
 
               <div class="tournament-content">
                 <div class="tournament-standings">
@@ -628,9 +760,14 @@ const tournamentStore = useTournamentStore()
   .tournament-kpis
     margin-bottom: 16px
 
+  .tournament-resume-top
+    display: grid
+    grid-template-columns: minmax(0, 1fr)
+    gap: 16px
+    margin-bottom: 16px
+
   .tournament-progress-card
     padding: 16px
-    margin-bottom: 16px
 
   .progress-header
     display: flex
@@ -646,6 +783,36 @@ const tournamentStore = useTournamentStore()
     font-size: 12px
     color: #667085
     margin-top: 6px
+
+  .tournament-config-card
+    padding: 16px
+    display: flex
+    flex-direction: column
+    gap: 12px
+
+  .competition-config__header
+    display: flex
+    flex-direction: column
+    gap: 4px
+
+  .competition-config__title
+    margin: 0
+    font-size: 14px
+    font-weight: 700
+    color: #101828
+
+  .competition-config__subtitle
+    margin: 0
+    font-size: 12px
+    color: #667085
+
+  .competition-config__status
+    margin: 0
+    font-size: 12px
+    color: #475467
+
+  .competition-config__empty
+    margin: 0
 
   .tournament-content
     display: grid
@@ -678,6 +845,10 @@ const tournamentStore = useTournamentStore()
       font-size: 24px
 
   @media (min-width: 900px)
+    .tournament-resume-top
+      grid-template-columns: minmax(0, 7fr) minmax(0, 3fr)
+      align-items: stretch
+
     .tournament-content
       grid-template-columns: minmax(0, 7fr) minmax(0, 3fr)
       align-items: stretch

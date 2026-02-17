@@ -228,6 +228,8 @@ export type Team = {
 export type Pivot = {
   tournament_id: number;
   team_id: number;
+  is_active?: boolean;
+  inactive_from_round?: number | null;
 };
 
 export type ScheduleTeamSummary = {
