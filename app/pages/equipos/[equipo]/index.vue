@@ -2,14 +2,17 @@
 import AppBar from '~/components/layout/AppBar.vue'
 import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
 import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
+import TournamentShareMenu from '~/components/pages/torneos/tournament-share-menu.vue'
 import KpisMetricsSection from '~/components/shared/kpis-metrics-section.vue'
 import PageLayout from '~/components/shared/PageLayout.vue'
-import {getTeamFormation} from '~/http/api/team'
+import {getTeamFormation, getTeamRegistrationQRCode} from '~/http/api/team'
 import type {TeamFormation} from '~/models/Game'
 import type {Team} from '~/models/Team'
 import type {TeamLineupAvailablePlayers} from '~/models/Player'
+import type {TournamentShareAction} from '~/models/tournament'
 import {sortFormation} from '~/utils/sort-formation'
 import {Icon} from '#components'
+import {useDisplay} from 'vuetify'
 
 definePageMeta({
   middleware: ['sanctum:auth'],
@@ -20,10 +23,20 @@ const playerStore = usePlayerStore()
 const route = useRoute()
 const router = useRouter()
 const { toast } = useToast()
+const runtimeConfig = useRuntimeConfig()
+const requestUrl = useRequestURL()
+const { mobile } = useDisplay()
 
 const { homeTeam, formations, homeFormation, homePlayers } = storeToRefs(teamStore)
 
 const loading = ref(false)
+const share = ref({
+  showQr: false,
+  image: '',
+  title: '',
+  hasError: false,
+  isLoading: false,
+})
 
 const teamPlayers = computed<TeamLineupAvailablePlayers[]>(() => {
   const value = homePlayers.value as unknown
@@ -48,6 +61,25 @@ const currentTournamentName = computed(() => {
   if (direct) return direct
   const firstBadge = homeTeam.value?.tournaments?.[0]?.name
   return firstBadge || 'Sin torneo activo'
+})
+const teamRouteParam = computed(() => {
+  const slug = String(homeTeam.value?.slug || '').trim()
+  if (slug) {
+    return slug
+  }
+  const rawParam = String(route.params.equipo || '').trim()
+  return rawParam
+})
+const publicBaseUrl = computed(() => runtimeConfig.public.baseUrl || requestUrl.origin)
+const registrationLink = computed(() => {
+  const directLink = String(homeTeam.value?.register_link || '').trim()
+  if (directLink) {
+    return directLink
+  }
+  if (!teamRouteParam.value) {
+    return ''
+  }
+  return `${publicBaseUrl.value}/equipos/${encodeURIComponent(teamRouteParam.value)}/jugadores/inscripcion`
 })
 
 const toNumber = (value: unknown) => {
@@ -219,6 +251,100 @@ const goBack = () => {
 const editTeam = () => {
   teamStore.showTeamHandler(String(route.params.equipo || ''))
 }
+
+const copyTextToClipboard = async (text: string) => {
+  if (navigator.clipboard) {
+    await navigator.clipboard.writeText(text)
+    return
+  }
+  const textArea = document.createElement('textarea')
+  textArea.value = text
+  textArea.style.position = 'fixed'
+  document.body.appendChild(textArea)
+  textArea.select()
+  document.execCommand('copy')
+  document.body.removeChild(textArea)
+}
+
+const copyRegistrationLink = async () => {
+  if (!registrationLink.value) {
+    toast({ type: 'warning', msg: 'No hay enlace de inscripción disponible' })
+    return
+  }
+  try {
+    await copyTextToClipboard(registrationLink.value)
+    toast({ type: 'success', msg: 'Enlace de inscripción copiado' })
+  } catch {
+    toast({ type: 'error', msg: 'No se pudo copiar el enlace de inscripción' })
+  }
+}
+
+const openTeamRegistrationPage = () => {
+  if (!teamRouteParam.value) {
+    toast({ type: 'warning', msg: 'No se pudo abrir la inscripción pública del equipo' })
+    return
+  }
+  router.push({
+    name: 'equipos-equipo-jugadores-inscripcion',
+    params: { equipo: teamRouteParam.value },
+  })
+}
+
+const openRegistrationQr = async () => {
+  if (!homeTeam.value?.id) {
+    toast({ type: 'warning', msg: 'No se pudo obtener el ID del equipo' })
+    return
+  }
+  share.value.hasError = false
+  share.value.image = ''
+  share.value.isLoading = true
+  try {
+    const data = await getTeamRegistrationQRCode(homeTeam.value.id)
+    if (data?.image) {
+      share.value.image = data.image
+      share.value.title = 'QR de inscripción'
+      share.value.showQr = true
+      return
+    }
+    throw new Error('QR no disponible')
+  } catch {
+    share.value.hasError = true
+    toast({ type: 'error', msg: 'No se pudo generar el QR de inscripción' })
+  } finally {
+    share.value.isLoading = false
+  }
+}
+
+const shareActionHandler = async (action: TournamentShareAction) => {
+  switch (action) {
+    case 'registration_link':
+      await copyRegistrationLink()
+      return
+    case 'registration_qr':
+      await openRegistrationQr()
+      return
+    default:
+      return
+  }
+}
+
+const downloadQR = () => {
+  if (!share.value.image) {
+    toast({ type: 'warning', msg: 'No hay una imagen QR para descargar' })
+    return
+  }
+
+  try {
+    const anchor = document.createElement('a')
+    anchor.href = share.value.image
+    anchor.download = 'futzo_qr.png'
+    document.body.appendChild(anchor)
+    anchor.click()
+    anchor.remove()
+  } catch {
+    toast({ type: 'error', msg: 'No se pudo descargar el QR' })
+  }
+}
 </script>
 
 <template>
@@ -245,6 +371,32 @@ const editTeam = () => {
               <p class="team-detail-header__subtitle">Cap: {{ captainName }}</p>
               <v-chip size="x-small" variant="tonal" color="primary">{{ currentTournamentName }}</v-chip>
             </div>
+          </div>
+
+          <div class="team-detail-header__actions">
+            <TournamentShareMenu
+              label="Compartir"
+              test-id="team-header-share"
+              :icon-only="mobile"
+              :loading="share.isLoading"
+              :show-public-actions="false"
+              @select="shareActionHandler"
+            />
+            <v-tooltip text="Inscripción pública" location="bottom">
+              <template #activator="{ props }">
+                <v-btn
+                  icon
+                  variant="text"
+                  v-bind="props"
+                  class="team-detail-header__action-btn"
+                  aria-label="Abrir inscripción pública del equipo"
+                  :disabled="!teamRouteParam"
+                  @click="openTeamRegistrationPage"
+                >
+                  <Icon name="lucide:eye" size="18" />
+                </v-btn>
+              </template>
+            </v-tooltip>
           </div>
         </header>
 
@@ -346,6 +498,22 @@ const editTeam = () => {
       </div>
     </template>
   </PageLayout>
+
+  <v-dialog v-model="share.showQr" max-width="500">
+    <v-card>
+      <v-card-title>{{ share.title || 'Compartir equipo' }}</v-card-title>
+      <v-card-text>
+        <v-alert v-if="share.hasError" type="warning" variant="tonal" class="mb-4">
+          No se pudo generar el código QR.
+        </v-alert>
+        <v-img v-if="share.image" :src="share.image" :aspect-ratio="1" cover></v-img>
+      </v-card-text>
+      <v-card-actions class="justify-end">
+        <v-btn variant="text" @click="share.showQr = false">Cerrar</v-btn>
+        <v-btn color="primary" :disabled="!share.image" @click="downloadQR">Descargar QR</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style lang="sass" scoped>
@@ -359,6 +527,7 @@ const editTeam = () => {
   .team-detail-header
     display: flex
     align-items: center
+    flex-wrap: wrap
     gap: 12px
     padding: 12px 14px
 
@@ -400,9 +569,19 @@ const editTeam = () => {
 
   .team-detail-header__meta
     min-width: 0
+    flex: 1 1 auto
     display: flex
     flex-direction: column
     gap: 2px
+
+  .team-detail-header__actions
+    margin-left: auto
+    display: inline-flex
+    align-items: center
+    gap: 2px
+
+  .team-detail-header__action-btn
+    min-width: 34px
 
   .team-detail-header__title
     margin: 0
@@ -661,6 +840,7 @@ const editTeam = () => {
       gap: 12px
 
     .team-detail-header
+      flex-wrap: nowrap
       padding: 14px 16px
 
     .team-detail-header__avatar

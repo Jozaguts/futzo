@@ -7,11 +7,13 @@
     iconOnly?: boolean
     label?: string
     testId?: string
+    showPublicActions?: boolean
   }>(), {
     loading: false,
     iconOnly: true,
     label: 'Compartir',
     testId: 'tournament-share-menu',
+    showPublicActions: true,
   })
 
   const emit = defineEmits<{
@@ -58,20 +60,22 @@
         </template>
         <v-list-item-title>Generar QR</v-list-item-title>
       </v-list-item>
-      <v-divider class="my-1" />
-      <v-list-subheader>Página pública</v-list-subheader>
-      <v-list-item @click="selectAction('public_link')">
-        <template #prepend>
-          <Icon name="lucide:link-2" size="16" class="mr-2" />
-        </template>
-        <v-list-item-title>Copiar enlace</v-list-item-title>
-      </v-list-item>
-      <v-list-item @click="selectAction('public_qr')">
-        <template #prepend>
-          <Icon name="lucide:qr-code" size="16" class="mr-2" />
-        </template>
-        <v-list-item-title>Generar QR</v-list-item-title>
-      </v-list-item>
+      <template v-if="showPublicActions">
+        <v-divider class="my-1" />
+        <v-list-subheader>Página pública</v-list-subheader>
+        <v-list-item @click="selectAction('public_link')">
+          <template #prepend>
+            <Icon name="lucide:link-2" size="16" class="mr-2" />
+          </template>
+          <v-list-item-title>Copiar enlace</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="selectAction('public_qr')">
+          <template #prepend>
+            <Icon name="lucide:qr-code" size="16" class="mr-2" />
+          </template>
+          <v-list-item-title>Generar QR</v-list-item-title>
+        </v-list-item>
+      </template>
     </v-list>
   </v-menu>
 </template>
