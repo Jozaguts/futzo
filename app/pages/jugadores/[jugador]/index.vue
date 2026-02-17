@@ -31,6 +31,7 @@ dayjs.extend(customParseFormat)
   }
 
   type PlayerExtended = Player & {
+    slug?: string | null
     last_name?: string | null
     birthdate?: string | Date | null
     nationality?: string | null
@@ -684,9 +685,28 @@ dayjs.extend(customParseFormat)
     router.push('/jugadores')
   }
 
+  const normalizeIdentifier = (value: unknown) => {
+    if (value === null || value === undefined) return ''
+    const raw = Array.isArray(value) ? value[0] : value
+    if (typeof raw !== 'string') {
+      return String(raw).trim().toLowerCase()
+    }
+    try {
+      return decodeURIComponent(raw).trim().toLowerCase()
+    } catch {
+      return raw.trim().toLowerCase()
+    }
+  }
+
   const isCurrentPlayer = computed(() => {
-    if (!currentPlayer.value?.id) return false
-    return currentPlayer.value.id?.toString() === (route.params.jugador as string)
+    const routeIdentifier = normalizeIdentifier(route.params.jugador)
+    if (!routeIdentifier) return false
+    if (!currentPlayer.value) return false
+
+    const playerId = normalizeIdentifier(currentPlayer.value.id)
+    const playerSlug = normalizeIdentifier(currentPlayer.value.slug)
+
+    return routeIdentifier === playerId || (playerSlug !== '' && routeIdentifier === playerSlug)
   })
 
   const isEmptyState = computed(() => !loading.value && !isCurrentPlayer.value)

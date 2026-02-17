@@ -13,6 +13,7 @@ const releasePlayer = vi.fn(async () => {})
 const fetchPositions = vi.fn(async () => {})
 const isPlayerRoleRef = ref(false)
 const canManageSensitivePlayerActionsRef = ref(true)
+const routeJugadorRef = ref('10')
 
 const playerStoreMock = {
   getPlayer,
@@ -23,6 +24,7 @@ const playerStoreMock = {
   releasePlayer,
   player: ref({
     id: 10,
+    slug: 'carlos-mendez',
     name: 'Carlos',
     last_name: 'Mendez',
     image: '',
@@ -44,7 +46,7 @@ const positionsStoreMock = {
 mockNuxtImport('usePlayerStore', () => () => playerStoreMock)
 mockNuxtImport('usePositionsStore', () => () => positionsStoreMock)
 mockNuxtImport('storeToRefs', () => (store: any) => store)
-mockNuxtImport('useRoute', () => () => ({ params: { jugador: '10' } }))
+mockNuxtImport('useRoute', () => () => ({ params: { jugador: routeJugadorRef.value } }))
 mockNuxtImport('useRouter', () => () => ({ push: vi.fn(), replace: vi.fn(), back: vi.fn() }))
 mockNuxtImport('useRoleAccess', () => () => ({
   isPlayerRole: isPlayerRoleRef,
@@ -58,6 +60,7 @@ describe('Jugador detail page', () => {
     fetchPositions.mockClear()
     isPlayerRoleRef.value = false
     canManageSensitivePlayerActionsRef.value = true
+    routeJugadorRef.value = '10'
   })
 
   it('renders player detail shell and loads player data', async () => {
@@ -91,6 +94,38 @@ describe('Jugador detail page', () => {
     expect(wrapper.text()).toContain('Carlos Mendez')
     expect(wrapper.text()).toContain('Delantero')
     expect(getPlayer).toHaveBeenCalledWith('10')
+  })
+
+  it('renders player detail when route param is slug', async () => {
+    routeJugadorRef.value = 'carlos-mendez'
+
+    const wrapper = await mountSuspended(JugadorDetailPage, {
+      global: {
+        stubs: {
+          PageLayout: { template: '<div><slot name="app-bar" /><slot /></div>' },
+          AppBar: { template: '<div></div>' },
+          Icon: { template: '<i></i>' },
+          'v-skeleton-loader': { template: '<div></div>' },
+          'v-empty-state': { template: '<div></div>' },
+          'v-card': { template: '<div><slot /></div>' },
+          'v-avatar': { template: '<div><slot /></div>' },
+          'v-chip': { template: '<span><slot /></span>' },
+          'v-btn': { template: '<button><slot /></button>' },
+          'v-divider': { template: '<hr />' },
+          'v-file-input': { template: '<input />' },
+          'v-select': { template: '<select></select>' },
+          'v-text-field': { template: '<input />' },
+          'v-textarea': { template: '<textarea></textarea>' },
+          'v-dialog': { template: '<div><slot /></div>' },
+          'v-card-title': { template: '<div><slot /></div>' },
+          'v-card-text': { template: '<div><slot /></div>' },
+          'v-card-actions': { template: '<div><slot /></div>' },
+        },
+      },
+    })
+
+    expect(wrapper.find('[data-testid="jugador-detail-hero"]').exists()).toBe(true)
+    expect(getPlayer).toHaveBeenCalledWith('carlos-mendez')
   })
 
   it('hides verification and transfer cards for player role', async () => {
