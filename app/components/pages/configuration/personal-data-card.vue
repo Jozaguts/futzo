@@ -44,7 +44,7 @@ const user = computed(() => useAuthStore().user as User)
       contact_method: user.value?.contact_method ?? 'email',
       phone: user.value?.phone ? user.value?.phone?.replace(/\s+/g, '').slice(-10) : '',
       iso_code:
-        user.value?.phone.length <= 10
+        user.value?.phone?.length <= 10
           ? 52
           : (user.value?.phone?.replace(/\s+/g, '').slice(0, -10).replace('+', '') as unknown as number),
     },
