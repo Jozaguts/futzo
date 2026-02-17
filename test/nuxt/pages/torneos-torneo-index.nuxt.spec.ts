@@ -229,6 +229,12 @@ describe('Torneo admin index page', () => {
     const toggleButton = wrapper.findAll('button').find((button) => button.text().includes('Retirar de competencia'))
     expect(toggleButton).toBeTruthy()
     await toggleButton?.trigger('click')
+    expect(wrapper.find('[data-testid="tournament-competition-confirm-dialog"]').exists()).toBe(true)
+    expect(tournamentApi.updateTournamentTeamCompetitionStatus).not.toHaveBeenCalled()
+
+    const confirmButton = wrapper.find('[data-testid="tournament-competition-confirm-submit"]')
+    expect(confirmButton.exists()).toBe(true)
+    await confirmButton.trigger('click')
 
     expect(tournamentApi.getTournamentNextAvailableRound).toHaveBeenCalledWith(1)
     expect(tournamentApi.updateTournamentTeamCompetitionStatus).toHaveBeenCalledWith(1, 9, {

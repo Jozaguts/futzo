@@ -182,6 +182,7 @@ const tournamentStore = useTournamentStore()
   })
   const selectedCompetitionTeamId = ref<number | null>(null)
   const isUpdatingCompetitionStatus = ref(false)
+  const retireCompetitionDialog = ref(false)
   const tournamentTeamOptions = computed(() =>
     tournamentTeams.value.map((team) => ({
       title: team.name,
@@ -190,13 +191,14 @@ const tournamentStore = useTournamentStore()
   )
   const competitionConfigContext = computed(() => {
     if (!tournamentTeamOptions.value.length) {
-      return 'A partir de aquí podrás activar o retirar equipos cuando haya equipos inscritos en el torneo.'
+      return 'Podrás activar o retirar equipos cuando haya equipos inscritos en el torneo.'
     }
-    return 'A partir de aquí puedes activar o retirar equipos de la competencia.'
+    return 'Puedes activar o retirar equipos de la competencia.'
   })
   const selectedCompetitionTeam = computed(
     () => tournamentTeams.value.find((team) => team.id === selectedCompetitionTeamId.value) ?? null
   )
+  const selectedCompetitionTeamName = computed(() => selectedCompetitionTeam.value?.name ?? 'este equipo')
   const isSelectedTeamActive = computed(() => selectedCompetitionTeam.value?.pivot?.is_active !== false)
   const competitionStatusSummary = computed(() => {
     if (!selectedCompetitionTeam.value) {
@@ -276,7 +278,7 @@ const tournamentStore = useTournamentStore()
     }
   }
 
-  const handleToggleTeamCompetitionStatus = async () => {
+  const executeToggleTeamCompetitionStatus = async () => {
     if (!canToggleTeamCompetitionStatus.value || !selectedCompetitionTeam.value || !currentTournamentId.value) {
       return
     }
@@ -313,6 +315,26 @@ const tournamentStore = useTournamentStore()
     } finally {
       isUpdatingCompetitionStatus.value = false
     }
+  }
+  const requestToggleTeamCompetitionStatus = async () => {
+    if (!canToggleTeamCompetitionStatus.value || !selectedCompetitionTeam.value) {
+      return
+    }
+    if (isSelectedTeamActive.value) {
+      retireCompetitionDialog.value = true
+      return
+    }
+    await executeToggleTeamCompetitionStatus()
+  }
+  const closeRetireCompetitionDialog = () => {
+    if (isUpdatingCompetitionStatus.value) {
+      return
+    }
+    retireCompetitionDialog.value = false
+  }
+  const confirmRetireCompetitionTeam = async () => {
+    await executeToggleTeamCompetitionStatus()
+    retireCompetitionDialog.value = false
   }
 
   onMounted(() => {
@@ -661,7 +683,7 @@ const tournamentStore = useTournamentStore()
                       :loading="isUpdatingCompetitionStatus"
                       :disabled="!canToggleTeamCompetitionStatus"
                       data-testid="tournament-competition-toggle-btn"
-                      @click="handleToggleTeamCompetitionStatus"
+                      @click="requestToggleTeamCompetitionStatus"
                     >
                       {{ competitionActionLabel }}
                     </v-btn>
@@ -716,6 +738,34 @@ const tournamentStore = useTournamentStore()
       <v-card-actions class="justify-end">
         <v-btn variant="text" @click="share.showQr = false">Cerrar</v-btn>
         <v-btn color="primary" :disabled="!share.image" @click="downloadQR">Descargar QR</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <v-dialog v-model="retireCompetitionDialog" max-width="520">
+    <v-card v-if="retireCompetitionDialog" data-testid="tournament-competition-confirm-dialog">
+      <v-card-title>Retirar equipo de la competencia</v-card-title>
+      <v-card-text class="text-body-2">
+        Vas a retirar a {{ selectedCompetitionTeamName }} de la competencia. Esta acción lo desactiva desde la
+        siguiente jornada disponible, regenera el calendario pendiente y recalcula la tabla de posiciones.
+      </v-card-text>
+      <v-card-actions class="justify-end">
+        <v-btn
+          variant="text"
+          :disabled="isUpdatingCompetitionStatus"
+          data-testid="tournament-competition-confirm-cancel"
+          @click="closeRetireCompetitionDialog"
+        >
+          Cancelar
+        </v-btn>
+        <v-btn
+          color="error"
+          :loading="isUpdatingCompetitionStatus"
+          data-testid="tournament-competition-confirm-submit"
+          @click="confirmRetireCompetitionTeam"
+        >
+          Sí, retirar equipo
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
