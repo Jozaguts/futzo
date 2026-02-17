@@ -28,6 +28,7 @@
 ## Vue Clean Components (Obligatorio)
 - Skill obligatorio para Vue: `.codex/skills/vue-clean-components/SKILL.md`.
 - Cada vez que se cree o modifique un archivo `.vue`, se debe aplicar ese skill además de `vue-best-practices`.
+- Regla de flujo obligatoria: si un `.vue` no cumple buenas prácticas, primero se corrige su estructura mínima (clean component) y después se implementa la tarea funcional.
 - Objetivo obligatorio: reducir complejidad y tamaño de SFCs mediante extracción por capas (container/presentational/composable).
 - Evitar archivos `.vue` gigantes. Si un SFC excede presupuesto razonable, dividir en subcomponentes/composables.
 - Checklist mínimo por cada cambio en `.vue`:

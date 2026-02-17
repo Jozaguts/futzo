@@ -313,9 +313,12 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
   async function loadTournaments() {
     loading.value = true;
     const client = useSanctumClient();
+    const requestedPage = Number.isFinite(Number(pagination.value.current_page))
+      ? Math.max(1, Number(pagination.value.current_page))
+      : 1;
     const params = new URLSearchParams({
       per_page: String(pagination.value.per_page),
-      page: String(pagination.value.current_page),
+      page: String(requestedPage),
       range: KPI_RANGE,
     });
     if (search.value) {
@@ -331,8 +334,14 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
       const response = await client<{ data: Tournament[]; meta: TournamentListMeta }>(
         `/api/v1/admin/tournaments?${params.toString()}`
       );
+      const lastPage = Math.max(1, Number(response?.meta?.last_page ?? 1));
+      if (requestedPage > lastPage) {
+        pagination.value.current_page = lastPage;
+        await loadTournaments();
+        return;
+      }
       tournaments.value = response.data;
-      pagination.value = { ...pagination.value, ...response?.meta };
+      pagination.value = { ...pagination.value, ...response?.meta, current_page: requestedPage };
       const nextSummary = response?.meta?.summary ?? summary.value;
       summary.value = nextSummary;
       listKpis.value = response?.meta?.kpis
@@ -361,6 +370,7 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
       body: form,
     })
       .then(async (response) => {
+        pagination.value.current_page = 1;
         await loadTournaments();
         useToast().toast({
           type: 'success',

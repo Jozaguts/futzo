@@ -35,6 +35,11 @@ const router = useRouter()
       players_total: item.players_count ?? item.players ?? 0,
     }))
   )
+  const tableRenderKey = computed(() => {
+    const first = tableItems.value[0]?.id ?? 'empty'
+    const last = tableItems.value[tableItems.value.length - 1]?.id ?? 'empty'
+    return `${tableItems.value.length}-${first}-${last}`
+  })
 
   const resolveTournamentProgress = (item: Tournament) => {
     if (item.games_progress && typeof item.games_progress === 'object') {
@@ -238,12 +243,13 @@ const router = useRouter()
     <client-only>
       <Vue3EasyDataTable
         v-if="tableItems.length"
+        :key="tableRenderKey"
         header-text-direction="center"
         body-text-direction="center"
         class="futzo-rounded tournament-table__grid"
         :headers="headers"
         :items="tableItems"
-        :rows-per-page="tableItems.length"
+        :rows-per-page="Math.max(tableItems.length, 1)"
         :table-min-height="0"
         fixed-header
         border-cell
