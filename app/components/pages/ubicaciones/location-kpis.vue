@@ -80,5 +80,10 @@ const kpiItems = computed(() => [
 </script>
 
 <template>
-  <KpisMetricsSection :items="kpiItems" test-id-prefix="ubicaciones-kpis" />
+  <KpisMetricsSection
+    :items="kpiItems"
+    test-id-prefix="ubicaciones-kpis"
+    desktop-layout="scroll"
+    :desktop-visible-cards="3"
+  />
 </template>

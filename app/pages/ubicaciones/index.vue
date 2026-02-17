@@ -6,6 +6,7 @@ import LocationCardContainer from '~/components/pages/ubicaciones/LocationCardCo
 import LocationKpis from '~/components/pages/ubicaciones/location-kpis.vue'
 import ConfirmDialog from '~/components/shared/confirm-dialog.vue'
 import SearchInput from '~/components/shared/SearchInput.vue'
+import QuickActionsPanel from '~/components/shared/quick-actions-panel.vue'
 
 definePageMeta({
   middleware: ['sanctum:auth'],
@@ -21,6 +22,22 @@ const isLoading = ref(false)
 const showStoreLocationDialog = () => {
   isEdition.value = false
   locationDialog.value = true
+}
+type UbicacionesQuickActionId = 'new_location'
+const ubicacionesQuickActions = computed(() => [
+  {
+    id: 'new_location',
+    label: 'Nueva ubicación',
+    icon: 'lucide:map-pin-plus',
+    className: 'locations-primary-btn',
+    testId: 'ubicaciones-new-location-btn',
+  },
+])
+const handleUbicacionesQuickAction = (actionId: string) => {
+  switch (actionId as UbicacionesQuickActionId) {
+    case 'new_location':
+      showStoreLocationDialog()
+  }
 }
 
 const deleteLocationHandler = () => {
@@ -62,15 +79,6 @@ onBeforeUnmount(() => {
               <h1 class="ubicaciones-page__title">Ubicaciones</h1>
               <p class="ubicaciones-page__subtitle">Administra sedes, campos y disponibilidad desde un mismo lugar.</p>
             </div>
-
-            <div class="ubicaciones-page__actions" data-testid="ubicaciones-page-actions">
-              <PrimaryBtn
-                text="Nueva ubicación"
-                icon="lucide:map-pin-plus"
-                class="ubicaciones-page__quick-btn locations-primary-btn"
-                @click="showStoreLocationDialog"
-              />
-            </div>
           </div>
         </header>
 
@@ -86,7 +94,18 @@ onBeforeUnmount(() => {
         </section>
       </section>
 
-      <LocationKpis :locations="locations || []" :total-locations="pagination.total" />
+      <section class="ubicaciones-page__overview" data-testid="ubicaciones-page-overview">
+        <div class="ubicaciones-page__kpis">
+          <LocationKpis :locations="locations || []" :total-locations="pagination.total" />
+        </div>
+        <QuickActionsPanel
+          title="Acciones Rápidas"
+          test-id="ubicaciones-page-actions"
+          :actions="ubicacionesQuickActions"
+          primary-action-id="new_location"
+          @action="handleUbicacionesQuickAction"
+        />
+      </section>
 
       <NoLocations />
       <LocationCardContainer />
@@ -154,17 +173,6 @@ onBeforeUnmount(() => {
   line-height: 1.4;
 }
 
-.ubicaciones-page__actions {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-  width: 100%;
-}
-
-.ubicaciones-page__quick-btn {
-  width: 100%;
-}
-
 .ubicaciones-page__top-divider {
   width: 100%;
   height: 1px;
@@ -177,6 +185,18 @@ onBeforeUnmount(() => {
 
 .ubicaciones-page__search {
   width: 100%;
+}
+
+.ubicaciones-page__overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.ubicaciones-page__kpis {
+  min-width: 0;
 }
 
 @media (min-width: 960px) {
@@ -203,15 +223,10 @@ onBeforeUnmount(() => {
     font-size: 14px;
   }
 
-  .ubicaciones-page__actions {
-    width: auto;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
-
-  .ubicaciones-page__quick-btn {
-    width: auto;
+  .ubicaciones-page__overview {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+    gap: 16px;
+    align-items: start;
   }
 }
 </style>

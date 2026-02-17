@@ -6,6 +6,7 @@ type QuickActionItem = {
   disabled?: boolean
   loading?: boolean
   testId?: string
+  className?: string
 }
 
 const props = withDefaults(
@@ -43,7 +44,7 @@ const triggerAction = (actionId: string) => emit('action', actionId)
         <PrimaryBtn
           v-for="action in primaryActions"
           :key="action.id"
-          class="action-btn action-btn--primary"
+          :class="['action-btn action-btn--primary', action.className]"
           :text="action.label"
           :icon="action.icon || 'lucide:sparkles'"
           icon-position="right"
@@ -55,7 +56,7 @@ const triggerAction = (actionId: string) => emit('action', actionId)
         <SecondaryBtn
           v-for="action in secondaryActions"
           :key="action.id"
-          class="action-btn"
+          :class="['action-btn', action.className]"
           :text="action.label"
           :icon="action.icon || 'lucide:circle'"
           icon-position="right"

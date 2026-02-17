@@ -6,22 +6,62 @@ import TeamsTable from '~/components/pages/equipos/teams-table.vue'
 import ImportDialog from '~/components/pages/equipos/import-dialog/index.vue'
 import TeamKpis from '~/components/pages/equipos/team-kpis.vue'
 import SearchInput from '~/components/pages/equipos/app-bar-search-input.vue'
+import QuickActionsPanel from '~/components/shared/quick-actions-panel.vue'
 
-definePageMeta({   middleware: ['sanctum:auth']})
+definePageMeta({
+  middleware: ['sanctum:auth'],
+})
+
 const teamStore = useTeamStore()
-  const { canCreateTeam, canImportTeams } = useRoleAccess()
-  const { noTeams, tourSteps, listKpis, dialog, importModal } = storeToRefs(teamStore)
-  const { registerTourRef, startTour, resetTour, recalculateTour } = teamStore
-  const { setActiveController, clearActiveController } = useTourHub()
-  const tourController = { registerTourRef, startTour, resetTour, recalculateTour }
-  onMounted(() => {
-    teamStore.getTeams()
-    setActiveController(tourController)
-  })
-  onBeforeUnmount(() => {
-    clearActiveController(tourController)
-  })
-  const open = ref(false)
+const { canCreateTeam, canImportTeams } = useRoleAccess()
+const { noTeams, tourSteps, listKpis, dialog, importModal } = storeToRefs(teamStore)
+const { registerTourRef, startTour, resetTour, recalculateTour } = teamStore
+const { setActiveController, clearActiveController } = useTourHub()
+
+const tourController = { registerTourRef, startTour, resetTour, recalculateTour }
+
+onMounted(() => {
+  teamStore.getTeams()
+  setActiveController(tourController)
+})
+
+onBeforeUnmount(() => {
+  clearActiveController(tourController)
+})
+
+type EquiposQuickActionId = 'new_team' | 'import_teams'
+
+const equiposQuickActions = computed(() => [
+  {
+    id: 'new_team',
+    label: 'Nuevo equipo',
+    icon: 'lucide:shirt',
+    disabled: !canCreateTeam.value,
+    className: 'teams-primary-btn',
+    testId: 'equipos-new-team-btn',
+  },
+  {
+    id: 'import_teams',
+    label: 'Importar equipos',
+    icon: 'lucide:upload',
+    disabled: !canImportTeams.value,
+    testId: 'equipos-import-btn',
+  },
+])
+
+const handleEquiposQuickAction = (actionId: string) => {
+  switch (actionId as EquiposQuickActionId) {
+    case 'new_team':
+      if (canCreateTeam.value) {
+        dialog.value = true
+      }
+      return
+    case 'import_teams':
+      if (canImportTeams.value) {
+        importModal.value = true
+      }
+  }
+}
 </script>
 <template>
   <PageLayout styles="main equipos-page">
@@ -37,22 +77,6 @@ const teamStore = useTeamStore()
               <h1 class="equipos-page__title">Equipos</h1>
               <p class="equipos-page__subtitle">Centraliza la operación de tus equipos desde una sola vista.</p>
             </div>
-            <div class="equipos-page__actions" data-testid="equipos-page-actions">
-              <PrimaryBtn
-                text="Nuevo equipo"
-                icon="lucide:shirt"
-                class="equipos-page__quick-btn teams-primary-btn"
-                :disabled="!canCreateTeam"
-                @click="canCreateTeam && (dialog = true)"
-              />
-              <SecondaryBtn
-                text="Importar equipos"
-                icon="lucide:upload"
-                class="equipos-page__quick-btn"
-                :disabled="!canImportTeams"
-                @btn-click="canImportTeams && (importModal = true)"
-              />
-            </div>
           </div>
         </header>
         <div class="equipos-page__top-divider" aria-hidden="true"></div>
@@ -60,7 +84,18 @@ const teamStore = useTeamStore()
           <SearchInput min-width="100%" placeholder="Buscar equipo..." class="equipos-page__search" />
         </section>
       </section>
-      <TeamKpis :kpis="listKpis" />
+      <section class="equipos-page__overview" data-testid="equipos-page-overview">
+        <div class="equipos-page__kpis">
+          <TeamKpis :kpis="listKpis" />
+        </div>
+        <QuickActionsPanel
+          title="Acciones Rápidas"
+          test-id="equipos-page-actions"
+          :actions="equiposQuickActions"
+          primary-action-id="new_team"
+          @action="handleEquiposQuickAction"
+        />
+      </section>
       <NoTeams />
       <div v-if="!noTeams" class="table equipos-page__table" data-testid="equipos-table-panel">
         <div class="table-wrapper">
@@ -70,16 +105,6 @@ const teamStore = useTeamStore()
       <CreateTeamDialog />
       <ImportDialog />
     </template>
-<!--    <template #fab>-->
-<!--      <v-fab color="primary" icon @click="open = !open">-->
-<!--        <Icon name="futzo-icon:plus" class="mobile-fab" :class="open ? 'opened' : ''" size="24"></Icon>-->
-<!--        <v-speed-dial v-model="open" location="left center" transition="slide-y-reverse-transition" activator="parent">-->
-<!--          <v-btn key="1" color="secondary" icon @click="teamStore.dialog = !teamStore.dialog">-->
-<!--            <Icon name="fluent:people-team-20-regular" size="24"></Icon>-->
-<!--          </v-btn>-->
-<!--        </v-speed-dial>-->
-<!--      </v-fab>-->
-<!--    </template>-->
     <template #tour>
       <LazyTour name="equipos" :steps="tourSteps" @register="registerTourRef" />
     </template>
@@ -133,17 +158,6 @@ const teamStore = useTeamStore()
     line-height: 1.4;
   }
 
-  .equipos-page__actions {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-    width: 100%;
-  }
-
-  .equipos-page__quick-btn {
-    width: 100%;
-  }
-
   .equipos-page__top-divider {
     width: 100%;
     height: 1px;
@@ -156,6 +170,18 @@ const teamStore = useTeamStore()
 
   .equipos-page__search {
     width: 100%;
+  }
+
+  .equipos-page__overview {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+
+  .equipos-page__kpis {
+    min-width: 0;
   }
 
   .table-wrapper {
@@ -202,16 +228,10 @@ const teamStore = useTeamStore()
       font-size: 14px;
     }
 
-    .equipos-page__actions {
-      width: auto;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .equipos-page__quick-btn {
-      width: auto;
+    .equipos-page__overview {
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+      gap: 16px;
+      align-items: start;
     }
 
     .table-wrapper {

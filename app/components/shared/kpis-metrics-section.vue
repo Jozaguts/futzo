@@ -18,18 +18,45 @@ export type KpiMetricItem = {
 const props = withDefaults(defineProps<{
   items: KpiMetricItem[]
   testIdPrefix?: string
+  desktopLayout?: 'grid' | 'scroll'
+  desktopVisibleCards?: number
 }>(), {
   testIdPrefix: 'metrics',
+  desktopLayout: 'grid',
+  desktopVisibleCards: 3,
 })
 
 const { mobile } = useDisplay()
+const showDesktopScroll = computed(() => !mobile.value && props.desktopLayout === 'scroll')
+const desktopScrollStyle = computed(() => ({
+  '--desktop-visible-cards': String(Math.max(1, Number(props.desktopVisibleCards || 3))),
+}))
 </script>
 
 <template>
   <section
-    v-if="!mobile"
+    v-if="!mobile && !showDesktopScroll"
     class="kpis-metrics-grid"
     :data-testid="`${testIdPrefix}-grid`"
+  >
+    <MetricCard
+      v-for="metric in items"
+      :key="metric.title"
+      :title="metric.title"
+      :value="metric.value"
+      :icon="metric.icon"
+      :icon-tone="metric.iconTone || 'purple'"
+      :trend-value="metric.trendValue ?? null"
+      :trend-label="metric.trendLabel ?? ''"
+      :trend-as-percent="metric.trendAsPercent ?? true"
+    />
+  </section>
+
+  <section
+    v-else-if="showDesktopScroll"
+    class="kpis-metrics-scroll"
+    :style="desktopScrollStyle"
+    :data-testid="`${testIdPrefix}-scroll`"
   >
     <MetricCard
       v-for="metric in items"
@@ -63,6 +90,21 @@ const { mobile } = useDisplay()
 .kpis-metrics-carousel {
   display: flex;
   justify-content: center;
+}
+
+.kpis-metrics-scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.kpis-metrics-scroll :deep(.metric-card) {
+  flex: 0 0
+    calc((100% - ((var(--desktop-visible-cards, 3) - 1) * 12px)) / var(--desktop-visible-cards, 3));
+  min-width: 240px;
 }
 
 @media (width > 600px) {

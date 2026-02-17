@@ -77,5 +77,7 @@ const cards = computed(() => [
       trendLabel: card.trendLabel,
     }))"
     test-id-prefix="equipos-kpis"
+    desktop-layout="scroll"
+    :desktop-visible-cards="3"
   />
 </template>
