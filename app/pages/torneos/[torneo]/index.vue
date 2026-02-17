@@ -11,6 +11,7 @@ import TournamentStandingsTable from '~/components/pages/torneos/tournament-stan
 import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
 import KpisMetricsSection from '~/components/shared/kpis-metrics-section.vue'
 import PageLayout from '~/components/shared/PageLayout.vue'
+import QuickActionsPanel from '~/components/shared/quick-actions-panel.vue'
 import {
   getTournamentNextAvailableRound,
   getTournamentMetrics,
@@ -213,6 +214,23 @@ const tournamentStore = useTournamentStore()
   const canOpenRegisterTeamQuickAction = computed(
     () => Boolean(canCreateTeam.value && currentTournamentId.value) && !isOpeningTeamDialog.value
   )
+  type TournamentQuickActionId = 'register_team' | 'remove_team'
+  const tournamentQuickActions = computed(() => [
+    {
+      id: 'register_team',
+      label: 'Registrar equipo',
+      icon: 'lucide:shirt',
+      loading: isOpeningTeamDialog.value,
+      disabled: !canOpenRegisterTeamQuickAction.value,
+      testId: 'tournament-quick-action-register-team',
+    },
+    {
+      id: 'remove_team',
+      label: 'Remover equipo',
+      icon: 'lucide:user-minus',
+      testId: 'tournament-quick-action-remove-team',
+    },
+  ])
   const isSelectedTeamActive = computed(() => selectedCompetitionTeam.value?.pivot?.is_active !== false)
   const competitionStatusSummary = computed(() => {
     if (!selectedCompetitionTeam.value) {
@@ -386,6 +404,15 @@ const tournamentStore = useTournamentStore()
       return
     }
     competitionManagementDialog.value = false
+  }
+  const handleTournamentQuickAction = (actionId: string) => {
+    switch (actionId as TournamentQuickActionId) {
+      case 'register_team':
+        void openRegisterTeamDialog()
+        return
+      case 'remove_team':
+        openCompetitionManagementDialog()
+    }
   }
 
   onMounted(() => {
@@ -697,44 +724,15 @@ const tournamentStore = useTournamentStore()
                   </div>
                 </v-card>
 
-                <v-card
+                <QuickActionsPanel
                   v-if="hasGeneratedSchedule"
-                  class="tournament-config-card futzo-rounded"
-                  data-testid="tournament-competition-config"
-                >
-                  <div class="competition-config__header">
-                    <h3 class="competition-config__title">Acciones rápidas</h3>
-                    <p class="competition-config__subtitle">Registra equipos y gestiona su participación.</p>
-                  </div>
-
-                  <div class="competition-config__context">
-                    <Icon name="lucide:info" size="15" />
-                    <span>Selecciona una acción para este torneo.</span>
-                  </div>
-
-                  <div class="quick-actions__list">
-                    <v-btn
-                      color="primary"
-                      variant="tonal"
-                      block
-                      :loading="isOpeningTeamDialog"
-                      :disabled="!canOpenRegisterTeamQuickAction"
-                      data-testid="tournament-quick-action-register-team"
-                      @click="openRegisterTeamDialog"
-                    >
-                      Registrar equipo
-                    </v-btn>
-                    <v-btn
-                      color="error"
-                      variant="tonal"
-                      block
-                      data-testid="tournament-quick-action-remove-team"
-                      @click="openCompetitionManagementDialog"
-                    >
-                      Remover equipo
-                    </v-btn>
-                  </div>
-                </v-card>
+                  class="futzo-rounded"
+                  test-id="tournament-competition-config"
+                  title="Acciones Rápidas"
+                  :actions="tournamentQuickActions"
+                  primary-action-id="register_team"
+                  @action="handleTournamentQuickAction"
+                />
               </div>
 
               <div class="tournament-content">
@@ -1006,12 +1004,6 @@ const tournamentStore = useTournamentStore()
     color: #667085
     margin-top: 6px
 
-  .tournament-config-card
-    padding: 16px
-    display: flex
-    flex-direction: column
-    gap: 12px
-
   .competition-config__header
     display: flex
     flex-direction: column
@@ -1044,11 +1036,6 @@ const tournamentStore = useTournamentStore()
     padding: 8px 12px
     font-size: 12px
     color: #344054
-
-  .quick-actions__list
-    display: flex
-    flex-direction: column
-    gap: 10px
 
   .tournament-content
     display: grid

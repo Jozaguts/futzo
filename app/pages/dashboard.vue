@@ -7,6 +7,7 @@ import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.
 import JugadoresForm from '~/components/pages/jugadores/form/index.vue'
 import NoGames from '~/components/shared/empty-states/NoGames.vue'
 import KpisMetricsSection from '~/components/shared/kpis-metrics-section.vue'
+import QuickActionsPanel from '~/components/shared/quick-actions-panel.vue'
 import type {Tournament} from '~/models/tournament'
 
 const dashboardStore = useDashboardStore()
@@ -164,6 +165,31 @@ const goToSchedule = () => {
   scheduleDialog.value = false
   router.push(`/torneos/${selectedTournament.value.slug}/calendario`)
 }
+
+type DashboardQuickActionId = 'new_tournament' | 'add_team' | 'register_player' | 'apply_sanction'
+
+const dashboardQuickActions = computed(() => [
+  { id: 'new_tournament', label: 'Nuevo torneo', icon: 'lucide:trophy' },
+  { id: 'add_team', label: 'Agregar Equipo', icon: 'lucide:shirt' },
+  { id: 'register_player', label: 'Registrar Jugador', icon: 'lucide:users' },
+  { id: 'apply_sanction', label: 'Aplicar Sanción', icon: 'lucide:triangle-alert' },
+])
+
+const handleDashboardQuickAction = (actionId: string) => {
+  switch (actionId as DashboardQuickActionId) {
+    case 'new_tournament':
+      tournamentDialog.value = true
+      return
+    case 'add_team':
+      teamDialog.value = true
+      return
+    case 'register_player':
+      playerDialog.value = true
+      return
+    case 'apply_sanction':
+      void openScheduleDialog()
+  }
+}
 </script>
 <template>
   <PageLayout styles="main dashboard-main">
@@ -192,26 +218,13 @@ const goToSchedule = () => {
               </div>
             </section>
             <div class="dashboard-side">
-              <section class="panel panel--actions" data-testid="dashboard-actions">
-                <div class="panel__header">
-                  <h2 class="panel__title">Acciones Rápidas</h2>
-                </div>
-                <div class="panel__body">
-                  <div class="actions-grid">
-                    <PrimaryBtn
-                        text="Nuevo torneo"
-                        icon="lucide:trophy"
-                        icon-position="right"
-                        @click="tournamentDialog = true"
-
-                    >
-                    </PrimaryBtn>
-                    <SecondaryBtn @click="teamDialog = true" icon="lucide:shirt" text="Agregar Equipo" icon-position="right" />
-                    <SecondaryBtn @click="playerDialog = true" icon="lucide:users" text="Registrar Jugador" icon-position="right" />
-                    <SecondaryBtn @click="openScheduleDialog" icon="lucide:triangle-alert" text="Aplicar Sanción" icon-position="right" />
-                  </div>
-                </div>
-              </section>
+              <QuickActionsPanel
+                title="Acciones Rápidas"
+                test-id="dashboard-actions"
+                :actions="dashboardQuickActions"
+                primary-action-id="new_tournament"
+                @action="handleDashboardQuickAction"
+              />
               <section class="panel panel--activity" data-testid="dashboard-activity">
                 <div class="panel__header">
                   <h2 class="panel__title">Actividad Reciente</h2>

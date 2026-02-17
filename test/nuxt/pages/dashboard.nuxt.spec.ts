@@ -64,6 +64,7 @@ describe('Dashboard page', () => {
           TournamentDialog: true,
           CreateTeamDialog: true,
           JugadoresForm: true,
+          QuickActionsPanel: { template: '<div data-testid="dashboard-actions"></div>' },
         },
       },
     })
@@ -91,6 +92,7 @@ describe('Dashboard page', () => {
           TournamentDialog: true,
           CreateTeamDialog: true,
           JugadoresForm: true,
+          QuickActionsPanel: { template: '<div data-testid="dashboard-actions"></div>' },
         },
       },
     })
@@ -126,6 +128,7 @@ describe('Dashboard page', () => {
           TournamentDialog: true,
           CreateTeamDialog: true,
           JugadoresForm: true,
+          QuickActionsPanel: { template: '<div data-testid="dashboard-actions"></div>' },
         },
       },
     })
