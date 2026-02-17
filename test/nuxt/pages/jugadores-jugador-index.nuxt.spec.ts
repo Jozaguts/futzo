@@ -24,7 +24,6 @@ const playerStoreMock = {
   releasePlayer,
   player: ref({
     id: 10,
-    slug: 'carlos-mendez',
     name: 'Carlos',
     last_name: 'Mendez',
     image: '',
@@ -96,8 +95,8 @@ describe('Jugador detail page', () => {
     expect(getPlayer).toHaveBeenCalledWith('10')
   })
 
-  it('renders player detail when route param is slug', async () => {
-    routeJugadorRef.value = 'carlos-mendez'
+  it('renders player detail when route param is slug even if response has no slug', async () => {
+    routeJugadorRef.value = 'player-demo'
 
     const wrapper = await mountSuspended(JugadorDetailPage, {
       global: {
@@ -125,7 +124,7 @@ describe('Jugador detail page', () => {
     })
 
     expect(wrapper.find('[data-testid="jugador-detail-hero"]').exists()).toBe(true)
-    expect(getPlayer).toHaveBeenCalledWith('carlos-mendez')
+    expect(getPlayer).toHaveBeenCalledWith('player-demo')
   })
 
   it('hides verification and transfer cards for player role', async () => {

@@ -131,12 +131,14 @@ export const usePlayerStore = defineStore('playerStore', () => {
   };
 
   const getPlayer = async (id: string) => {
+    player.value = null as unknown as Player;
     try {
       const client = useSanctumClient();
       const response = await client<{ data: Player }>(`/api/v1/admin/players/${id}`);
       player.value = response.data;
     } catch (error: any) {
       console.error(error);
+      player.value = null as unknown as Player;
     } finally {
     }
   };
