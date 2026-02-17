@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import {Icon} from '#components'
 import AppBar from '~/components/layout/AppBar.vue'
+import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
 import StatsTableContainer from '~/components/pages/equipos/live-games.vue'
 import CreateTournamentDialog from '~/components/pages/torneos/dialog/index.vue'
 import DisciplinePanel from '~/components/pages/torneos/discipline/DisciplinePanel.vue'
@@ -18,13 +19,17 @@ import {
   type UpdateTournamentTeamCompetitionStatusPayload,
   updateTournamentTeamCompetitionStatus,
 } from '~/http/api/tournament'
+import type {TeamStoreRequest} from '~/models/Team'
 import type {Team as TournamentTeam} from '~/models/Schedule'
 import type {TournamentDetailKpis, TournamentKpiMetric, TournamentShareAction} from '~/models/tournament'
 import {useDisplay} from 'vuetify'
 import {ga4Event} from '~/utils/ga4'
 
 const tournamentStore = useTournamentStore()
+  const teamStore = useTeamStore()
   const { standings, tournamentId, tournament } = storeToRefs(tournamentStore)
+  const { dialog: teamDialog, teamStoreRequest, steps: teamSteps, isEdition: isTeamEdition } = storeToRefs(teamStore)
+  const { canCreateTeam } = useRoleAccess()
   const { start, finish } = useLoadingIndicator()
   const { toast } = useToast()
   const route = useRoute()
@@ -182,6 +187,8 @@ const tournamentStore = useTournamentStore()
   })
   const selectedCompetitionTeamId = ref<number | null>(null)
   const isUpdatingCompetitionStatus = ref(false)
+  const isOpeningTeamDialog = ref(false)
+  const competitionManagementDialog = ref(false)
   const retireCompetitionDialog = ref(false)
   const tournamentTeamOptions = computed(() =>
     tournamentTeams.value.map((team) => ({
@@ -199,6 +206,13 @@ const tournamentStore = useTournamentStore()
     () => tournamentTeams.value.find((team) => team.id === selectedCompetitionTeamId.value) ?? null
   )
   const selectedCompetitionTeamName = computed(() => selectedCompetitionTeam.value?.name ?? 'este equipo')
+  const currentTournamentCategoryId = computed(() => {
+    const categoryId = Number(tournament.value?.category_id ?? tournament.value?.category?.id ?? 0)
+    return Number.isFinite(categoryId) && categoryId > 0 ? categoryId : null
+  })
+  const canOpenRegisterTeamQuickAction = computed(
+    () => Boolean(canCreateTeam.value && currentTournamentId.value) && !isOpeningTeamDialog.value
+  )
   const isSelectedTeamActive = computed(() => selectedCompetitionTeam.value?.pivot?.is_active !== false)
   const competitionStatusSummary = computed(() => {
     if (!selectedCompetitionTeam.value) {
@@ -335,6 +349,43 @@ const tournamentStore = useTournamentStore()
   const confirmRetireCompetitionTeam = async () => {
     await executeToggleTeamCompetitionStatus()
     retireCompetitionDialog.value = false
+  }
+  const openRegisterTeamDialog = async () => {
+    if (!canOpenRegisterTeamQuickAction.value || !currentTournamentId.value) {
+      return
+    }
+    isOpeningTeamDialog.value = true
+    try {
+      await teamStore.initTeamForm()
+      teamStore.$storeReset()
+      teamStoreRequest.value = {
+        ...teamStoreRequest.value,
+        team: {
+          ...(teamStoreRequest.value.team || ({} as TeamStoreRequest['team'])),
+          tournament_id: Number(currentTournamentId.value),
+          ...(currentTournamentCategoryId.value ? { category_id: currentTournamentCategoryId.value } : {}),
+        },
+      } as Partial<TeamStoreRequest>
+      teamSteps.value.current = 'createTeam'
+      isTeamEdition.value = false
+      teamDialog.value = true
+    } catch {
+      toast({
+        type: 'error',
+        msg: 'No se pudo abrir el registro de equipos',
+      })
+    } finally {
+      isOpeningTeamDialog.value = false
+    }
+  }
+  const openCompetitionManagementDialog = () => {
+    competitionManagementDialog.value = true
+  }
+  const closeCompetitionManagementDialog = () => {
+    if (isUpdatingCompetitionStatus.value) {
+      return
+    }
+    competitionManagementDialog.value = false
   }
 
   onMounted(() => {
@@ -652,42 +703,37 @@ const tournamentStore = useTournamentStore()
                   data-testid="tournament-competition-config"
                 >
                   <div class="competition-config__header">
-                    <h3 class="competition-config__title">Configuración del torneo</h3>
-                    <p class="competition-config__subtitle">Activa o retira equipos de la competencia.</p>
+                    <h3 class="competition-config__title">Acciones rápidas</h3>
+                    <p class="competition-config__subtitle">Registra equipos y gestiona su participación.</p>
                   </div>
 
                   <div class="competition-config__context">
                     <Icon name="lucide:info" size="15" />
-                    <span>{{ competitionConfigContext }}</span>
+                    <span>Selecciona una acción para este torneo.</span>
                   </div>
 
-                  <v-select
-                    v-model="selectedCompetitionTeamId"
-                    :items="tournamentTeamOptions"
-                    item-title="title"
-                    item-value="value"
-                    density="compact"
-                    variant="outlined"
-                    hide-details
-                    label="Equipo del torneo"
-                    :disabled="!tournamentTeamOptions.length || isUpdatingCompetitionStatus"
-                    data-testid="tournament-competition-team-select"
-                  />
-
-                  <template v-if="tournamentTeamOptions.length">
-                    <p class="competition-config__status">{{ competitionStatusSummary }}</p>
+                  <div class="quick-actions__list">
                     <v-btn
-                      :color="isSelectedTeamActive ? 'error' : 'success'"
+                      color="primary"
                       variant="tonal"
                       block
-                      :loading="isUpdatingCompetitionStatus"
-                      :disabled="!canToggleTeamCompetitionStatus"
-                      data-testid="tournament-competition-toggle-btn"
-                      @click="requestToggleTeamCompetitionStatus"
+                      :loading="isOpeningTeamDialog"
+                      :disabled="!canOpenRegisterTeamQuickAction"
+                      data-testid="tournament-quick-action-register-team"
+                      @click="openRegisterTeamDialog"
                     >
-                      {{ competitionActionLabel }}
+                      Registrar equipo
                     </v-btn>
-                  </template>
+                    <v-btn
+                      color="error"
+                      variant="tonal"
+                      block
+                      data-testid="tournament-quick-action-remove-team"
+                      @click="openCompetitionManagementDialog"
+                    >
+                      Remover equipo
+                    </v-btn>
+                  </div>
                 </v-card>
               </div>
 
@@ -722,6 +768,7 @@ const tournamentStore = useTournamentStore()
           </TransitionFade>
         </div>
         <CreateTournamentDialog />
+        <CreateTeamDialog />
       </div>
     </template>
   </PageLayout>
@@ -738,6 +785,57 @@ const tournamentStore = useTournamentStore()
       <v-card-actions class="justify-end">
         <v-btn variant="text" @click="share.showQr = false">Cerrar</v-btn>
         <v-btn color="primary" :disabled="!share.image" @click="downloadQR">Descargar QR</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <v-dialog v-model="competitionManagementDialog" max-width="560">
+    <v-card v-if="competitionManagementDialog" data-testid="tournament-competition-management-dialog">
+      <v-card-title>Remover equipo de la competencia</v-card-title>
+      <v-card-text>
+        <div class="competition-config__header mb-3">
+          <h3 class="competition-config__title">Configuración del torneo</h3>
+          <p class="competition-config__subtitle">Activa o retira equipos de la competencia.</p>
+        </div>
+
+        <div class="competition-config__context mb-4">
+          <Icon name="lucide:info" size="15" />
+          <span>{{ competitionConfigContext }}</span>
+        </div>
+
+        <v-select
+          v-model="selectedCompetitionTeamId"
+          :items="tournamentTeamOptions"
+          item-title="title"
+          item-value="value"
+          density="compact"
+          variant="outlined"
+          hide-details
+          label="Equipo del torneo"
+          :disabled="!tournamentTeamOptions.length || isUpdatingCompetitionStatus"
+          data-testid="tournament-competition-team-select"
+        />
+
+        <template v-if="tournamentTeamOptions.length">
+          <p class="competition-config__status mt-3">{{ competitionStatusSummary }}</p>
+          <v-btn
+            :color="isSelectedTeamActive ? 'error' : 'success'"
+            variant="tonal"
+            block
+            class="mt-3"
+            :loading="isUpdatingCompetitionStatus"
+            :disabled="!canToggleTeamCompetitionStatus"
+            data-testid="tournament-competition-toggle-btn"
+            @click="requestToggleTeamCompetitionStatus"
+          >
+            {{ competitionActionLabel }}
+          </v-btn>
+        </template>
+      </v-card-text>
+      <v-card-actions class="justify-end">
+        <v-btn variant="text" :disabled="isUpdatingCompetitionStatus" @click="closeCompetitionManagementDialog">
+          Cerrar
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -946,6 +1044,11 @@ const tournamentStore = useTournamentStore()
     padding: 8px 12px
     font-size: 12px
     color: #344054
+
+  .quick-actions__list
+    display: flex
+    flex-direction: column
+    gap: 10px
 
   .tournament-content
     display: grid

@@ -12,6 +12,8 @@ const createTournament = () => ({
   status: 'en curso',
   format_label: 'Liga y Eliminatoria',
   football_type_label: 'Fútbol 7',
+  category_id: 1,
+  category: { id: 1, name: 'Amateur' },
   location: { name: 'Cancha Los Olivos' },
   teams_count: 10,
   players_count: 87,
@@ -25,6 +27,13 @@ const createTournament = () => ({
   ],
 })
 const tournament = ref(createTournament())
+const canCreateTeam = ref(true)
+const teamDialog = ref(false)
+const teamStoreRequest = ref<any>({})
+const teamSteps = ref({ current: 'createTeam' } as any)
+const teamIsEdition = ref(false)
+const initTeamForm = vi.fn()
+const teamStoreReset = vi.fn()
 
 const getStandings = vi.fn()
 const getTournamentBySlug = vi.fn()
@@ -51,6 +60,17 @@ mockNuxtImport('useTournamentStore', () => () => ({
   getStandings,
   getTournamentBySlug,
 }))
+mockNuxtImport('useTeamStore', () => () => ({
+  dialog: teamDialog,
+  teamStoreRequest,
+  steps: teamSteps,
+  isEdition: teamIsEdition,
+  initTeamForm,
+  $storeReset: teamStoreReset,
+}))
+mockNuxtImport('useRoleAccess', () => () => ({
+  canCreateTeam,
+}))
 mockNuxtImport('storeToRefs', () => (store: any) => store)
 mockNuxtImport('useRoute', () => () => ({ params: { torneo: 'inactivos-2026-apertura' }, query: {} }))
 mockNuxtImport('useRouter', () => () => ({ push: vi.fn(), replace: vi.fn() }))
@@ -64,6 +84,19 @@ describe('Torneo admin index page', () => {
   beforeEach(() => {
     tournament.value = createTournament()
     standings.value = []
+    canCreateTeam.value = true
+    teamDialog.value = false
+    teamStoreRequest.value = {}
+    teamSteps.value = { current: 'createTeam' }
+    teamIsEdition.value = false
+    initTeamForm.mockReset()
+    initTeamForm.mockResolvedValue(undefined)
+    teamStoreReset.mockReset()
+    teamStoreReset.mockImplementation(() => {
+      teamStoreRequest.value = {}
+      teamSteps.value = { current: 'createTeam' }
+      teamIsEdition.value = false
+    })
     getStandings.mockClear()
     getTournamentBySlug.mockClear()
     getStandings.mockResolvedValue(undefined)
@@ -96,6 +129,7 @@ describe('Torneo admin index page', () => {
           TournamentCalendarTab: { template: '<div data-testid="calendar-tab"></div>' },
           TournamentStandingsTable: { template: '<div data-testid="tournament-standings-table-wrapper"></div>' },
           CreateTournamentDialog: { template: '<div></div>' },
+          CreateTeamDialog: { template: '<div></div>' },
           DisciplinePanel: { template: '<div data-testid="discipline-panel"></div>' },
           TournamentShareMenu: { template: '<button data-testid="tournament-share-menu"></button>' },
           KpisMetricsSection: {
@@ -180,6 +214,7 @@ describe('Torneo admin index page', () => {
           TournamentCalendarTab: { template: '<div></div>' },
           TournamentStandingsTable: { template: '<div></div>' },
           CreateTournamentDialog: { template: '<div></div>' },
+          CreateTeamDialog: { template: '<div></div>' },
           DisciplinePanel: { template: '<div></div>' },
           TournamentShareMenu: { template: '<button></button>' },
           KpisMetricsSection: { template: '<div></div>' },
@@ -226,6 +261,10 @@ describe('Torneo admin index page', () => {
       },
     })
 
+    const openRemoveDialogButton = wrapper.find('[data-testid="tournament-quick-action-remove-team"]')
+    expect(openRemoveDialogButton.exists()).toBe(true)
+    await openRemoveDialogButton.trigger('click')
+
     const toggleButton = wrapper.findAll('button').find((button) => button.text().includes('Retirar de competencia'))
     expect(toggleButton).toBeTruthy()
     await toggleButton?.trigger('click')
@@ -241,6 +280,74 @@ describe('Torneo admin index page', () => {
       is_active: false,
       effective_round: 1,
     })
+  })
+
+  it('opens team registration dialog with current tournament selected', async () => {
+    const wrapper = await mountSuspended(TorneoIndexPage, {
+      global: {
+        stubs: {
+          PageLayout: { template: '<div><slot name="app-bar" /><slot name="default" /></div>' },
+          AppBar: { template: '<div></div>' },
+          StatsTableContainer: { template: '<div></div>' },
+          StatsTable: { template: '<div></div>' },
+          TournamentCalendarTab: { template: '<div></div>' },
+          TournamentStandingsTable: { template: '<div></div>' },
+          CreateTournamentDialog: { template: '<div></div>' },
+          CreateTeamDialog: { template: '<div></div>' },
+          DisciplinePanel: { template: '<div></div>' },
+          TournamentShareMenu: { template: '<button></button>' },
+          KpisMetricsSection: { template: '<div></div>' },
+          TransitionFade: { template: '<div><slot /></div>' },
+          Icon: { template: '<i></i>' },
+          'v-chip': { template: '<span><slot /></span>' },
+          'v-btn': { template: '<button v-bind="$attrs"><slot /></button>' },
+          'v-select': {
+            props: ['modelValue', 'items'],
+            emits: ['update:modelValue'],
+            template: `
+              <select
+                data-testid="competition-select"
+                :value="modelValue"
+                @change="$emit('update:modelValue', Number($event.target.value))"
+              >
+                <option v-for="item in items" :key="item.value" :value="item.value">{{ item.title }}</option>
+              </select>
+            `,
+          },
+          VSelect: {
+            props: ['modelValue', 'items'],
+            emits: ['update:modelValue'],
+            template: `
+              <select
+                data-testid="competition-select"
+                :value="modelValue"
+                @change="$emit('update:modelValue', Number($event.target.value))"
+              >
+                <option v-for="item in items" :key="item.value" :value="item.value">{{ item.title }}</option>
+              </select>
+            `,
+          },
+          'v-progress-linear': { template: '<div></div>' },
+          'v-card': { template: '<div><slot /></div>' },
+          'v-card-text': { template: '<div><slot /></div>' },
+          'v-card-title': { template: '<div><slot /></div>' },
+          'v-tooltip': { template: '<div><slot /></div>' },
+          'v-dialog': { template: '<div><slot /></div>' },
+          'v-alert': { template: '<div><slot /></div>' },
+          'v-img': { template: '<div></div>' },
+          'v-card-actions': { template: '<div><slot /></div>' },
+        },
+      },
+    })
+
+    const registerButton = wrapper.find('[data-testid="tournament-quick-action-register-team"]')
+    expect(registerButton.exists()).toBe(true)
+    await registerButton.trigger('click')
+
+    expect(initTeamForm).toHaveBeenCalled()
+    expect(teamDialog.value).toBe(true)
+    expect(teamStoreRequest.value?.team?.tournament_id).toBe(1)
+    expect(teamStoreRequest.value?.team?.category_id).toBe(1)
   })
 
   it('hides tournament competition config card when there is no generated schedule', async () => {
@@ -260,6 +367,7 @@ describe('Torneo admin index page', () => {
           TournamentCalendarTab: { template: '<div></div>' },
           TournamentStandingsTable: { template: '<div></div>' },
           CreateTournamentDialog: { template: '<div></div>' },
+          CreateTeamDialog: { template: '<div></div>' },
           DisciplinePanel: { template: '<div></div>' },
           TournamentShareMenu: { template: '<button></button>' },
           KpisMetricsSection: { template: '<div></div>' },
@@ -330,6 +438,7 @@ describe('Torneo admin index page', () => {
           TournamentCalendarTab: { template: '<div></div>' },
           TournamentStandingsTable: { template: '<div></div>' },
           CreateTournamentDialog: { template: '<div></div>' },
+          CreateTeamDialog: { template: '<div></div>' },
           DisciplinePanel: { template: '<div></div>' },
           TournamentShareMenu: { template: '<button></button>' },
           KpisMetricsSection: { template: '<div></div>' },
@@ -375,6 +484,10 @@ describe('Torneo admin index page', () => {
         },
       },
     })
+
+    const openRemoveDialogButton = wrapper.find('[data-testid="tournament-quick-action-remove-team"]')
+    expect(openRemoveDialogButton.exists()).toBe(true)
+    await openRemoveDialogButton.trigger('click')
 
     const select = wrapper.find('[data-testid="tournament-competition-team-select"]')
     expect(select.exists()).toBe(true)
