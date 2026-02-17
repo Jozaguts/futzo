@@ -29,6 +29,7 @@ const tournament = ref(createTournament())
 const getStandings = vi.fn()
 const getTournamentBySlug = vi.fn()
 const tournamentApi = vi.hoisted(() => ({
+  getTournamentNextAvailableRound: vi.fn(),
   getTournamentMetrics: vi.fn(),
   getTournamentRegistrationQRCode: vi.fn(),
   getTournamentScheduleQRCode: vi.fn(),
@@ -36,6 +37,7 @@ const tournamentApi = vi.hoisted(() => ({
 }))
 
 vi.mock('~/http/api/tournament', () => ({
+  getTournamentNextAvailableRound: tournamentApi.getTournamentNextAvailableRound,
   getTournamentMetrics: tournamentApi.getTournamentMetrics,
   getTournamentRegistrationQRCode: tournamentApi.getTournamentRegistrationQRCode,
   getTournamentScheduleQRCode: tournamentApi.getTournamentScheduleQRCode,
@@ -66,6 +68,7 @@ describe('Torneo admin index page', () => {
     getStandings.mockResolvedValue(undefined)
     getTournamentBySlug.mockResolvedValue(undefined)
     tournamentApi.getTournamentMetrics.mockReset()
+    tournamentApi.getTournamentNextAvailableRound.mockReset()
     tournamentApi.getTournamentScheduleQRCode.mockReset()
     tournamentApi.updateTournamentTeamCompetitionStatus.mockReset()
     tournamentApi.getTournamentMetrics.mockResolvedValue({
@@ -77,6 +80,7 @@ describe('Torneo admin index page', () => {
       },
     })
     tournamentApi.getTournamentScheduleQRCode.mockResolvedValue({ image: 'data:image/png;base64,mock' })
+    tournamentApi.getTournamentNextAvailableRound.mockResolvedValue(1)
     tournamentApi.updateTournamentTeamCompetitionStatus.mockResolvedValue({})
   })
 
@@ -225,7 +229,11 @@ describe('Torneo admin index page', () => {
     expect(toggleButton).toBeTruthy()
     await toggleButton?.trigger('click')
 
-    expect(tournamentApi.updateTournamentTeamCompetitionStatus).toHaveBeenCalledWith(1, 9, { is_active: false })
+    expect(tournamentApi.getTournamentNextAvailableRound).toHaveBeenCalledWith(1)
+    expect(tournamentApi.updateTournamentTeamCompetitionStatus).toHaveBeenCalledWith(1, 9, {
+      is_active: false,
+      effective_round: 1,
+    })
   })
 
   it('hides tournament competition config card when there is no generated schedule', async () => {

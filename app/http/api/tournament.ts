@@ -200,6 +200,47 @@ export type UpdateTournamentTeamCompetitionStatusPayload = {
   effective_round?: number;
 };
 
+type TournamentSchedulePageResponse = {
+  rounds?: Array<{
+    round?: number;
+    status?: string;
+  }>;
+  pagination?: {
+    total_rounds?: number;
+  };
+};
+
+export const getTournamentNextAvailableRound = async (tournamentId: number) => {
+  const client = useSanctumClient();
+  let page = 1;
+  let totalRounds = 1;
+
+  while (page <= totalRounds) {
+    const response = await client<TournamentSchedulePageResponse>(`/api/v1/admin/tournaments/${tournamentId}/schedule`, {
+      query: { page },
+    });
+    totalRounds = Math.max(1, Number(response?.pagination?.total_rounds ?? totalRounds));
+
+    const rounds = Array.isArray(response?.rounds) ? response.rounds : [];
+    const nextRound = rounds
+      .map((round) => ({
+        number: Number(round?.round ?? 0),
+        status: String(round?.status ?? ''),
+      }))
+      .filter((round) => Number.isFinite(round.number) && round.number > 0)
+      .sort((a, b) => a.number - b.number)
+      .find((round) => round.status !== 'completado' && round.status !== 'cancelado');
+
+    if (nextRound) {
+      return nextRound.number;
+    }
+
+    page += 1;
+  }
+
+  return null;
+};
+
 export const updateTournamentTeamCompetitionStatus = async (
   tournamentId: number,
   teamId: number,

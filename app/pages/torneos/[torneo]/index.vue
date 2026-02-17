@@ -11,9 +11,11 @@ import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
 import KpisMetricsSection from '~/components/shared/kpis-metrics-section.vue'
 import PageLayout from '~/components/shared/PageLayout.vue'
 import {
+  getTournamentNextAvailableRound,
   getTournamentMetrics,
   getTournamentRegistrationQRCode,
   getTournamentScheduleQRCode,
+  type UpdateTournamentTeamCompetitionStatusPayload,
   updateTournamentTeamCompetitionStatus,
 } from '~/http/api/tournament'
 import type {Team as TournamentTeam} from '~/models/Schedule'
@@ -247,18 +249,30 @@ const tournamentStore = useTournamentStore()
 
     isUpdatingCompetitionStatus.value = true
     try {
-      await updateTournamentTeamCompetitionStatus(currentTournamentId.value, selectedCompetitionTeam.value.id, {
+      const payload: UpdateTournamentTeamCompetitionStatusPayload = {
         is_active: nextIsActive,
-      })
+      }
+      if (!nextIsActive) {
+        const effectiveRound = await getTournamentNextAvailableRound(currentTournamentId.value)
+        if (typeof effectiveRound === 'number' && effectiveRound > 0) {
+          payload.effective_round = effectiveRound
+        }
+      }
+
+      await updateTournamentTeamCompetitionStatus(currentTournamentId.value, selectedCompetitionTeam.value.id, payload)
       toast({
         type: 'success',
         msg: nextIsActive ? 'Equipo reactivado en competencia' : 'Equipo retirado de competencia',
       })
       await refreshTournamentSummary()
-    } catch {
+    } catch (error: any) {
+      const backendMessage =
+        error?.data?.message ||
+        (Array.isArray(error?.data?.errors?.effective_round) ? error.data.errors.effective_round[0] : null)
       toast({
         type: 'error',
         msg: 'No se pudo actualizar el estado competitivo del equipo',
+        description: backendMessage || undefined,
       })
     } finally {
       isUpdatingCompetitionStatus.value = false
