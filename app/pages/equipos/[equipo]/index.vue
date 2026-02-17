@@ -23,6 +23,7 @@ const playerStore = usePlayerStore()
 const route = useRoute()
 const router = useRouter()
 const { toast } = useToast()
+const { start, finish } = useLoadingIndicator()
 const runtimeConfig = useRuntimeConfig()
 const requestUrl = useRequestURL()
 const { mobile } = useDisplay()
@@ -295,6 +296,7 @@ const openRegistrationQr = async () => {
     toast({ type: 'warning', msg: 'No se pudo obtener el ID del equipo' })
     return
   }
+  start()
   share.value.hasError = false
   share.value.image = ''
   share.value.isLoading = true
@@ -312,6 +314,7 @@ const openRegistrationQr = async () => {
     toast({ type: 'error', msg: 'No se pudo generar el QR de inscripción' })
   } finally {
     share.value.isLoading = false
+    finish()
   }
 }
 
