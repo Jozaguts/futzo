@@ -15,6 +15,7 @@ const props = withDefaults(
     rowsPerPage?: number
     emptyTitle?: string
     emptyText?: string
+    navigateToTeamOnRowClick?: boolean
   }>(),
   {
     standings: () => [],
@@ -24,9 +25,16 @@ const props = withDefaults(
     rowsPerPage: 0,
     emptyTitle: 'Tabla de posiciones no disponible',
     emptyText: 'La tabla aún no está lista. Vuelve más tarde.',
+    navigateToTeamOnRowClick: false,
   }
 )
 
+type ClickRowArgument = PublicStandingRow & {
+  isSelected?: boolean
+  indexInCurrentPage?: number
+}
+
+const router = useRouter()
 const hasStandings = computed(() => props.standings.length > 0)
 const resolvedRowsPerPage = computed(() => {
   if (props.rowsPerPage && props.rowsPerPage > 0) {
@@ -34,6 +42,34 @@ const resolvedRowsPerPage = computed(() => {
   }
   return props.standings.length || 20
 })
+
+const resolveTeamRouteParam = (row: ClickRowArgument): string | null => {
+  const team = (row as any)?.team ?? {}
+  const slug = typeof team?.slug === 'string' ? team.slug.trim() : ''
+  if (slug) {
+    return slug
+  }
+
+  const fallbackId = Number(team?.id ?? (row as any)?.team_id)
+  if (Number.isFinite(fallbackId) && fallbackId > 0) {
+    return String(fallbackId)
+  }
+
+  return null
+}
+
+const handleStandingRowClick = (row: ClickRowArgument) => {
+  if (!props.navigateToTeamOnRowClick) {
+    return
+  }
+
+  const teamRouteParam = resolveTeamRouteParam(row)
+  if (!teamRouteParam) {
+    return
+  }
+
+  router.push({ name: 'equipos-equipo', params: { equipo: teamRouteParam } })
+}
 </script>
 
 <template>
@@ -45,7 +81,10 @@ const resolvedRowsPerPage = computed(() => {
           <Vue3EasyDataTable
             v-if="hasStandings"
             header-text-direction="center"
-            class="futzo-rounded standings-table__grid"
+            :class="[
+              'futzo-rounded standings-table__grid',
+              { 'standings-table__grid--clickable': navigateToTeamOnRowClick },
+            ]"
             body-text-direction="center"
             :headers="publicTournamentStandingsHeaders"
             :items="standings"
@@ -54,6 +93,7 @@ const resolvedRowsPerPage = computed(() => {
             :table-min-height="0"
             :rows-per-page="resolvedRowsPerPage"
             alternating
+            @click-row="handleStandingRowClick"
           >
             <template #item-team.name="values">
               <div class="d-flex">
@@ -134,6 +174,10 @@ const resolvedRowsPerPage = computed(() => {
 .standings-table :deep(.easy-data-table__table) {
   table-layout: auto;
   width: max-content;
+}
+
+.standings-table__grid--clickable :deep(.easy-data-table__table tbody tr) {
+  cursor: pointer;
 }
 
 @media (max-width: 600px) {

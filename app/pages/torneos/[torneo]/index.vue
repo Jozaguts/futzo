@@ -742,6 +742,7 @@ const tournamentStore = useTournamentStore()
                     :loading="loading"
                     wrapper-test-id="tournament-standings-table-wrapper"
                     :rows-per-page="standings?.length || 0"
+                    navigate-to-team-on-row-click
                   />
                 </div>
                 <div class="tournament-stats">

@@ -1,11 +1,20 @@
-import {describe, expect, it, vi} from 'vitest'
-import {mountSuspended} from '@nuxt/test-utils/runtime'
+import {beforeEach, describe, expect, it, vi} from 'vitest'
+import {mockNuxtImport, mountSuspended} from '@nuxt/test-utils/runtime'
 import TournamentStandingsTable from '~/components/pages/torneos/tournament-standings-table.vue'
+
+const pushMock = vi.fn()
+
+mockNuxtImport('useRouter', () => () => ({
+  push: pushMock,
+  replace: vi.fn(),
+}))
 
 vi.mock('vue3-easy-data-table', () => ({
   default: {
     props: ['headers', 'items'],
-    template: '<div data-testid="easy-table">{{ headers.length }}|{{ items.length }}</div>',
+    emits: ['click-row'],
+    template:
+      '<button data-testid="easy-table" @click="$emit(\'click-row\', items[0])">{{ headers.length }}|{{ items.length }}</button>',
   },
 }))
 
@@ -19,6 +28,10 @@ const baseStubs = {
 }
 
 describe('TournamentStandingsTable', () => {
+  beforeEach(() => {
+    pushMock.mockClear()
+  })
+
   it('renders standings table wrapper and passes standings to table component', async () => {
     const wrapper = await mountSuspended(TournamentStandingsTable, {
       props: {
@@ -74,5 +87,44 @@ describe('TournamentStandingsTable', () => {
 
     expect(wrapper.find('[data-testid="easy-table"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="empty"]').text()).toContain('Tabla de posiciones no disponible')
+  })
+
+  it('navigates to team detail when row is clicked and feature is enabled', async () => {
+    const wrapper = await mountSuspended(TournamentStandingsTable, {
+      props: {
+        standings: [
+          {
+            id: 1,
+            rank: 1,
+            team: { id: 10, name: 'Águilas FC', image: '' },
+            matches_played: 8,
+            wins: 5,
+            draws: 2,
+            losses: 1,
+            goals_for: 17,
+            goals_against: 7,
+            goal_difference: 10,
+            points: 17,
+            last_5: 'WWDWL',
+            name: 'Águilas FC',
+          },
+        ],
+        navigateToTeamOnRowClick: true,
+      },
+      global: {
+        stubs: {
+          ...baseStubs,
+          'v-skeleton-loader': { template: '<div data-testid="skeleton"></div>' },
+          'v-empty-state': { template: '<div data-testid="empty"></div>' },
+        },
+      },
+    })
+
+    await wrapper.find('[data-testid="easy-table"]').trigger('click')
+
+    expect(pushMock).toHaveBeenCalledWith({
+      name: 'equipos-equipo',
+      params: { equipo: '10' },
+    })
   })
 })

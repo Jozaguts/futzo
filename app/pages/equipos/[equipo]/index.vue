@@ -158,11 +158,19 @@ const updateFormationType = (isHome: boolean, teamId: number, formationId: numbe
   })
 }
 
-const loadTeamDetail = async (slug: string) => {
-  if (!slug) return
+const normalizeTeamLookupTerm = (value: string): string | number => {
+  const normalized = String(value || '').trim()
+  if (/^\d+$/.test(normalized)) {
+    return Number(normalized)
+  }
+  return normalized
+}
+
+const loadTeamDetail = async (term: string | number) => {
+  if (!term) return
   loading.value = true
   try {
-    const teamData = (await teamStore.getTeam(slug)) as Team
+    const teamData = (await teamStore.getTeam(term)) as Team
     homeTeam.value = teamData
 
     if (!teamData?.id) {
@@ -187,9 +195,10 @@ const loadTeamDetail = async (slug: string) => {
 
 watch(
   () => route.params.equipo,
-  (slug) => {
-    if (typeof slug === 'string') {
-      void loadTeamDetail(slug)
+  (rawTeamParam) => {
+    if (typeof rawTeamParam === 'string') {
+      const lookupTerm = normalizeTeamLookupTerm(rawTeamParam)
+      void loadTeamDetail(lookupTerm)
     }
   },
   { immediate: true }
