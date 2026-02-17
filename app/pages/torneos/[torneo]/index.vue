@@ -78,6 +78,24 @@ const tournamentStore = useTournamentStore()
     }
     return tournament.value?.progress?.percent ?? 0
   })
+  const resolveProgressTotalFromLabel = (label?: string | null) => {
+    if (!label || typeof label !== 'string') {
+      return 0
+    }
+    const parts = label.split('/')
+    if (parts.length < 2) {
+      return 0
+    }
+    const total = Number(parts[1]?.trim())
+    return Number.isFinite(total) ? total : 0
+  }
+  const hasGeneratedSchedule = computed(() => {
+    const totalFromGamesProgress = Number(tournament.value?.games_progress?.total ?? 0)
+    if (Number.isFinite(totalFromGamesProgress) && totalFromGamesProgress > 0) {
+      return true
+    }
+    return resolveProgressTotalFromLabel(tournament.value?.games_progress?.label ?? tournament.value?.progress?.label) > 0
+  })
   const createZeroMetric = () => ({
     total: 0,
     current: 0,
@@ -132,6 +150,12 @@ const tournamentStore = useTournamentStore()
       value: team.id,
     }))
   )
+  const competitionConfigContext = computed(() => {
+    if (!tournamentTeamOptions.value.length) {
+      return 'A partir de aquí podrás activar o retirar equipos cuando haya equipos inscritos en el torneo.'
+    }
+    return 'A partir de aquí puedes activar o retirar equipos de la competencia.'
+  })
   const selectedCompetitionTeam = computed(
     () => tournamentTeams.value.find((team) => team.id === selectedCompetitionTeamId.value) ?? null
   )
@@ -537,7 +561,7 @@ const tournamentStore = useTournamentStore()
             <template v-if="tab === 'resumen'">
               <KpisMetricsSection class="tournament-kpis" :items="tournamentKpiItems" test-id-prefix="tournament-kpis" />
 
-              <div class="tournament-resume-top">
+              <div class="tournament-resume-top" :class="{ 'tournament-resume-top--split': hasGeneratedSchedule }">
                 <v-card class="tournament-progress-card futzo-rounded">
                   <div class="progress-header">
                     <p>Progreso</p>
@@ -550,10 +574,19 @@ const tournamentStore = useTournamentStore()
                   </div>
                 </v-card>
 
-                <v-card class="tournament-config-card futzo-rounded" data-testid="tournament-competition-config">
+                <v-card
+                  v-if="hasGeneratedSchedule"
+                  class="tournament-config-card futzo-rounded"
+                  data-testid="tournament-competition-config"
+                >
                   <div class="competition-config__header">
                     <h3 class="competition-config__title">Configuración del torneo</h3>
                     <p class="competition-config__subtitle">Activa o retira equipos de la competencia.</p>
+                  </div>
+
+                  <div class="competition-config__context">
+                    <Icon name="lucide:info" size="15" />
+                    <span>{{ competitionConfigContext }}</span>
                   </div>
 
                   <v-select
@@ -569,17 +602,7 @@ const tournamentStore = useTournamentStore()
                     data-testid="tournament-competition-team-select"
                   />
 
-                  <v-alert
-                    v-if="!tournamentTeamOptions.length"
-                    type="info"
-                    variant="tonal"
-                    density="comfortable"
-                    class="competition-config__empty"
-                  >
-                    No hay equipos disponibles para configurar.
-                  </v-alert>
-
-                  <template v-else>
+                  <template v-if="tournamentTeamOptions.length">
                     <p class="competition-config__status">{{ competitionStatusSummary }}</p>
                     <v-btn
                       :color="isSelectedTeamActive ? 'error' : 'success'"
@@ -811,8 +834,17 @@ const tournamentStore = useTournamentStore()
     font-size: 12px
     color: #475467
 
-  .competition-config__empty
-    margin: 0
+  .competition-config__context
+    border: 1px solid #eaecf0
+    background: #f8fafc
+    border-radius: 10px
+    min-height: 36px
+    display: flex
+    align-items: center
+    gap: 8px
+    padding: 8px 12px
+    font-size: 12px
+    color: #344054
 
   .tournament-content
     display: grid
@@ -845,7 +877,7 @@ const tournamentStore = useTournamentStore()
       font-size: 24px
 
   @media (min-width: 900px)
-    .tournament-resume-top
+    .tournament-resume-top--split
       grid-template-columns: minmax(0, 7fr) minmax(0, 3fr)
       align-items: stretch
 

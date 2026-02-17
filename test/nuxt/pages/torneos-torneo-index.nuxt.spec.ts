@@ -5,7 +5,7 @@ import TorneoIndexPage from '~/pages/torneos/[torneo]/index.vue'
 
 const standings = ref([] as any[])
 const tournamentId = ref<number | undefined>(1)
-const tournament = ref({
+const createTournament = () => ({
   id: 1,
   slug: 'inactivos-2026-apertura',
   name: 'Inactivos 2026 Apertura',
@@ -24,6 +24,7 @@ const tournament = ref({
     { id: 11, name: 'Titanes', pivot: { tournament_id: 1, team_id: 11, is_active: false, inactive_from_round: 6 } },
   ],
 })
+const tournament = ref(createTournament())
 
 const getStandings = vi.fn()
 const getTournamentBySlug = vi.fn()
@@ -59,6 +60,7 @@ vi.mock('vuetify', () => ({
 
 describe('Torneo admin index page', () => {
   beforeEach(() => {
+    tournament.value = createTournament()
     getStandings.mockClear()
     getTournamentBySlug.mockClear()
     getStandings.mockResolvedValue(undefined)
@@ -224,5 +226,72 @@ describe('Torneo admin index page', () => {
     await toggleButton?.trigger('click')
 
     expect(tournamentApi.updateTournamentTeamCompetitionStatus).toHaveBeenCalledWith(1, 9, { is_active: false })
+  })
+
+  it('hides tournament competition config card when there is no generated schedule', async () => {
+    tournament.value = {
+      ...createTournament(),
+      games_progress: { percent: 0, label: '0/0', played: 0, total: 0 },
+      progress: { percent: 0, label: '0/0' },
+    }
+
+    const wrapper = await mountSuspended(TorneoIndexPage, {
+      global: {
+        stubs: {
+          PageLayout: { template: '<div><slot name="app-bar" /><slot name="default" /></div>' },
+          AppBar: { template: '<div></div>' },
+          StatsTableContainer: { template: '<div></div>' },
+          StatsTable: { template: '<div></div>' },
+          TournamentCalendarTab: { template: '<div></div>' },
+          TournamentStandingsTable: { template: '<div></div>' },
+          CreateTournamentDialog: { template: '<div></div>' },
+          DisciplinePanel: { template: '<div></div>' },
+          TournamentShareMenu: { template: '<button></button>' },
+          KpisMetricsSection: { template: '<div></div>' },
+          TransitionFade: { template: '<div><slot /></div>' },
+          Icon: { template: '<i></i>' },
+          'v-chip': { template: '<span><slot /></span>' },
+          'v-btn': { template: '<button v-bind="$attrs"><slot /></button>' },
+          'v-select': {
+            props: ['modelValue', 'items'],
+            emits: ['update:modelValue'],
+            template: `
+              <select
+                data-testid="competition-select"
+                :value="modelValue"
+                @change="$emit('update:modelValue', Number($event.target.value))"
+              >
+                <option v-for="item in items" :key="item.value" :value="item.value">{{ item.title }}</option>
+              </select>
+            `,
+          },
+          VSelect: {
+            props: ['modelValue', 'items'],
+            emits: ['update:modelValue'],
+            template: `
+              <select
+                data-testid="competition-select"
+                :value="modelValue"
+                @change="$emit('update:modelValue', Number($event.target.value))"
+              >
+                <option v-for="item in items" :key="item.value" :value="item.value">{{ item.title }}</option>
+              </select>
+            `,
+          },
+          'v-progress-linear': { template: '<div data-testid="progress"></div>' },
+          'v-card': { template: '<div><slot /></div>' },
+          'v-card-text': { template: '<div><slot /></div>' },
+          'v-card-title': { template: '<div><slot /></div>' },
+          'v-tooltip': { template: '<div><slot /></div>' },
+          'v-dialog': { template: '<div><slot /></div>' },
+          'v-alert': { template: '<div><slot /></div>' },
+          'v-img': { template: '<div></div>' },
+          'v-card-actions': { template: '<div><slot /></div>' },
+        },
+      },
+    })
+
+    expect(wrapper.find('[data-testid="tournament-competition-config"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="progress"]').exists()).toBe(true)
   })
 })
