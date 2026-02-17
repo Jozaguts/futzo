@@ -747,7 +747,8 @@ const tournamentStore = useTournamentStore()
       <v-card-title>Retirar equipo de la competencia</v-card-title>
       <v-card-text class="text-body-2">
         Vas a retirar a {{ selectedCompetitionTeamName }} de la competencia. Esta acción lo desactiva desde la
-        siguiente jornada disponible, regenera el calendario pendiente y recalcula la tabla de posiciones.
+        siguiente jornada disponible, regenera el calendario pendiente y recalcula la tabla de posiciones. Los
+        partidos ya jugados y los puntos acumulados no se eliminan.
       </v-card-text>
       <v-card-actions class="justify-end">
         <v-btn
