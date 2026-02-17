@@ -99,6 +99,7 @@ onBeforeUnmount(() => {
           <LocationKpis :locations="locations || []" :total-locations="pagination.total" />
         </div>
         <QuickActionsPanel
+          class="ubicaciones-page__actions-panel"
           title="Acciones Rápidas"
           test-id="ubicaciones-page-actions"
           :actions="ubicacionesQuickActions"
@@ -197,6 +198,11 @@ onBeforeUnmount(() => {
 
 .ubicaciones-page__kpis {
   min-width: 0;
+  height: 100%;
+}
+
+.ubicaciones-page__actions-panel {
+  height: 100%;
 }
 
 @media (min-width: 960px) {
@@ -226,7 +232,7 @@ onBeforeUnmount(() => {
   .ubicaciones-page__overview {
     grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
     gap: 16px;
-    align-items: start;
+    align-items: stretch;
   }
 }
 </style>

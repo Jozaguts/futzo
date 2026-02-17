@@ -78,7 +78,6 @@ const kpiItems = computed(() => [
   <KpisMetricsSection
     :items="kpiItems"
     test-id-prefix="jugadores-kpis"
-    desktop-layout="scroll"
-    :desktop-visible-cards="3"
+    :desktop-card-max-width="240"
   />
 </template>

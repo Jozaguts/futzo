@@ -176,6 +176,7 @@ onBeforeUnmount(() => {
           <PlayerKpis :players="players" :total-players="pagination.total" />
         </div>
         <QuickActionsPanel
+          class="jugadores-page__actions-panel"
           title="Acciones Rápidas"
           test-id="jugadores-page-actions"
           :actions="jugadoresQuickActions"
@@ -276,6 +277,11 @@ onBeforeUnmount(() => {
 
 .jugadores-page__kpis {
   min-width: 0;
+  height: 100%;
+}
+
+.jugadores-page__actions-panel {
+  height: 100%;
 }
 
 .jugadores-page__table {
@@ -315,7 +321,7 @@ onBeforeUnmount(() => {
   .jugadores-page__overview {
     grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
     gap: 16px;
-    align-items: start;
+    align-items: stretch;
   }
 
   .jugadores-page__controls {

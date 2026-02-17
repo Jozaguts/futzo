@@ -18,45 +18,26 @@ export type KpiMetricItem = {
 const props = withDefaults(defineProps<{
   items: KpiMetricItem[]
   testIdPrefix?: string
-  desktopLayout?: 'grid' | 'scroll'
-  desktopVisibleCards?: number
+  desktopCardMaxWidth?: number | null
 }>(), {
   testIdPrefix: 'metrics',
-  desktopLayout: 'grid',
-  desktopVisibleCards: 3,
+  desktopCardMaxWidth: null,
 })
 
 const { mobile } = useDisplay()
-const showDesktopScroll = computed(() => !mobile.value && props.desktopLayout === 'scroll')
-const desktopScrollStyle = computed(() => ({
-  '--desktop-visible-cards': String(Math.max(1, Number(props.desktopVisibleCards || 3))),
+const hasDesktopCardMaxWidth = computed(() => Number(props.desktopCardMaxWidth ?? 0) > 0)
+const desktopGridStyle = computed(() => ({
+  '--desktop-card-max-width': `${Math.max(120, Number(props.desktopCardMaxWidth || 0))}px`,
 }))
 </script>
 
 <template>
   <section
-    v-if="!mobile && !showDesktopScroll"
+    v-if="!mobile"
     class="kpis-metrics-grid"
+    :class="{ 'kpis-metrics-grid--fixed-card': hasDesktopCardMaxWidth }"
+    :style="hasDesktopCardMaxWidth ? desktopGridStyle : undefined"
     :data-testid="`${testIdPrefix}-grid`"
-  >
-    <MetricCard
-      v-for="metric in items"
-      :key="metric.title"
-      :title="metric.title"
-      :value="metric.value"
-      :icon="metric.icon"
-      :icon-tone="metric.iconTone || 'purple'"
-      :trend-value="metric.trendValue ?? null"
-      :trend-label="metric.trendLabel ?? ''"
-      :trend-as-percent="metric.trendAsPercent ?? true"
-    />
-  </section>
-
-  <section
-    v-else-if="showDesktopScroll"
-    class="kpis-metrics-scroll"
-    :style="desktopScrollStyle"
-    :data-testid="`${testIdPrefix}-scroll`"
   >
     <MetricCard
       v-for="metric in items"
@@ -92,29 +73,24 @@ const desktopScrollStyle = computed(() => ({
   justify-content: center;
 }
 
-.kpis-metrics-scroll {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  padding-bottom: 4px;
-  scrollbar-width: thin;
-}
-
-.kpis-metrics-scroll :deep(.metric-card) {
-  flex: 0 0
-    calc((100% - ((var(--desktop-visible-cards, 3) - 1) * 12px)) / var(--desktop-visible-cards, 3));
-  min-width: 240px;
-}
-
 @media (width > 600px) {
-  .kpis-metrics-grid {
+  .kpis-metrics-grid:not(.kpis-metrics-grid--fixed-card) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kpis-metrics-grid--fixed-card {
+    grid-template-columns: repeat(auto-fit, minmax(200px, var(--desktop-card-max-width, 240px)));
+    justify-content: flex-start;
+  }
+
+  .kpis-metrics-grid--fixed-card :deep(.metric-card) {
+    max-width: var(--desktop-card-max-width, 240px);
+    width: 100%;
   }
 }
 
 @media (width > 1200px) {
-  .kpis-metrics-grid {
+  .kpis-metrics-grid:not(.kpis-metrics-grid--fixed-card) {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }

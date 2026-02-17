@@ -89,6 +89,7 @@ const handleEquiposQuickAction = (actionId: string) => {
           <TeamKpis :kpis="listKpis" />
         </div>
         <QuickActionsPanel
+          class="equipos-page__actions-panel"
           title="Acciones Rápidas"
           test-id="equipos-page-actions"
           :actions="equiposQuickActions"
@@ -182,6 +183,11 @@ const handleEquiposQuickAction = (actionId: string) => {
 
   .equipos-page__kpis {
     min-width: 0;
+    height: 100%;
+  }
+
+  .equipos-page__actions-panel {
+    height: 100%;
   }
 
   .table-wrapper {
@@ -231,7 +237,7 @@ const handleEquiposQuickAction = (actionId: string) => {
     .equipos-page__overview {
       grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
       gap: 16px;
-      align-items: start;
+      align-items: stretch;
     }
 
     .table-wrapper {
