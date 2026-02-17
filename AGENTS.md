@@ -25,6 +25,18 @@
 - TypeScript is preferred for app logic; keep filenames descriptive and kebab-case for Vue files.
 - Any style need to be performance with mobile first method
 
+## Vue Clean Components (Obligatorio)
+- Skill obligatorio para Vue: `.codex/skills/vue-clean-components/SKILL.md`.
+- Cada vez que se cree o modifique un archivo `.vue`, se debe aplicar ese skill además de `vue-best-practices`.
+- Objetivo obligatorio: reducir complejidad y tamaño de SFCs mediante extracción por capas (container/presentational/composable).
+- Evitar archivos `.vue` gigantes. Si un SFC excede presupuesto razonable, dividir en subcomponentes/composables.
+- Checklist mínimo por cada cambio en `.vue`:
+  - estado derivado en `computed` (no duplicado en `ref` + `watch`),
+  - sin mutación de props,
+  - sin `v-if` + `v-for` en el mismo nodo,
+  - separación entre funciones puras y side effects,
+  - tests creados o actualizados.
+
 ## UI Consistency Baseline (Obligatorio)
 - Baseline visual oficial: `app/pages/dashboard.vue` y `app/assets/scss/pages/dashboard.scss` para jerarquía de paneles, espaciado y densidad visual.
 - Estilo de tabs oficial para vistas de torneo: usar como referencia los tabs del modal de detalle de sanción en `app/components/pages/torneos/discipline/DisciplinePanel.vue` (`.discipline-case-tabs`, `.discipline-case-tabs__item`, `.discipline-case-tabs__item--active`).
