@@ -88,7 +88,7 @@ const jugadoresQuickActions = computed(() => [
   {
     id: 'import_players',
     label: 'Importar jugadores',
-    icon: 'lucide:upload',
+    icon: ' lucide:download',
     disabled: !canImportPlayers.value,
     testId: 'jugadores-import-btn',
   },

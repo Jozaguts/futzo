@@ -43,7 +43,7 @@ const equiposQuickActions = computed(() => [
   {
     id: 'import_teams',
     label: 'Importar equipos',
-    icon: 'lucide:upload',
+    icon: ' lucide:download',
     disabled: !canImportTeams.value,
     testId: 'equipos-import-btn',
   },
