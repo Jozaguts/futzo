@@ -230,7 +230,7 @@ onBeforeUnmount(() => {
   }
 
   .ubicaciones-page__overview {
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 440px);
     gap: 16px;
     align-items: stretch;
   }
