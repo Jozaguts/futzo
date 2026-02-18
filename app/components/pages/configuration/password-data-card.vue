@@ -5,12 +5,7 @@ import {vuetifyConfig} from '~/utils/constants'
 import PasswordField from '~/components/shared/PasswordField.vue'
 
 const user = computed(() => useAuthStore().user as User)
-  const states = reactive({
-    showPassword: false,
-    showNewPassword: false,
-    showNewPasswordConfirmation: false,
-  })
-  const { defineField, meta, values, handleSubmit, resetForm } = useForm<{
+  const { defineField, values, handleSubmit } = useForm<{
     password: string
     new_password: string
     new_password_confirmation: string
@@ -27,12 +22,9 @@ const user = computed(() => useAuthStore().user as User)
       })
     ),
   })
-  const [password, password_props] = defineField('password', vuetifyConfig)
-  const [new_password, new_password_props] = defineField('new_password', vuetifyConfig)
-  const [new_password_confirmation, new_password_confirmation_props] = defineField(
-    'new_password_confirmation',
-    vuetifyConfig
-  )
+  const [password] = defineField('password', vuetifyConfig)
+  const [new_password] = defineField('new_password', vuetifyConfig)
+  const [new_password_confirmation] = defineField('new_password_confirmation', vuetifyConfig)
   const submit = handleSubmit((values) => {
     const updateUserPasswordForm: UpdateUserPasswordForm = {
       id: user.value.id,
@@ -69,7 +61,7 @@ const user = computed(() => useAuthStore().user as User)
       </v-form>
     </v-card-text>
     <v-card-actions style="max-width: 600px;">
-      <v-btn type="submit" variant="elevated" color="primary" block> Guardar cambios </v-btn>
+      <v-btn type="button" variant="elevated" color="primary" block @click="submit"> Guardar cambios </v-btn>
     </v-card-actions>
   </v-card>
 </template>
