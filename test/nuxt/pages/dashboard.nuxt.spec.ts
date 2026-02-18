@@ -4,6 +4,9 @@ import {mockNuxtImport, mountSuspended} from '@nuxt/test-utils/runtime'
 import DashboardPage from '../../../app/pages/dashboard.vue'
 
 const isMobile = ref(false)
+const dashboardContext = vi.hoisted(() => ({
+  store: null as any,
+}))
 
 vi.mock('vuetify', () => ({
   useDisplay: () => ({ mobile: isMobile }),
@@ -33,9 +36,10 @@ const makeDashboardStore = (overrides: Partial<any> = {}) => ({
 describe('Dashboard page', () => {
   beforeEach(() => {
     isMobile.value = false
+    dashboardContext.store = makeDashboardStore()
 
     mockNuxtImport('storeToRefs', () => (store: any) => store)
-    mockNuxtImport('useDashboardStore', () => () => makeDashboardStore())
+    mockNuxtImport('useDashboardStore', () => () => dashboardContext.store)
     mockNuxtImport('useTournamentStore', () => () => ({ tournaments: ref([]), dialog: ref(false) }))
     mockNuxtImport('useTeamStore', () => () => ({ dialog: ref(false) }))
     mockNuxtImport('usePlayerStore', () => () => ({ dialog: ref(false) }))
@@ -101,12 +105,10 @@ describe('Dashboard page', () => {
   })
 
   it('shows empty states for next games and activity', async () => {
-    mockNuxtImport('useDashboardStore', () => () =>
-      makeDashboardStore({
-        nextGames: ref([]),
-        activity: ref([]),
-      })
-    )
+    dashboardContext.store = makeDashboardStore({
+      nextGames: ref([]),
+      activity: ref([]),
+    })
 
     const wrapper = await mountSuspended(DashboardPage, {
       global: {
@@ -135,5 +137,30 @@ describe('Dashboard page', () => {
 
     expect(wrapper.find('[data-testid="no-games"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="activity-empty"]').exists()).toBe(true)
+  })
+
+  it('loads dashboard data on mount', async () => {
+    await mountSuspended(DashboardPage, {
+      global: {
+        stubs: {
+          ClientOnly: { template: '<div><slot /></div>' },
+          PageLayout: { template: '<div><slot name="default" /></div>' },
+          AppBar: true,
+          MetricCard: { template: '<div class="metric-card-stub"></div>' },
+          MetricsCarousel: { template: '<div class="metrics-carousel-stub"></div>' },
+          DashboardNextGames: { template: '<div class="next-game-stub"></div>' },
+          ActivityFeed: { template: '<div class="activity-stub"></div>' },
+          NoGames: { template: '<div data-testid="no-games"></div>' },
+          TournamentDialog: true,
+          CreateTeamDialog: true,
+          JugadoresForm: true,
+          QuickActionsPanel: { template: '<div data-testid="dashboard-actions"></div>' },
+        },
+      },
+    })
+
+    expect(dashboardContext.store.byRange).toHaveBeenCalledTimes(1)
+    expect(dashboardContext.store.getNextGames).toHaveBeenCalledTimes(1)
+    expect(dashboardContext.store.getActivity).toHaveBeenCalledTimes(1)
   })
 })

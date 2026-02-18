@@ -136,11 +136,9 @@ watchEffect(() => {
 })
 
 onMounted(() => {
-  if (useAuth().isSignUp.value) {
-    useDashboardStore().byRange()
-    useDashboardStore().getNextGames()
-    useDashboardStore().getActivity()
-  }
+  dashboardStore.byRange()
+  dashboardStore.getNextGames()
+  dashboardStore.getActivity()
   setActiveController(tourController)
 })
 
