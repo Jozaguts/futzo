@@ -10,6 +10,8 @@ import type {Game} from '~/models/Game';
 import {parseBlobResponse} from '~/utils/prepareFormData';
 import type {BracketPreview, ConfirmBracketPayload} from '~/models/Bracket';
 import type {
+    ScheduleHardResetPayload,
+    ScheduleHardResetResult,
     ScheduleRegenerationAnalysis,
     ScheduleRegenerationPayload,
     ScheduleRegenerationResult,
@@ -193,6 +195,16 @@ export const confirmScheduleRegeneration = async (tournamentId: number, payload?
     `/api/v1/admin/tournaments/${tournamentId}/confirm-regeneration`,
     options
   );
+};
+
+export const hardResetTournamentSchedule = async (tournamentId: number, payload?: ScheduleHardResetPayload) => {
+  const client = useSanctumClient();
+  const options: Record<string, unknown> = { method: 'POST' };
+  const round = Number(payload?.round ?? 0);
+  if (Number.isFinite(round) && round > 1) {
+    options.body = { round: Math.trunc(round) };
+  }
+  return await client<ScheduleHardResetResult>(`/api/v1/admin/tournaments/${tournamentId}/schedule/hard-reset`, options);
 };
 
 export type UpdateTournamentTeamCompetitionStatusPayload = {

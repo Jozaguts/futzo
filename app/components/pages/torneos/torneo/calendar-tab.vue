@@ -1,20 +1,67 @@
 <script lang="ts" setup>
-  import type { RoundStatus } from '~/models/Schedule'
-  import ScheduleBoard from '~/components/pages/torneos/torneo/schedule/index.vue'
+import type {RoundStatus} from '~/models/Schedule'
+import ScheduleBoard from '~/components/pages/torneos/torneo/schedule/index.vue'
 
-  const scheduleStore = useScheduleStore()
+const scheduleStore = useScheduleStore()
   const { toast } = useToast()
   const { schedules, hasSchedule, scheduleDialog, scheduleDrawerOpen, pendingManualMatches, schedulePagination } =
     storeToRefs(scheduleStore)
 
   const isBootstrapping = ref(true)
   const search = ref('')
+  const showHardResetDialog = ref(false)
+  const hardResetRound = ref<number | null>(null)
+  const isHardResetSubmitting = ref(false)
   const hasPendingManualMatches = computed(() => pendingManualMatches.value > 0)
+  const canOpenHardResetDialog = computed(() => hasSchedule.value && !isBootstrapping.value)
   const pendingManualMatchesText = computed(() => {
     if (pendingManualMatches.value === 1) {
       return '1 partido pendiente por programar manualmente.'
     }
     return `${pendingManualMatches.value} partidos pendientes por programar manualmente.`
+  })
+  const totalAvailableRounds = computed(() => {
+    const roundsFromPagination = Number(schedulePagination.value.last_page ?? 0)
+    const roundsFromLoadedData = schedules.value.rounds.reduce((maxRound, round) => {
+      const currentRound = Number(round?.round ?? 0)
+      if (!Number.isFinite(currentRound)) {
+        return maxRound
+      }
+      return Math.max(maxRound, currentRound)
+    }, 0)
+    return Math.max(roundsFromPagination, roundsFromLoadedData, 0)
+  })
+  const hardResetRoundOptions = computed<Array<{ title: string; value: number | null }>>(() => {
+    const specificRoundOptions = Array.from({ length: totalAvailableRounds.value }, (_, index) => ({
+      title: `Jornada ${index + 1}`,
+      value: index + 1,
+    }))
+    return [{ title: 'Reset completo (todas las jornadas)', value: null }, ...specificRoundOptions]
+  })
+  const selectedHardResetRound = computed(() => {
+    const parsedRound = Number(hardResetRound.value ?? 0)
+    if (!Number.isFinite(parsedRound) || parsedRound <= 1) {
+      return null
+    }
+    return Math.trunc(parsedRound)
+  })
+  const hardResetPayload = computed(() => {
+    if (!selectedHardResetRound.value) {
+      return undefined
+    }
+    return { round: selectedHardResetRound.value }
+  })
+  const hardResetImpactMessage = computed(() => {
+    if (selectedHardResetRound.value) {
+      return `Se borrarán goles, asistencias, tarjetas y resultados desde la jornada ${selectedHardResetRound.value}.`
+    }
+    return 'Se borrarán goles, asistencias, tarjetas y resultados de todo el calendario.'
+  })
+  const hardResetExecutionMessage = computed(() => {
+    if (selectedHardResetRound.value) {
+      return `El torneo se reiniciará desde la jornada ${selectedHardResetRound.value}.`
+    }
+    return 'El torneo se reiniciará desde cero.'
   })
 
   const statusOptions: Array<{ title: string; value: 'all' | RoundStatus }> = [
@@ -87,6 +134,56 @@
     }
   }
 
+  const openHardResetDialog = () => {
+    if (!canOpenHardResetDialog.value) {
+      return
+    }
+    hardResetRound.value = null
+    showHardResetDialog.value = true
+  }
+
+  const closeHardResetDialog = () => {
+    if (isHardResetSubmitting.value) {
+      return
+    }
+    showHardResetDialog.value = false
+  }
+
+  const extractResetErrorMessage = (error: unknown) => {
+    const dataMessage = (error as { data?: { message?: string } })?.data?.message
+    if (dataMessage) {
+      return dataMessage
+    }
+    const responseMessage = (error as { response?: { _data?: { message?: string } } })?.response?._data?.message
+    if (responseMessage) {
+      return responseMessage
+    }
+    const message = (error as { message?: string })?.message
+    if (message) {
+      return message
+    }
+    return 'No se pudo reiniciar el calendario.'
+  }
+
+  const confirmHardReset = async () => {
+    if (!canOpenHardResetDialog.value || isHardResetSubmitting.value) {
+      return
+    }
+    isHardResetSubmitting.value = true
+    try {
+      await scheduleStore.hardResetSchedule(hardResetPayload.value)
+      showHardResetDialog.value = false
+    } catch (error) {
+      toast({
+        type: 'error',
+        msg: 'Calendario',
+        description: extractResetErrorMessage(error),
+      })
+    } finally {
+      isHardResetSubmitting.value = false
+    }
+  }
+
   onMounted(async () => {
     search.value = schedulePagination.value.search ?? ''
     await loadCalendar()
@@ -143,6 +240,21 @@
             <Icon name="lucide:search" size="16" />
           </template>
         </v-text-field>
+
+        <v-btn
+          class="calendar-tab__hard-reset-btn"
+          variant="outlined"
+          color="error"
+          rounded="lg"
+          :disabled="!canOpenHardResetDialog || isHardResetSubmitting"
+          data-testid="calendar-hard-reset-button"
+          @click="openHardResetDialog"
+        >
+          <template #prepend>
+            <Icon name="lucide:rotate-ccw" size="16" />
+          </template>
+          Resetear calendario
+        </v-btn>
       </div>
 
       <div v-if="hasPendingManualMatches" class="calendar-tab__context" data-testid="calendar-pending-context">
@@ -155,6 +267,63 @@
       <v-skeleton-loader v-if="isBootstrapping" type="article, article" />
       <ScheduleBoard v-else />
     </div>
+
+    <v-dialog
+      v-model="showHardResetDialog"
+      max-width="540"
+      :persistent="isHardResetSubmitting"
+      @update:model-value="
+        (value) => {
+          if (!value) {
+            closeHardResetDialog()
+          }
+        }
+      "
+    >
+      <v-card data-testid="calendar-hard-reset-dialog">
+        <v-card-title class="font-weight-bold">Reiniciar calendario</v-card-title>
+        <v-card-text>
+          <p class="text-body-2 mb-4">
+            Selecciona la jornada desde donde quieres reiniciar el calendario. Si no seleccionas jornada, el reset será
+            total.
+          </p>
+
+          <v-autocomplete
+            v-model="hardResetRound"
+            :items="hardResetRoundOptions"
+            item-title="title"
+            item-value="value"
+            clearable
+            hide-details
+            density="comfortable"
+            variant="outlined"
+            rounded="lg"
+            label="Jornada para reset"
+            data-testid="calendar-hard-reset-round"
+          />
+
+          <div class="calendar-tab__hard-reset-warning futzo-rounded mt-4" data-testid="calendar-hard-reset-warning">
+            <Icon name="lucide:triangle-alert" size="16" class="calendar-tab__hard-reset-warning-icon" />
+            <div>
+              <p class="text-body-2 mb-1">{{ hardResetImpactMessage }}</p>
+              <p class="text-body-2 mb-0">{{ hardResetExecutionMessage }}</p>
+            </div>
+          </div>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn variant="text" :disabled="isHardResetSubmitting" @click="closeHardResetDialog">Cancelar</v-btn>
+          <v-btn
+            color="error"
+            :loading="isHardResetSubmitting"
+            :disabled="isHardResetSubmitting"
+            data-testid="calendar-hard-reset-confirm"
+            @click="confirmHardReset"
+          >
+            Reiniciar calendario
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <LazyPagesTorneosCalendarioDialog />
   </section>
@@ -178,7 +347,8 @@
     gap: 10px
     align-items: center
 
-  .calendar-tab__settings-btn
+  .calendar-tab__settings-btn,
+  .calendar-tab__hard-reset-btn
     justify-content: flex-start
     text-transform: none
     letter-spacing: normal
@@ -214,9 +384,21 @@
   .calendar-tab__content
     min-width: 0
 
+  .calendar-tab__hard-reset-warning
+    border: 1px solid #fecdca
+    background: #fffbfa
+    color: #7a271a
+    display: flex
+    gap: 10px
+    padding: 10px 12px
+
+  .calendar-tab__hard-reset-warning-icon
+    margin-top: 2px
+    flex-shrink: 0
+
   @media (min-width: 960px)
     .calendar-tab__toolbar
-      grid-template-columns: auto minmax(180px, 220px) minmax(280px, 1fr)
+      grid-template-columns: auto minmax(180px, 220px) minmax(280px, 1fr) auto
       gap: 12px
 
     .calendar-tab__search

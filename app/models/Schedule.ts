@@ -430,6 +430,16 @@ export interface ScheduleRegenerationPayload {
   round_trip?: boolean | null;
 }
 
+export interface ScheduleHardResetPayload {
+  round?: number;
+}
+
+export interface ScheduleHardResetResult {
+  message?: string;
+  mode?: 'full' | 'partial' | string;
+  cutoff_round?: number | null;
+}
+
 export interface ScheduleRegenerationAnalysis {
   mode: 'full' | 'partial';
   cutoff_round: number | null;

@@ -11,6 +11,7 @@ import type {
     GroupConfigurationOptions,
     LocationFieldsRequest,
     RoundStatus,
+    ScheduleHardResetPayload,
     ScheduleRegenerationAnalysis,
     ScheduleRegenerationLogSummary,
     ScheduleRegenerationPayload,
@@ -538,6 +539,48 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
       isConfirmingRegeneration.value = false;
     }
   };
+  const hardResetSchedule = async (payload?: ScheduleHardResetPayload) => {
+    if (!tournamentStore.tournamentId) {
+      return null;
+    }
+
+    const requestedRound = Number(payload?.round ?? 0);
+    const normalizedPayload =
+      Number.isFinite(requestedRound) && requestedRound > 1 ? { round: Math.trunc(requestedRound) } : undefined;
+
+    try {
+      const response = await tournamentAPI.hardResetTournamentSchedule(
+        tournamentStore.tournamentId as number,
+        normalizedPayload
+      );
+      regenerationBanner.value = null;
+      regeneratedFromRound.value = normalizedPayload?.round ?? null;
+      await refreshScheduleSettings();
+      schedulePagination.value.current_page = 1;
+      schedules.value.rounds = [];
+      try {
+        await getTournamentSchedules();
+      } catch {
+        schedules.value.rounds = [];
+      }
+      if (tournamentStore.tournamentId) {
+        await Promise.allSettled([
+          tournamentStore.getStandings(),
+          tournamentStore.getTournamentStats(),
+          tournamentStore.getLastResults(),
+          tournamentStore.getNextGames(),
+        ]);
+      }
+      useToast().toast({
+        type: 'success',
+        msg: 'Calendario',
+        description: response?.message ?? 'El calendario se reinició correctamente.',
+      });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  };
   const clearRegenerationBanner = () => {
     regenerationBanner.value = null;
   };
@@ -802,6 +845,7 @@ export const useScheduleStore = defineStore('scheduleStore', () => {
     loadTournamentFields,
     analyzeScheduleRegeneration,
     confirmScheduleRegeneration,
+    hardResetSchedule,
     clearRegenerationBanner,
     resetRegenerationState,
     advanceTournamentPhase,
