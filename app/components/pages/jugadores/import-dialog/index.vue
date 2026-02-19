@@ -8,12 +8,13 @@
   const { importPlayersHandler, downloadTemplate } = usePlayerStore()
   const { searchTeams } = useTeamStore()
   const isDownloadTemplate = ref(false)
-  const teamId = ref()
+  const teamId = ref<number | null>(null)
   const leaveHandler = () => {}
 
-  const file = ref<File>()
+  const file = ref<File | undefined>()
   const eventHandler = () => {
-    importPlayersHandler(file.value as File, teamId.value)
+    if (!file.value) return
+    importPlayersHandler(file.value, teamId.value)
   }
   const showTeamsInput = computed(() => !!file.value)
 
@@ -37,7 +38,7 @@
               class="ml-2"
               density="compact"
               variant="outlined"
-              label="Equipo"
+              label="Equipo (opcional)"
               item-value="id"
               item-title="name"
               v-model="teamId"
@@ -63,7 +64,7 @@
           </v-col>
         </v-row>
       </v-container>
-      <Drops v-model:file="file" @import-players="eventHandler" :disabled="!teamId" :loading="isImporting" />
+      <Drops v-model:file="file" @import-players="eventHandler" :disabled="false" :loading="isImporting" />
     </v-card>
   </v-dialog>
 </template>

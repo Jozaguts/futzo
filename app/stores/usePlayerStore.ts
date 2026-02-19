@@ -127,7 +127,147 @@ export const usePlayerStore = defineStore('playerStore', () => {
     imported_count: number;
     skipped_count: number;
     skipped: Array<{ name: string; last_name: string; reason: string }>;
+    errors?: Record<string, string[]> | string[] | string;
+    status?: string;
+    player_import_batch_id?: number | string;
+    batch_id?: number | string;
+    id?: number | string;
     message?: string;
+    data?: Record<string, any>;
+  };
+
+  type PlayerImportBatchStatus = 'queued' | 'processing' | 'completed' | 'completed_with_errors';
+
+  type NormalizedPlayerImportResult = {
+    batchId?: number | string;
+    status?: string;
+    importedCount: number;
+    skippedCount: number;
+    firstError?: string;
+    message?: string;
+  };
+
+  const PLAYER_IMPORT_PROCESSING_STATUSES = new Set<PlayerImportBatchStatus>(['queued', 'processing']);
+  const PLAYER_IMPORT_TERMINAL_STATUSES = new Set<PlayerImportBatchStatus>(['completed', 'completed_with_errors']);
+  const PLAYER_IMPORT_POLL_INTERVAL_MS = 1500;
+  const PLAYER_IMPORT_MAX_POLL_ATTEMPTS = 80;
+
+  const toRecord = (value: unknown): Record<string, any> => {
+    if (value && typeof value === 'object') {
+      return value as Record<string, any>;
+    }
+    return {};
+  };
+
+  const pickFirstDefined = <T>(...values: Array<T | null | undefined>): T | undefined => {
+    return values.find((value) => value !== undefined && value !== null) as T | undefined;
+  };
+
+  const parseImportCount = (value: unknown): number => {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+  };
+
+  const extractErrorMessages = (value: unknown): string[] => {
+    if (typeof value === 'string') {
+      return [value];
+    }
+    if (Array.isArray(value)) {
+      return value
+        .map((item) => {
+          if (typeof item === 'string') {
+            return item;
+          }
+          if (item && typeof item === 'object') {
+            const itemRecord = item as Record<string, any>;
+            return (itemRecord.message ?? itemRecord.reason) as string | undefined;
+          }
+          return undefined;
+        })
+        .filter((item): item is string => typeof item === 'string' && item.length > 0);
+    }
+    if (value && typeof value === 'object') {
+      return Object.values(value as Record<string, unknown>)
+        .flatMap((item) => {
+          if (typeof item === 'string') {
+            return [item];
+          }
+          if (Array.isArray(item)) {
+            return item.filter((entry): entry is string => typeof entry === 'string');
+          }
+          return [];
+        })
+        .filter((item) => item.length > 0);
+    }
+    return [];
+  };
+
+  const normalizeImportResult = (payload: unknown): NormalizedPlayerImportResult => {
+    const root = toRecord(payload);
+    const data = toRecord(root.data);
+    const batch = toRecord(
+      pickFirstDefined(root.player_import_batch, root.playerImportBatch, data.player_import_batch, data.playerImportBatch)
+    );
+
+    const status = pickFirstDefined<string>(root.status, data.status, batch.status);
+    const isAsyncCandidate = PLAYER_IMPORT_PROCESSING_STATUSES.has(status as PlayerImportBatchStatus);
+
+    const batchId = pickFirstDefined<number | string>(
+      root.player_import_batch_id,
+      root.playerImportBatchId,
+      root.batch_id,
+      data.player_import_batch_id,
+      data.playerImportBatchId,
+      data.batch_id,
+      batch.id,
+      isAsyncCandidate ? data.id : undefined,
+      isAsyncCandidate ? root.id : undefined
+    );
+
+    const importedCount = parseImportCount(pickFirstDefined(root.imported_count, data.imported_count, batch.imported_count));
+    const skippedCount = parseImportCount(pickFirstDefined(root.skipped_count, data.skipped_count, batch.skipped_count));
+    const errors = extractErrorMessages(pickFirstDefined(root.errors, data.errors, batch.errors));
+
+    return {
+      batchId,
+      status,
+      importedCount,
+      skippedCount,
+      firstError: errors[0],
+      message: pickFirstDefined(root.message, data.message, batch.message),
+    };
+  };
+
+  const resolveImportSummary = (result: NormalizedPlayerImportResult, fallback: string) => {
+    const base = `Importados: ${result.importedCount}. Omitidos: ${result.skippedCount}.`;
+    const detail = result.firstError ?? result.message;
+    return detail ? `${base} ${detail}` : base || fallback;
+  };
+
+  const wait = async (timeMs: number) => {
+    await new Promise((resolve) => setTimeout(resolve, timeMs));
+  };
+
+  const pollImportBatchStatus = async (batchId: number | string) => {
+    const client = useSanctumClient();
+
+    for (let attempt = 0; attempt < PLAYER_IMPORT_MAX_POLL_ATTEMPTS; attempt++) {
+      const response = await client<PlayerImportResponse>(`/api/v1/admin/players/import/${batchId}`);
+      const result = normalizeImportResult(response);
+      const normalizedStatus = result.status as PlayerImportBatchStatus | undefined;
+
+      if (!normalizedStatus || PLAYER_IMPORT_TERMINAL_STATUSES.has(normalizedStatus)) {
+        return result;
+      }
+
+      if (!PLAYER_IMPORT_PROCESSING_STATUSES.has(normalizedStatus)) {
+        return result;
+      }
+
+      await wait(PLAYER_IMPORT_POLL_INTERVAL_MS);
+    }
+
+    return null;
   };
 
   const getPlayer = async (id: string) => {
@@ -302,35 +442,102 @@ export const usePlayerStore = defineStore('playerStore', () => {
       console.log(error);
     }
   };
-  const importPlayersHandler = async (file: File, teamId: number) => {
+  const importPlayersHandler = async (file: File, teamId?: number | null) => {
     isImporting.value = true;
     const client = useSanctumClient();
     const formData = new FormData();
-    formData.append('team_id', teamId.toString());
+    if (typeof teamId === 'number' && Number.isFinite(teamId)) {
+      formData.append('team_id', teamId.toString());
+    }
     formData.append('file', file);
-    await client<PlayerImportResponse>('/api/v1/admin/players/import', {
-      method: 'POST',
-      body: formData,
-    })
-      .then(async (response) => {
-        const imported = response?.imported_count ?? 0;
-        const skipped = response?.skipped_count ?? 0;
+    try {
+      const response = await client<PlayerImportResponse>('/api/v1/admin/players/import', {
+        method: 'POST',
+        body: formData,
+      });
+      const importResult = normalizeImportResult(response);
+      const status = importResult.status as PlayerImportBatchStatus | undefined;
+      const shouldPollBatch = importResult.batchId !== undefined && (!status || PLAYER_IMPORT_PROCESSING_STATUSES.has(status));
+
+      if (shouldPollBatch) {
+        importModal.value = false;
+        toast({
+          type: 'info',
+          msg: 'Importación en proceso',
+          description: 'Estamos procesando el archivo en segundo plano.',
+        });
+
+        isImporting.value = false;
+
+        const finalResult = await pollImportBatchStatus(importResult.batchId);
+
+        if (!finalResult) {
+          toast({
+            type: 'warning',
+            msg: 'Importación en proceso',
+            description: 'La importación sigue ejecutándose. Actualiza la lista en unos segundos.',
+          });
+          return;
+        }
+
+        const finalStatus = finalResult.status as PlayerImportBatchStatus | undefined;
+
+        if (finalStatus === 'completed_with_errors') {
+          toast({
+            type: 'warning',
+            msg: 'Importación finalizada con observaciones',
+            description: resolveImportSummary(finalResult, 'Se completó la importación con errores.'),
+          });
+        } else {
+          toast({
+            type: 'success',
+            msg: 'Jugadores importados',
+            description: resolveImportSummary(finalResult, 'La importación de jugadores finalizó.'),
+          });
+        }
+
+        ga4Event('players_bulk_imported', {
+          tournament_id: useTeamStore().team?.tournament_id ?? useTournamentStore().tournamentId?.value ?? null,
+          players_count: finalResult.importedCount,
+        });
+        await getPlayers();
+        return;
+      }
+
+      if (status === 'completed_with_errors') {
+        toast({
+          type: 'warning',
+          msg: 'Importación finalizada con observaciones',
+          description: resolveImportSummary(importResult, 'Se completó la importación con errores.'),
+        });
+      } else {
         toast({
           type: 'success',
           msg: 'Jugadores importados',
-          description: `Importados: ${imported}. Omitidos: ${skipped}.`,
+          description: resolveImportSummary(importResult, 'La importación de jugadores finalizó.'),
         });
-        ga4Event('players_bulk_imported', {
-          tournament_id: useTeamStore().team?.tournament_id ?? useTournamentStore().tournamentId?.value ?? null,
-          players_count: imported,
-        });
-        importModal.value = false;
-        await getPlayers();
-      })
-      .catch((error) => {
-        console.error(error.data?.errors);
-      })
-      .finally(() => (isImporting.value = false));
+      }
+      ga4Event('players_bulk_imported', {
+        tournament_id: useTeamStore().team?.tournament_id ?? useTournamentStore().tournamentId?.value ?? null,
+        players_count: importResult.importedCount,
+      });
+      importModal.value = false;
+      await getPlayers();
+    } catch (error: any) {
+      const firstValidationError = Object.values(error?.data?.errors ?? {})
+        .flat()
+        .find((message) => typeof message === 'string') as string | undefined;
+
+      toast({
+        type: 'error',
+        msg: 'No se pudieron importar los jugadores',
+        description:
+          firstValidationError ?? error?.data?.message ?? 'Verifica el archivo y vuelve a intentarlo.',
+      });
+      console.error(error?.data?.errors ?? error);
+    } finally {
+      isImporting.value = false;
+    }
   };
 
   const releasePlayer = async (playerId: number) => {
