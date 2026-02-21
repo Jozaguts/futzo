@@ -39,6 +39,12 @@ const globalStore =  useGlobalStore()
       to: '/ubicaciones',
       class: 'mr-2 drawer-icon',
     },
+    {
+      icon: 'lucide:id-card',
+      title: 'Credenciales',
+      to: '/credenciales',
+      class: 'mr-2 drawer-icon filled',
+    },
   ])
   const { logout } = useSanctumAuth()
   useResizeObserver(drawerRef, (entries) => {
@@ -69,6 +75,12 @@ const globalStore =  useGlobalStore()
     recalculateTour()
     startTour()
   }
+  const { toggle } = useCustomTheme()
+const theme =ref(useTheme().name.value)
+watch(theme,
+    () =>{
+      toggle()
+    })
 </script>
 
 <template>
@@ -189,6 +201,15 @@ const globalStore =  useGlobalStore()
             :prepend-icon="() => h(Icon, { name: 'lucide:monitor-cog', class: 'mr-2 config-icon', mode: 'svg' })"
           >
           </v-list-item>
+         <div class="d-flex justify-center align-center">
+           <v-switch
+               true-value="light"
+               false-value="dark"
+               :true-icon="() => h(Icon, { name: 'lucide:moon-star', class: 'mr-2 config-icon', mode: 'svg' })"
+               :false-icon="() => h(Icon, { name: 'lucide:lightbulb', class: 'mr-2 config-icon', mode: 'svg' })"
+               v-model="theme"
+              />
+         </div>
         </v-list>
         <v-divider />
         <v-card :loading="!user?.name">
@@ -226,7 +247,7 @@ const globalStore =  useGlobalStore()
     padding-inline-start: 0 !important;
   }
   .v-list-item--active .config-icon path {
-    stroke: white;
+    stroke: var(--futzo-on-primary, white);
   }
   .drawer-header .v-list-item__content {
     display: flex;
@@ -240,7 +261,7 @@ const globalStore =  useGlobalStore()
   .drawer-brand__text {
     font-weight: 700;
     font-size: 16px;
-    color: #101828;
+    color: var(--futzo-on-surface, #101828);
     letter-spacing: 0.2px;
   }
   .nav-section-title .title-text:after {
@@ -294,11 +315,11 @@ const globalStore =  useGlobalStore()
     overflow-y: auto;
   }
   .v-list-item--active .v-list-item__prepend svg.drawer-icon g path {
-    stroke: white !important;
+    stroke: var(--futzo-on-primary, white) !important;
   }
 
   .v-list-item--active .v-list-item__prepend svg.drawer-icon.filled g path,
   .v-list-item--active .v-list-item__prepend svg.drawer-icon.filled g g path {
-    fill: white !important;
+    fill: var(--futzo-on-primary, white) !important;
   }
 </style>

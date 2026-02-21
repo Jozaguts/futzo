@@ -30,6 +30,7 @@ describe('NavigationDrawer', () => {
 
     // Basic sanity check: component mounts and renders the drawer root
     expect(wrapper.html()).toContain('v-navigation-drawer');
+    expect(wrapper.text()).toContain('Credenciales');
   });
 
   // onboarding-based disabled state removed

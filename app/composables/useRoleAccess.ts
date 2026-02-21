@@ -25,6 +25,42 @@ const parseListPayload = <T>(value: unknown): T[] => {
   return []
 }
 
+const flattenPermissionCandidates = (value: unknown): string[] => {
+  if (!value) return []
+
+  if (typeof value === 'string') {
+    const normalized = normalizeRole(value)
+    return normalized ? [normalized] : []
+  }
+
+  if (Array.isArray(value)) {
+    return value.flatMap((item) => flattenPermissionCandidates(item))
+  }
+
+  if (typeof value === 'object') {
+    const record = value as Record<string, unknown>
+
+    const direct = [
+      record.name,
+      record.title,
+      record.key,
+      record.slug,
+      record.permission,
+      record.ability,
+    ]
+      .filter((item): item is string => typeof item === 'string' && item.trim().length > 0)
+      .map((item) => normalizeRole(item))
+
+    const nested = [record.permissions, record.data, record.items, record.children].flatMap((entry) =>
+      flattenPermissionCandidates(entry)
+    )
+
+    return [...direct, ...nested]
+  }
+
+  return []
+}
+
 export const useRoleAccess = () => {
   const user = useSanctumUser<UserLike>()
   const teamHomePath = useState<string | null>('role-access-team-home-path', () => null)
@@ -32,14 +68,52 @@ export const useRoleAccess = () => {
 
   const normalizedRoles = computed(() =>
     (user.value?.roles ?? []).map((role) =>
-      normalizeRole(typeof role === 'string' ? role : (role as { name?: string; title?: string })?.name ?? (role as { title?: string })?.title)
+      normalizeRole(
+        typeof role === 'string'
+          ? role
+          : (role as { name?: string; title?: string })?.name ?? (role as { title?: string })?.title
+      )
     )
   )
-  const hasRoleToken = (tokens: string[]) => normalizedRoles.value.some((role) => tokens.some((token) => role.includes(token)))
+
+  const normalizedPermissions = computed(() => {
+    const current = user.value
+    const rawCandidates = [
+      current?.permissions,
+      current?.abilities,
+      current?.role_permissions,
+      current?.permission_names,
+      current?.role?.permissions,
+      current?.roles,
+    ]
+
+    const unique = new Set<string>()
+
+    for (const entry of rawCandidates) {
+      for (const token of flattenPermissionCandidates(entry)) {
+        if (token) unique.add(token)
+      }
+    }
+
+    return [...unique]
+  })
+
+  const hasRoleToken = (tokens: string[]) =>
+    normalizedRoles.value.some((role) => tokens.some((token) => role.includes(normalizeRole(token))))
+
+  const hasPermissionToken = (tokens: string[]) =>
+    normalizedPermissions.value.some((permission) =>
+      tokens.some((token) => permission.includes(normalizeRole(token)))
+    )
 
   const isTeamOwnerRole = computed(() => hasRoleToken(['dueno de equipo', 'dueno', 'presidente', 'president']))
   const isCoachRole = computed(() => hasRoleToken(['entrenador', 'tecnico', 'coach']))
   const isPlayerRole = computed(() => hasRoleToken(['jugador']))
+  const isRefereeRole = computed(() => hasRoleToken(['arbitro', 'arbitraje', 'referee']))
+  const isLeagueStaffRole = computed(() => hasRoleToken(['personal administrativo de liga']))
+  const isAdminRole = computed(() => hasRoleToken(['administrador']))
+  const isSuperAdminRole = computed(() => hasRoleToken(['super administrador']))
+
   const isTeamScopedRole = computed(() => isTeamOwnerRole.value || isCoachRole.value)
   const isRestrictedRole = computed(() => isTeamScopedRole.value || isPlayerRole.value)
 
@@ -48,6 +122,51 @@ export const useRoleAccess = () => {
   const canCreatePlayer = computed(() => !isPlayerRole.value)
   const canImportPlayers = computed(() => !isRestrictedRole.value)
   const canManageSensitivePlayerActions = computed(() => !isPlayerRole.value)
+
+  const canManageCredentials = computed(() => {
+    if (
+      hasPermissionToken([
+        'canmanagecredentials',
+        'credentials.manage',
+        'credentials:manage',
+        'manage credentials',
+      ])
+    ) {
+      return true
+    }
+
+    return isSuperAdminRole.value || isAdminRole.value || isLeagueStaffRole.value
+  })
+
+  const canValidateCredentials = computed(() => {
+    if (
+      hasPermissionToken([
+        'canvalidatecredentials',
+        'credentials.validate',
+        'credentials:validate',
+        'validate credentials',
+      ])
+    ) {
+      return true
+    }
+
+    return isSuperAdminRole.value || isAdminRole.value || isLeagueStaffRole.value || isRefereeRole.value
+  })
+
+  const canConfigureCredentials = computed(() => {
+    if (
+      hasPermissionToken([
+        'canconfigurecredentials',
+        'credentials.configure',
+        'credentials:configure',
+        'configure credentials',
+      ])
+    ) {
+      return true
+    }
+
+    return isSuperAdminRole.value || isAdminRole.value
+  })
 
   const readTeamPathFromUser = () => {
     const current = user.value
@@ -146,6 +265,9 @@ export const useRoleAccess = () => {
     canCreatePlayer,
     canImportPlayers,
     canManageSensitivePlayerActions,
+    canManageCredentials,
+    canValidateCredentials,
+    canConfigureCredentials,
     resolveTeamHomePath,
     resolvePlayerHomePath,
     resolveRestrictedHomePath,

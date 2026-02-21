@@ -127,6 +127,8 @@ export default defineNuxtConfig({
     '/authorize/**': protectedNoIndexRule,
     '/configuracion': protectedNoIndexRule,
     '/configuracion/**': protectedNoIndexRule,
+    '/credenciales': protectedNoIndexRule,
+    '/credenciales/**': protectedNoIndexRule,
     '/suscripcion': protectedNoIndexRule,
     '/suscripcion/**': protectedNoIndexRule,
     '/verificar': protectedNoIndexRule,
@@ -143,6 +145,7 @@ export default defineNuxtConfig({
       '/bienvenido',
       '/authorize',
       '/configuracion',
+      '/credenciales',
       '/suscripcion',
       '/verificar'
     ],
@@ -167,6 +170,7 @@ export default defineNuxtConfig({
       '/bienvenido/**',
       '/authorize/**',
       '/configuracion/**',
+      '/credenciales/**',
       '/suscripcion/**',
       '/verificar/**'
     ],
