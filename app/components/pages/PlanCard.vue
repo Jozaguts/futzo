@@ -107,6 +107,7 @@ const { isAnnuallyPrice } = useProductPrices()
     position: relative;
     border: 1px solid #eee;
     border-radius: 12px;
+    padding: 2em;
     transition:
       transform 0.2s ease,
       box-shadow 0.2s ease;
@@ -134,10 +135,8 @@ const { isAnnuallyPrice } = useProductPrices()
   }
 
   .plan-price.details {
-    border-top: 1px solid #9155fd;
-    border-bottom: 1px solid #9155fd;
     padding: 0.5rem 1rem;
-    background: transparent;
+    background: var(--futzo-muted-surface);
   }
   .plan-price.details p {
     font-weight: bold;

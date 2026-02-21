@@ -12,13 +12,6 @@ const { toastDuration } = storeToRefs(useGlobalStore())
       // Canonical dinámico por ruta
       { rel: 'canonical', href: siteUrl + route.path }
     ],
-    script: [
-      { src: 'https://futzo.s3.us-east-2.amazonaws.com/assets/js/jquery-3.3.1.min.js', tagPosition: 'bodyClose' },
-      { src: 'https://futzo.s3.us-east-2.amazonaws.com/assets/js/popper.min.js', tagPosition: 'bodyClose' },
-      { src: 'https://futzo.s3.us-east-2.amazonaws.com/assets/js/bootstrap.min.js', tagPosition: 'bodyClose' },
-      { src: 'https://futzo.s3.us-east-2.amazonaws.com/assets/js/plugins.min.js', tagPosition: 'bodyClose' },
-      { src: 'https://futzo.s3.us-east-2.amazonaws.com/assets/js/scripts.js', tagPosition: 'bodyClose' },
-    ],
     meta: [
       { name: 'description', content: 'Administra ligas de fútbol: equipos, jugadores, calendarios, resultados y estadísticas. Empieza gratis con Futzo en minutos.' },
       { name: 'robots', content: 'index,follow,max-image-preview:large' },
