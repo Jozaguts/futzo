@@ -5,20 +5,32 @@ import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 
 const AvatarStub = defineComponent({
   name: 'VAvatar',
-  props: {
-    image: { type: String, default: undefined },
-  },
-  setup(props, { slots, attrs }) {
+  setup(_, { slots, attrs }) {
     return () =>
       h(
         'div',
         {
           class: ['avatar-stub', attrs.class],
-          'data-image': props.image ?? '',
           style: attrs.style as any,
         },
         slots.default ? slots.default() : undefined
       )
+  },
+})
+
+const ImageStub = defineComponent({
+  name: 'VImg',
+  props: {
+    src: { type: String, default: '' },
+  },
+  emits: ['error'],
+  setup(props, { emit }) {
+    return () =>
+      h('img', {
+        class: 'avatar-image-stub',
+        'data-src': props.src,
+        onError: () => emit('error'),
+      })
   },
 })
 
@@ -32,11 +44,12 @@ describe('InitialsAvatar', () => {
       global: {
         stubs: {
           'v-avatar': AvatarStub,
+          'v-img': ImageStub,
         },
       },
     })
 
-    expect(wrapper.find('.avatar-stub').attributes('data-image')).toBe('https://cdn.futzo.test/aguilas.png')
+    expect(wrapper.find('.avatar-image-stub').attributes('data-src')).toBe('https://cdn.futzo.test/aguilas.png')
     expect(wrapper.text()).toBe('')
   })
 
@@ -49,11 +62,12 @@ describe('InitialsAvatar', () => {
       global: {
         stubs: {
           'v-avatar': AvatarStub,
+          'v-img': ImageStub,
         },
       },
     })
 
-    expect(wrapper.find('.avatar-stub').attributes('data-image')).toBe('https://ui-avatars.com/api/?name=Carlos+Mendez')
+    expect(wrapper.find('.avatar-image-stub').attributes('data-src')).toBe('https://ui-avatars.com/api/?name=Carlos+Mendez')
     expect(wrapper.text()).toBe('')
   })
 
@@ -66,6 +80,7 @@ describe('InitialsAvatar', () => {
       global: {
         stubs: {
           'v-avatar': AvatarStub,
+          'v-img': ImageStub,
         },
       },
     })
@@ -78,14 +93,15 @@ describe('InitialsAvatar', () => {
       global: {
         stubs: {
           'v-avatar': AvatarStub,
+          'v-img': ImageStub,
         },
       },
     })
 
-    expect(escaped.find('.avatar-stub').attributes('data-image')).toBe(
+    expect(escaped.find('.avatar-image-stub').attributes('data-src')).toBe(
       'http://app.futzo.test/storage/4/conversions/Bolton-default.jpg'
     )
-    expect(withoutImage.find('.avatar-stub').attributes('data-image')).toBe('')
+    expect(withoutImage.find('.avatar-image-stub').exists()).toBe(false)
     expect(withoutImage.text()).toContain('B')
   })
 
@@ -99,6 +115,7 @@ describe('InitialsAvatar', () => {
       global: {
         stubs: {
           'v-avatar': AvatarStub,
+          'v-img': ImageStub,
         },
       },
     })
@@ -112,11 +129,32 @@ describe('InitialsAvatar', () => {
       global: {
         stubs: {
           'v-avatar': AvatarStub,
+          'v-img': ImageStub,
         },
       },
     })
 
     expect(colored.find('.avatar-stub').attributes('style')).toContain('#ef4444')
     expect(white.find('.avatar-stub').attributes('style')).toContain('var(--v-theme-primary)')
+  })
+
+  it('falls back to initials when image fails to load', async () => {
+    const wrapper = await mountSuspended(InitialsAvatar, {
+      props: {
+        name: 'Real Mandil',
+        image: 'http://app.futzo.test/storage/4/conversions/Bolton-default.jpg',
+      },
+      global: {
+        stubs: {
+          'v-avatar': AvatarStub,
+          'v-img': ImageStub,
+        },
+      },
+    })
+
+    expect(wrapper.find('.avatar-image-stub').exists()).toBe(true)
+    await wrapper.find('.avatar-image-stub').trigger('error')
+    expect(wrapper.find('.avatar-image-stub').exists()).toBe(false)
+    expect(wrapper.text()).toContain('RM')
   })
 })

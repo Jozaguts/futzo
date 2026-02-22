@@ -21,6 +21,16 @@ const props = withDefaults(
 const attrs = useAttrs()
 
 const resolvedImage = computed(() => sanitizeAvatarImage(props.image))
+const hasImageError = ref(false)
+
+watch(
+  () => resolvedImage.value,
+  () => {
+    hasImageError.value = false
+  }
+)
+
+const shouldRenderImage = computed(() => Boolean(resolvedImage.value) && !hasImageError.value)
 
 const resolvedInitials = computed(() => {
   const explicit = String(props.initials ?? '').trim()
@@ -31,9 +41,6 @@ const resolvedInitials = computed(() => {
 })
 
 const avatarStyle = computed(() => {
-  if (resolvedImage.value) {
-    return undefined
-  }
   return {
     backgroundColor: resolveAvatarFallbackColor(props.fallbackColor),
     color: '#ffffff',
@@ -55,8 +62,9 @@ const initialsStyle = computed(() => ({
 </script>
 
 <template>
-  <v-avatar :image="resolvedImage || undefined" v-bind="attrs" :style="avatarStyle" class="initials-avatar">
-    <span v-if="!resolvedImage" class="initials-avatar__text" :style="initialsStyle">
+  <v-avatar v-bind="attrs" :style="avatarStyle" class="initials-avatar">
+    <v-img v-if="shouldRenderImage" :src="resolvedImage" cover class="initials-avatar__image" @error="hasImageError = true" />
+    <span v-else class="initials-avatar__text" :style="initialsStyle">
       {{ resolvedInitials }}
     </span>
   </v-avatar>

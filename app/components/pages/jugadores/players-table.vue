@@ -226,7 +226,7 @@ const handlePageChange = async (page: number) => {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 10px;
-  padding: 12px;
+  padding: 14px 16px;
 }
 
 .player-row__main {
