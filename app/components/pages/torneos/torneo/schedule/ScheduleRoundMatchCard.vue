@@ -174,8 +174,8 @@ const props = defineProps<{
 
 <style lang="sass" scoped>
   .schedule-match-card
-    border: 1px solid #eaecf0
-    background: #fff
+    border: 1px solid var(--futzo-border)
+    background: var(--futzo-surface)
     display: flex
     flex-direction: column
     overflow: hidden
@@ -216,7 +216,7 @@ const props = defineProps<{
     flex-shrink: 0
 
   .schedule-match-card__penalties
-    border-top: 1px solid #eaecf0
+    border-top: 1px solid var(--futzo-border-strong)
     padding: 10px 12px 0
     background: #f9fafb
 
@@ -239,14 +239,14 @@ const props = defineProps<{
     max-width: 88px
 
   .schedule-match-card__penalty-summary
-    border-top: 1px solid #eaecf0
+    border-top: 1px solid var(--futzo-border-strong)
     background: #f9fafb
-    color: #475467
+    color: var(--futzo-text-muted)
     font-size: 12px
     padding: 8px 12px
 
   .schedule-match-card__footer
-    border-top: 1px solid #eaecf0
+    border-top: 1px solid var(--futzo-border-strong)
     background: #fcfcfd
     padding: 8px 10px
     display: flex
@@ -256,11 +256,11 @@ const props = defineProps<{
 
   .schedule-match-card__footer--pending
     background: #f8fafc
-    border-top-color: #eaecf0
+    border-top-color: var(--futzo-border-strong)
 
   .schedule-match-card__details
     font-size: 12px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     overflow: hidden
     text-overflow: ellipsis
     white-space: nowrap

@@ -330,9 +330,9 @@ useHead({
   }
 
   .tournament-sections-tabs-shell {
-    border: 1px solid #eaecf0;
+    border: 1px solid var(--futzo-border);
     border-radius: 12px;
-    background: #fff;
+    background: var(--futzo-surface);
     padding: 8px;
   }
 
@@ -352,7 +352,7 @@ useHead({
     border-radius: 8px;
     font-size: 12px;
     font-weight: 600;
-    color: #667085;
+    color: var(--futzo-on-surface-muted);
     padding: 8px 10px;
     cursor: pointer;
     transition: 0.18s ease;
@@ -364,8 +364,8 @@ useHead({
   }
 
   .tournament-sections-tabs__item--active {
-    background: #fff;
-    color: #101828;
+    background: var(--futzo-surface);
+    color: var(--futzo-on-surface);
     box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
   }
 
@@ -436,7 +436,7 @@ useHead({
     flex-direction: column;
     gap: 4px;
     font-size: 13px;
-    color: #475467;
+    color: var(--futzo-text-muted);
   }
 
   .status-footer__left p {

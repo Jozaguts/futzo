@@ -31,7 +31,7 @@
   line-height: 20px
   padding: 0
 .secondary-card-item
-  border-bottom: 1px solid #EAECF0
+  border-bottom: 1px solid var(--futzo-border)
   padding: 0 0
   margin-bottom: 1rem
 .label-form
@@ -42,10 +42,10 @@
   line-height: 20px
 .row-border-bottom
   padding: 20px 0
-  border-bottom: 1px solid #EAECF0
+  border-bottom: 1px solid var(--futzo-border)
 .user-data-configuration-form__input
   border-radius: var(--radius-md, 8px)
-  border: 1px solid var(--Colors-Border-border-primary, #D0D5DD) !important
+  border: 1px solid var(--futzo-border-strong) !important
   //background: var(--Colors-Background-bg-primary, #FFF)
   box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05)
   padding: 0 14px 0 0
@@ -75,7 +75,7 @@
 .user-data-configuration-form  > .row-border-bottom > .v-col > .user-data-configuration-form__input > .v-input__append
   padding-top: 8px
 .configuration-v-sheet
-  border-left: 1px solid #EAECF0
+  border-left: 1px solid var(--futzo-border)
 .user-data-configuration-form__input>.v-input--density-comfortable.v-input--plain-underlined .v-input__prepend, .v-input--density-comfortable.v-input--plain-underlined .v-input__append
   padding-top: 10px
 .configuration-layout
@@ -128,11 +128,11 @@
   color: var(--colors-text-text-secondary-700, #344054)
   font-weight: 500
   &.v-list-item--active
-    background: #9155fd
-    color: #fff
+    background: var(--futzo-primary)
+    color: var(--futzo-on-primary)
     font-weight: 600
     .v-icon
-      color: #fff
+      color: var(--futzo-on-primary)
 .configuration-container
   height: 100%
 .configuration-content
@@ -150,7 +150,7 @@
   height: 100%
 .tournaments-settings__nav
   width: 220px
-  border-right: 1px solid #EAECF0
+  border-right: 1px solid var(--futzo-border)
   padding: 12px 8px
   overflow-y: auto
 .tournaments-settings__nav-list
@@ -162,8 +162,8 @@
   font-weight: 500
   white-space: normal
 .tournaments-settings__nav-item.v-list-item--active
-  background: #9155fd
-  color: #fff
+  background: var(--futzo-primary)
+  color: var(--futzo-on-primary)
   font-weight: 600
 .tournaments-settings__content
   flex: 1
@@ -198,10 +198,10 @@
     flex: 1 1 0
     min-width: 0
     &.v-btn--active
-      background: #9155fd
-      color: #fff
+      background: var(--futzo-primary)
+      color: var(--futzo-on-primary)
       .v-icon
-        color: #fff
+        color: var(--futzo-on-primary)
   .tournaments-settings
     height: 60vh
   .tournaments-settings__layout
@@ -209,7 +209,7 @@
   .tournaments-settings__nav
     width: 100%
     border-right: none
-    border-bottom: 1px solid #EAECF0
+    border-bottom: 1px solid var(--futzo-border)
     padding: 8px
   .tournaments-settings__nav-list
     flex-direction: row

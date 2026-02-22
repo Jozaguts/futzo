@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {ref} from "vue";
 import {useDropZone} from "@vueuse/core";
 
 const dropZoneRef = ref<HTMLDivElement>();
@@ -63,7 +63,7 @@ useDropZone(dropZoneRef, {
     border-radius: 8px
     border-width: 1px
     border-style: solid
-    background: #FFFFFF
+    background: var(--futzo-surface)
     border-color: #E4E7EC
     box-shadow: 0 1px 2px 0 rgba(16, 24, 40, .5)
     display: flex
@@ -71,7 +71,7 @@ useDropZone(dropZoneRef, {
     align-items: center
 
   > .cta-container
-    color: #475467
+    color: var(--futzo-text-muted)
     text-align: center
     font-weight: 400
     font-size: 14px

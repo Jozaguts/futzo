@@ -743,10 +743,10 @@ onMounted(() => { updateUrl(kickoffPlan.value) })
             <v-col cols="12" sm="6" lg="3">
               <a href="#" class="d-inline-block mb-4">
                 <img
-                    src="assets/images/logo-07.png"
+                    src="/images/logo-07.png"
                     alt="Futzo"
-                    width="120"
-                    height="145"
+                    width="170"
+                    height="140"
                 />
               </a>
               <div class="d-flex ga-2 mt-2">
@@ -852,7 +852,7 @@ onMounted(() => { updateUrl(kickoffPlan.value) })
 
 <style scoped>
 /* ── SECTION HELPERS ───────────────────────────────────── */
-.section-white { background: #FFFFFF; padding: 80px 0; }
+.section-white { background: var(--futzo-surface); padding: 80px 0; }
 .section-gray  { background: #F4F5FA; padding: 80px 0; }
 .section-dark  {
   background: #28243D;
@@ -925,7 +925,7 @@ onMounted(() => { updateUrl(kickoffPlan.value) })
   height: 32px;
   border-radius: 50%;
   background: #9155FD;
-  color: #fff;
+  color: var(--futzo-on-surface);
   font-weight: 700;
   font-size: 14px;
   display: flex;
@@ -947,7 +947,7 @@ onMounted(() => { updateUrl(kickoffPlan.value) })
 /* ── FAQ ───────────────────────────────────────────────── */
 .faq-panels :deep(.v-expansion-panel) {
   border: 1px solid rgba(145,85,253,0.12) !important;
-  background: #FFFFFF;
+  background: var(--futzo-surface);
 }
 .faq-panels :deep(.v-expansion-panel--active) {
   border-color: rgba(145,85,253,0.35) !important;

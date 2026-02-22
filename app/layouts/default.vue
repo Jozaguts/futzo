@@ -16,6 +16,8 @@ const show = ref(false)
     return rail.value ? '56px' : '256px'
   })
   const { stripeDialog } = storeToRefs(useAuthStore())
+const theme = useTheme()
+const currentTheme = computed(() => theme.global.name.value)
 </script>
 <template>
   <div>
@@ -23,7 +25,7 @@ const show = ref(false)
       <NuxtLoadingIndicator color="#9155FD" :height="6" />
     </ClientOnly>
     <v-layout>
-      <v-app app>
+      <v-app :theme="currentTheme" app>
         <ClientOnly>
           <Toaster position="top-right" offset="80px" :duration="toastDuration" />
         </ClientOnly>

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-  import type { NextGames } from '~/models/Game'
-  import NoGames from '~/components/shared/empty-states/NoGames.vue'
+import type {NextGames} from '~/models/Game'
+import NoGames from '~/components/shared/empty-states/NoGames.vue'
 
-  const { nextGames, title } = defineProps({
+const { nextGames, title } = defineProps({
     nextGames: Object as PropType<NextGames>,
     title: {
       type: String,
@@ -88,7 +88,7 @@
     align-self: stretch;
     border: 2px solid var(--colors-gray-light-mode-200, #eee);
     border-radius: var(--radius-md, 8px);
-    background: var(--Colors-Base-White, #fff);
+    background: var(--futzo-surface);
     margin-top: 1rem;
     padding: 1rem 1rem;
     flex-direction: column;

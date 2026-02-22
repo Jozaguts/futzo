@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useDebounceFn } from '@vueuse/core'
+import {useDebounceFn} from '@vueuse/core'
 import {
   createCredentialsBatch,
   downloadCredentialsBatchArtifact,
@@ -7,13 +7,12 @@ import {
 } from '~/http/api/credentials'
 import type {
   CredentialArtifactVariant,
-  CredentialsBatch,
   CredentialsCatalogFormatItem,
   CredentialsCatalogPlayer,
   CredentialsGeneratorCatalogsResponse,
 } from '~/types/credentials'
-import { useCredentialsBatchProgress } from '~/composables/credentials/useCredentialsBatchProgress'
-import { useCredentialsErrors } from '~/composables/credentials/useCredentialsErrors'
+import {useCredentialsBatchProgress} from '~/composables/credentials/useCredentialsBatchProgress'
+import {useCredentialsErrors} from '~/composables/credentials/useCredentialsErrors'
 import BatchProgressPanel from '~/components/pages/credentials/BatchProgressPanel.vue'
 import CredentialsPaywallAlert from '~/components/pages/credentials/CredentialsPaywallAlert.vue'
 
@@ -507,7 +506,7 @@ onMounted(() => {
 }
 
 .credentials-generator__panel {
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
 }
 
 .credentials-generator__filters {
@@ -540,9 +539,9 @@ onMounted(() => {
 }
 
 .credentials-generator__player-item {
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   border-radius: 10px;
-  background: #fff;
+  background: var(--futzo-surface);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -557,13 +556,13 @@ onMounted(() => {
 
 .credentials-generator__player-item small {
   display: block;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
 }
 
 .credentials-generator__player-badge {
   margin-left: auto;
   font-size: 11px;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   text-transform: capitalize;
 }
 
@@ -575,9 +574,9 @@ onMounted(() => {
 }
 
 .credentials-generator__format-card {
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   border-radius: 12px;
-  background: #fff;
+  background: var(--futzo-surface);
   text-align: left;
   padding: 10px;
   display: flex;
@@ -612,7 +611,7 @@ onMounted(() => {
 
 .credentials-generator__preview-label {
   margin: 0 0 8px;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   font-size: 12px;
 }
 
@@ -626,11 +625,11 @@ onMounted(() => {
 }
 
 .credentials-generator__preview-card strong {
-  color: #101828;
+  color: var(--futzo-on-surface);
 }
 
 .credentials-generator__preview-card small {
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
 }
 
 .credentials-generator__quick-customization {

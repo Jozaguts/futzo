@@ -1,16 +1,16 @@
 .dp__theme_dark {
-    --dp-background-color: #312D4B;
-    --dp-text-color: #fff;
-    --dp-hover-color: #484848;
-    --dp-hover-text-color: #fff;
+    --dp-background-color: var(--futzo-surface, #121a2b);
+    --dp-text-color: var(--futzo-on-surface, #e2e8f0);
+    --dp-hover-color: rgb(var(--v-theme-grey-200, 31, 41, 55));
+    --dp-hover-text-color: var(--futzo-on-surface, #e2e8f0);
     --dp-hover-icon-color: #959595;
-    --dp-primary-color: #9155FD;
-    --dp-primary-disabled-color: #b088f8;
-    --dp-primary-text-color: #fff;
-    --dp-secondary-color: #a9a9a9;
-    --dp-border-color: #8b86a4;
-    --dp-menu-border-color: #2d2d2d;
-    --dp-border-color-hover: #aaaeb7;
+    --dp-primary-color: var(--futzo-primary, #2dd4bf);
+    --dp-primary-disabled-color: #7cd7cb;
+    --dp-primary-text-color: var(--futzo-on-primary, #042f2e);
+    --dp-secondary-color: rgb(var(--v-theme-grey-500, 100, 116, 139));
+    --dp-border-color: var(--futzo-border-strong, #475569);
+    --dp-menu-border-color: var(--futzo-border, #334155);
+    --dp-border-color-hover: rgb(var(--v-theme-grey-500, 100, 116, 139));
     --dp-disabled-color: #737373;
     --dp-disabled-color-text: #d0d0d0;
     --dp-scroll-bar-background: #212121;
@@ -29,17 +29,17 @@
 
 .dp__theme_light {
     --dp-font-family: Inter -apple-system, blinkmacsystemfont, "Segoe UI", roboto, oxygen, ubuntu, cantarell, "Open Sans";
-    --dp-background-color: #fff;
-    --dp-text-color: #212121;
-    --dp-hover-color: #f3f3f3;
-    --dp-hover-text-color: #212121;
+    --dp-background-color: var(--futzo-surface, #fff);
+    --dp-text-color: var(--futzo-on-surface, #212121);
+    --dp-hover-color: rgb(var(--v-theme-grey-100, 241, 245, 249));
+    --dp-hover-text-color: var(--futzo-on-surface, #212121);
     --dp-hover-icon-color: #959595;
-    --dp-primary-color: #9155FD;
-    --dp-primary-disabled-color: #b088f8;
-    --dp-primary-text-color: #f8f5f5;
+    --dp-primary-color: var(--futzo-primary, #0f766e);
+    --dp-primary-disabled-color: #76b9b3;
+    --dp-primary-text-color: var(--futzo-on-primary, #ffffff);
     --dp-secondary-color: #c0c4cc;
-    --dp-border-color: #ddd;
-    --dp-menu-border-color: #ddd;
+    --dp-border-color: var(--futzo-border-strong, #d1d5db);
+    --dp-menu-border-color: var(--futzo-border, #e5e7eb);
     --dp-border-color-hover: #aaaeb7;
     --dp-border-color-focus: #aaaeb7;
     --dp-disabled-color: #f6f6f6;
@@ -74,18 +74,18 @@
 }
 
 .dp__today {
-    border: 1px solid #9155fd;
+    border: 1px solid var(--futzo-primary, #0f766e);
 }
 
 .dp__active_date {
-    background-color: #9155fd;
-    color: white;
+    background-color: var(--futzo-primary, #0f766e);
+    color: var(--futzo-on-primary, white);
 }
 
 .dp__range_end,
 .dp__range_start,
 .dp__active_date {
-    background: #9155fd;
+    background: var(--futzo-primary, #0f766e);
 }
 
 .calendar-custom-width {

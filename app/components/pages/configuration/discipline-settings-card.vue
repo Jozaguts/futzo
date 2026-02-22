@@ -582,7 +582,7 @@ onMounted(async () => {
   font-size: 14px;
   line-height: 20px;
   font-weight: 600;
-  color: #101828;
+  color: var(--futzo-on-surface);
 }
 
 .discipline-settings__section-header {
@@ -596,7 +596,7 @@ onMounted(async () => {
   margin: 0;
   font-size: 12px;
   line-height: 18px;
-  color: #475467;
+  color: var(--futzo-text-muted);
 }
 
 .discipline-settings__violations {
@@ -606,7 +606,7 @@ onMounted(async () => {
 }
 
 .discipline-violation {
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   border-radius: 12px;
   padding: 12px;
   display: flex;
@@ -628,14 +628,14 @@ onMounted(async () => {
 .discipline-violation__title strong {
   font-size: 13px;
   line-height: 20px;
-  color: #101828;
+  color: var(--futzo-on-surface);
 }
 
 .discipline-violation__info p {
   margin: 2px 0 0;
   font-size: 12px;
   line-height: 18px;
-  color: #475467;
+  color: var(--futzo-text-muted);
 }
 
 .discipline-violation__tags {
@@ -652,13 +652,13 @@ onMounted(async () => {
 }
 
 .discipline-settings__empty {
-  border: 1px dashed #d0d5dd;
+  border: 1px dashed var(--futzo-border);
   border-radius: 12px;
   padding: 16px;
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #475467;
+  color: var(--futzo-text-muted);
   font-size: 13px;
 }
 
@@ -686,7 +686,7 @@ onMounted(async () => {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   border-radius: 12px;
   padding: 10px 12px;
 }
@@ -695,13 +695,13 @@ onMounted(async () => {
   margin: 0;
   font-size: 13px;
   line-height: 20px;
-  color: #101828;
+  color: var(--futzo-on-surface);
   font-weight: 500;
 }
 
 .discipline-settings__switch-row small {
   display: block;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   font-size: 11px;
   line-height: 16px;
   margin-top: 2px;

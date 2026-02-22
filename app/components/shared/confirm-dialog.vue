@@ -41,7 +41,7 @@ const deleteHandler = () => {
 </template>
 <style scoped lang="sass">
 .title
-  color: #101828
+  color: var(--futzo-on-surface)
   font-size: 24px
   font-weight: 600
   line-height: 32px
@@ -50,7 +50,7 @@ const deleteHandler = () => {
   max-width: 100%
 
 .subtitle
-  color: #475467
+  color: var(--futzo-text-muted)
   font-weight: 400
   font-size: 14px
   line-height: 20px

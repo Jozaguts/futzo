@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-  import StepperContainer from '~/components/pages/torneos/calendario/stepper/index.vue'
-  import type { CurrentCalendarStep } from '~/models/Schedule'
-  import { useScheduleStore } from '~/stores/useScheduleStore'
-  import { storeToRefs } from '#imports'
+import StepperContainer from '~/components/pages/torneos/calendario/stepper/index.vue'
+import type {CurrentCalendarStep} from '~/models/Schedule'
+import {useScheduleStore} from '~/stores/useScheduleStore'
+import {storeToRefs} from '#imports'
 
-  const scheduleStore = useScheduleStore()
+const scheduleStore = useScheduleStore()
   const { calendarSteps, scheduleDialog } = storeToRefs(scheduleStore)
   const isFetching = ref(false)
   const loading = ref(false)
@@ -100,7 +100,7 @@
     grid-template-columns: auto 1fr auto
     align-items: center
     gap: 12px
-    border-top: 1px solid #eaecf0
+    border-top: 1px solid var(--futzo-border-strong)
     padding-top: 4px
 
   .calendar-dialog-footer__back
@@ -109,7 +109,7 @@
 
   .calendar-dialog-footer__step
     text-align: center
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     font-size: 12px
     font-weight: 500
 

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-  import '@vuepic/vue-datepicker/dist/main.css'
-  import dayjs from 'dayjs'
-  import { useToast } from '~/composables/useToast'
-  import { useLeaguesStore } from '~/stores/useLeaguesStore'
-  import type { Field as ScheduleField, HourAvailableInterval } from '~/models/Schedule'
+import '@vuepic/vue-datepicker/dist/main.css'
+import dayjs from 'dayjs'
+import {useToast} from '~/composables/useToast'
+import {useLeaguesStore} from '~/stores/useLeaguesStore'
+import type {Field as ScheduleField, HourAvailableInterval} from '~/models/Schedule'
 
-  const gameStore = useGameStore()
+const gameStore = useGameStore()
   const tournamentStore = useTournamentStore()
   const leaguesStore = useLeaguesStore()
   const { toast } = useToast()
@@ -472,15 +472,15 @@
     gap: 14px
 
   .reschedule-content__summary
-    border: 1px solid #eaecf0
-    background: #fff
+    border: 1px solid var(--futzo-border)
+    background: var(--futzo-surface)
     padding: 14px
 
   .reschedule-content__summary-label
     margin: 0
     font-size: 12px
     font-weight: 600
-    color: #667085
+    color: var(--futzo-on-surface-muted)
 
   .reschedule-content__teams
     margin-top: 10px
@@ -501,7 +501,7 @@
     width: 42px
     height: 42px
     border-radius: 10px
-    color: #fff
+    color: var(--futzo-on-surface)
     display: inline-flex
     align-items: center
     justify-content: center
@@ -510,7 +510,7 @@
 
   .reschedule-content__team-name
     font-size: 13px
-    color: #101828
+    color: var(--futzo-on-surface)
     font-weight: 600
     max-width: 180px
     overflow: hidden
@@ -519,7 +519,7 @@
 
   .reschedule-content__versus
     font-size: 12px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     font-weight: 600
     text-transform: uppercase
 
@@ -527,7 +527,7 @@
     margin: 10px 0 0
     text-align: center
     font-size: 13px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
 
   .reschedule-content__hint
     margin: 6px 0 0
@@ -536,7 +536,7 @@
     color: #98a2b3
 
   .reschedule-content__form
-    border: 1px solid #eaecf0
+    border: 1px solid var(--futzo-border)
     background: #fcfcfd
     padding: 12px
 
@@ -545,7 +545,7 @@
     margin-bottom: 4px
     font-size: 12px
     font-weight: 600
-    color: #475467
+    color: var(--futzo-text-muted)
 
   .reschedule-content__chips
     margin-top: 4px

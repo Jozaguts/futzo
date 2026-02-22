@@ -1,7 +1,7 @@
 <script setup lang="ts">
-  import type { Game } from '~/models/Game'
+import type {Game} from '~/models/Game'
 
-  const props = defineProps<{ game?: Game }>()
+const props = defineProps<{ game?: Game }>()
 
   const badgePalette = ['#ef4444', '#f97316', '#3b82f6', '#10b981', '#8b5cf6', '#f59e0b']
   const statusMap: Record<string, { label: string; tone: 'success' | 'warning' | 'neutral' | 'error' }> = {
@@ -87,8 +87,8 @@
 
 <style scoped lang="sass">
   .game-summary
-    border: 1px solid #eaecf0
-    background: #fff
+    border: 1px solid var(--futzo-border)
+    background: var(--futzo-surface)
     padding: 14px
     display: flex
     flex-direction: column
@@ -103,7 +103,7 @@
   .game-summary__round
     margin: 0
     font-size: 13px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     font-weight: 600
 
   .game-summary__status
@@ -119,7 +119,7 @@
     background: #fffaeb
 
   .game-summary__status--neutral
-    color: #475467
+    color: var(--futzo-text-muted)
     background: #f2f4f7
 
   .game-summary__status--error
@@ -140,7 +140,7 @@
     width: 56px
     height: 56px
     border-radius: 14px
-    color: #fff
+    color: var(--futzo-on-surface)
     font-size: 18px
     font-weight: 700
     display: inline-flex
@@ -151,7 +151,7 @@
     margin: 8px 0 0
     font-size: 14px
     font-weight: 600
-    color: #101828
+    color: var(--futzo-on-surface)
     white-space: nowrap
     overflow: hidden
     text-overflow: ellipsis
@@ -176,8 +176,8 @@
     margin: 0
     font-size: 13px
     text-align: center
-    color: #667085
-    border-top: 1px solid #eaecf0
+    color: var(--futzo-on-surface-muted)
+    border-top: 1px solid var(--futzo-border-strong)
     padding-top: 10px
 
   @media (max-width: 600px)

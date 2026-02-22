@@ -37,7 +37,7 @@ $text-field-details-padding-inline: 10px;
   align-items: center;
   //gap: var(--spacing-5xl, 40px);
   border-radius: var(--radius-4xl, 24px);
-  border: 1px solid var(--Colors-Border-border-secondary, #EAECF0);
+  border: 1px solid var(--futzo-border-strong);
   background: var(--Colors-Base-White, #FFF);
 }
 .icon-container{
@@ -49,7 +49,7 @@ $text-field-details-padding-inline: 10px;
   align-items: center;
   gap: var(--spacing-md, 8px);
   border-radius: var(--spacing-lg, 12px);
-  border: 1px solid var(--Component-colors-Components-Icons-Featured-icons-Modern-featured-icon-modern-border, #EAECF0);
+  border: 1px solid var(--futzo-border-strong);
   box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
 }
 .welcome-card__subtitle{

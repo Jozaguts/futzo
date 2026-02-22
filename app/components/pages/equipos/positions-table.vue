@@ -1,7 +1,8 @@
 <script setup lang="ts">
-  import getHeaders from '~/utils/headers-table'
-  import type { ExportListItem } from '~/models/tournament'
-  const { standings, groupStanding, showMenu } = defineProps<{
+import getHeaders from '~/utils/headers-table'
+import type {ExportListItem} from '~/models/tournament'
+
+const { standings, groupStanding, showMenu } = defineProps<{
     standings: any
     groupStanding: any
     showMenu?: boolean
@@ -87,12 +88,12 @@
 </template>
 <style lang="scss" scoped>
   .positions-table {
-    background: var(--Colors-Base-White, #fff);
+    background: var(--futzo-surface);
     border-radius: var(--radius-md, 8px);
   }
 
   .positions-table > .v-table__wrapper > table > tbody > tr:nth-child(odd) {
-    border-bottom: 1px solid var(--Colors-Border-border-secondary, #eaecf0);
+    border-bottom: 1px solid var(--futzo-border-strong);
     background: var(--Colors-Background-bg-primary_hover, #f9fafb);
   }
 
@@ -107,17 +108,17 @@
 
   .positions-table > .v-table__wrapper > table {
     border-radius: var(--radius-md, 8px);
-    border: 1px solid var(--Colors-Border-border-secondary, #eaecf0);
+    border: 1px solid var(--futzo-border-strong);
   }
 
   .positions-table > .v-table__wrapper > table > tbody > tr > td,
   table > tbody > tr {
     text-align: center !important;
-    border-bottom: 1px solid #eaecf0 !important;
+    border-bottom: 1px solid var(--futzo-border-strong) !important;
   }
 
   .positions-table > .v-table__wrapper > table > thead > tr > th {
     text-align: center !important;
-    border-bottom: 1px solid #eaecf0 !important;
+    border-bottom: 1px solid var(--futzo-border-strong) !important;
   }
 </style>

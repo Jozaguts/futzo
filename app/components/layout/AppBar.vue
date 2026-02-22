@@ -23,7 +23,6 @@ const { mobile } = useDisplay()
 <template>
   <v-app-bar
     :density="props.density"
-    color="#f9fafb"
     :border="false"
     elevation="0"
     class="app-bar-shell pt-2 pt-lg-0 pt-md-0"
@@ -58,10 +57,6 @@ const { mobile } = useDisplay()
   </v-app-bar>
 </template>
 <style scoped>
-  .app-bar-shell {
-    border-bottom: 1px solid #eaecf0;
-    background: #f9fafb !important;
-  }
 
   .app-bar-mobile {
     display: flex;

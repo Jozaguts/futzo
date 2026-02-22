@@ -23,6 +23,31 @@ html{
   --header-height: 90px; /* ajusta a tu header real */
   --radius-2xl: 16px;
 }
+
+.v-theme--light,
+.v-theme--dark {
+  --futzo-primary: rgb(var(--v-theme-primary));
+  --futzo-on-primary: rgb(var(--v-theme-on-primary));
+  --futzo-surface: rgb(var(--v-theme-surface));
+  --futzo-on-surface: rgb(var(--v-theme-on-surface));
+  --futzo-muted-surface: rgb(var(--v-theme-grey-100));
+  --futzo-muted-row: rgb(var(--v-theme-grey-50));
+  --futzo-border: rgba(var(--v-theme-on-surface), 0.12);
+  --futzo-border-strong: rgba(var(--v-theme-on-surface), 0.18);
+  --futzo-text-secondary: rgba(var(--v-theme-on-surface), 0.78);
+  --futzo-text-muted: rgba(var(--v-theme-on-surface), 0.64);
+  --futzo-shadow-sm: 0 1px 2px 0 rgba(16, 24, 40, 0.08);
+  --futzo-shadow-md: 0 8px 24px rgba(16, 24, 40, 0.1);
+
+  /* Bridge tokens used across legacy styles */
+  --colors-primary-light-mode-500: rgb(var(--v-theme-primary));
+  --colors-gray-light-mode-200: rgb(var(--v-theme-grey-200));
+  --colors-gray-light-mode-400: rgb(var(--v-theme-grey-400));
+  --colors-gray-light-mode-700: rgb(var(--v-theme-grey-700));
+  --colors-text-text-primary-900: rgb(var(--v-theme-on-surface));
+  --colors-text-text-secondary-700: rgba(var(--v-theme-on-surface), 0.78);
+  --colors-text-text-tertiary-600: rgba(var(--v-theme-on-surface), 0.64);
+}
 main {
   max-height: 100vh;
   overflow: hidden;
@@ -91,8 +116,8 @@ a {
     border-bottom-right-radius: 25px;
 
     &.v-list-item--active {
-      background: #9155fd !important;
-      color: #fff !important;
+      background: var(--futzo-primary) !important;
+      color: var(--futzo-on-primary) !important;
 
       > .v-list-item__overlay {
         border-top-right-radius: 25px;
@@ -111,15 +136,15 @@ a {
     }
 
     &.v-list-item--active {
-      background: #9155fd !important;
-      color: #fff !important;
+      background: var(--futzo-primary) !important;
+      color: var(--futzo-on-primary) !important;
     }
   }
 }
 
 /* Active icon color */
 a.v-list-item--active svg #Icon path {
-  stroke: white !important;
+  stroke: var(--futzo-on-primary, white) !important;
 }
 
 /* Nuxt icons */
@@ -130,9 +155,9 @@ a.v-list-item--active svg #Icon path {
 
 /* Reusable utilities */
 .futzo-rounded {
-  border: 1px solid #eaecf0 !important;
+  border: 1px solid var(--futzo-border) !important;
   border-radius: 12px !important;
-  background: #fff;
+  background: var(--futzo-surface);
 
   &.v-table {
     height: 100%;
@@ -151,11 +176,11 @@ a.v-list-item--active svg #Icon path {
 
 /* Cards, sheets */
 .v-sheet.custom-v-sheet {
-  //border: 1px solid #eaecf0;
+  //border: 1px solid var(--futzo-border);
   border-radius: 12px;
-  background: #fff;
-  box-shadow: 12px 16px -4px rgba(16, 24, 40, 0.08),
-  0 4px 6px -2px rgba(16, 24, 40, 0.03);
+  background: var(--futzo-surface);
+  border: 1px solid var(--futzo-border);
+  box-shadow: var(--futzo-shadow-md);
 }
 
 /* Pagination */
@@ -186,9 +211,9 @@ a.v-list-item--active svg #Icon path {
   grid-area: table;
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--futzo-surface);
   border-radius: 12px;
-  border-width: 1px;
+  border: 1px solid var(--futzo-border);
   padding: 0 .5rem;
   min-height: 0;
   overflow: hidden;
@@ -197,34 +222,34 @@ a.v-list-item--active svg #Icon path {
   text-align: start !important;
 }
 thead {
-  background: #f9fafb;
+  background: var(--futzo-muted-surface);
 }
 
 tbody > tr.v-data-table__tr:nth-child(even) {
-  background: #f9fafb;
+  background: var(--futzo-muted-row);
 }
 
 /* Buttons */
 .app-bar-secondary-btn,
 .table-action-btn {
-  border: 1px solid #d0d5dd !important;
+  border: 1px solid var(--futzo-border-strong) !important;
   border-radius: 8px !important;
-  background: #fff !important;
+  background: var(--futzo-surface) !important;
   font-weight: 600;
   line-height: 24px;
-  box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05) !important;
+  box-shadow: var(--futzo-shadow-sm) !important;
 }
 
 .app-bar-secondary-btn {
   font-size: 16px;
-  color: #344054 !important;
+  color: var(--futzo-text-secondary) !important;
   max-height: 40px;
 
   &__input_text {
     font-size: 14px;
     font-weight: 600;
     line-height: 20px;
-    color: #344054;
+    color: var(--futzo-text-secondary);
   }
 }
 
@@ -240,21 +265,24 @@ tbody > tr.v-data-table__tr:nth-child(even) {
   font-size: 20px;
   font-weight: 500;
   line-height: 30px;
-  color: #182230;
+  color: var(--futzo-text-secondary);
 }
 .text-breadcrumb{
   font-weight: 600;
   line-height: 44px;
   font-size: 24px;
   padding: 0;
-  color: #000000;
+  color: var(--futzo-on-surface);
 }
 .text-breadcrumbs.active {
-  color: #9155FD;
+  color: var(--futzo-primary);
   font-weight: 700;
 }
 .v-breadcrumbs.v-breadcrumbs--density-default{
   padding:0;
+}
+.nuxt-loading-indicator {
+  background-color: var(--futzo-primary) !important;
 }
 .mobile-fab.opened {
   transform: rotate(45deg);

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-  import NoCalendarSvg from '~/components/pages/torneos/NoCalendarSvg.vue'
+import NoCalendarSvg from '~/components/pages/torneos/NoCalendarSvg.vue'
 
-  const scheduleStore = useScheduleStore()
+const scheduleStore = useScheduleStore()
   const { scheduleDialog, isLoadingSchedules, noSchedules, schedulePagination, hasSchedule, scheduleSettings } =
     storeToRefs(scheduleStore)
   const scheduleSettingsRef = scheduleSettings ?? ref({ phases: [] })
@@ -102,7 +102,7 @@
 </template>
 <style scoped>
   .card-subtitle {
-    color: #475467;
+    color: var(--futzo-text-muted);
     font-size: 16px;
     font-weight: 500;
     margin-top: 4px;

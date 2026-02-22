@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-  import type { Header, IPagination } from '~/interfaces'
-  import { useDisplay } from 'vuetify'
-  import type { Team } from '~/models/Team'
-  import { Icon } from '#components'
-  const props = defineProps({
+import type {Header, IPagination} from '~/interfaces'
+import {useDisplay} from 'vuetify'
+import type {Team} from '~/models/Team'
+import {Icon} from '#components'
+
+const props = defineProps({
     headers: {
       type: Array as PropType<Header[]>,
       required: true,
@@ -327,6 +328,6 @@
 
   .tournament-progress__label {
     font-size: 12px;
-    color: #667085;
+    color: var(--futzo-on-surface-muted);
   }
 </style>

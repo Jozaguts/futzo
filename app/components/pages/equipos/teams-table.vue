@@ -578,7 +578,7 @@ const handlePageChange = async (page: number) => {
   justify-content: center;
   font-size: 13px;
   font-weight: 700;
-  color: #fff;
+  color: var(--futzo-on-surface);
   flex-shrink: 0;
 }
 
@@ -591,7 +591,7 @@ const handlePageChange = async (page: number) => {
   margin: 0;
   font-size: 14px;
   line-height: 1.3;
-  color: #101828;
+  color: var(--futzo-on-surface);
   font-weight: 700;
 }
 
@@ -607,12 +607,12 @@ const handlePageChange = async (page: number) => {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   font-size: 12px;
 }
 
 .team-card__chip {
-  color: #475467;
+  color: var(--futzo-text-muted);
   font-size: 10px;
 }
 
@@ -638,14 +638,14 @@ const handlePageChange = async (page: number) => {
 
 .team-stat__label {
   font-size: 11px;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   font-weight: 600;
 }
 
 .team-stat__value {
   font-size: 14px;
   line-height: 1.2;
-  color: #475467;
+  color: var(--futzo-text-muted);
   font-weight: 700;
 }
 
@@ -662,7 +662,7 @@ const handlePageChange = async (page: number) => {
 }
 
 .team-stat__value--neutral {
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
 }
 
 .team-card__actions {

@@ -84,7 +84,7 @@ type MetricItem = {
     width: 100%;
     margin: 0 auto;
     overflow: hidden;
-    background: #fff;
+    background: var(--futzo-surface);
   }
 
   .metrics-carousel__slide {

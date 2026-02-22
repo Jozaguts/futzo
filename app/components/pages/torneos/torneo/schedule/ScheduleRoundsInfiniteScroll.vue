@@ -1,8 +1,8 @@
 <script setup lang="ts">
-  import type { Match, Round, RoundStatus, ScheduleRoundStatus } from '~/models/Schedule'
-  import ScheduleRoundCard from './ScheduleRoundCard.vue'
+import type {Match, Round, RoundStatus, ScheduleRoundStatus} from '~/models/Schedule'
+import ScheduleRoundCard from './ScheduleRoundCard.vue'
 
-  const props = withDefaults(
+const props = withDefaults(
     defineProps<{
       rounds: Round[]
       scheduleRoundStatus?: ScheduleRoundStatus[]
@@ -94,8 +94,8 @@
 
 <style lang="sass" scoped>
   .schedule-rounds
-    border: 1px solid #eaecf0
-    background: #fff
+    border: 1px solid var(--futzo-border)
+    background: var(--futzo-surface)
     border-radius: 14px
     padding: 10px
     min-width: 0

@@ -5,10 +5,10 @@ import {
   updateCredentialSettings,
   updateCredentialTournamentSettings,
 } from '~/http/api/credentials'
-import type { CredentialSettingsResource } from '~/types/credentials'
+import type {CredentialSettingsResource} from '~/types/credentials'
 import CredentialsPaywallAlert from '~/components/pages/credentials/CredentialsPaywallAlert.vue'
-import { useCredentialsErrors } from '~/composables/credentials/useCredentialsErrors'
-import { useCredentialsAccess } from '~/composables/credentials/useCredentialsAccess'
+import {useCredentialsErrors} from '~/composables/credentials/useCredentialsErrors'
+import {useCredentialsAccess} from '~/composables/credentials/useCredentialsAccess'
 import InlineForbiddenState from '~/components/shared/InlineForbiddenState.vue'
 
 const { toast } = useToast()
@@ -315,17 +315,17 @@ onMounted(() => {
 }
 
 .credentials-settings__panel {
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   border-radius: 14px;
 }
 
 .credentials-settings__title {
-  color: #101828;
+  color: var(--futzo-on-surface);
   font-weight: 700;
 }
 
 .credentials-settings__subtitle {
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
 }
 
 .credentials-settings__content {

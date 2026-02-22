@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import ContentSection from '~/components/pages/calendario/game-report/ContentSection.vue'
-import type { GameDetailsRequest } from '~/models/Game'
+import type {GameDetailsRequest} from '~/models/Game'
 
 const gameStore = useGameStore()
 const { gameReportDialog, gameDetailsRequest, game } = storeToRefs(gameStore)
@@ -69,6 +69,6 @@ const completeButtonLabel = computed(() =>
 <style scoped lang="sass">
   .game-report-dialog__actions
     width: 100%
-    border-top: 1px solid #eaecf0
+    border-top: 1px solid var(--futzo-border-strong)
     padding-top: 4px
 </style>

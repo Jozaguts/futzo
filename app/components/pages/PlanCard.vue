@@ -127,7 +127,7 @@ const { isAnnuallyPrice } = useProductPrices()
     top: 14px;
     right: 14px;
     background: #9155fd;
-    color: #fff;
+    color: var(--futzo-on-surface);
     font-size: 12px;
     font-weight: 600;
     padding: 6px 10px;

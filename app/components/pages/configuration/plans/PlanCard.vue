@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {Icon} from '#components'
 import type {FutzoPlan} from '~/models/Product'
 import {createBillingPortalSession} from '~/http/api/stripe'
 
@@ -137,7 +136,7 @@ const {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 4px;
-  color: #101828;
+  color: var(--futzo-on-surface);
 }
 .plan-card__price {
   font-size: 22px;
@@ -147,16 +146,16 @@ const {
 }
 .plan-card__price-amount--muted {
   text-decoration: line-through;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   font-weight: 600;
 }
 .plan-card__divider {
   height: 1px;
-  background: #eaecf0;
+  background: var(--futzo-border-strong);
   margin: 12px 0;
 }
 .plan-card__note {
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   margin: 0 0 8px 0;
 }
 .plan-card__billing {
@@ -164,7 +163,7 @@ const {
   flex-direction: column;
   gap: 6px;
   margin-bottom: 8px;
-  color: #101828;
+  color: var(--futzo-on-surface);
   font-weight: 600;
 }
 .plan-card__billing-row {

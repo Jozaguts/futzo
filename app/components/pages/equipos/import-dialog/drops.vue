@@ -157,7 +157,7 @@
     min-height: 72px
     display: flex
     align-items: center
-    background: #fff
+    background: var(--futzo-surface)
     z-index: 9999
 
     > .__details
@@ -183,7 +183,7 @@
       font-weight: 500
 
     > .subtitle
-      color: #475467
+      color: var(--futzo-text-muted)
       font-weight: 400
 
   .active

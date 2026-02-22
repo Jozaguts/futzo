@@ -162,7 +162,7 @@ type Props = {
   }
 
   .data > .result > .text {
-    color: var(--Colors-Base-White, #fff);
+    color: var(--futzo-surface);
     text-align: center;
     font-size: 20px;
     font-style: normal;

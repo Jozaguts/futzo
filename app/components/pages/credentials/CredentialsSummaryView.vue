@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { getCredentialsDashboard, reprintCredentialFromHistory } from '~/http/api/credentials'
-import type { CredentialsDashboardResponse, CredentialsLatestGeneratedItem } from '~/types/credentials'
+import {getCredentialsDashboard, reprintCredentialFromHistory} from '~/http/api/credentials'
+import type {CredentialsDashboardResponse, CredentialsLatestGeneratedItem} from '~/types/credentials'
 import BatchProgressPanel from '~/components/pages/credentials/BatchProgressPanel.vue'
 import CredentialsPaywallAlert from '~/components/pages/credentials/CredentialsPaywallAlert.vue'
-import { useCredentialsBatchProgress } from '~/composables/credentials/useCredentialsBatchProgress'
-import { useCredentialsErrors } from '~/composables/credentials/useCredentialsErrors'
+import {useCredentialsBatchProgress} from '~/composables/credentials/useCredentialsBatchProgress'
+import {useCredentialsErrors} from '~/composables/credentials/useCredentialsErrors'
 
 const { toast } = useToast()
 const router = useRouter()
@@ -188,10 +188,10 @@ onMounted(() => {
 }
 
 .credentials-summary__quick-item {
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   border-radius: 12px;
-  background: #fff;
-  color: #101828;
+  background: var(--futzo-surface);
+  color: var(--futzo-on-surface);
   padding: 12px;
   text-align: left;
   display: flex;
@@ -212,13 +212,13 @@ onMounted(() => {
 .credentials-summary__table th,
 .credentials-summary__table td {
   text-align: left;
-  border-bottom: 1px solid #eaecf0;
+  border-bottom: 1px solid var(--futzo-border-strong);
   padding: 10px;
   font-size: 13px;
 }
 
 .credentials-summary__table th {
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   font-weight: 600;
   background: #f9fafb;
 }

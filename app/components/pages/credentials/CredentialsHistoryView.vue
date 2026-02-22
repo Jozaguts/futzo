@@ -5,9 +5,9 @@ import {
   invalidateCredentialFromHistory,
   reprintCredentialFromHistory,
 } from '~/http/api/credentials'
-import type { CredentialHistoryCollection, CredentialHistoryDetail, CredentialStatus } from '~/types/credentials'
-import { useCredentialsBatchProgress } from '~/composables/credentials/useCredentialsBatchProgress'
-import { useCredentialsErrors } from '~/composables/credentials/useCredentialsErrors'
+import type {CredentialHistoryCollection, CredentialHistoryDetail, CredentialStatus} from '~/types/credentials'
+import {useCredentialsBatchProgress} from '~/composables/credentials/useCredentialsBatchProgress'
+import {useCredentialsErrors} from '~/composables/credentials/useCredentialsErrors'
 import BatchProgressPanel from '~/components/pages/credentials/BatchProgressPanel.vue'
 
 const route = useRoute()
@@ -267,12 +267,12 @@ onMounted(async () => {
 .credentials-history__table td {
   text-align: left;
   padding: 10px;
-  border-bottom: 1px solid #eaecf0;
+  border-bottom: 1px solid var(--futzo-border-strong);
   font-size: 13px;
 }
 
 .credentials-history__table th {
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   font-weight: 600;
   background: #f9fafb;
 }
@@ -288,7 +288,7 @@ onMounted(async () => {
   overflow: auto;
   background: #f8f9fb;
   border-radius: 10px;
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   padding: 10px;
   font-size: 12px;
 }

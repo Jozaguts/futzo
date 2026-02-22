@@ -1708,8 +1708,8 @@ const props = defineProps<{
   .discipline-cases__title
     font-size: 16px
     font-weight: 600
-    color: #101828
-    border-bottom: 1px solid #f2f4f7
+    color: var(--futzo-on-surface)
+    border-bottom: 1px solid var(--futzo-border)
 
   .discipline-table-wrapper
     overflow-x: auto
@@ -1727,7 +1727,7 @@ const props = defineProps<{
     vertical-align: top
 
   .discipline-table th
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     background: #f8f9fb
     font-weight: 600
 
@@ -1739,7 +1739,7 @@ const props = defineProps<{
     background: #f9fafb
 
   .discipline-table__detail
-    color: #475467
+    color: var(--futzo-text-muted)
     max-width: 420px
 
   .discipline-case-id
@@ -1769,7 +1769,7 @@ const props = defineProps<{
 
   .discipline-status--draft
     background: #f2f4f7
-    color: #475467
+    color: var(--futzo-text-muted)
 
   .discipline-status--review
     background: #fff4e5
@@ -1802,13 +1802,13 @@ const props = defineProps<{
   .discipline-mobile__item p
     margin: 8px 0 6px
     font-size: 12px
-    color: #475467
+    color: var(--futzo-text-muted)
 
   .discipline-mobile__bottom
     display: flex
     justify-content: space-between
     font-size: 11px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
 
   .discipline-empty
     min-height: 260px
@@ -1817,7 +1817,7 @@ const props = defineProps<{
     align-items: center
     justify-content: center
     gap: 8px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
 
   .discipline-empty p
     margin: 0
@@ -1834,7 +1834,7 @@ const props = defineProps<{
 
   .discipline-dialog__subtitle
     margin: 0
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     font-size: 13px
 
   .discipline-dialog__status
@@ -1842,7 +1842,7 @@ const props = defineProps<{
     align-items: center
     gap: 6px
     font-size: 12px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
 
   .discipline-dialog__dot
     width: 8px
@@ -1864,7 +1864,7 @@ const props = defineProps<{
   .discipline-case-dialog__subtitle
     margin: 4px 0 0
     font-size: 12px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
 
   .discipline-case-dialog__header-actions
     display: flex
@@ -1891,14 +1891,14 @@ const props = defineProps<{
     border-radius: 8px
     font-size: 12px
     font-weight: 600
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     padding: 8px 10px
     cursor: pointer
     transition: .18s ease
 
   .discipline-case-tabs__item--active
-    background: #fff
-    color: #101828
+    background: var(--futzo-surface)
+    color: var(--futzo-on-surface)
     box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08)
 
   .discipline-case-pane
@@ -1921,7 +1921,7 @@ const props = defineProps<{
   .discipline-case-description p
     margin: 2px 0 0
     font-size: 13px
-    color: #101828
+    color: var(--futzo-on-surface)
 
   .discipline-case-description
     border: 1px solid rgba(16, 24, 40, 0.08)
@@ -1951,14 +1951,14 @@ const props = defineProps<{
 
   .discipline-sancion-list__item span
     font-size: 12px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
 
   .discipline-sancion-empty
     border: 1px dashed rgba(16, 24, 40, 0.16)
     border-radius: 10px
     padding: 14px
     text-align: center
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     font-size: 12px
 
   .discipline-sancion-form
@@ -1995,13 +1995,13 @@ const props = defineProps<{
   .discipline-sancion-context small
     display: block
     margin-top: 4px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     font-size: 11px
 
   .discipline-sancion-form__hint
     margin: 0
     font-size: 11px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
 
   .discipline-impact-preview
     border: 1px solid rgba(247, 144, 9, 0.35)
@@ -2028,12 +2028,12 @@ const props = defineProps<{
 
   .discipline-impact-preview__item span
     font-size: 11px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
 
   .discipline-impact-preview__hint
     margin: 0
     font-size: 12px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
 
   .discipline-sancion-actions
     display: flex
@@ -2090,7 +2090,7 @@ const props = defineProps<{
   .discipline-audit-list__item span
     display: block
     font-size: 11px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
 
   .discipline-audit-list__item small
     display: block

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-  import NoTeamsSvg from '~/components/pages/equipos/noTeamsSvg.vue'
+import NoTeamsSvg from '~/components/pages/equipos/noTeamsSvg.vue'
 
-  const { dialog, teams } = storeToRefs(useTeamStore())
+const { dialog, teams } = storeToRefs(useTeamStore())
   const toggleDialog = () => {
     dialog.value = !dialog.value
   }
@@ -23,8 +23,8 @@
   }
   .no-teams-v-sheet {
     border-radius: 12px;
-    border: 1px solid #eaecf0;
-    background: #fff;
+    border: 1px solid var(--futzo-border);
+    background: var(--futzo-surface);
     box-shadow:
       012px 16px -4px rgba(16, 24, 40, 0.08),
       0 4px 6px -2px rgba(16, 24, 40, 0.03);

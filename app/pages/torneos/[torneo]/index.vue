@@ -13,12 +13,12 @@ import KpisMetricsSection from '~/components/shared/kpis-metrics-section.vue'
 import PageLayout from '~/components/shared/PageLayout.vue'
 import QuickActionsPanel from '~/components/shared/quick-actions-panel.vue'
 import {
-  getTournamentNextAvailableRound,
   getTournamentMetrics,
+  getTournamentNextAvailableRound,
   getTournamentRegistrationQRCode,
   getTournamentScheduleQRCode,
-  type UpdateTournamentTeamCompetitionStatusPayload,
   updateTournamentTeamCompetitionStatus,
+  type UpdateTournamentTeamCompetitionStatusPayload,
 } from '~/http/api/tournament'
 import type {TeamStoreRequest} from '~/models/Team'
 import type {Team as TournamentTeam} from '~/models/Schedule'
@@ -906,18 +906,18 @@ const tournamentStore = useTournamentStore()
     font-weight: 600
     letter-spacing: .03em
     text-transform: uppercase
-    color: #667085
+    color: var(--futzo-on-surface-muted)
 
   .tournament-page__headline
     margin: 0
     font-size: 22px
     line-height: 1.2
     font-weight: 700
-    color: #101828
+    color: var(--futzo-on-surface)
 
   .tournament-meta
     margin: 4px 0 0
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     font-size: 13px
 
   .tournament-page__actions
@@ -938,9 +938,9 @@ const tournamentStore = useTournamentStore()
     background: #f2f4f7
 
   .tournament-sections-tabs-shell
-    border: 1px solid #eaecf0
+    border: 1px solid var(--futzo-border)
     border-radius: 12px
-    background: #fff
+    background: var(--futzo-surface)
     padding: 8px
 
   .tournament-sections-tabs
@@ -958,7 +958,7 @@ const tournamentStore = useTournamentStore()
     border-radius: 8px
     font-size: 12px
     font-weight: 600
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     padding: 8px 10px
     cursor: pointer
     transition: .18s ease
@@ -968,8 +968,8 @@ const tournamentStore = useTournamentStore()
     outline-offset: 1px
 
   .tournament-sections-tabs__item--active
-    background: #fff
-    color: #101828
+    background: var(--futzo-surface)
+    color: var(--futzo-on-surface)
     box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08)
 
   .tournament-window
@@ -995,14 +995,14 @@ const tournamentStore = useTournamentStore()
     justify-content: space-between
     align-items: center
     font-size: 13px
-    color: #475467
+    color: var(--futzo-text-muted)
     margin-bottom: 8px
 
   .progress-footer
     display: flex
     justify-content: space-between
     font-size: 12px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     margin-top: 6px
 
   .competition-config__header
@@ -1014,20 +1014,20 @@ const tournamentStore = useTournamentStore()
     margin: 0
     font-size: 14px
     font-weight: 700
-    color: #101828
+    color: var(--futzo-on-surface)
 
   .competition-config__subtitle
     margin: 0
     font-size: 12px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
 
   .competition-config__status
     margin: 0
     font-size: 12px
-    color: #475467
+    color: var(--futzo-text-muted)
 
   .competition-config__context
-    border: 1px solid #eaecf0
+    border: 1px solid var(--futzo-border)
     background: #f8fafc
     border-radius: 10px
     min-height: 36px

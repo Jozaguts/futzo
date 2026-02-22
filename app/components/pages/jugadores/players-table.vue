@@ -179,25 +179,25 @@ const handlePageChange = async (page: number) => {
 }
 
 .players-list__footer {
-  background: #fff;
+  background: var(--futzo-surface);
 }
 
 .players-list__empty {
   min-height: 140px;
-  border: 1px dashed #d0d5dd;
+  border: 1px dashed var(--futzo-border);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   font-size: 14px;
   text-align: center;
   padding: 12px;
 }
 
 .player-row {
-  border: 1px solid #eaecf0;
-  background: #fff;
+  border: 1px solid var(--futzo-border);
+  background: var(--futzo-surface);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 10px;
@@ -221,7 +221,7 @@ const handlePageChange = async (page: number) => {
   height: 40px;
   border-radius: 999px;
   background: linear-gradient(135deg, #7c3aed, #9333ea);
-  color: #fff;
+  color: var(--futzo-on-surface);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -236,7 +236,7 @@ const handlePageChange = async (page: number) => {
 
 .player-row__identity h3 {
   margin: 0;
-  color: #101828;
+  color: var(--futzo-on-surface);
   font-size: 15px;
   font-weight: 600;
   white-space: nowrap;
@@ -256,7 +256,7 @@ const handlePageChange = async (page: number) => {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   font-size: 12px;
 }
 
@@ -293,9 +293,9 @@ const handlePageChange = async (page: number) => {
 }
 
 .player-row__badge--neutral {
-  color: #475467;
+  color: var(--futzo-text-muted);
   background: #f2f4f7;
-  border-color: #eaecf0;
+  border-color: var(--futzo-border-strong);
 }
 
 .player-row__stats {

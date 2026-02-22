@@ -163,7 +163,7 @@ const emits = defineEmits(["import-players"]);
   min-height: 72px
   display: flex
   align-items: center
-  background: #fff
+  background: var(--futzo-surface)
   z-index: 9999
 
   > .__details
@@ -189,7 +189,7 @@ const emits = defineEmits(["import-players"]);
     font-weight: 500
 
   > .subtitle
-    color: #475467
+    color: var(--futzo-text-muted)
     font-weight: 400
 
 .active

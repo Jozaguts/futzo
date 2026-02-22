@@ -378,28 +378,37 @@ const router = useRouter()
   }
 
   .tournament-table__grid {
-    --easy-table-border: 1px solid #eaecf0;
-    --easy-table-row-border: 1px solid #f2f4f7;
+    --easy-table-border: 1px solid var(--futzo-border);
+    --easy-table-row-border: 1px solid var(--futzo-border-strong);
     --easy-table-header-height: 40px;
     --easy-table-header-font-size: 12px;
-    --easy-table-header-font-color: #667085;
-    --easy-table-header-background-color: #f9fafb;
+    --easy-table-header-font-color: var(--futzo-on-surface);
+    --easy-table-header-background-color: var(--futzo-background);
     --easy-table-header-item-padding: 0 14px;
     --easy-table-body-row-height: 56px;
     --easy-table-body-row-font-size: 13px;
-    --easy-table-body-row-font-color: #344054;
-    --easy-table-body-row-background-color: #ffffff;
-    --easy-table-body-even-row-background-color: #fcfcfd;
-    --easy-table-body-row-hover-background-color: #f9fafb;
+    --easy-table-body-row-font-color: var(--futzo-on-surface);
+    --easy-table-body-row-background-color: var(--futzo-surface);
+    --easy-table-body-even-row-background-color: var(--futzo-surface);
+    --easy-table-body-row-hover-background-color: var(--futzo-surface);
+    --easy-table-body-row-hover-font-color: var(--futzo-text-muted);
+    --easy-table-body-even-row-font-color: var(--futzo-on-surface);
     --easy-table-body-item-padding: 0 14px;
-    --easy-table-scrollbar-track-color: #ffffff;
-    --easy-table-scrollbar-thumb-color: #d0d5dd;
+    --easy-table-scrollbar-track-color: var(--futzo-on-surface);
+    --easy-table-scrollbar-thumb-color: var(--futzo-border);
+    --easy-table-footer-background-color: var(--futzo-surface);
+    --easy-table-footer-font-color: var(--futzo-on-surface);
+    --easy-table-message-font-color: var(--futzo-on-surface);
+    --easy-table-loading-mask-background-color: var(--futzo-surface);
+    --easy-table-scrollbar-color: var(--futzo-on-surface);
+    --easy-table-scrollbar-corner-color: var(--futzo-on-surface);
+    --easy-table-buttons-pagination-border: 1px solid var(--futzo-border);
   }
 
   .tournament-name-btn {
     text-transform: none;
     letter-spacing: normal;
-    color: #101828;
+    color: var(--futzo-on-surface);
     font-weight: 600;
   }
 
@@ -429,7 +438,7 @@ const router = useRouter()
 
   .tournament-progress__label {
     font-size: 12px;
-    color: #667085;
+    color: var(--futzo-on-surface-muted);
   }
 
   .tournament-table__skeleton {

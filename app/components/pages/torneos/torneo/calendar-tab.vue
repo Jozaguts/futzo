@@ -337,8 +337,8 @@ const scheduleStore = useScheduleStore()
     min-width: 0
 
   .calendar-tab__toolbar-shell
-    border: 1px solid #eaecf0
-    background: #fff
+    border: 1px solid var(--futzo-border)
+    background: var(--futzo-surface)
     padding: 12px
 
   .calendar-tab__toolbar
@@ -370,7 +370,7 @@ const scheduleStore = useScheduleStore()
 
   .calendar-tab__context
     margin-top: 10px
-    border: 1px solid #eaecf0
+    border: 1px solid var(--futzo-border)
     background: #f8fafc
     border-radius: 10px
     min-height: 36px

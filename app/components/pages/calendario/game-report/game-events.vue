@@ -1,9 +1,9 @@
 <script setup lang="ts">
-  import type { GameEvents } from '~/models/Game'
-  import { getGameEvents } from '~/http/api/game'
-  import { useToast } from '~/composables/useToast'
+import type {GameEvents} from '~/models/Game'
+import {getGameEvents} from '~/http/api/game'
+import {useToast} from '~/composables/useToast'
 
-  const { game } = storeToRefs(useGameStore())
+const { game } = storeToRefs(useGameStore())
   const { toast } = useToast()
   const loading = ref(false)
   const events = ref<GameEvents[]>([])
@@ -118,7 +118,7 @@
     align-items: center
     gap: 6px
     text-align: center
-    color: #667085
+    color: var(--futzo-on-surface-muted)
 
   .game-events__state p
     margin: 0
@@ -128,7 +128,7 @@
 
   .game-events__state small
     font-size: 12px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
 
   .game-events__list
     display: flex
@@ -152,14 +152,14 @@
   .game-events__minute
     font-size: 13px
     font-weight: 500
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     text-align: right
 
   .game-events__icon
-    color: #667085
+    color: var(--futzo-on-surface-muted)
 
   .game-events__icon--goal
-    color: #101828
+    color: var(--futzo-on-surface)
 
   .game-events__icon--yellow
     color: #ca8504
@@ -172,7 +172,7 @@
 
   .game-events__player
     font-size: 14px
-    color: #101828
+    color: var(--futzo-on-surface)
     white-space: nowrap
     overflow: hidden
     text-overflow: ellipsis
@@ -180,6 +180,6 @@
   .game-events__team
     font-size: 12px
     font-weight: 600
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     text-align: right
 </style>

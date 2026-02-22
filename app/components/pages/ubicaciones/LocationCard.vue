@@ -136,8 +136,8 @@ const activeDays = computed(() => {
 
 <style scoped>
 .location-card {
-  border: 1px solid #eaecf0;
-  background: #fff;
+  border: 1px solid var(--futzo-border);
+  background: var(--futzo-surface);
   position: relative;
 }
 
@@ -164,7 +164,7 @@ const activeDays = computed(() => {
   width: 86px;
   height: 86px;
   border-radius: 10px;
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   overflow: hidden;
   position: relative;
   background: #f2f4f7;
@@ -200,7 +200,7 @@ const activeDays = computed(() => {
 
 .location-card__header h3 {
   margin: 0;
-  color: #101828;
+  color: var(--futzo-on-surface);
   font-size: 15px;
   font-weight: 600;
   white-space: nowrap;
@@ -210,7 +210,7 @@ const activeDays = computed(() => {
 
 .location-card__address {
   margin: 6px 0 0;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   font-size: 12px;
   display: inline-flex;
   align-items: center;

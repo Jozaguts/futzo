@@ -27,7 +27,7 @@
 </script>
 <template>
   <v-btn
-    border="solid #d0d5dd"
+    border="solid var(--futzo-border)"
     class="app-bar-secondary-btn"
     size="large"
     :density="density"

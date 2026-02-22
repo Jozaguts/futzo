@@ -33,11 +33,14 @@ onBeforeUnmount(() => {
       <AppBar :extended="false" />
     </template>
     <template #default>
-      <header class="torneos-page__intro" data-testid="torneos-page-intro">
-        <p class="torneos-page__eyebrow">Gestión de torneos</p>
-        <h1 class="torneos-page__title">Torneos</h1>
-        <p class="torneos-page__subtitle">Centraliza la operación de tus torneos desde una sola vista.</p>
-      </header>
+      <section class="torneos-page__top-shell futzo-rounded" data-testid="equipos-page-top-shell">
+        <header class="torneos-page__intro" data-testid="torneos-page-intro">
+          <p class="torneos-page__eyebrow">Gestión de torneos</p>
+          <h1 class="torneos-page__title">Torneos</h1>
+          <p class="torneos-page__subtitle">Centraliza la operación de tus torneos desde una sola vista.</p>
+        </header>
+      </section>
+
       <TournamentKpis :summary="summary" :kpis="listKpis" />
       <section class="torneos-page__filters" data-testid="torneos-filters-panel">
         <TournamentFilters />
@@ -56,6 +59,12 @@ onBeforeUnmount(() => {
   </PageLayout>
 </template>
 <style scoped>
+  .torneos-page__top-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+  }
   .torneos-page__intro {
     display: flex;
     flex-direction: column;
@@ -67,13 +76,13 @@ onBeforeUnmount(() => {
     font-size: 12px;
     font-weight: 600;
     letter-spacing: .03em;
-    color: #667085;
+    color: var(--futzo-on-surface-muted);
     text-transform: uppercase;
   }
 
   .torneos-page__title {
     margin: 0;
-    color: #101828;
+    color: var(--futzo-on-surface);
     font-size: 24px;
     font-weight: 700;
     line-height: 1.2;
@@ -81,15 +90,15 @@ onBeforeUnmount(() => {
 
   .torneos-page__subtitle {
     margin: 0;
-    color: #667085;
+    color: var(--futzo-on-surface-muted);
     font-size: 13px;
     line-height: 1.4;
   }
 
   .torneos-page__filters {
-    border: 1px solid #eaecf0;
+    border: 1px solid var(--futzo-border);
     border-radius: 16px;
-    background: #fff;
+    background: var(--futzo-surface);
     padding: 14px 16px;
   }
 
@@ -105,9 +114,9 @@ onBeforeUnmount(() => {
     flex: 0 0 auto;
     min-height: 292px;
     display: flex;
-    border: 1px solid #eaecf0;
+    border: 1px solid var(--futzo-border);
     border-radius: 16px;
-    background: #fff;
+    background: var(--futzo-surface);
     padding: 0;
     overflow: hidden;
   }

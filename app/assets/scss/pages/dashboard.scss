@@ -30,9 +30,9 @@
   flex-direction: column;
   gap: 12px;
   padding: 16px;
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   border-radius: 16px;
-  background: #fff;
+  background: var(--futzo-surface);
   min-height: 120px;
 }
 
@@ -44,13 +44,13 @@
 }
 
 .metric-card__title {
-  color: #475467;
+  color: var(--futzo-text-muted);
   font-size: 14px;
   font-weight: 600;
 }
 
 .metric-card__value {
-  color: #101828;
+  color: var(--futzo-on-surface);
   font-size: 24px;
   font-weight: 700;
   line-height: 1.2;
@@ -74,7 +74,7 @@
 }
 
 .metric-card__trend-label {
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
 }
 
 .metric-card__icon {
@@ -133,8 +133,8 @@
 }
 
 .panel {
-  background: #fff;
-  border: 1px solid #eaecf0;
+  background: var(--futzo-surface);
+  border: 1px solid var(--futzo-border);
   border-radius: 16px;
   display: flex;
   flex-direction: column;
@@ -146,13 +146,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #f2f4f7;
+  border-bottom: 1px solid var(--futzo-border);
 }
 
 .panel__title {
   font-size: 16px;
   font-weight: 600;
-  color: #101828;
+  color: var(--futzo-on-surface);
   margin: 0;
 }
 
@@ -168,7 +168,7 @@
 
 .panel__footer {
   padding: 10px 16px 14px;
-  border-top: 1px solid #f2f4f7;
+  border-top: 1px solid var(--futzo-border);
   display: flex;
   align-items: center;
 }
@@ -205,9 +205,9 @@
   gap: 12px;
   align-items: flex-start;
   padding: 12px;
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   border-radius: 12px;
-  background: #fff;
+  background: var(--futzo-surface);
 }
 
 .next-game-card__time {
@@ -215,11 +215,11 @@
   flex-direction: column;
   gap: 4px;
   font-size: 12px;
-  color: #475467;
+  color: var(--futzo-text-muted);
 }
 
 .next-game-card__hour {
-  color: #101828;
+  color: var(--futzo-on-surface);
   font-weight: 700;
 }
 
@@ -271,7 +271,7 @@
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #475467;
+  color: var(--futzo-text-muted);
 }
 
 .actions-grid {
@@ -288,7 +288,7 @@
 }
 
 .action-btn--primary {
-  color: #fff;
+  color: var(--futzo-on-surface);
 }
 
 .activity-feed {
@@ -308,7 +308,7 @@
   align-items: center;
   gap: 12px;
   padding: 10px 0;
-  border-bottom: 1px solid #f2f4f7;
+  border-bottom: 1px solid var(--futzo-border);
 }
 
 .activity-item:last-child {
@@ -354,13 +354,13 @@
   margin: 0;
   font-size: 13px;
   font-weight: 600;
-  color: #101828;
+  color: var(--futzo-on-surface);
 }
 
 .activity-item__subtitle {
   margin: 0;
   font-size: 12px;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
 }
 
 .activity-item__time {

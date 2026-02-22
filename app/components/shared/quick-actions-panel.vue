@@ -72,8 +72,8 @@ const triggerAction = (actionId: string) => emit('action', actionId)
 
 <style scoped>
 .quick-actions-panel {
-  background: #fff;
-  border: 1px solid #eaecf0;
+  background: var(--futzo-surface);
+  border: 1px solid var(--futzo-border);
   border-radius: 16px;
   display: flex;
   flex-direction: column;
@@ -85,13 +85,13 @@ const triggerAction = (actionId: string) => emit('action', actionId)
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #f2f4f7;
+  border-bottom: 1px solid var(--futzo-border);
 }
 
 .panel__title {
   font-size: 16px;
   font-weight: 600;
-  color: #101828;
+  color: var(--futzo-on-surface);
   margin: 0;
 }
 
@@ -99,6 +99,7 @@ const triggerAction = (actionId: string) => emit('action', actionId)
   padding: 16px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   flex: 1 1 auto;
   gap: 12px;
   min-height: 0;
@@ -118,7 +119,7 @@ const triggerAction = (actionId: string) => emit('action', actionId)
 }
 
 .action-btn--primary {
-  color: #fff;
+  color: var(--futzo-on-surface);
 }
 
 @media (width > 600px) {

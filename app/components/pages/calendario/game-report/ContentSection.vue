@@ -1,13 +1,13 @@
 <script setup lang="ts">
-  import GameDetailsSection from '~/components/pages/calendario/game-report/game-details-section.vue'
-  import GameEvents from '~/components/pages/calendario/game-report/game-events.vue'
-  import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
-  import type { DialogHandlerActionsNames, Game } from '~/models/Game'
-  import { CARDS, GOALS, SUBSTITUTIONS } from '~/utils/constants'
-  import { useGame } from '~/composables/useGame'
-  import { useToast, storeToRefs } from '#imports'
+import GameDetailsSection from '~/components/pages/calendario/game-report/game-details-section.vue'
+import GameEvents from '~/components/pages/calendario/game-report/game-events.vue'
+import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
+import type {DialogHandlerActionsNames, Game} from '~/models/Game'
+import {CARDS, GOALS, SUBSTITUTIONS} from '~/utils/constants'
+import {useGame} from '~/composables/useGame'
+import {storeToRefs, useToast} from '#imports'
 
-  const gameStoreInstance = useGameStore()
+const gameStoreInstance = useGameStore()
   const teamStore = useTeamStore()
   const { game, gameActionFormRequest } = storeToRefs(gameStoreInstance)
   const { homeTeam, awayTeam, homeFormation, awayFormation, formations, homePlayers, awayPlayers } = storeToRefs(teamStore)
@@ -201,8 +201,8 @@
 
 <style scoped lang="sass">
   .game-report-content
-    border: 1px solid #eaecf0
-    background: #fff
+    border: 1px solid var(--futzo-border)
+    background: var(--futzo-surface)
 
   .game-report-content__container
     padding: 0
@@ -229,14 +229,14 @@
     border-radius: 8px
     font-size: 13px
     font-weight: 600
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     padding: 9px 12px
     cursor: pointer
     transition: .18s ease
 
   .game-report-tabs__item--active
-    background: #fff
-    color: #101828
+    background: var(--futzo-surface)
+    color: var(--futzo-on-surface)
     box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08)
 
   .game-report-content__pane

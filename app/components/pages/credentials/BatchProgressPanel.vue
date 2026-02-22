@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CredentialsBatch } from '~/types/credentials'
+import type {CredentialsBatch} from '~/types/credentials'
 
 const props = defineProps<{
   batch: CredentialsBatch | null
@@ -91,7 +91,7 @@ const statusTone = computed(() => {
 
 <style scoped>
 .batch-progress-card {
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
 }
 
 .batch-progress-card__head {
@@ -109,24 +109,24 @@ const statusTone = computed(() => {
 
 .batch-progress-card__metrics div {
   background: #f9fafb;
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   border-radius: 10px;
   padding: 8px;
   display: flex;
   justify-content: space-between;
   gap: 8px;
-  color: #475467;
+  color: var(--futzo-text-muted);
   font-size: 12px;
 }
 
 .batch-progress-card__metrics strong {
-  color: #101828;
+  color: var(--futzo-on-surface);
 }
 
 .batch-progress-card__note,
 .batch-progress-card__empty {
   margin: 12px 0 0;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   font-size: 13px;
 }
 </style>

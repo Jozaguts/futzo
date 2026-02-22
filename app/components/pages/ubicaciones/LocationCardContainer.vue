@@ -50,9 +50,9 @@ const handlePageChange = async (page: number) => {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   border-radius: 16px;
-  background: #fff;
+  background: var(--futzo-surface);
   overflow: hidden;
 }
 
@@ -66,6 +66,6 @@ const handlePageChange = async (page: number) => {
 }
 
 .locations-list__footer {
-  background: #fff;
+  background: var(--futzo-surface);
 }
 </style>

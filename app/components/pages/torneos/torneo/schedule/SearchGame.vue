@@ -23,8 +23,8 @@
 <style scoped>
   .search-button {
     border-radius: 8px;
-    border: 1px solid #d0d5dd;
-    background: #fff;
+    border: 1px solid var(--futzo-border);
+    background: var(--futzo-surface);
     box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
   }
 

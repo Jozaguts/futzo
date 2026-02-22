@@ -556,7 +556,7 @@ const downloadQR = () => {
     height: 42px
     border-radius: 12px
     background: linear-gradient(135deg, #ef4444, #dc2626)
-    color: #fff
+    color: var(--futzo-on-surface)
     font-size: 13px
     font-weight: 700
     display: inline-flex
@@ -588,7 +588,7 @@ const downloadQR = () => {
 
   .team-detail-header__title
     margin: 0
-    color: #101828
+    color: var(--futzo-on-surface)
     font-size: 24px
     line-height: 1.2
     font-weight: 700
@@ -604,13 +604,13 @@ const downloadQR = () => {
 
   .team-detail-header__subtitle
     margin: 0
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     font-size: 13px
 
   .team-points-card
     border: none !important
     background: linear-gradient(90deg, #6d28d9 0%, #7c3aed 45%, #9333ea 100%)
-    color: #fff
+    color: var(--futzo-on-surface)
     padding: 12px 14px
     display: flex
     align-items: center
@@ -645,8 +645,8 @@ const downloadQR = () => {
     min-width: 0
 
   .team-edit-btn
-    border-color: #d0d5dd
-    background: #fff
+    border-color: var(--futzo-border)
+    background: var(--futzo-surface)
     font-weight: 600
     min-height: 38px
     display: inline-flex
@@ -671,14 +671,14 @@ const downloadQR = () => {
     justify-content: space-between
     gap: 10px
     padding: 12px 14px
-    border-bottom: 1px solid #eaecf0
-    background: #fff
+    border-bottom: 1px solid var(--futzo-border-strong)
+    background: var(--futzo-surface)
 
   .team-card-heading__title
     display: inline-flex
     align-items: center
     gap: 8px
-    color: #101828
+    color: var(--futzo-on-surface)
     font-size: 14px
     font-weight: 600
 
@@ -697,7 +697,7 @@ const downloadQR = () => {
     justify-content: space-between
     gap: 10px
     padding: 9px 14px
-    border-bottom: 1px solid #f2f4f7
+    border-bottom: 1px solid var(--futzo-border)
     transition: background .16s ease
 
   .team-roster-item:hover
@@ -714,7 +714,7 @@ const downloadQR = () => {
     height: 22px
     border-radius: 999px
     background: #f2f4f7
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     font-size: 11px
     font-weight: 700
     display: inline-flex
@@ -722,7 +722,7 @@ const downloadQR = () => {
     justify-content: center
 
   .team-roster-item__name
-    color: #101828
+    color: var(--futzo-on-surface)
     font-size: 13px
     font-weight: 500
     white-space: nowrap
@@ -763,15 +763,15 @@ const downloadQR = () => {
     border-color: #fecaca
 
   .team-position-badge--neutral
-    color: #475467
+    color: var(--futzo-text-muted)
     background: #f2f4f7
-    border-color: #eaecf0
+    border-color: var(--futzo-border-strong)
 
   .team-roster-item__stat
     display: inline-flex
     align-items: center
     gap: 4px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     font-size: 11px
 
   .team-roster-item__chevron
@@ -786,7 +786,7 @@ const downloadQR = () => {
   .team-field-wrapper
     height: 100%
     border-radius: 12px
-    border: 1px solid #d0d5dd
+    border: 1px solid var(--futzo-border)
     background: linear-gradient(155deg, #121826 0%, #1f2937 100%)
     padding: 8px
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06)
@@ -827,7 +827,7 @@ const downloadQR = () => {
     align-items: center
     justify-content: center
     gap: 6px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     text-align: center
 
   .team-empty-state p

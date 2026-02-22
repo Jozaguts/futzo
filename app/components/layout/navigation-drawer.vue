@@ -39,12 +39,12 @@ const globalStore =  useGlobalStore()
       to: '/ubicaciones',
       class: 'mr-2 drawer-icon',
     },
-    {
-      icon: 'lucide:id-card',
-      title: 'Credenciales',
-      to: '/credenciales',
-      class: 'mr-2 drawer-icon filled',
-    },
+    // {
+    //   icon: 'lucide:id-card',
+    //   title: 'Credenciales',
+    //   to: '/credenciales',
+    //   class: 'mr-2 drawer-icon filled',
+    // },
   ])
   const { logout } = useSanctumAuth()
   useResizeObserver(drawerRef, (entries) => {
@@ -202,15 +202,15 @@ const globalStore =  useGlobalStore()
             :prepend-icon="() => h(Icon, { name: 'lucide:monitor-cog', class: 'mr-2 config-icon', mode: 'svg' })"
           >
           </v-list-item>
-         <div class="d-flex justify-center align-center">
-           <v-switch
-               true-value="dark"
-               false-value="light"
-               :true-icon="() => h(Icon, { name: 'lucide:moon-star', class: 'mr-2 config-icon', mode: 'svg' })"
-               :false-icon="() => h(Icon, { name: 'lucide:lightbulb', class: 'mr-2 config-icon', mode: 'svg' })"
-               v-model="themeName"
-              />
-         </div>
+<!--         <div class="d-flex justify-center align-center">-->
+<!--           <v-switch-->
+<!--               true-value="dark"-->
+<!--               false-value="light"-->
+<!--               :true-icon="() => h(Icon, { name: 'lucide:moon-star', class: 'mr-2 config-icon', mode: 'svg' })"-->
+<!--               :false-icon="() => h(Icon, { name: 'lucide:lightbulb', class: 'mr-2 config-icon', mode: 'svg' })"-->
+<!--               v-model="themeName"-->
+<!--              />-->
+<!--         </div>-->
         </v-list>
         <v-divider />
         <v-card :loading="!user?.name">

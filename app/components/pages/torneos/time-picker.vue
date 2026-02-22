@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-  import { VueDatePicker } from '@vuepic/vue-datepicker'
-  import type { CalendarTypePicker } from '~/models/tournament'
+import {VueDatePicker} from '@vuepic/vue-datepicker'
+import type {CalendarTypePicker} from '~/models/tournament'
 
-  const to = defineModel<CalendarTypePicker>('to', {
+const to = defineModel<CalendarTypePicker>('to', {
     required: true,
   })
   const from = defineModel<CalendarTypePicker>('from', {
@@ -51,7 +51,7 @@
     border: 1px solid #7f56d9;
     background: #9155fd;
     box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
-    color: #fff;
+    color: var(--futzo-on-surface);
     padding: 8px;
     font-size: 14px;
     font-weight: 600;

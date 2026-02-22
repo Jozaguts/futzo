@@ -348,7 +348,7 @@ const { tournamentId, loading, tournament } = storeToRefs(useTournamentStore())
   .schedule-board__banner
     margin-bottom: 0
     min-height: 40px
-    border: 1px solid #eaecf0
+    border: 1px solid var(--futzo-border)
     background: #f8fafc
     color: #344054
     display: flex
@@ -376,5 +376,5 @@ const { tournamentId, loading, tournament } = storeToRefs(useTournamentStore())
     border-left: 3px solid #12b76a
 
   .schedule-board__banner-close
-    color: #667085
+    color: var(--futzo-on-surface-muted)
 </style>

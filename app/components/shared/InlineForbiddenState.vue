@@ -28,9 +28,9 @@ const props = withDefaults(
 
 <style scoped>
 .forbidden-state {
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   border-radius: 16px;
-  background: #fff;
+  background: var(--futzo-surface);
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -53,12 +53,12 @@ const props = withDefaults(
 .forbidden-state__title {
   margin: 0;
   font-size: 18px;
-  color: #101828;
+  color: var(--futzo-on-surface);
 }
 
 .forbidden-state__description {
   margin: 0;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   max-width: 420px;
 }
 </style>

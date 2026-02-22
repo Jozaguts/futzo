@@ -32,14 +32,14 @@ const openCheckout = () => {
 
 .credentials-paywall-alert__title {
   margin: 0;
-  color: #101828;
+  color: var(--futzo-on-surface);
   font-size: 14px;
   font-weight: 600;
 }
 
 .credentials-paywall-alert__subtitle {
   margin: 2px 0 0;
-  color: #475467;
+  color: var(--futzo-text-muted);
   font-size: 13px;
 }
 </style>

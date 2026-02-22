@@ -1,9 +1,9 @@
 <script setup lang="ts">
-  import type { Match, Round, RoundStatus, ScheduleRoundStatus } from '~/models/Schedule'
-  import ScheduleRoundActionsMenu from './ScheduleRoundActionsMenu.vue'
-  import ScheduleRoundMatchCard from './ScheduleRoundMatchCard.vue'
+import type {Match, Round, RoundStatus, ScheduleRoundStatus} from '~/models/Schedule'
+import ScheduleRoundActionsMenu from './ScheduleRoundActionsMenu.vue'
+import ScheduleRoundMatchCard from './ScheduleRoundMatchCard.vue'
 
-  const props = withDefaults(
+const props = withDefaults(
     defineProps<{
       round: Round
       scheduleRoundStatus?: ScheduleRoundStatus[]
@@ -178,8 +178,8 @@
 
 <style lang="sass" scoped>
   .schedule-round-card
-    border: 1px solid #eaecf0
-    background: #fff
+    border: 1px solid var(--futzo-border)
+    background: var(--futzo-surface)
     overflow: hidden
     min-width: 0
 
@@ -188,7 +188,7 @@
     gap: 8px
     justify-content: space-between
     align-items: center
-    border-bottom: 1px solid #eaecf0
+    border-bottom: 1px solid var(--futzo-border-strong)
     background: #fcfcfd
     padding: 10px 14px
     flex-wrap: wrap
@@ -211,7 +211,7 @@
 
   .schedule-round-card__subtitle
     margin: 4px 0 0
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     font-size: 12px
 
   .schedule-round-card__status
@@ -228,7 +228,7 @@
     letter-spacing: normal
 
   .schedule-round-card__regenerated-note
-    border: 1px solid #eaecf0
+    border: 1px solid var(--futzo-border)
     background: #f8fafc
     border-radius: 10px
     min-height: 34px
@@ -236,14 +236,14 @@
     align-items: center
     gap: 8px
     font-size: 12px
-    color: #475467
+    color: var(--futzo-text-muted)
     padding: 0 10px
     margin-bottom: 10px
 
   .schedule-round-card__bye
-    border-bottom: 1px solid #eaecf0
+    border-bottom: 1px solid var(--futzo-border-strong)
     background: #f8fafc
-    color: #475467
+    color: var(--futzo-text-muted)
     font-size: 13px
     font-style: italic
     padding: 8px 14px

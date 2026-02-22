@@ -6,9 +6,9 @@ import {
   updateCredentialDesign,
   uploadCredentialDesignLogo,
 } from '~/http/api/credentials'
-import type { CredentialDesign, CredentialsDesignsResponse } from '~/types/credentials'
+import type {CredentialDesign, CredentialsDesignsResponse} from '~/types/credentials'
 import CredentialsPaywallAlert from '~/components/pages/credentials/CredentialsPaywallAlert.vue'
-import { useCredentialsErrors } from '~/composables/credentials/useCredentialsErrors'
+import {useCredentialsErrors} from '~/composables/credentials/useCredentialsErrors'
 
 const { toast } = useToast()
 const { parseError } = useCredentialsErrors()
@@ -238,13 +238,13 @@ onMounted(() => {
 }
 
 .credentials-design-card {
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   border-radius: 12px;
   padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: #fff;
+  background: var(--futzo-surface);
 }
 
 .credentials-design-card header {
@@ -257,12 +257,12 @@ onMounted(() => {
 .credentials-design-card h3 {
   margin: 0;
   font-size: 15px;
-  color: #101828;
+  color: var(--futzo-on-surface);
 }
 
 .credentials-design-card p {
   margin: 0;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   font-size: 13px;
 }
 
@@ -276,7 +276,7 @@ onMounted(() => {
   position: relative;
   display: inline-flex;
   align-items: center;
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   border-radius: 10px;
   padding: 6px 10px;
   font-size: 12px;
@@ -297,10 +297,10 @@ onMounted(() => {
 }
 
 .credentials-designs__empty {
-  border: 1px dashed #d0d5dd;
+  border: 1px dashed var(--futzo-border);
   border-radius: 12px;
   padding: 16px;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
 }
 
 @media (width > 960px) {

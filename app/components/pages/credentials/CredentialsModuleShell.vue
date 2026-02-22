@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useMediaQuery } from '@vueuse/core'
-import type { CredentialPermission } from '~/types/credentials'
-import { useCredentialsAccess } from '~/composables/credentials/useCredentialsAccess'
+import {useMediaQuery} from '@vueuse/core'
+import type {CredentialPermission} from '~/types/credentials'
+import {useCredentialsAccess} from '~/composables/credentials/useCredentialsAccess'
 
 type ModuleTab = {
   key: string
@@ -99,8 +99,8 @@ const openTab = (path: string) => {
     gap: 16px
 
   .credentials-shell__top
-    border: 1px solid #eaecf0
-    background: #fff
+    border: 1px solid var(--futzo-border)
+    background: var(--futzo-surface)
     display: flex
     flex-direction: column
 
@@ -111,18 +111,18 @@ const openTab = (path: string) => {
     margin: 0
     text-transform: uppercase
     letter-spacing: .06em
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     font-size: 11px
     font-weight: 600
 
   .credentials-shell__title
     margin: 4px 0 0
     font-size: 26px
-    color: #101828
+    color: var(--futzo-on-surface)
 
   .credentials-shell__subtitle
     margin: 6px 0 0
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     font-size: 14px
 
   .credentials-shell__divider
@@ -148,7 +148,7 @@ const openTab = (path: string) => {
     border-radius: 8px
     font-size: 12px
     font-weight: 600
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     padding: 8px 10px
     cursor: pointer
     transition: .18s ease
@@ -158,8 +158,8 @@ const openTab = (path: string) => {
     outline-offset: 1px
 
   .credentials-tabs__item--active
-    background: #fff
-    color: #101828
+    background: var(--futzo-surface)
+    color: var(--futzo-on-surface)
     box-shadow: 0 1px 2px rgba(16, 24, 40, .08)
 
   .credentials-shell__content

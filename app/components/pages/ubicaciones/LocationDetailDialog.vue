@@ -126,14 +126,14 @@ const normalizedFields = computed(() => {
 
 .location-detail-dialog__title h3 {
   margin: 0;
-  color: #101828;
+  color: var(--futzo-on-surface);
   font-size: 18px;
   font-weight: 700;
 }
 
 .location-detail-dialog__title p {
   margin: 4px 0 0;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   font-size: 13px;
 }
 
@@ -148,7 +148,7 @@ const normalizedFields = computed(() => {
   width: 100%;
   min-height: 170px;
   border-radius: 12px;
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   overflow: hidden;
   background: #f2f4f7;
 }
@@ -179,9 +179,9 @@ const normalizedFields = computed(() => {
 }
 
 .location-detail-dialog__field-item {
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   border-radius: 12px;
-  background: #fff;
+  background: var(--futzo-surface);
   padding: 10px;
 }
 
@@ -189,7 +189,7 @@ const normalizedFields = computed(() => {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #101828;
+  color: var(--futzo-on-surface);
   font-size: 14px;
   font-weight: 600;
 }
@@ -213,12 +213,12 @@ const normalizedFields = computed(() => {
 }
 
 .location-detail-dialog__schedule-item span {
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   font-size: 12px;
 }
 
 .location-detail-dialog__schedule-item strong {
-  color: #101828;
+  color: var(--futzo-on-surface);
   font-size: 12px;
 }
 

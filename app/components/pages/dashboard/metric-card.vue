@@ -66,9 +66,9 @@ const props = defineProps({
   flex-direction: column;
   gap: 12px;
   padding: 16px;
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   border-radius: 16px;
-  background: #fff;
+  background: var(--futzo-surface);
   min-height: 120px;
 }
 
@@ -80,13 +80,13 @@ const props = defineProps({
 }
 
 .metric-card__title {
-  color: #475467;
+  color: var(--futzo-on-surface);
   font-size: 14px;
   font-weight: 600;
 }
 
 .metric-card__value {
-  color: #101828;
+  color: var(--futzo-text-secondary);
   font-size: 24px;
   font-weight: 700;
   line-height: 1.2;
@@ -110,7 +110,7 @@ const props = defineProps({
 }
 
 .metric-card__trend-label {
-  color: #667085;
+  color: var(--futzo-text-muted);
 }
 
 .metric-card__icon {

@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-  import General from '~/components/pages/torneos/calendario/stepper/01-general.vue'
-  import Rules from '~/components/pages/torneos/calendario/stepper/02-rules-phase.vue'
-  import Elimination from '~/components/pages/torneos/calendario/stepper/03-elimination-phase.vue'
-  import Fields from '~/components/pages/torneos/calendario/stepper/04-fields-phase.vue'
-  const { calendarSteps } = storeToRefs(useScheduleStore())
+import General from '~/components/pages/torneos/calendario/stepper/01-general.vue'
+import Rules from '~/components/pages/torneos/calendario/stepper/02-rules-phase.vue'
+import Elimination from '~/components/pages/torneos/calendario/stepper/03-elimination-phase.vue'
+import Fields from '~/components/pages/torneos/calendario/stepper/04-fields-phase.vue'
+
+const { calendarSteps } = storeToRefs(useScheduleStore())
   const stepEntries = computed(() =>
     Object.entries(calendarSteps.value.steps).sort(([, a], [, b]) => Number(a.number) - Number(b.number))
   )
@@ -74,8 +75,8 @@
     width: 24px
     height: 24px
     border-radius: 999px
-    border: 1px solid #d0d5dd
-    color: #667085
+    border: 1px solid var(--futzo-border)
+    color: var(--futzo-on-surface-muted)
     background: #f2f4f7
     font-size: 11px
     font-weight: 700
@@ -87,22 +88,22 @@
   .calendar-stepper__dot--active
     background: #7f56d9
     border-color: #7f56d9
-    color: #fff
+    color: var(--futzo-on-surface)
 
   .calendar-stepper__dot--completed
     background: #12b76a
     border-color: #12b76a
-    color: #fff
+    color: var(--futzo-on-surface)
 
   .calendar-stepper__line
     flex: 1
     height: 1px
-    background: #eaecf0
+    background: var(--futzo-border-strong)
     margin-left: 6px
 
   .calendar-stepper__label
     font-size: 12px
-    color: #667085
+    color: var(--futzo-on-surface-muted)
     font-weight: 500
     white-space: nowrap
     overflow: hidden

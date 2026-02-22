@@ -248,14 +248,14 @@ const searchString = ref<AutocompletePrediction>()
 </template>
 <style scoped lang="sass">
   .location-preview-card
-    border: 1px solid #EAECF0
-    background: #fff
+    border: 1px solid var(--futzo-border)
+    background: var(--futzo-surface)
     overflow: hidden
 
   .location-preview-card__map
     min-height: 280px
     background: #F2F4F7
-    border-bottom: 1px solid #EAECF0
+    border-bottom: 1px solid var(--futzo-border-strong)
 
     img
       width: 100%
@@ -275,7 +275,7 @@ const searchString = ref<AutocompletePrediction>()
     padding: 14px
 
     span
-      color: #667085
+      color: var(--futzo-on-surface-muted)
       font-size: 13px
 
   .location-preview-card__meta
@@ -286,12 +286,12 @@ const searchString = ref<AutocompletePrediction>()
 
     p
       margin: 0
-      color: #101828
+      color: var(--futzo-on-surface)
       font-size: 14px
       font-weight: 600
 
     span
-      color: #667085
+      color: var(--futzo-on-surface-muted)
       font-size: 12px
 
     small

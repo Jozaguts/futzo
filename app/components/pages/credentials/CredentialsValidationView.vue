@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { validateCredential } from '~/http/api/credentials'
-import type { CredentialValidationResponse } from '~/types/credentials'
-import { useCredentialsErrors } from '~/composables/credentials/useCredentialsErrors'
+import {validateCredential} from '~/http/api/credentials'
+import type {CredentialValidationResponse} from '~/types/credentials'
+import {useCredentialsErrors} from '~/composables/credentials/useCredentialsErrors'
 
 const { toast } = useToast()
 const { parseError } = useCredentialsErrors()
@@ -34,7 +34,7 @@ const statusMeta = computed(() => {
     suspended: { color: '#b54708', icon: 'lucide:shield-alert', title: 'Credencial suspendida' },
     expired: { color: '#475467', icon: 'lucide:clock-3', title: 'Credencial expirada' },
     invalidated: { color: '#d92d20', icon: 'lucide:ban', title: 'Credencial invalidada' },
-    not_found: { color: '#667085', icon: 'lucide:search-x', title: 'No encontrada' },
+    not_found: { color: 'var(--futzo-on-surface-muted)', icon: 'lucide:search-x', title: 'No encontrada' },
   }
   return status ? map[status] : null
 })
@@ -144,14 +144,14 @@ onBeforeUnmount(() => {
 }
 
 .credentials-validation__scanner-placeholder {
-  border: 1px dashed #d0d5dd;
+  border: 1px dashed var(--futzo-border);
   border-radius: 12px;
   min-height: 120px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   text-align: center;
 }
 
@@ -179,7 +179,7 @@ onBeforeUnmount(() => {
 }
 
 .credentials-validation__timestamp {
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
 }
 
 @media (width > 600px) {

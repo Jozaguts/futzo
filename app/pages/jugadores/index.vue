@@ -231,13 +231,13 @@ onBeforeUnmount(() => {
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.03em;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   text-transform: uppercase;
 }
 
 .jugadores-page__title {
   margin: 2px 0 0;
-  color: #101828;
+  color: var(--futzo-on-surface);
   font-size: 22px;
   font-weight: 700;
   line-height: 1.2;
@@ -245,7 +245,7 @@ onBeforeUnmount(() => {
 
 .jugadores-page__subtitle {
   margin: 4px 0 0;
-  color: #667085;
+  color: var(--futzo-on-surface-muted);
   font-size: 13px;
   line-height: 1.4;
 }
@@ -253,7 +253,7 @@ onBeforeUnmount(() => {
 .jugadores-page__top-divider {
   width: 100%;
   height: 1px;
-  background: #eaecf0;
+  background: var(--futzo-border-strong);
 }
 
 .jugadores-page__controls {
@@ -288,9 +288,9 @@ onBeforeUnmount(() => {
   min-height: 320px;
   display: flex;
   flex: 1 1 auto;
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--futzo-border);
   border-radius: 16px;
-  background: #fff;
+  background: var(--futzo-surface);
   overflow: hidden;
 }
 
