@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type {Player} from '~/models/Player'
 import {Icon} from '#components'
+import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -33,6 +34,22 @@ const resolveYellowCards = (player: any) => toNumber(player?.stats?.yellow_cards
 const resolveRedCards = (player: any) => toNumber(player?.stats?.red_cards ?? 0)
 const resolvePosition = (player: any) => player?.position?.name ?? player?.position?.abbr ?? 'Sin posición'
 const resolveTeam = (player: any) => player?.team?.name ?? 'Sin equipo'
+const resolvePlayerImage = (player: any) => player?.image ?? player?.user?.image ?? null
+const resolvePlayerInitials = (player: any) => {
+  const words = fullName(player)
+    .split(' ')
+    .map((part) => part.trim())
+    .filter(Boolean)
+  if (!words.length) {
+    return 'J'
+  }
+  return words
+    .slice(0, 2)
+    .map((part) => part.charAt(0))
+    .join('')
+    .toUpperCase()
+}
+const resolvePlayerAvatarColor = (player: any) => player?.team?.colors?.home?.primary ?? ''
 
 const positionBadgeClass = (position: string) => {
   const normalized = String(position).toLowerCase()
@@ -80,7 +97,15 @@ const handlePageChange = async (page: number) => {
     <div class="players-list__scroll">
       <article v-for="player in filteredPlayers" :key="player.id" class="player-row futzo-rounded" data-testid="player-row-card">
         <button type="button" class="player-row__main" @click="showPlayerHandler(player as Player)">
-          <div class="player-row__number">{{ player.number || '—' }}</div>
+          <InitialsAvatar
+            class="player-row__avatar"
+            size="42"
+            rounded="lg"
+            :image="resolvePlayerImage(player)"
+            :name="fullName(player)"
+            :initials="resolvePlayerInitials(player)"
+            :fallback-color="resolvePlayerAvatarColor(player)"
+          />
           <div class="player-row__identity">
             <h3>{{ fullName(player) }}</h3>
             <div class="player-row__meta">
@@ -216,17 +241,7 @@ const handlePageChange = async (page: number) => {
   cursor: pointer;
 }
 
-.player-row__number {
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #7c3aed, #9333ea);
-  color: var(--futzo-on-surface);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 700;
+.player-row__avatar {
   flex-shrink: 0;
 }
 
