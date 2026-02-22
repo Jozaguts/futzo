@@ -1,9 +1,10 @@
-import { FetchError } from 'ofetch';
-import { useForm } from 'vee-validate';
-import { boolean, object, string } from 'yup';
-import { ref } from 'vue';
-import type { AuthForm } from '~/models/User';
-import { specialCharacters, phoneRegex } from '~/utils/constants';
+import {FetchError} from 'ofetch';
+import {useForm} from 'vee-validate';
+import {boolean, object, string} from 'yup';
+import {ref} from 'vue';
+import type {AuthForm} from '~/models/User';
+import {phoneRegex, specialCharacters} from '~/utils/constants';
+import {isCsrfTokenMismatchError} from '~/utils/auth-csrf';
 
 export default function useAuth() {
   const { refreshIdentity, logout } = useSanctumAuth();
@@ -54,6 +55,30 @@ export default function useAuth() {
   const errorMessage = ref('');
   const areaCode = ref('+52');
 
+  const refreshCsrfCookie = async () => {
+    const sanctumConfig = useSanctumConfig();
+    const csrfEndpoint = sanctumConfig?.endpoints?.csrf;
+    if (!csrfEndpoint) return;
+
+    const client = useSanctumClient();
+    await client(csrfEndpoint, {
+      method: 'GET',
+      headers: {
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+      },
+    });
+  };
+
+  const resolveAuthErrorMessage = (error: unknown) => {
+    try {
+      const { message } = useApiError(error as FetchError);
+      return message || 'No se pudo iniciar sesión, intenta nuevamente.';
+    } catch {
+      return 'No se pudo iniciar sesión, intenta nuevamente.';
+    }
+  };
+
   const refreshIdentitySafe = async () => {
     try {
       await refreshIdentity();
@@ -72,12 +97,28 @@ export default function useAuth() {
     errorMessage.value = '';
     isLoading.value = true;
     const { login } = useSanctumAuth();
-    await login({ ...form })
-      .catch((error: FetchError) => {
-        const { message } = useApiError(error);
-        errorMessage.value = message;
-      })
-      .finally(() => (isLoading.value = false));
+
+    const loginWithFreshCsrf = async () => {
+      await refreshCsrfCookie();
+      await login({ ...form });
+    };
+
+    try {
+      await loginWithFreshCsrf();
+    } catch (error) {
+      if (isCsrfTokenMismatchError(error)) {
+        try {
+          await loginWithFreshCsrf();
+          return;
+        } catch (retryError) {
+          errorMessage.value = resolveAuthErrorMessage(retryError);
+          return;
+        }
+      }
+      errorMessage.value = resolveAuthErrorMessage(error);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   async function signUp(form: Partial<AuthForm>) {
