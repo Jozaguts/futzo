@@ -27,7 +27,13 @@ defineProps<{
             <span v-if="team.tournament?.name"> · {{ team.tournament?.name }}</span>
           </p>
         </div>
-        <InitialsAvatar size="36" :name="team.name" :image="team.image" :fallback-color="team?.colors?.home?.primary" />
+        <InitialsAvatar
+          size="42"
+          rounded="lg"
+          :name="team.name"
+          :image="team.image"
+          :fallback-color="team?.colors?.home?.primary"
+        />
       </div>
     </div>
     <div v-else class="player-empty">Este jugador aún no tiene equipos registrados.</div>

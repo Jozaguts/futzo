@@ -360,7 +360,7 @@ const handlePageChange = async (page: number) => {
 
           <div class="team-card__badge">
             <InitialsAvatar
-              rounded
+              rounded="lg"
               size="42"
               :image="team.image"
               :name="team.name"

@@ -40,7 +40,7 @@ describe('InitialsAvatar', () => {
     expect(wrapper.text()).toBe('')
   })
 
-  it('falls back to initials when image is missing or ui-avatars url', async () => {
+  it('shows image when image is a non-null string url', async () => {
     const wrapper = await mountSuspended(InitialsAvatar, {
       props: {
         name: 'Carlos Mendez',
@@ -53,8 +53,40 @@ describe('InitialsAvatar', () => {
       },
     })
 
-    expect(wrapper.find('.avatar-stub').attributes('data-image')).toBe('')
-    expect(wrapper.text()).toContain('CM')
+    expect(wrapper.find('.avatar-stub').attributes('data-image')).toBe('https://ui-avatars.com/api/?name=Carlos+Mendez')
+    expect(wrapper.text()).toBe('')
+  })
+
+  it('normalizes escaped urls and renders initials only when image is null', async () => {
+    const escaped = await mountSuspended(InitialsAvatar, {
+      props: {
+        name: 'Bolton',
+        image: 'http:\\/\\/app.futzo.test\\/storage\\/4\\/conversions\\/Bolton-default.jpg',
+      },
+      global: {
+        stubs: {
+          'v-avatar': AvatarStub,
+        },
+      },
+    })
+
+    const withoutImage = await mountSuspended(InitialsAvatar, {
+      props: {
+        name: 'Bolton',
+        image: null,
+      },
+      global: {
+        stubs: {
+          'v-avatar': AvatarStub,
+        },
+      },
+    })
+
+    expect(escaped.find('.avatar-stub').attributes('data-image')).toBe(
+      'http://app.futzo.test/storage/4/conversions/Bolton-default.jpg'
+    )
+    expect(withoutImage.find('.avatar-stub').attributes('data-image')).toBe('')
+    expect(withoutImage.text()).toContain('B')
   })
 
   it('uses team color when provided and falls back to app primary when white', async () => {

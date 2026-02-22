@@ -242,7 +242,9 @@ const downloadQR = () => {
               <InitialsAvatar
                 :image="item?.image"
                 :name="item?.name"
-                density="compact"
+                size="42"
+                rounded="lg"
+                :fallback-color="item?.colors?.home?.primary"
                 class="d-none d-md-block d-lg-block"
               />
             </template>
