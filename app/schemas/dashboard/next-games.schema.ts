@@ -1,18 +1,28 @@
 import {z} from 'zod'
 
 const teamSchema = z.object({
+  id: z.number().optional(),
   name: z.string(),
   image: z.string().nullable().optional(),
 })
 
 const locationSchema = z.object({
-  name: z.string(),
+  id: z.number().nullable().optional(),
+  name: z.string().nullable().optional(),
+})
+
+const fieldSchema = z.object({
+  id: z.number().nullable().optional(),
+  name: z.string().nullable().optional(),
 })
 
 const tournamentSchema = z.object({
   id: z.number().optional(),
   name: z.string(),
   slug: z.string().optional(),
+  image: z.string().nullable().optional(),
+  thumbnail: z.string().nullable().optional(),
+  end_date: z.string().nullable().optional(),
 })
 
 export const nextGameItemSchema = z.object({
@@ -22,6 +32,7 @@ export const nextGameItemSchema = z.object({
   home_team: teamSchema,
   away_team: teamSchema,
   location: locationSchema.nullable().optional(),
+  field: fieldSchema.nullable().optional(),
   tournament: tournamentSchema.nullable().optional(),
 })
 

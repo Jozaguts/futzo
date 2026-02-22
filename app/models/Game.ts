@@ -1,12 +1,12 @@
 import type {
-  Availability,
-  AvailableIntervals,
-  HourAvailableInterval,
-  PenaltyAttempt,
-  PenaltyShootout,
+    Availability,
+    AvailableIntervals,
+    HourAvailableInterval,
+    PenaltyAttempt,
+    PenaltyShootout,
 } from '~/models/Schedule';
-import type { Player, TeamLineupAvailablePlayers } from '~/models/Player';
-import type { User } from '~/models/User';
+import type {Player, TeamLineupAvailablePlayers} from '~/models/Player';
+import type {User} from '~/models/User';
 
 export type GameEvents = {
   id: number;
@@ -243,13 +243,13 @@ export type NextGames = {
 
 export type Datum = {
   id: number;
-  tournament: Tournament;
-  home_team: Team;
-  away_team: Team;
-  location: Field;
-  field: Field;
+  tournament?: NextGameTournament | null;
+  home_team: NextGameTeam;
+  away_team: NextGameTeam;
+  location?: NextGameLocation | null;
+  field?: NextGameLocation | null;
   match_date: string;
-  match_time: string;
+  match_time: string | null;
 };
 
 export type Team = {
@@ -269,6 +269,29 @@ export type Colors = {
     secondary: string;
   };
 };
+
+export type NextGameTeam = {
+  id: number;
+  name: string;
+  image: string | null;
+  colors?: Colors | null;
+  rgba_color?: number[] | null;
+};
+
+export type NextGameLocation = {
+  id: number | null;
+  name: string | null;
+};
+
+export type NextGameTournament = {
+  id?: number;
+  name: string;
+  slug?: string;
+  image?: string | null;
+  thumbnail?: string | null;
+  end_date?: string | null;
+};
+
 export type Tournament = {
   id: number;
   league_id: number;
