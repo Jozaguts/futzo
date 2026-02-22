@@ -1,4 +1,4 @@
-import type { Player } from '~/models/Player';
+import type {Player} from '~/models/Player';
 
 export function getPlayers() {}
 export const search = async (search: string) => {
@@ -10,11 +10,15 @@ export const search = async (search: string) => {
   });
 };
 
-export const updatePlayer = async (playerId: number, payload: Record<string, any>) => {
+export const updatePlayer = async (
+  playerId: number,
+  payload: Record<string, any> | FormData,
+  method: 'PUT' | 'POST' = 'PUT'
+) => {
   const client = useSanctumClient();
   return await client<{ data: Player }>(`/api/v1/admin/players/${playerId}`, {
-    method: 'PUT',
-    body: JSON.stringify(payload),
+    method,
+    body: payload as any,
   });
 };
 

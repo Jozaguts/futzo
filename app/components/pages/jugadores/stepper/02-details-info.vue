@@ -30,14 +30,21 @@ const { playerStoreRequest, steps } = storeToRefs(usePlayerStore())
     steps.value.steps[steps.value.current].disable = false
   })
   watch(
-    meta,
-    () => {
-      steps.value.steps[steps.value.current].disable = !meta.value.valid
-      if (meta.value.valid && meta.value.touched) {
-        playerStoreRequest.value.details = { ...values }
-      }
+    () => meta.value.valid,
+    (isValid) => {
+      steps.value.steps[steps.value.current].disable = !isValid
     },
-    { deep: true }
+    { immediate: true }
+  )
+  watch(
+    values,
+    () => {
+      if (!meta.value.valid) {
+        return
+      }
+      playerStoreRequest.value.details = { ...values }
+    },
+    { deep: true, immediate: true }
   )
 </script>
 <template>

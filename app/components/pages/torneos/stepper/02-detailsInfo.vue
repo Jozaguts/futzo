@@ -62,14 +62,21 @@ const { tournamentStoreRequest, steps } = storeToRefs(useTournamentStore())
     resetForm()
   })
   watch(
-    meta,
-    () => {
-      steps.value.steps[steps.value.current].disable = !meta.value.valid
-      if (meta.value.valid && meta.value.touched) {
-        tournamentStoreRequest.value.details = { ...values }
-      }
+    () => meta.value.valid,
+    (isValid) => {
+      steps.value.steps[steps.value.current].disable = !isValid
     },
-    { deep: true }
+    { immediate: true }
+  )
+  watch(
+    values,
+    () => {
+      if (!meta.value.valid) {
+        return
+      }
+      tournamentStoreRequest.value.details = { ...values }
+    },
+    { deep: true, immediate: true }
   )
 </script>
 <template>

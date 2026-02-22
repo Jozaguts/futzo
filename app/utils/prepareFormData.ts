@@ -1,5 +1,5 @@
-import { isProxy } from '@vue/reactivity';
-import type { ExportType } from '~/models/tournament';
+import {isProxy} from '@vue/reactivity';
+import type {ExportType} from '~/models/tournament';
 
 const TRUE_LITERALS = ['true', '1', 'on'];
 const FALSE_LITERALS = ['false', '0', 'off'];
@@ -23,6 +23,10 @@ const coerceBoolean = (value: unknown): boolean | null => {
   return null;
 };
 
+const isFileLike = (value: unknown): value is File | Blob => {
+  return typeof Blob !== 'undefined' && value instanceof Blob;
+};
+
 const prepareForm = (requestData: Ref): FormData => {
   const form = new FormData();
   const appendData = (prefix: string, data: any) => {
@@ -30,8 +34,12 @@ const prepareForm = (requestData: Ref): FormData => {
       const maybeBoolean = coerceBoolean(data[key]);
       if (maybeBoolean !== null) {
         form.append(`${prefix}[${key}]`, maybeBoolean ? '1' : '0');
-      } else if (data[key] instanceof File && data[key]) {
-        form.append(`${prefix}[${key}]`, data[key]);
+      } else if (isFileLike(data[key]) && data[key]) {
+        if (data[key] instanceof File) {
+          form.append(`${prefix}[${key}]`, data[key]);
+          continue;
+        }
+        form.append(`${prefix}[${key}]`, data[key], 'upload.bin');
       } else if (data[key] instanceof Date && data[key]) {
         const date = data[key].toISOString().split('T')[0];
         form.append(`${prefix}[${key}]`, date as string);

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { PlayerStoreRequest } from '~/models/Player'
-import { number, object, string } from 'yup'
-import { VMaskInput } from 'vuetify/labs/VMaskInput'
-import { vuetifyConfig } from '~/utils/constants'
+import type {PlayerStoreRequest} from '~/models/Player'
+import {number, object, string} from 'yup'
+import {VMaskInput} from 'vuetify/labs/VMaskInput'
+import {vuetifyConfig} from '~/utils/constants'
 
 const { playerStoreRequest, steps } = storeToRefs(usePlayerStore())
 const isMinor = computed(() => Boolean(playerStoreRequest.value.basic?.is_minor))
@@ -52,25 +52,32 @@ onMounted(() => {
   steps.value.steps[steps.value.current].disable = false
 })
 watch(
-  meta,
+  () => meta.value.valid,
+  (isValid) => {
+    steps.value.steps[steps.value.current].disable = !isValid
+  },
+  { immediate: true }
+)
+watch(
+  values,
   () => {
-    steps.value.steps[steps.value.current].disable = !meta.value.valid
-    if (meta.value.valid && meta.value.touched) {
-      playerStoreRequest.value.contact = {
-        email: values.email,
-        phone: values.phone,
-        notes: values.notes,
-        iso_code: values.iso_code,
-      }
-      playerStoreRequest.value.guardian = {
-        name: values.guardian_name ?? undefined,
-        email: values.guardian_email ?? undefined,
-        phone: values.guardian_phone ?? undefined,
-        relationship: values.guardian_relationship ?? undefined,
-      }
+    if (!meta.value.valid) {
+      return
+    }
+    playerStoreRequest.value.contact = {
+      email: values.email,
+      phone: values.phone,
+      notes: values.notes,
+      iso_code: values.iso_code,
+    }
+    playerStoreRequest.value.guardian = {
+      name: values.guardian_name ?? undefined,
+      email: values.guardian_email ?? undefined,
+      phone: values.guardian_phone ?? undefined,
+      relationship: values.guardian_relationship ?? undefined,
     }
   },
-  { deep: true }
+  { deep: true, immediate: true }
 )
 </script>
 <template>

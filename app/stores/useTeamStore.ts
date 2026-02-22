@@ -1,12 +1,12 @@
 import {defineStore, skipHydrate} from 'pinia';
 import type {
-    Formation,
-    FormSteps,
-    HomePreferences,
-    Team,
-    TeamKpiMetric,
-    TeamListKpis,
-    TeamStoreRequest
+  Formation,
+  FormSteps,
+  HomePreferences,
+  Team,
+  TeamKpiMetric,
+  TeamListKpis,
+  TeamStoreRequest
 } from '~/models/Team';
 import type {IPagination} from '~/interfaces';
 import * as teamAPI from '~/http/api/team';
@@ -301,17 +301,27 @@ export const useTeamStore = defineStore('teamStore', () => {
       .catch(() => {});
   };
   const updateTeam = async (teamId: number) => {
-    let form = prepareForm(teamStoreRequest);
+    const form = prepareForm(teamStoreRequest);
+    form.append('_method', 'PUT');
+    let refreshedTeam: Team | undefined;
     await client(`/api/v1/admin/teams/${teamId}`, {
-      method: 'PUT',
+      method: 'POST',
       body: form,
     })
       .then(async () => {
+        refreshedTeam = (await getTeam(teamId)) as Team;
+        if (refreshedTeam?.id) {
+          team.value = refreshedTeam;
+          if (homeTeam.value?.id === refreshedTeam.id) {
+            homeTeam.value = refreshedTeam;
+          }
+        }
         await getTeams();
         toast({ type: 'success', msg: 'Equipo actualizado', description: 'El equipo se ha actualizado exitosamente' });
         dialog.value = false;
       })
       .catch(() => {});
+    return refreshedTeam;
   };
   const computeFallbackListKpis = (items: Team[]): TeamListKpis => {
     const playersRegistered = items.reduce((acc, item) => acc + Number((item as any)?.players_count ?? 0), 0);

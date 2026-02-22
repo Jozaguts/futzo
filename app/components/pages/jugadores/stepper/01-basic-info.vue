@@ -11,7 +11,7 @@ import type {User} from '~/models/User'
 import * as settingsAPI from '~/http/api/settings'
 import {storeToRefs, toTypedSchema, useCategoryStore, useI18n, usePlayerStore, useTeamStore} from '#imports'
 
-  const { t } = useI18n()
+const { t } = useI18n()
   const { isTeamScopedRole } = useRoleAccess()
   const { isEdition, playerStoreRequest, steps } = storeToRefs(usePlayerStore())
   const { teams } = storeToRefs(useTeamStore())
@@ -238,21 +238,28 @@ import {storeToRefs, toTypedSchema, useCategoryStore, useI18n, usePlayerStore, u
     { immediate: true }
   )
   watch(
-    meta,
+    () => meta.value.valid,
+    (isValid) => {
+      steps.value.steps[steps.value.current].disable = !isValid
+    },
+    { immediate: true }
+  )
+  watch(
+    values,
     () => {
-      steps.value.steps[steps.value.current].disable = !meta.value.valid
-      if (meta.value.valid && meta.value.touched) {
-        const { firstName, lastName } = splitFullName(values.name)
-        playerStoreRequest.value.basic = {
-          ...values,
-          name: firstName,
-          last_name: lastName ?? null,
-          is_minor: is_minor.value ?? null,
-          identification_document: fileFromInput(values.identification_document as any),
-        }
+      if (!meta.value.valid) {
+        return
+      }
+      const { firstName, lastName } = splitFullName(values.name)
+      playerStoreRequest.value.basic = {
+        ...values,
+        name: firstName,
+        last_name: lastName ?? null,
+        is_minor: is_minor.value ?? null,
+        identification_document: fileFromInput(values.identification_document as any),
       }
     },
-    { deep: true }
+    { deep: true, immediate: true }
   )
 </script>
 <template>

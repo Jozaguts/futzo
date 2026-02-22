@@ -184,14 +184,21 @@ const leagueLocations = ref<Field[]>([])
     resetForm()
   })
   watch(
-    meta,
-    () => {
-      steps.value.steps[steps.value.current].disable = !meta.value.valid
-      if (meta.value.valid && meta.value.touched) {
-        teamStoreRequest.value.team = { ...values }
-      }
+    () => meta.value.valid,
+    (isValid) => {
+      steps.value.steps[steps.value.current].disable = !isValid
     },
-    { deep: true }
+    { immediate: true }
+  )
+  watch(
+    values,
+    () => {
+      if (!meta.value.valid) {
+        return
+      }
+      teamStoreRequest.value.team = { ...values }
+    },
+    { deep: true, immediate: true }
   )
 </script>
 <template>

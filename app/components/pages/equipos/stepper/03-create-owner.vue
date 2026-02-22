@@ -71,23 +71,28 @@ const teamStore = useTeamStore()
     }
   })
   watch(
-    meta,
+    () => meta.value.valid,
+    (isValid) => {
+      steps.value.steps[steps.value.current].disable = !isValid
+    },
+    { immediate: true }
+  )
+  watch(
+    values,
     () => {
-      if (meta.value.valid && meta.value.touched) {
-        let { name, email, image, iso_code, phone } = values
-        phone = iso_code && phone ? `+${iso_code}${phone}` : ''
-        teamStoreRequest.value.president = {
-          name,
-          email,
-          image,
-          phone,
-        }
-        steps.value.steps[steps.value.current].disable = false
-      } else if (!meta.value.valid && meta.value.touched) {
-        steps.value.steps[steps.value.current].disable = !meta.value.valid
+      if (!meta.value.valid) {
+        return
+      }
+      let { name, email, image, iso_code, phone } = values
+      phone = iso_code && phone ? `+${iso_code}${phone}` : ''
+      teamStoreRequest.value.president = {
+        name,
+        email,
+        image,
+        phone,
       }
     },
-    { deep: true }
+    { deep: true, immediate: true }
   )
 </script>
 <template>

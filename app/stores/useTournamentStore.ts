@@ -1,19 +1,19 @@
 import type {
-    BasicInfoForm,
-    CalendarStoreRequest,
-    DetailsInfoForm,
-    ExportType,
-    FormSteps,
-    Tournament,
-    TournamentForm,
-    TournamentKpiMetric,
-    TournamentListKpis,
-    TournamentLocation,
-    TournamentLocationStoreRequest,
-    TournamentStats,
-    TournamentStatus,
-    TournamentStoreRequest,
-    TournamentSummary,
+  BasicInfoForm,
+  CalendarStoreRequest,
+  DetailsInfoForm,
+  ExportType,
+  FormSteps,
+  Tournament,
+  TournamentForm,
+  TournamentKpiMetric,
+  TournamentListKpis,
+  TournamentLocation,
+  TournamentLocationStoreRequest,
+  TournamentStats,
+  TournamentStatus,
+  TournamentStoreRequest,
+  TournamentSummary,
 } from '~/models/tournament';
 import type {Game} from '~/models/Game';
 import type {User} from '~/models/User';
@@ -24,13 +24,13 @@ import type {Field} from '~/models/Schedule';
 import type {CreateTeamForm} from '~/models/Team';
 import {defineStore, skipHydrate} from 'pinia';
 import {
-    storeToRefs,
-    useCategoryStore,
-    useOnboardingStore,
-    useSanctumClient,
-    useSanctumUser,
-    useTeamStore,
-    useToast,
+  storeToRefs,
+  useCategoryStore,
+  useOnboardingStore,
+  useSanctumClient,
+  useSanctumUser,
+  useTeamStore,
+  useToast,
 } from '#imports';
 import type {TourStep} from '#nuxt-tour/props';
 import {useTourController} from '~/composables/useTourController';
@@ -392,11 +392,26 @@ export const useTournamentStore = defineStore('tournamentStore', () => {
 
   async function updateTournament() {
     const form = prepareForm(tournamentStoreRequest);
-    return await useSanctumClient()(`api/v1/admin/tournaments/${tournamentId}`, {
-      method: 'PUT',
+    form.append('_method', 'PUT');
+    return await useSanctumClient()(`api/v1/admin/tournaments/${tournamentId.value}`, {
+      method: 'POST',
       body: form,
     })
       .then(async (response) => {
+        await loadTournaments();
+
+        if (tournamentId.value) {
+          await getTournamentBySlug(String(tournamentId.value));
+        } else if (tournament.value?.slug) {
+          await getTournamentBySlug(String(tournament.value.slug));
+        }
+
+        useToast().toast({
+          type: 'success',
+          msg: 'Torneo actualizado',
+          description: 'El torneo se ha actualizado exitosamente.',
+        });
+        dialog.value = false;
         return response;
       })
       .catch((error) => {

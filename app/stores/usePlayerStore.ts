@@ -293,25 +293,64 @@ export const usePlayerStore = defineStore('playerStore', () => {
       loading.value = false;
     }
   };
-  const updatePlayer = async (id: number, payload: Record<string, any>) => {
-    if (!id || !Object.keys(payload).length) {
+  type PlayerUpdatePayload = Record<string, any> | FormData;
+
+  const isBinaryFile = (value: unknown): value is File | Blob => {
+    return typeof Blob !== 'undefined' && value instanceof Blob;
+  };
+
+  const appendFormField = (form: FormData, key: string, value: unknown) => {
+    if (value === undefined) {
+      return;
+    }
+
+    if (value === null) {
+      form.append(key, '');
+      return;
+    }
+
+    if (typeof value === 'boolean') {
+      form.append(key, value ? '1' : '0');
+      return;
+    }
+
+    if (isBinaryFile(value)) {
+      if (value instanceof File) {
+        form.append(key, value);
+        return;
+      }
+      form.append(key, value, 'upload.bin');
+      return;
+    }
+
+    form.append(key, String(value));
+  };
+
+  const updatePlayer = async (id: number, payload: PlayerUpdatePayload) => {
+    if (!id) {
+      return null;
+    }
+    if (!(payload instanceof FormData) && !Object.keys(payload).length) {
       return null;
     }
     try {
-      const response = await playerAPI.updatePlayer(id, payload);
-      player.value = response.data;
+      const response = await playerAPI.updatePlayer(id, payload, payload instanceof FormData ? 'POST' : 'PUT');
+      await Promise.allSettled([getPlayer(String(id)), getPlayers()]);
+      if (!player.value?.id) {
+        player.value = response.data;
+      }
       toast({
         type: 'success',
         msg: 'Jugador actualizado',
         description: 'Los cambios se han guardado correctamente.',
       });
-      return response.data;
+      return player.value;
     } catch (error: any) {
       console.error(error);
       throw error;
     }
   };
-  const buildEditPayload = () => {
+  const buildEditPayload = (): PlayerUpdatePayload => {
     const basic = playerStoreRequest.value.basic ?? {};
     const details = playerStoreRequest.value.details ?? {};
     const contact = playerStoreRequest.value.contact ?? {};
@@ -336,6 +375,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
       phone: contact.phone ?? null,
       notes: contact.notes ?? null,
       iso_code: contact.iso_code ?? null,
+      identification_method: basic.identification_method ?? null,
       guardian: {
         name: guardian.name ?? null,
         email: guardian.email ?? null,
@@ -344,14 +384,42 @@ export const usePlayerStore = defineStore('playerStore', () => {
       },
     };
 
-    return payload;
+    const imageFile = isBinaryFile(basic.image) ? basic.image : null;
+    const identificationFile = isBinaryFile(basic.identification_document) ? basic.identification_document : null;
+
+    if (!imageFile && !identificationFile) {
+      return payload;
+    }
+
+    const form = new FormData();
+    form.append('_method', 'PUT');
+
+    for (const [key, value] of Object.entries(payload)) {
+      if (key === 'guardian' && value && typeof value === 'object') {
+        for (const [guardianKey, guardianValue] of Object.entries(value as Record<string, unknown>)) {
+          appendFormField(form, `guardian[${guardianKey}]`, guardianValue);
+        }
+        continue;
+      }
+      appendFormField(form, key, value);
+    }
+
+    appendFormField(form, 'image', imageFile);
+    appendFormField(form, 'identification_document', identificationFile);
+
+    return form;
   };
+
   const updatePlayerFromForm = async () => {
     if (!playerId.value) {
       return null;
     }
     const payload = buildEditPayload();
-    return await updatePlayer(playerId.value, payload);
+    const updatedPlayer = await updatePlayer(playerId.value, payload);
+    if (updatedPlayer) {
+      dialog.value = false;
+    }
+    return updatedPlayer;
   };
   const openPlayerEdition = async (id: number) => {
     await getPlayer(String(id));
