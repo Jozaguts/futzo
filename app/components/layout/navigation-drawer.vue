@@ -75,12 +75,13 @@ const globalStore =  useGlobalStore()
     recalculateTour()
     startTour()
   }
-  const { toggle } = useCustomTheme()
-const theme =ref(useTheme().name.value)
-watch(theme,
-    () =>{
-      toggle()
-    })
+  const theme = useTheme()
+  const themeName = computed({
+    get: () => theme.global.name.value,
+    set: (value: string) => {
+      theme.change(value as 'light' | 'dark')
+    },
+  })
 </script>
 
 <template>
@@ -203,11 +204,11 @@ watch(theme,
           </v-list-item>
          <div class="d-flex justify-center align-center">
            <v-switch
-               true-value="light"
-               false-value="dark"
+               true-value="dark"
+               false-value="light"
                :true-icon="() => h(Icon, { name: 'lucide:moon-star', class: 'mr-2 config-icon', mode: 'svg' })"
                :false-icon="() => h(Icon, { name: 'lucide:lightbulb', class: 'mr-2 config-icon', mode: 'svg' })"
-               v-model="theme"
+               v-model="themeName"
               />
          </div>
         </v-list>

@@ -1,177 +1,282 @@
-import type { VuetifyOptions } from 'vuetify';
-export const staticPrimaryColor = '#8C57FF';
+import type {VuetifyOptions} from 'vuetify';
+
+export const staticPrimaryColor = '#9155FD'        // purple-500 — color de marca
+export const staticPrimaryDarkenColor = '#673CB4'  // purple-700
+
 const theme: VuetifyOptions['theme'] = {
   defaultTheme: 'light',
   themes: {
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    //  LIGHT THEME
+    //  Jerarquía: background(gris muy suave) < surface(blanco) < surface-variant(dark brand)
+    // ═══════════════════════════════════════════════════════════════════════════
     light: {
       dark: false,
       colors: {
-        primary: staticPrimaryColor,
-        'on-primary': '#FFFFFF',
-        'primary-darken-1': '#7E4EE6',
-        secondary: '#8A8D93',
-        'secondary-darken-1': '#7C7F84',
-        'on-secondary': '#fff',
-        success: '#56CA00',
-        'success-darken-1': '#4DB600',
-        'on-success': '#FFFFFF',
-        info: '#16B1FF',
-        'info-darken-1': '#149FE6',
-        'on-info': '#fff',
-        warning: '#FFB400',
-        'warning-darken-1': '#E6A200',
-        'on-warning': '#fff',
-        error: '#FF4C51',
-        'error-darken-1': '#E64449',
-        'on-error': '#fff',
-        background: '#f4f5fa',
-        'on-background': '#2E263D',
-        // background: '#F9FAFB',
-        // 'on-background': '#475467',
-        surface: '#FFFFFF',
-        // 'on-surface': '#424242',
-        'on-surface': '#2E263D',
-        'grey-50': '#FAFAFA',
-        'grey-100': '#F5F5F5',
-        'grey-200': '#EEEEEE',
-        'grey-300': '#E0E0E0',
-        'grey-400': '#BDBDBD',
-        'grey-500': '#9E9E9E',
-        'grey-600': '#757575',
-        'grey-700': '#616161',
-        'grey-800': '#424242',
-        'grey-900': '#212121',
-        'perfect-scrollbar-thumb': '#dbdade',
-        'skin-bordered-background': '#fff',
-        'skin-bordered-surface': '#fff',
-        'expansion-panel-text-custom-bg': '#fafafa',
-        'track-bg': '#F0F2F8',
-        'chat-bg': '#F7F6FA',
+        // ── Brand ──────────────────────────────────────────────────────────────
+        'primary':              '#9155FD',  // purple-500
+        'on-primary':           '#FFFFFF',
+        'primary-darken-1':     '#673CB4',  // purple-700 — hover/pressed
+
+        'secondary':            '#8A8D93',
+        'secondary-darken-1':   '#7C7F84',
+        'on-secondary':         '#FFFFFF',
+
+        // ── Semánticos ─────────────────────────────────────────────────────────
+        'success':              '#3DAB6F',  // verde esmeralda sobrio (no neón)
+        'success-darken-1':     '#2E8A57',
+        'on-success':           '#FFFFFF',
+
+        'info':                 '#3B82B8',  // azul índigo suave (toque violáceo de marca)
+        'info-darken-1':        '#2D6A9A',
+        'on-info':              '#FFFFFF',
+
+        'warning':              '#D97706',  // ámbar cálido (no amarillo flúor)
+        'warning-darken-1':     '#B86004',
+        'on-warning':           '#FFFFFF',
+
+        'error':                '#C0392B',  // rojo carmesí sobrio (no coral neón)
+        'error-darken-1':       '#A52D20',
+        'on-error':             '#FFFFFF',
+
+        // ── Jerarquía de superficies (light) ───────────────────────────────────
+        //
+        //  background    → lienzo base de la app, ligeramente gris
+        //                  Uso: body, main layout wrapper, página vacía
+        //
+        //  surface       → componentes elevados sobre el background
+        //                  Uso: v-card, v-dialog, v-data-table, v-sheet
+        //                  Es BLANCO para máximo contraste vs background gris
+        //
+        //  surface-variant → zona de navegación global, diferente del surface
+        //                  Uso: v-app-bar, v-navigation-drawer, v-toolbar
+        //                  En light = oscuro (brand dark), crea contraste visual
+        //                  fuerte que indica "zona de navegación global"
+        //
+        //  on-surface-variant → texto/iconos SOBRE surface-variant
+        //                  Como surface-variant es oscuro (#28243D),
+        //                  el contenido debe ser claro (#DDCAFE)
+        //
+        //  surface-bright → elementos flotantes por encima del surface
+        //                  Uso: v-menu, v-tooltip, popovers, chips hover
+        //
+        //  surface-light  → fondo de hover, filas seleccionadas, chips sutiles
+        //                  Uso: estados interactivos sobre surface
+        //
+        'background':           '#F4F5FA',  // gris muy suave — lienzo base
+        'on-background':        '#2E263D',  // texto principal sobre background
+
+        'surface':              '#FFFFFF',  // blanco — cards, panels, tablas
+        'on-surface':           '#2E263D',  // texto sobre surface (mismo hue que bg)
+
+        'surface-bright':       '#FFFFFF',  // igual que surface en light
+        'surface-light':        '#F4EEFF',  // purple-50 — hover/selección sutil
+
+        'surface-variant':      '#28243D',  // dark brand — navbar, sidebar
+        'on-surface-variant':   '#DDCAFE',  // purple-100 — texto sobre nav oscura
+
+        // ── Escala de grises ────────────────────────────────────────────────────
+        'grey-50':              '#FAFAFA',
+        'grey-100':             '#F5F5F5',
+        'grey-200':             '#EEEEEE',
+        'grey-300':             '#E0E0E0',
+        'grey-400':             '#BDBDBD',
+        'grey-500':             '#9E9E9E',
+        'grey-600':             '#757575',
+        'grey-700':             '#616161',
+        'grey-800':             '#424242',
+        'grey-900':             '#212121',
+
+        // ── Tokens custom (compatibilidad con template existente) ───────────────
+        'perfect-scrollbar-thumb':        '#DBDADE',
+        'skin-bordered-background':       '#FFFFFF',
+        'skin-bordered-surface':          '#FFFFFF',
+        'expansion-panel-text-custom-bg': '#FAFAFA',
+        'track-bg':                       '#F0F2F8',
+        'chat-bg':                        '#F7F6FA',
       },
+
       variables: {
-        // 'border-color': '#D0D5DD',
-        // 'medium-emphasis-opacity': 0.68,
+        // Transparencias de interacción
+        'hover-opacity':            0.04,
+        'focus-opacity':            0.10,
+        'selected-opacity':         0.08,
+        'activated-opacity':        0.16,
+        'pressed-opacity':          0.14,
+        'dragged-opacity':          0.10,
+        'disabled-opacity':         0.40,
 
-        // Shadows
-        'overlay-opacity': 'rgba(var(--v-theme-on-surface), 0.46)',
-        'shadow-key-umbra-opacity': 'rgba(var(--v-theme-on-surface), 0.08)',
-        'shadow-key-penumbra-opacity': 'rgba(var(--v-theme-on-surface), 0.12)',
-        'shadow-key-ambient-opacity': 'rgba(var(--v-theme-on-surface), 0.04)',
+        // Bordes — usan on-surface como base
+        'border-color':             '#2E263D',
+        'border-opacity':           0.10,   // más sutil que el default 0.12
 
-        'code-color': '#d400ff',
+        // Énfasis de texto
+        'high-emphasis-opacity':    0.90,
+        'medium-emphasis-opacity':  0.70,
+
+        // Overlays y tooltips
         'overlay-scrim-background': '#2E263D',
-        'tooltip-background': '#1A0E33',
-        'overlay-scrim-opacity': 0.5,
-        'hover-opacity': 0.04,
-        'focus-opacity': 0.1,
-        'selected-opacity': 0.08,
-        'activated-opacity': 0.16,
-        'pressed-opacity': 0.14,
-        'dragged-opacity': 0.1,
-        'disabled-opacity': 0.4,
-        'border-color': '#2E263D',
-        'border-opacity': 0.12,
-        'table-header-color': '#F6F7FB',
-        'high-emphasis-opacity': 0.9,
-        'medium-emphasis-opacity': 0.7,
+        'overlay-scrim-opacity':    0.50,
+        'tooltip-background':       '#1A0E33',
 
-        // 👉 shadows
-        'shadow-key-umbra-color': '#2E263D',
-        'shadow-xs-opacity': '0.16',
-        'shadow-sm-opacity': '0.18',
-        'shadow-md-opacity': '0.20',
-        'shadow-lg-opacity': '0.22',
-        'shadow-xl-opacity': '0.24',
+        // Tabla
+        'table-header-color':       '#F6F7FB',
+
+        // Sombras — usan el dark brand como color base
+        'shadow-key-umbra-color':   '#2E263D',
+        'shadow-xs-opacity':        '0.14',
+        'shadow-sm-opacity':        '0.16',
+        'shadow-md-opacity':        '0.18',
+        'shadow-lg-opacity':        '0.20',
+        'shadow-xl-opacity':        '0.22',
+
+        // Código
+        'code-color':               '#7E4EE6',
       },
     },
+
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    //  DARK THEME
+    //
+    //  REGLA CLAVE: a mayor elevación = más claro
+    //  Esto crea la ilusión de profundidad sin necesitar sombras fuertes.
+    //
+    //  Jerarquía de profundidad (oscuro → claro):
+    //  #1E1A2E  →  #28243D  →  #312D4B  →  #3D3762  →  #4A4465
+    //  (más     →    bg     →  surface  →  surface  →  surface
+    //  profundo)              (cards)    (bright)    (hover)
+    //
+    //  surface-variant (#1E1A2E) es MÁS OSCURO que background (#28243D)
+    //  porque navbar/sidebar son zonas persistentes que deben "retroceder"
+    //  visualmente, dejando que el contenido principal (cards) sea el foco.
+    // ═══════════════════════════════════════════════════════════════════════════
     dark: {
       dark: true,
       colors: {
-        primary: '#00C853', // Verde Futzo
-        'on-primary': '#FFFFFF',
-        'primary-darken-1': '#009B41',
+        // ── Brand ──────────────────────────────────────────────────────────────
+        'primary':              '#9155FD',  // mismo primary — suficiente contraste en dark
+        'on-primary':           '#FFFFFF',
+        'primary-darken-1':     '#B58DFE',  // purple-300 — más claro para dark mode
 
-        secondary: '#8A8D93',
-        'secondary-darken-1': '#7C7F84',
-        'on-secondary': '#FFFFFF',
+        'secondary':            '#8A8D93',
+        'secondary-darken-1':   '#A1A4A9',
+        'on-secondary':         '#FFFFFF',
 
-        success: '#56CA00',
-        'success-darken-1': '#4DB600',
-        'on-success': '#FFFFFF',
+        // ── Semánticos dark (mismos hues, mayor luminosidad para contraste) ─────
+        'success':              '#5DBF87',  // verde esmeralda clareado
+        'success-darken-1':     '#3DAB6F',
+        'on-success':           '#FFFFFF',
 
-        info: '#16B1FF',
-        'info-darken-1': '#149FE6',
-        'on-info': '#FFFFFF',
+        'info':                 '#6AAFD6',  // azul índigo clareado
+        'info-darken-1':        '#3B82B8',
+        'on-info':              '#FFFFFF',
 
-        warning: '#FFB400',
-        'warning-darken-1': '#E6A200',
-        'on-warning': '#FFFFFF',
+        'warning':              '#F59E42',  // ámbar clareado
+        'warning-darken-1':     '#D97706',
+        'on-warning':           '#1A1028',  // oscuro sobre warning claro
 
-        error: '#FF4C51',
-        'error-darken-1': '#E64449',
-        'on-error': '#FFFFFF',
+        'error':                '#E05A52',  // carmesí clareado
+        'error-darken-1':       '#C0392B',
+        'on-error':             '#FFFFFF',
 
-        background: '#0F0F0F', // Fondo principal oscuro
-        'on-background': '#F4F5FA', // Texto principal claro
+        // ── Jerarquía de superficies (dark) ────────────────────────────────────
+        //
+        //  IMPORTANTE: En dark mode la jerarquía se INVIERTE respecto a light.
+        //  Los componentes más "elevados" (encima del usuario) son MÁS CLAROS.
+        //
+        //  surface-variant (#1E1A2E) → MÁS OSCURO que background
+        //    Razón: sidebar/navbar son zonas de soporte, deben "hundirse"
+        //    visualmente para que el contenido principal destaque.
+        //    Esta diferencia crea el contraste que ves en la imagen:
+        //    sidebar oscura vs área de contenido más clara.
+        //
+        //  background (#28243D)     → tono medio, lienzo base
+        //
+        //  surface (#312D4B)        → MÁS CLARO que background
+        //    Razón: cards y paneles "flotan" sobre el background.
+        //    La diferencia de tono comunica elevación sin necesitar sombras.
+        //
+        //  surface-bright (#3D3762) → aún más claro, para overlays flotantes
+        //    Uso: v-menu, dropdowns, tooltips, modales
+        //
+        //  surface-light (#3D3762)  → hover/selección sobre surface
+        //
+        'background':           '#28243D',  // dark base de marca — lienzo principal
+        'on-background':        '#E7E3FC',  // purple-50 suave — texto sobre bg
 
-        surface: '#1B1B1D', // Capa superficial (tarjetas, modales)
-        'on-surface': '#E0E0E0',
+        'surface':              '#312D4B',  // más claro que bg — cards y paneles
+        'on-surface':           '#E7E3FC',  // texto sobre surface
 
-        'grey-50': '#121212',
-        'grey-100': '#1E1E1E',
-        'grey-200': '#2A2A2A',
-        'grey-300': '#3A3A3A',
-        'grey-400': '#4A4A4A',
-        'grey-500': '#6E6E6E',
-        'grey-600': '#8A8D93',
-        'grey-700': '#BDBDBD',
-        'grey-800': '#D0D5DD',
-        'grey-900': '#F4F5FA',
+        'surface-bright':       '#3D3762',  // más claro aún — modales/overlays
+        'surface-light':        '#3D3762',  // hover states sobre surface
 
-        'perfect-scrollbar-thumb': '#323232',
-        'skin-bordered-background': '#1B1B1D',
-        'skin-bordered-surface': '#1B1B1D',
-        'expansion-panel-text-custom-bg': '#1E1E1E',
-        'track-bg': '#141414',
-        'chat-bg': '#161616',
+        'surface-variant':      '#1E1A2E',  // MÁS OSCURO que bg — sidebar/navbar
+        'on-surface-variant':   '#B58DFE',  // purple-300 — texto sobre nav oscura
+
+        // ── Grises dark (con tinte púrpura de marca, NO grises puros) ──────────
+        //  Usar grises con tinte crea cohesión con la paleta de marca.
+        //  Grises puros (#121212, #1E1E1E) hacen el dark theme genérico.
+        'grey-50':              '#1E1A2E',  // = surface-variant
+        'grey-100':             '#28243D',  // = background
+        'grey-200':             '#312D4B',  // = surface
+        'grey-300':             '#3D3762',  // = surface-bright
+        'grey-400':             '#4A4465',
+        'grey-500':             '#6B6584',
+        'grey-600':             '#8A8D93',
+        'grey-700':             '#B1B3B7',
+        'grey-800':             '#DBDCDE',
+        'grey-900':             '#F4F5FA',
+
+        // ── Tokens custom (dark) ────────────────────────────────────────────────
+        'perfect-scrollbar-thumb':        '#3D3762',
+        'skin-bordered-background':       '#312D4B',
+        'skin-bordered-surface':          '#312D4B',
+        'expansion-panel-text-custom-bg': '#28243D',
+        'track-bg':                       '#1E1A2E',
+        'chat-bg':                        '#231F38',
       },
 
       variables: {
-        // Transparencias y sombras adaptadas al fondo oscuro
-        'overlay-opacity': 'rgba(255,255,255,0.08)',
-        'shadow-key-umbra-opacity': 'rgba(0,0,0,0.24)',
-        'shadow-key-penumbra-opacity': 'rgba(0,0,0,0.18)',
-        'shadow-key-ambient-opacity': 'rgba(0,0,0,0.12)',
+        // Interacción — levemente más notables en dark para mayor feedback visual
+        'hover-opacity':            0.08,
+        'focus-opacity':            0.12,
+        'selected-opacity':         0.10,
+        'activated-opacity':        0.16,
+        'pressed-opacity':          0.18,
+        'dragged-opacity':          0.10,
+        'disabled-opacity':         0.40,
 
-        'code-color': '#00FF90',
-        'overlay-scrim-background': '#0F0F0F',
-        'tooltip-background': '#1E1E1E',
+        // Bordes — usan primary como color base en dark para coherencia de marca
+        'border-color':             '#9155FD',
+        'border-opacity':           0.12,
 
-        'overlay-scrim-opacity': 0.6,
-        'hover-opacity': 0.08,
-        'focus-opacity': 0.12,
-        'selected-opacity': 0.1,
-        'activated-opacity': 0.14,
-        'pressed-opacity': 0.18,
-        'dragged-opacity': 0.1,
-        'disabled-opacity': 0.4,
+        // Énfasis de texto — ligeramente mayor en dark para compensar el contraste
+        'high-emphasis-opacity':    0.95,
+        'medium-emphasis-opacity':  0.75,
 
-        'border-color': '#2A2A2A',
-        'border-opacity': 0.16,
+        // Overlays y tooltips
+        'overlay-scrim-background': '#1E1A2E',
+        'overlay-scrim-opacity':    0.60,
+        'tooltip-background':       '#1E1A2E',
 
-        'table-header-color': '#161616',
-        'high-emphasis-opacity': 0.95,
-        'medium-emphasis-opacity': 0.75,
+        // Tabla
+        'table-header-color':       '#231F38',
 
-        'shadow-key-umbra-color': '#000000',
-        'shadow-xs-opacity': '0.24',
-        'shadow-sm-opacity': '0.26',
-        'shadow-md-opacity': '0.28',
-        'shadow-lg-opacity': '0.3',
-        'shadow-xl-opacity': '0.32',
+        // Sombras — en dark deben ser más notables (fondos ya son oscuros)
+        'shadow-key-umbra-color':   '#1E1A2E',
+        'shadow-xs-opacity':        '0.22',
+        'shadow-sm-opacity':        '0.24',
+        'shadow-md-opacity':        '0.26',
+        'shadow-lg-opacity':        '0.28',
+        'shadow-xl-opacity':        '0.30',
+
+        // Código
+        'code-color':               '#B58DFE',
       },
     },
-  },
+  }
 };
 
 export default theme;
