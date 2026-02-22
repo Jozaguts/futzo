@@ -142,7 +142,7 @@ const { nextGames, title } = defineProps({
     justify-content: space-between;
     align-items: center;
     flex-shrink: 0;
-    border-radius: 100px;
+    border-radius: 12px;
   }
   .v-table__wrapper > table {
     width: 100%;

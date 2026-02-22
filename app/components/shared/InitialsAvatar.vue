@@ -19,6 +19,10 @@ const props = withDefaults(
 )
 
 const attrs = useAttrs()
+const avatarAttrs = computed(() => ({
+  rounded: 'lg',
+  ...attrs,
+}))
 
 const resolvedImage = computed(() => sanitizeAvatarImage(props.image))
 const hasImageError = ref(false)
@@ -62,7 +66,7 @@ const initialsStyle = computed(() => ({
 </script>
 
 <template>
-  <v-avatar v-bind="attrs" :style="avatarStyle" class="initials-avatar">
+  <v-avatar v-bind="avatarAttrs" :style="avatarStyle" class="initials-avatar">
     <v-img v-if="shouldRenderImage" :src="resolvedImage" cover class="initials-avatar__image" @error="hasImageError = true" />
     <span v-else class="initials-avatar__text" :style="initialsStyle">
       {{ resolvedInitials }}
