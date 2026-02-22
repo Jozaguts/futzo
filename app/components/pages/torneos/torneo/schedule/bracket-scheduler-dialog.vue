@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { storeToRefs } from '#imports'
   import { VDateInput } from 'vuetify/labs/VDateInput'
+  import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
   import { useToast } from '~/composables/useToast'
   import type { ConfirmBracketMatch } from '~/models/Bracket'
 
@@ -288,7 +289,7 @@
                 </div>
                 <div class="d-flex align-center justify-space-between mb-4 matchup">
                   <div class="team">
-                    <v-avatar :image="item.home.image" size="36" class="mr-2" />
+                    <InitialsAvatar :image="item.home.image" :name="item.home.name" size="36" class="mr-2" />
                     <div>
                       <p class="mb-0 text-body-2 font-weight-medium">
                         {{ item.home.name }}
@@ -304,7 +305,7 @@
                       </p>
                       <small class="text-medium-emphasis">Seed #{{ item.away.seed }}</small>
                     </div>
-                    <v-avatar :image="item.away.image" size="36" class="ml-2" />
+                    <InitialsAvatar :image="item.away.image" :name="item.away.name" size="36" class="ml-2" />
                   </div>
                 </div>
                 <v-row dense>

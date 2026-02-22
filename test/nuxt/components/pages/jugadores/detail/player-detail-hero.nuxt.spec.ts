@@ -20,7 +20,7 @@ describe('PlayerDetailHero', () => {
       global: {
         stubs: {
           'v-card': { template: '<div><slot /></div>' },
-          'v-avatar': { template: '<div><slot /></div>' },
+          InitialsAvatar: { template: '<div><slot /></div>' },
           'v-chip': { template: '<span><slot /></span>' },
           'v-btn': { template: '<button @click="$emit(\'click\')"><slot /></button>' },
         },

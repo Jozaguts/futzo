@@ -2,6 +2,7 @@
 import { useResizeObserver } from '@vueuse/core'
 import { Icon } from '#components'
 import { h } from 'vue'
+import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 
 const globalStore = useGlobalStore()
 const { drawer, drawerWidth, isMobile, rail } = storeToRefs(globalStore)
@@ -119,9 +120,7 @@ const logOut = async () => {
       <v-card :loading="!user?.name">
         <v-card-item class="logout-card-item">
           <template v-if="!rail" #prepend>
-            <v-avatar>
-              <v-img :src="user?.image"></v-img>
-            </v-avatar>
+            <InitialsAvatar :name="user?.name" :image="user?.image" />
           </template>
           <template v-if="!rail" #title>
             <small>{{ user?.name }}</small>

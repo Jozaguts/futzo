@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import {Icon} from '#components'
+import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 import Table from '~/components/shared/Table.vue'
 import type {Header} from '~/interfaces'
 import type {Tournament, TournamentShareAction} from '~/models/tournament'
@@ -237,8 +238,13 @@ const downloadQR = () => {
             @click="handleShowTournament(item as Tournament)"
             v-tooltip:top="item?.name"
           >
-            <template #prepend v-if="item?.image">
-              <v-avatar :image="item?.image" density="compact" class="d-none d-md-block d-lg-block" />
+            <template #prepend>
+              <InitialsAvatar
+                :image="item?.image"
+                :name="item?.name"
+                density="compact"
+                class="d-none d-md-block d-lg-block"
+              />
             </template>
             <span class="d-inline-block text-truncate mx-4" style="max-width: 120px">{{ item?.name }}</span>
           </v-btn>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type {Match, RoundStatus} from '~/models/Schedule'
+import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 import Score from './score.vue'
 
 const props = defineProps<{
@@ -58,7 +59,7 @@ const props = defineProps<{
     <div class="schedule-match-card__teams">
       <div class="schedule-match-card__team">
         <div class="schedule-match-card__team-main">
-          <v-avatar :image="game.home.image" size="30" class="schedule-match-card__avatar" />
+          <InitialsAvatar :image="game.home.image" :name="game.home.name" size="30" class="schedule-match-card__avatar" />
           <span class="schedule-match-card__team-name">{{ game.home.name }}</span>
           <Icon v-if="winnerSide === 'home'" class="schedule-match-card__winner" name="lucide:flag" size="12" />
         </div>
@@ -74,7 +75,7 @@ const props = defineProps<{
 
       <div class="schedule-match-card__team">
         <div class="schedule-match-card__team-main">
-          <v-avatar class="schedule-match-card__avatar" size="30" :image="game.away.image" />
+          <InitialsAvatar class="schedule-match-card__avatar" size="30" :image="game.away.image" :name="game.away.name" />
           <span class="schedule-match-card__team-name">{{ game.away.name }}</span>
           <Icon v-if="winnerSide === 'away'" class="schedule-match-card__winner" name="lucide:flag" size="12" />
         </div>

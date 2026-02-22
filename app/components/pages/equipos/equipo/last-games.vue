@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import type { LastGames } from '~/models/Game'
+  import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 
   const props = defineProps({
     lastGames: {
@@ -23,7 +24,12 @@
         :class="{ 'next-games-today-table__cell--highlight': isHighlighted(game?.id ?? 0) }"
       >
         <td class="team">
-          <img :src="game?.homeTeam?.image" alt="team logo" class="logo" />
+          <InitialsAvatar
+            :image="game?.homeTeam?.image"
+            :name="game?.homeTeam?.name"
+            :fallback-color="game?.homeTeam?.colors?.home?.primary"
+            class="logo"
+          />
           <span class="team_name d-inline-block text-truncate" style="max-width: 100px">
             {{ game?.homeTeam?.name }}</span
           >
@@ -47,7 +53,12 @@
           <small>Jornada: {{ game?.round }}</small>
         </td>
         <td class="team">
-          <img :src="game.awayTeam.image" alt="team logo" class="logo" />
+          <InitialsAvatar
+            :image="game.awayTeam.image"
+            :name="game?.awayTeam?.name"
+            :fallback-color="game?.awayTeam?.colors?.home?.primary"
+            class="logo"
+          />
           <span class="team_name d-inline-block text-truncate" style="max-width: 100px">{{ game?.awayTeam.name }}</span>
         </td>
       </tr>

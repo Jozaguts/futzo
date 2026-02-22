@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import type { GameEvents } from '~/models/Game'
+  import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 
   const { event } = defineProps<{ event: GameEvents }>()
   const eventType = computed(() => {
@@ -33,7 +34,13 @@
             </div>
           </div>
           <div class="event-details-container__details__team-image">
-            <v-img :src="event?.team?.image" width="48" height="47" contain rounded="lg" border="sm"> </v-img>
+            <InitialsAvatar
+              :image="event?.team?.image"
+              :name="event?.team?.name"
+              :fallback-color="event?.team?.colors?.home?.primary"
+              size="48"
+              rounded="lg"
+            />
           </div>
         </div>
       </div>

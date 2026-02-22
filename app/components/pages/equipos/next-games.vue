@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type {NextGames} from '~/models/Game'
 import NoGames from '~/components/shared/empty-states/NoGames.vue'
+import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 
 const { nextGames, title } = defineProps({
     nextGames: Object as PropType<NextGames>,
@@ -30,14 +31,24 @@ const { nextGames, title } = defineProps({
                 <div class="game-container">
                   <div class="teams">
                     <div class="team-local">
-                      <img :src="game.home_team.image" alt="team logo" class="logo" />
+                      <InitialsAvatar
+                        :image="game.home_team.image"
+                        :name="game.home_team.name"
+                        :fallback-color="game.home_team?.colors?.home?.primary"
+                        class="logo"
+                      />
                       <span class="team_name text-truncate" style="max-width: 130px">{{ game.home_team.name }}</span>
                     </div>
                     <div class="vs-container">
                       <div class="vs">vs</div>
                     </div>
                     <div class="team-away">
-                      <img :src="game.away_team.image" alt="team logo" class="logo" />
+                      <InitialsAvatar
+                        :image="game.away_team.image"
+                        :name="game.away_team.name"
+                        :fallback-color="game.away_team?.colors?.home?.primary"
+                        class="logo"
+                      />
                       <span class="team_name text-truncate" style="max-width: 130px">{{ game.away_team.name }}</span>
                     </div>
                   </div>

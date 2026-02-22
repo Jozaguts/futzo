@@ -5,6 +5,7 @@ import type {Player, PlayerVerificationStatus} from '~/models/Player'
 import type {Position} from '~/models/Position'
 import type {Team} from '~/models/Team'
 import type {Tournament} from '~/models/tournament'
+import {sanitizeAvatarImage} from '~/utils/avatar'
 
 dayjs.extend(customParseFormat)
 dayjs.locale('es')
@@ -223,8 +224,8 @@ export const usePlayerDetailPage = () => {
       .toUpperCase()
   })
 
-  const avatar = computed(
-    () => currentPlayer.value?.image ?? currentPlayer.value?.user?.image ?? currentPlayer.value?.team?.image ?? ''
+  const avatar = computed(() =>
+    sanitizeAvatarImage(currentPlayer.value?.image ?? currentPlayer.value?.user?.image ?? currentPlayer.value?.team?.image)
   )
 
   const playerAge = computed(() => {

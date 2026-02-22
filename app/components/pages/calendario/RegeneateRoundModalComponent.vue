@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import type { Match, MatchAway, ScheduleRoundDetails } from '~/models/Schedule'
+  import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 
   type MatchEdit = {
     matchId: number
@@ -282,9 +283,7 @@
                   </div>
                   <div class="d-flex flex-wrap align-center gap-4">
                     <div v-if="restingTeam" class="d-flex align-center">
-                      <v-avatar size="40" class="mr-3" v-if="restingTeam?.image">
-                        <v-img :src="restingTeam.image" :alt="restingTeam.name" />
-                      </v-avatar>
+                      <InitialsAvatar size="40" class="mr-3" :image="restingTeam?.image" :name="restingTeam?.name" />
                       <div class="text-body-1 d-inline-block text-truncate" style="max-width: 100px">
                         {{ restingTeam.name }}
                       </div>
@@ -306,9 +305,7 @@
                       <template #item="{ props, item }">
                         <v-list-item v-bind="props">
                           <template #prepend>
-                            <v-avatar size="24">
-                              <v-img :src="item.raw.image || '/placeholder.svg'" :alt="item.raw.name" />
-                            </v-avatar>
+                            <InitialsAvatar size="24" :image="item.raw.image" :name="item.raw.name" />
                           </template>
                           <v-list-item-title>{{ item.raw.name }}</v-list-item-title>
                         </v-list-item>
@@ -360,12 +357,12 @@
                           tabindex="0"
                           @click="handleSelectForSwap(match.id, 'home', getCurrentMatch(match.id).home)"
                         >
-                          <v-avatar size="40" class="mr-3">
-                            <v-img
-                              :src="getCurrentMatch(match.id).home.image || '/placeholder.svg'"
-                              :alt="getCurrentMatch(match.id).home.name"
-                            />
-                          </v-avatar>
+                          <InitialsAvatar
+                            size="40"
+                            class="mr-3"
+                            :image="getCurrentMatch(match.id).home.image"
+                            :name="getCurrentMatch(match.id).home.name"
+                          />
                           <div class="flex-grow-1 text-left">
                             <div class="text-body-1 font-weight-medium">{{ getCurrentMatch(match.id).home.name }}</div>
                             <v-chip size="x-small" variant="outlined">Local</v-chip>
@@ -397,12 +394,12 @@
                           tabindex="0"
                           @click="handleSelectForSwap(match.id, 'away', getCurrentMatch(match.id).away)"
                         >
-                          <v-avatar size="40" class="mr-3">
-                            <v-img
-                              :src="getCurrentMatch(match.id).away.image || '/placeholder.svg'"
-                              :alt="getCurrentMatch(match.id).away.name"
-                            />
-                          </v-avatar>
+                          <InitialsAvatar
+                            size="40"
+                            class="mr-3"
+                            :image="getCurrentMatch(match.id).away.image"
+                            :name="getCurrentMatch(match.id).away.name"
+                          />
                           <div class="flex-grow-1 text-left">
                             <div class="text-body-1 font-weight-medium">{{ getCurrentMatch(match.id).away.name }}</div>
                             <v-chip size="x-small" variant="outlined">Visitante</v-chip>

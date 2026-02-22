@@ -11,6 +11,7 @@ import type {Team} from '~/models/Team'
 import type {TeamLineupAvailablePlayers} from '~/models/Player'
 import type {TournamentShareAction} from '~/models/tournament'
 import {sortFormation} from '~/utils/sort-formation'
+import {resolveAvatarFallbackColor, sanitizeAvatarImage} from '~/utils/avatar'
 import {Icon} from '#components'
 import {useDisplay} from 'vuetify'
 
@@ -49,7 +50,8 @@ const teamPlayers = computed<TeamLineupAvailablePlayers[]>(() => {
 })
 
 const teamName = computed(() => homeTeam.value?.name || 'Equipo')
-const teamAvatarImage = computed(() => homeTeam.value?.image || '')
+const teamAvatarImage = computed(() => sanitizeAvatarImage(homeTeam.value?.image))
+const teamAvatarColor = computed(() => resolveAvatarFallbackColor(homeTeam.value?.colors?.home?.primary))
 const teamShortName = computed(() => {
   const fallback = teamName.value
   const shortName = homeTeam.value?.short_name?.trim()
@@ -363,7 +365,7 @@ const downloadQR = () => {
             <Icon name="lucide:arrow-left" size="18" />
           </button>
 
-          <div class="team-detail-header__avatar">
+          <div class="team-detail-header__avatar" :style="{ backgroundColor: teamAvatarColor }">
             <img v-if="teamAvatarImage" :src="teamAvatarImage" :alt="teamName" />
             <span v-else>{{ teamShortName }}</span>
           </div>
@@ -555,7 +557,7 @@ const downloadQR = () => {
     width: 42px
     height: 42px
     border-radius: 12px
-    background: linear-gradient(135deg, #ef4444, #dc2626)
+    background: rgb(var(--v-theme-primary))
     color: var(--futzo-on-surface)
     font-size: 13px
     font-weight: 700

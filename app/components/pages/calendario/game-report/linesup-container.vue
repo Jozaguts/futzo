@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import PlayerDot from '~/components/pages/calendario/game-report/player-dot.vue'
+import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 import type {TeamFormation} from '~/models/Game'
 import type {Formation, Team} from '~/models/Team'
 import type {TeamLineupAvailablePlayers} from '~/models/Player'
@@ -70,7 +71,13 @@ const {
   <v-sheet class="linesup-container">
     <div class="linesup-team-container">
       <div class="heading">
-        <v-avatar :image="homeTeam?.image" class="mx-4" size="32"></v-avatar>
+        <InitialsAvatar
+          :image="homeTeam?.image"
+          :name="homeTeam?.name"
+          :fallback-color="homeTeam?.colors?.home?.primary"
+          class="mx-4"
+          size="32"
+        />
         <span class="d-inline-block d-md-block d-lg-block text-truncate"> {{ homeTeam?.name }}</span>
         <span v-if="!!homeFormation" class="formation">
           <v-select
@@ -233,7 +240,13 @@ const {
         </div>
       </div>
       <div class="heading">
-        <v-avatar :image="awayTeam?.image" class="mx-4" size="32"></v-avatar>
+        <InitialsAvatar
+          :image="awayTeam?.image"
+          :name="awayTeam?.name"
+          :fallback-color="awayTeam?.colors?.home?.primary"
+          class="mx-4"
+          size="32"
+        />
         <span class="mx-2"> {{ awayTeam?.name }}</span>
         <span class="formation">
           <v-select

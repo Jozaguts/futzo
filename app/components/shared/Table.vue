@@ -3,6 +3,7 @@ import type {Header, IPagination} from '~/interfaces'
 import {useDisplay} from 'vuetify'
 import type {Team} from '~/models/Team'
 import {Icon} from '#components'
+import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 
 const props = defineProps({
     headers: {
@@ -153,7 +154,7 @@ const props = defineProps({
     <template #[`item.name`]="{ item }">
       <slot name="name" v-bind="item">
         <div class="d-flex align-center">
-          <v-avatar :image="item?.image" density="compact"> </v-avatar>
+          <InitialsAvatar :image="item?.image" :name="item?.name" :fallback-color="item?.colors?.home?.primary" density="compact" />
           <span class="d-inline-block text-truncate mx-4" style="max-width: 100px"> {{ item?.name }}</span>
         </div>
       </slot>
@@ -168,7 +169,7 @@ const props = defineProps({
       <span class="d-inline-block text-truncate" style="max-width: 100px"> {{ item?.president?.phone }}</span>
     </template>
     <template #[`item.image`]="{ item }">
-      <v-avatar size="50" :image="item.image"></v-avatar>
+      <InitialsAvatar size="50" :image="item?.image" :name="item?.name" :fallback-color="item?.colors?.home?.primary" />
     </template>
     <template #item.home_preferences="{ item }">
       <div class="d-flex align-center gap-2">

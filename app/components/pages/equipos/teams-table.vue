@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {Icon} from '#components'
 import type {Team} from '~/models/Team'
+import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 import {getTeamRegistrationQRCode, updateHomePreferences} from '~/http/api/team'
 import {useLeaguesStore} from '~/stores/useLeaguesStore'
 import {ga4Event} from '~/utils/ga4'
@@ -128,7 +129,7 @@ const resolveTeamShortName = (team: Team) => {
 }
 
 const resolveTeamBadgeColor = (team: Team) => {
-  return team.colors?.home?.primary || '#9155fd'
+  return team.colors?.home?.primary || ''
 }
 
 const resolvePlayersCount = (team: Team) => {
@@ -356,8 +357,17 @@ const handlePageChange = async (page: number) => {
         @click="clickHandler(team)"
       >
         <div class="team-card__main">
-          <div class="team-card__badge" :style="{ backgroundColor: resolveTeamBadgeColor(team) }">
-            {{ resolveTeamShortName(team) }}
+
+          <div class="team-card__badge">
+            <InitialsAvatar
+              rounded
+              size="42"
+              :image="team.image"
+              :name="team.name"
+              :initials="resolveTeamShortName(team)"
+              :max-initials="3"
+              :fallback-color="resolveTeamBadgeColor(team)"
+            />
           </div>
 
           <div class="team-card__content">

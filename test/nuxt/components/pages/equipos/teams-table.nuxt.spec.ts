@@ -122,6 +122,7 @@ describe('TeamsTable', () => {
         stubs: {
           ...vuetifyStubs,
           Icon: { template: '<i></i>' },
+          InitialsAvatar: { template: '<div data-testid="initials-avatar"></div>' },
           'v-tooltip': TooltipStub,
           'v-divider': { template: '<div></div>' },
           'v-pagination': PaginationStub,
@@ -151,6 +152,7 @@ describe('TeamsTable', () => {
         stubs: {
           ...vuetifyStubs,
           Icon: { template: '<i></i>' },
+          InitialsAvatar: { template: '<div data-testid="initials-avatar"></div>' },
           'v-tooltip': TooltipStub,
           'v-divider': { template: '<div></div>' },
           'v-pagination': PaginationStub,

@@ -47,6 +47,7 @@ describe('Shared Table progress display', () => {
       global: {
         stubs: {
           ...vuetifyStubs,
+          InitialsAvatar: { template: '<div></div>' },
           'v-data-table': DataTableStub,
           'v-progress-linear': { template: '<div class="progress"></div>' },
           'v-divider': { template: '<div></div>' },
@@ -75,6 +76,7 @@ describe('Shared Table progress display', () => {
       global: {
         stubs: {
           ...vuetifyStubs,
+          InitialsAvatar: { template: '<div></div>' },
           'v-data-table': DataTableStub,
           'v-progress-linear': { template: '<div class="progress"></div>' },
           'v-divider': { template: '<div></div>' },

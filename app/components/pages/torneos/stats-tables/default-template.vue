@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import type { PlayerStats } from '~/models/tournament'
+  import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
   const { type, data, content } = defineProps<{
     type: String
     data: PlayerStats[]
@@ -21,11 +22,11 @@
           <v-col>
             <div class="d-flex align-center mx-6">
               <span class="mr-4 text-subtitle-2">{{ index + 1 }}</span>
-              <v-avatar :image="stats.user_image" density="compact" size="50" class="mr-2" />
+              <InitialsAvatar :image="stats.user_image" :name="stats.player_name" density="compact" size="50" class="mr-2" />
               <div class="d-flex flex-column ml-2">
                 <p class="text-subtitle-2">{{ stats.player_name }}</p>
                 <div class="d-flex">
-                  <v-avatar :image="stats.team_image" density="compact" size="20" class="mr-2" />
+                  <InitialsAvatar :image="stats.team_image" :name="stats.team_name" density="compact" size="20" class="mr-2" />
                   <span class="text-caption text-medium-emphasis">{{ stats.team_name }}</span>
                 </div>
               </div>

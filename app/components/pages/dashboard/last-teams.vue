@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import getHeaders from '~/utils/headers-table'
+  import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
   const headers = getHeaders('teams')
   await useTeamStore().getTeams()
   const { teams, search, pagination } = storeToRefs(useTeamStore())
@@ -21,7 +22,7 @@
       <div class="d-flex align-center">
         <v-btn variant="text" :to="`equipos/${item.slug}`">
           <template #prepend>
-            <v-avatar :image="item?.image" density="compact" />
+            <InitialsAvatar :image="item?.image" :name="item?.name" density="compact" />
           </template>
           <span class="d-inline-block text-truncate mx-4" style="max-width: 100px"> {{ item?.name }}</span>
         </v-btn>

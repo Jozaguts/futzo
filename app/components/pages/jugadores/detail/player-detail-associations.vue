@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type {Team} from '~/models/Team'
 import type {Tournament} from '~/models/tournament'
+import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 
 defineProps<{
   playerTeams: Team[]
@@ -26,10 +27,7 @@ defineProps<{
             <span v-if="team.tournament?.name"> · {{ team.tournament?.name }}</span>
           </p>
         </div>
-        <v-avatar v-if="team.image" size="36" :image="team.image" />
-        <v-avatar v-else size="36" color="primary" variant="tonal">
-          {{ team.name?.charAt(0) }}
-        </v-avatar>
+        <InitialsAvatar size="36" :name="team.name" :image="team.image" :fallback-color="team?.colors?.home?.primary" />
       </div>
     </div>
     <div v-else class="player-empty">Este jugador aún no tiene equipos registrados.</div>

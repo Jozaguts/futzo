@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-  const { image } = storeToRefs(useAuthStore())
+  import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
+
+  const { image, user } = storeToRefs(useAuthStore())
   const imageRef = ref(null)
   const loading = ref(false)
   const eventHandler = (event: Event) => {
@@ -23,9 +25,7 @@
     <v-progress-circular color="grey-lighten-2" indeterminate></v-progress-circular>
   </div>
   <div v-else class="position-relative">
-    <v-avatar size="64">
-      <v-img :src="image" />
-    </v-avatar>
+    <InitialsAvatar size="64" :image="image" :name="user?.name" />
     <v-btn
       class="image-plus-avatar__btn"
       icon="true"

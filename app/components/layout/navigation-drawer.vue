@@ -2,6 +2,7 @@
 import {useResizeObserver} from '@vueuse/core'
 import {Icon} from '#components'
 import ContactForm from '~/components/shared/ContactForm.vue'
+import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 import TicketList from '~/components/shared/TicketList.vue'
 
 const globalStore =  useGlobalStore()
@@ -216,9 +217,7 @@ const globalStore =  useGlobalStore()
         <v-card :loading="!user?.name">
           <v-card-item class="logout-card-item">
             <template v-if="!rail" #prepend>
-              <v-avatar>
-                <v-img :src="user?.image"></v-img>
-              </v-avatar>
+              <InitialsAvatar :name="user?.name" :image="user?.image" />
             </template>
             <template v-if="!rail" #title>
               <small> {{ user?.name }}</small>

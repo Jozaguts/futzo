@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import {Icon} from '#components'
+import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 
 defineProps({
     game: {
@@ -16,12 +17,22 @@ defineProps({
     </div>
     <div class="next-game-card__teams">
       <div class="next-game-card__team">
-        <img :src="game.home_team.image" alt="team logo" class="next-game-card__logo" />
+        <InitialsAvatar
+          :image="game.home_team.image"
+          :name="game.home_team.name"
+          :fallback-color="game.home_team?.colors?.home?.primary"
+          class="next-game-card__logo"
+        />
         <span class="next-game-card__team-name">{{ game.home_team.name }}</span>
       </div>
       <span class="next-game-card__vs">vs</span>
       <div class="next-game-card__team">
-        <img :src="game.away_team.image" alt="team logo" class="next-game-card__logo" />
+        <InitialsAvatar
+          :image="game.away_team.image"
+          :name="game.away_team.name"
+          :fallback-color="game.away_team?.colors?.home?.primary"
+          class="next-game-card__logo"
+        />
         <span class="next-game-card__team-name">{{ game.away_team.name }}</span>
       </div>
     </div>

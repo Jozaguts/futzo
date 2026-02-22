@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type {Team} from '~/models/Team'
+import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 
 type HeroMetaItem = {
   label: string
@@ -26,9 +27,7 @@ const goBack = () => emit('back')
 <template>
   <v-card class="player-hero futzo-rounded" variant="flat" data-testid="jugador-detail-hero">
     <div class="player-hero__info">
-      <v-avatar size="84" rounded="lg" :image="avatar" color="primary" variant="tonal">
-        <span class="text-h5">{{ initials }}</span>
-      </v-avatar>
+      <InitialsAvatar size="84" rounded="lg" :image="avatar" :name="playerFullName" :initials="initials" />
       <div>
         <p class="text-overline text-medium-emphasis mb-1">Ficha del jugador</p>
         <h2 class="text-h5 mb-1 text-truncate d-inline-block w-lg-100 w-md-100 w-75">

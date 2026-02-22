@@ -11,6 +11,7 @@ import type {TourStep} from '#nuxt-tour/props';
 import {useTourController} from '~/composables/useTourController';
 import {useCategoryStore, useSanctumClient, useTeamStore, useTournamentStore} from '#imports';
 import {ga4Event} from '~/utils/ga4';
+import {sanitizeAvatarImage} from '~/utils/avatar';
 
 export const usePlayerStore = defineStore('playerStore', () => {
   const { toast } = useToast();
@@ -439,7 +440,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
         last_name: playerData.last_name ?? null,
         birthdate: playerData.birthdate ?? null,
         nationality: playerData.nationality ?? null,
-        image: playerData.image ?? playerData.user?.image ?? '',
+        image: sanitizeAvatarImage(playerData.image ?? playerData.user?.image ?? ''),
         team_id: playerData.team?.id ?? null,
         category_id: playerData.category?.id ?? playerData.team?.category?.id ?? null,
         curp: playerData.curp ?? null,

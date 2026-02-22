@@ -34,7 +34,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Cruz Azul"
+                          src="/placeholder.svg"
                           class="order-2"
                         ></v-img>
                       </div>
@@ -49,7 +49,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Pachuca"
+                          src="/placeholder.svg"
                           class="order-1"
                         ></v-img>
                       </div>
@@ -68,7 +68,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Cruz Azul"
+                          src="/placeholder.svg"
                           class="order-2"
                         ></v-img>
                       </div>
@@ -83,7 +83,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Pachuca"
+                          src="/placeholder.svg"
                           class="order-1"
                         ></v-img>
                       </div>
@@ -102,7 +102,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Cruz Azul"
+                          src="/placeholder.svg"
                           class="order-2"
                         ></v-img>
                       </div>
@@ -117,7 +117,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Pachuca"
+                          src="/placeholder.svg"
                           class="order-1"
                         ></v-img>
                       </div>
@@ -136,7 +136,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Cruz Azul"
+                          src="/placeholder.svg"
                           class="order-2"
                         ></v-img>
                       </div>
@@ -151,7 +151,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Pachuca"
+                          src="/placeholder.svg"
                           class="order-1"
                         ></v-img>
                       </div>
@@ -170,7 +170,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Cruz Azul"
+                          src="/placeholder.svg"
                           class="order-2"
                         ></v-img>
                       </div>
@@ -185,7 +185,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Pachuca"
+                          src="/placeholder.svg"
                           class="order-1"
                         ></v-img>
                       </div>
@@ -209,7 +209,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Cruz Azul"
+                          src="/placeholder.svg"
                           class="order-2"
                         ></v-img>
                       </div>
@@ -224,7 +224,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Pachuca"
+                          src="/placeholder.svg"
                           class="order-1"
                         ></v-img>
                       </div>
@@ -243,7 +243,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Cruz Azul"
+                          src="/placeholder.svg"
                           class="order-2"
                         ></v-img>
                       </div>
@@ -258,7 +258,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Pachuca"
+                          src="/placeholder.svg"
                           class="order-1"
                         ></v-img>
                       </div>
@@ -277,7 +277,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Cruz Azul"
+                          src="/placeholder.svg"
                           class="order-2"
                         ></v-img>
                       </div>
@@ -292,7 +292,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Pachuca"
+                          src="/placeholder.svg"
                           class="order-1"
                         ></v-img>
                       </div>
@@ -311,7 +311,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Cruz Azul"
+                          src="/placeholder.svg"
                           class="order-2"
                         ></v-img>
                       </div>
@@ -326,144 +326,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Pachuca"
-                          class="order-1"
-                        ></v-img>
-                      </div>
-                    </div>
-                    <small class="text-caption text-truncate d">Campo hermanos suarez</small>
-                  </div>
-                </v-card-text>
-              </v-card>
-
-              <v-card class="mb-2 border" width="fit-content" max-width="400" border variant="text" elevation="20">
-                <v-card-text>
-                  <div class="schedule-container">
-                    <div class="d-flex">
-                      <div class="d-flex justify-center align-center order-1">
-                        <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="https://ui-avatars.com/api/?name=Cruz Azul"
-                          class="order-2"
-                        ></v-img>
-                      </div>
-                      <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
-                        <v-icon>mdi-soccer</v-icon>
-                        <span class="text-caption order-2">VS</span>
-                        <span class="text-caption order-3">19:00</span>
-                      </p>
-                      <div class="d-flex justify-center align-center order-3">
-                        <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="https://ui-avatars.com/api/?name=Pachuca"
-                          class="order-1"
-                        ></v-img>
-                      </div>
-                    </div>
-                    <small class="text-caption text-truncate d">Campo hermanos suarez</small>
-                  </div>
-                </v-card-text>
-              </v-card>
-              <v-card class="mb-2 border" width="fit-content" max-width="400" border variant="text" elevation="20">
-                <v-card-text>
-                  <div class="schedule-container">
-                    <div class="d-flex">
-                      <div class="d-flex justify-center align-center order-1">
-                        <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="https://ui-avatars.com/api/?name=Cruz Azul"
-                          class="order-2"
-                        ></v-img>
-                      </div>
-                      <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
-                        <v-icon>mdi-soccer</v-icon>
-                        <span class="text-caption order-2">VS</span>
-                        <span class="text-caption order-3">19:00</span>
-                      </p>
-                      <div class="d-flex justify-center align-center order-3">
-                        <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="https://ui-avatars.com/api/?name=Pachuca"
-                          class="order-1"
-                        ></v-img>
-                      </div>
-                    </div>
-                    <small class="text-caption text-truncate d">Campo hermanos suarez</small>
-                  </div>
-                </v-card-text>
-              </v-card>
-              <v-card class="mb-2 border" width="fit-content" max-width="400" border variant="text" elevation="20">
-                <v-card-text>
-                  <div class="schedule-container">
-                    <div class="d-flex">
-                      <div class="d-flex justify-center align-center order-1">
-                        <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="https://ui-avatars.com/api/?name=Cruz Azul"
-                          class="order-2"
-                        ></v-img>
-                      </div>
-                      <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
-                        <v-icon>mdi-soccer</v-icon>
-                        <span class="text-caption order-2">VS</span>
-                        <span class="text-caption order-3">19:00</span>
-                      </p>
-                      <div class="d-flex justify-center align-center order-3">
-                        <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="https://ui-avatars.com/api/?name=Pachuca"
-                          class="order-1"
-                        ></v-img>
-                      </div>
-                    </div>
-                    <small class="text-caption text-truncate d">Campo hermanos suarez</small>
-                  </div>
-                </v-card-text>
-              </v-card>
-              <v-card class="mb-2 border" width="fit-content" max-width="400" border variant="text" elevation="20">
-                <v-card-text>
-                  <div class="schedule-container">
-                    <div class="d-flex">
-                      <div class="d-flex justify-center align-center order-1">
-                        <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="https://ui-avatars.com/api/?name=Cruz Azul"
-                          class="order-2"
-                        ></v-img>
-                      </div>
-                      <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
-                        <v-icon>mdi-soccer</v-icon>
-                        <span class="text-caption order-2">VS</span>
-                        <span class="text-caption order-3">19:00</span>
-                      </p>
-                      <div class="d-flex justify-center align-center order-3">
-                        <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="https://ui-avatars.com/api/?name=Pachuca"
+                          src="/placeholder.svg"
                           class="order-1"
                         ></v-img>
                       </div>
@@ -483,7 +346,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Cruz Azul"
+                          src="/placeholder.svg"
                           class="order-2"
                         ></v-img>
                       </div>
@@ -498,7 +361,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Pachuca"
+                          src="/placeholder.svg"
                           class="order-1"
                         ></v-img>
                       </div>
@@ -517,7 +380,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Cruz Azul"
+                          src="/placeholder.svg"
                           class="order-2"
                         ></v-img>
                       </div>
@@ -532,7 +395,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Pachuca"
+                          src="/placeholder.svg"
                           class="order-1"
                         ></v-img>
                       </div>
@@ -551,7 +414,7 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Cruz Azul"
+                          src="/placeholder.svg"
                           class="order-2"
                         ></v-img>
                       </div>
@@ -566,7 +429,144 @@
                           width="30"
                           height="30"
                           rounded
-                          src="https://ui-avatars.com/api/?name=Pachuca"
+                          src="/placeholder.svg"
+                          class="order-1"
+                        ></v-img>
+                      </div>
+                    </div>
+                    <small class="text-caption text-truncate d">Campo hermanos suarez</small>
+                  </div>
+                </v-card-text>
+              </v-card>
+              <v-card class="mb-2 border" width="fit-content" max-width="400" border variant="text" elevation="20">
+                <v-card-text>
+                  <div class="schedule-container">
+                    <div class="d-flex">
+                      <div class="d-flex justify-center align-center order-1">
+                        <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
+                        <v-img
+                          width="30"
+                          height="30"
+                          rounded
+                          src="/placeholder.svg"
+                          class="order-2"
+                        ></v-img>
+                      </div>
+                      <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
+                        <v-icon>mdi-soccer</v-icon>
+                        <span class="text-caption order-2">VS</span>
+                        <span class="text-caption order-3">19:00</span>
+                      </p>
+                      <div class="d-flex justify-center align-center order-3">
+                        <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
+                        <v-img
+                          width="30"
+                          height="30"
+                          rounded
+                          src="/placeholder.svg"
+                          class="order-1"
+                        ></v-img>
+                      </div>
+                    </div>
+                    <small class="text-caption text-truncate d">Campo hermanos suarez</small>
+                  </div>
+                </v-card-text>
+              </v-card>
+
+              <v-card class="mb-2 border" width="fit-content" max-width="400" border variant="text" elevation="20">
+                <v-card-text>
+                  <div class="schedule-container">
+                    <div class="d-flex">
+                      <div class="d-flex justify-center align-center order-1">
+                        <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
+                        <v-img
+                          width="30"
+                          height="30"
+                          rounded
+                          src="/placeholder.svg"
+                          class="order-2"
+                        ></v-img>
+                      </div>
+                      <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
+                        <v-icon>mdi-soccer</v-icon>
+                        <span class="text-caption order-2">VS</span>
+                        <span class="text-caption order-3">19:00</span>
+                      </p>
+                      <div class="d-flex justify-center align-center order-3">
+                        <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
+                        <v-img
+                          width="30"
+                          height="30"
+                          rounded
+                          src="/placeholder.svg"
+                          class="order-1"
+                        ></v-img>
+                      </div>
+                    </div>
+                    <small class="text-caption text-truncate d">Campo hermanos suarez</small>
+                  </div>
+                </v-card-text>
+              </v-card>
+              <v-card class="mb-2 border" width="fit-content" max-width="400" border variant="text" elevation="20">
+                <v-card-text>
+                  <div class="schedule-container">
+                    <div class="d-flex">
+                      <div class="d-flex justify-center align-center order-1">
+                        <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
+                        <v-img
+                          width="30"
+                          height="30"
+                          rounded
+                          src="/placeholder.svg"
+                          class="order-2"
+                        ></v-img>
+                      </div>
+                      <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
+                        <v-icon>mdi-soccer</v-icon>
+                        <span class="text-caption order-2">VS</span>
+                        <span class="text-caption order-3">19:00</span>
+                      </p>
+                      <div class="d-flex justify-center align-center order-3">
+                        <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
+                        <v-img
+                          width="30"
+                          height="30"
+                          rounded
+                          src="/placeholder.svg"
+                          class="order-1"
+                        ></v-img>
+                      </div>
+                    </div>
+                    <small class="text-caption text-truncate d">Campo hermanos suarez</small>
+                  </div>
+                </v-card-text>
+              </v-card>
+              <v-card class="mb-2 border" width="fit-content" max-width="400" border variant="text" elevation="20">
+                <v-card-text>
+                  <div class="schedule-container">
+                    <div class="d-flex">
+                      <div class="d-flex justify-center align-center order-1">
+                        <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
+                        <v-img
+                          width="30"
+                          height="30"
+                          rounded
+                          src="/placeholder.svg"
+                          class="order-2"
+                        ></v-img>
+                      </div>
+                      <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
+                        <v-icon>mdi-soccer</v-icon>
+                        <span class="text-caption order-2">VS</span>
+                        <span class="text-caption order-3">19:00</span>
+                      </p>
+                      <div class="d-flex justify-center align-center order-3">
+                        <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
+                        <v-img
+                          width="30"
+                          height="30"
+                          rounded
+                          src="/placeholder.svg"
                           class="order-1"
                         ></v-img>
                       </div>
