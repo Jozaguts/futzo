@@ -1,4 +1,7 @@
 
+@use './pages/module-top-shell.scss';
+@use './pages/module-overview.scss';
+
 @layer base, vuetify, overrides;
 
 @layer overrides {

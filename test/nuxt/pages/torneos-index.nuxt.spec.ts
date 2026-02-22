@@ -53,6 +53,7 @@ describe('Torneos index page', () => {
       },
     })
 
+    expect(wrapper.find('[data-testid="torneos-page-top-shell"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="torneos-page-intro"]').exists()).toBe(true)
     expect(wrapper.text()).toContain('Torneos')
     expect(wrapper.find('[data-testid="torneos-filters-panel"]').exists()).toBe(true)

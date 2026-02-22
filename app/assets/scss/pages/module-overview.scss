@@ -1,0 +1,24 @@
+.module-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.module-overview__kpis {
+  min-width: 0;
+  height: 100%;
+}
+
+.module-overview__actions {
+  height: 100%;
+}
+
+@media (min-width: 960px) {
+  .module-overview {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 440px);
+    gap: 16px;
+    align-items: stretch;
+  }
+}

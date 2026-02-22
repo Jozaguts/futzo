@@ -1,0 +1,81 @@
+.module-top-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+}
+
+.module-top-shell__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.module-top-shell__header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.module-top-shell__title-wrapper {
+  min-width: 0;
+}
+
+.module-top-shell__eyebrow {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--futzo-on-surface-muted);
+  text-transform: uppercase;
+}
+
+.module-top-shell__title {
+  margin: 2px 0 0;
+  color: var(--futzo-on-surface);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.module-top-shell__subtitle {
+  margin: 4px 0 0;
+  color: var(--futzo-on-surface-muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.module-top-shell__divider {
+  width: 100%;
+  height: 1px;
+  background: var(--futzo-border-strong);
+}
+
+.module-top-shell__controls {
+  width: 100%;
+}
+
+@media (min-width: 960px) {
+  .module-top-shell__intro {
+    gap: 4px;
+  }
+
+  .module-top-shell__header {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .module-top-shell__title-wrapper {
+    max-width: 680px;
+  }
+
+  .module-top-shell__title {
+    font-size: 28px;
+  }
+
+  .module-top-shell__subtitle {
+    font-size: 14px;
+  }
+}

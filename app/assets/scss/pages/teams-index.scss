@@ -1,0 +1,35 @@
+.equipos-page__search {
+  width: 100%;
+}
+
+.equipos-page__table-wrapper {
+  height: auto;
+  min-height: 260px;
+  display: flex;
+  flex: 1 1 auto;
+  padding: 12px;
+  max-height: 100%;
+}
+
+.equipos-page__table {
+  flex: 0 0 auto;
+  min-height: 292px;
+  display: flex;
+  border: 1px solid var(--futzo-border);
+  border-radius: 16px;
+  background: var(--futzo-surface);
+  padding: 0;
+  overflow: hidden;
+}
+
+@media (min-width: 960px) {
+  .equipos-page__table-wrapper {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .equipos-page__table {
+    flex: 1 1 0;
+    min-height: 0;
+  }
+}

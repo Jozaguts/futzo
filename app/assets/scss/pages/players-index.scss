@@ -1,0 +1,27 @@
+.jugadores-filters {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.jugadores-filters__search,
+.jugadores-filters__filter {
+  width: 100%;
+}
+
+.jugadores-page__table {
+  min-height: 320px;
+  display: flex;
+  flex: 1 1 auto;
+  border: 1px solid var(--futzo-border);
+  border-radius: 16px;
+  background: var(--futzo-surface);
+  overflow: hidden;
+}
+
+@media (min-width: 960px) {
+  .jugadores-filters {
+    grid-template-columns: minmax(240px, 1fr) 220px 220px;
+    align-items: center;
+  }
+}
