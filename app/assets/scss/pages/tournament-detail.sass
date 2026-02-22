@@ -1,0 +1,98 @@
+.tournament-page
+  display: flex
+  flex-direction: column
+  gap: 16px
+  padding-bottom: 20px
+
+.tournament-window
+  margin-top: 0
+  display: flex
+  flex-direction: column
+  gap: 16px
+
+.tournament-kpis
+  margin-bottom: 16px
+
+.tournament-resume-top
+  display: grid
+  grid-template-columns: minmax(0, 1fr)
+  gap: 16px
+  margin-bottom: 16px
+
+.tournament-progress-card
+  padding: 16px
+
+.progress-header
+  display: flex
+  justify-content: space-between
+  align-items: center
+  font-size: 13px
+  color: var(--futzo-text-muted)
+  margin-bottom: 8px
+
+.progress-footer
+  display: flex
+  justify-content: space-between
+  font-size: 12px
+  color: var(--futzo-on-surface-muted)
+  margin-top: 6px
+
+.competition-config__header
+  display: flex
+  flex-direction: column
+  gap: 4px
+
+.competition-config__title
+  margin: 0
+  font-size: 14px
+  font-weight: 700
+  color: var(--futzo-on-surface)
+
+.competition-config__subtitle
+  margin: 0
+  font-size: 12px
+  color: var(--futzo-on-surface-muted)
+
+.competition-config__status
+  margin: 0
+  font-size: 12px
+  color: var(--futzo-text-muted)
+
+.competition-config__context
+  border: 1px solid var(--futzo-border)
+  background: #f8fafc
+  border-radius: 10px
+  min-height: 36px
+  display: flex
+  align-items: center
+  gap: 8px
+  padding: 8px 12px
+  font-size: 12px
+  color: #344054
+
+.tournament-content
+  display: grid
+  grid-template-columns: minmax(0, 1fr)
+  gap: 16px
+
+.tournament-stats
+  min-height: 520px
+  min-width: 0
+
+.tournament-standings
+  min-height: 520px
+  min-width: 0
+
+.tournament-discipline-shell
+  display: flex
+  flex-direction: column
+  gap: 16px
+
+@media (min-width: 900px)
+  .tournament-resume-top--split
+    grid-template-columns: minmax(0, 7fr) minmax(0, 3fr)
+    align-items: stretch
+
+  .tournament-content
+    grid-template-columns: minmax(0, 7fr) minmax(0, 3fr)
+    align-items: stretch
