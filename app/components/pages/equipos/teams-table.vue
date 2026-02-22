@@ -542,6 +542,7 @@ const handlePageChange = async (page: number) => {
   flex-direction: column;
   min-height: 0;
   height: 100%;
+  width: 100%;
 }
 
 .teams-list__scroll {

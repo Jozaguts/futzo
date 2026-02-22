@@ -299,6 +299,7 @@ const downloadQR = () => {
   min-height: 0;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .tournament-table__grid {
