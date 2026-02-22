@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import { storeToRefs } from 'pinia'
+  import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
   const SELECT_LEAGUE_AND_TOURNAMENT = 'Seleccione una liga y un torneo'
   const NO_SCHEDULES = 'No se ha generado un calendario para este torneo'
   const { scheduleParams } = storeToRefs(useScheduleStore())
@@ -30,13 +31,7 @@
                     <div class="d-flex">
                       <div class="d-flex justify-center align-center order-1">
                         <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-2"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-2" />
                       </div>
                       <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
                         <v-icon>mdi-soccer</v-icon>
@@ -45,13 +40,7 @@
                       </p>
                       <div class="d-flex justify-center align-center order-3">
                         <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-1"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-1" />
                       </div>
                     </div>
                     <small class="text-caption text-truncate d">Campo hermanos suarez</small>
@@ -64,13 +53,7 @@
                     <div class="d-flex">
                       <div class="d-flex justify-center align-center order-1">
                         <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-2"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-2" />
                       </div>
                       <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
                         <v-icon>mdi-soccer</v-icon>
@@ -79,13 +62,7 @@
                       </p>
                       <div class="d-flex justify-center align-center order-3">
                         <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-1"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-1" />
                       </div>
                     </div>
                     <small class="text-caption text-truncate d">Campo hermanos suarez</small>
@@ -98,13 +75,7 @@
                     <div class="d-flex">
                       <div class="d-flex justify-center align-center order-1">
                         <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-2"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-2" />
                       </div>
                       <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
                         <v-icon>mdi-soccer</v-icon>
@@ -113,13 +84,7 @@
                       </p>
                       <div class="d-flex justify-center align-center order-3">
                         <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-1"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-1" />
                       </div>
                     </div>
                     <small class="text-caption text-truncate d">Campo hermanos suarez</small>
@@ -132,13 +97,7 @@
                     <div class="d-flex">
                       <div class="d-flex justify-center align-center order-1">
                         <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-2"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-2" />
                       </div>
                       <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
                         <v-icon>mdi-soccer</v-icon>
@@ -147,13 +106,7 @@
                       </p>
                       <div class="d-flex justify-center align-center order-3">
                         <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-1"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-1" />
                       </div>
                     </div>
                     <small class="text-caption text-truncate d">Campo hermanos suarez</small>
@@ -166,13 +119,7 @@
                     <div class="d-flex">
                       <div class="d-flex justify-center align-center order-1">
                         <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-2"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-2" />
                       </div>
                       <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
                         <v-icon>mdi-soccer</v-icon>
@@ -181,13 +128,7 @@
                       </p>
                       <div class="d-flex justify-center align-center order-3">
                         <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-1"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-1" />
                       </div>
                     </div>
                     <small class="text-caption text-truncate d">Campo hermanos suarez</small>
@@ -205,13 +146,7 @@
                     <div class="d-flex">
                       <div class="d-flex justify-center align-center order-1">
                         <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-2"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-2" />
                       </div>
                       <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
                         <v-icon>mdi-soccer</v-icon>
@@ -220,13 +155,7 @@
                       </p>
                       <div class="d-flex justify-center align-center order-3">
                         <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-1"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-1" />
                       </div>
                     </div>
                     <small class="text-caption text-truncate d">Campo hermanos suarez</small>
@@ -239,13 +168,7 @@
                     <div class="d-flex">
                       <div class="d-flex justify-center align-center order-1">
                         <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-2"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-2" />
                       </div>
                       <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
                         <v-icon>mdi-soccer</v-icon>
@@ -254,13 +177,7 @@
                       </p>
                       <div class="d-flex justify-center align-center order-3">
                         <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-1"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-1" />
                       </div>
                     </div>
                     <small class="text-caption text-truncate d">Campo hermanos suarez</small>
@@ -273,13 +190,7 @@
                     <div class="d-flex">
                       <div class="d-flex justify-center align-center order-1">
                         <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-2"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-2" />
                       </div>
                       <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
                         <v-icon>mdi-soccer</v-icon>
@@ -288,13 +199,7 @@
                       </p>
                       <div class="d-flex justify-center align-center order-3">
                         <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-1"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-1" />
                       </div>
                     </div>
                     <small class="text-caption text-truncate d">Campo hermanos suarez</small>
@@ -307,13 +212,7 @@
                     <div class="d-flex">
                       <div class="d-flex justify-center align-center order-1">
                         <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-2"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-2" />
                       </div>
                       <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
                         <v-icon>mdi-soccer</v-icon>
@@ -322,13 +221,7 @@
                       </p>
                       <div class="d-flex justify-center align-center order-3">
                         <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-1"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-1" />
                       </div>
                     </div>
                     <small class="text-caption text-truncate d">Campo hermanos suarez</small>
@@ -342,13 +235,7 @@
                     <div class="d-flex">
                       <div class="d-flex justify-center align-center order-1">
                         <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-2"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-2" />
                       </div>
                       <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
                         <v-icon>mdi-soccer</v-icon>
@@ -357,13 +244,7 @@
                       </p>
                       <div class="d-flex justify-center align-center order-3">
                         <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-1"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-1" />
                       </div>
                     </div>
                     <small class="text-caption text-truncate d">Campo hermanos suarez</small>
@@ -376,13 +257,7 @@
                     <div class="d-flex">
                       <div class="d-flex justify-center align-center order-1">
                         <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-2"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-2" />
                       </div>
                       <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
                         <v-icon>mdi-soccer</v-icon>
@@ -391,13 +266,7 @@
                       </p>
                       <div class="d-flex justify-center align-center order-3">
                         <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-1"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-1" />
                       </div>
                     </div>
                     <small class="text-caption text-truncate d">Campo hermanos suarez</small>
@@ -410,13 +279,7 @@
                     <div class="d-flex">
                       <div class="d-flex justify-center align-center order-1">
                         <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-2"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-2" />
                       </div>
                       <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
                         <v-icon>mdi-soccer</v-icon>
@@ -425,13 +288,7 @@
                       </p>
                       <div class="d-flex justify-center align-center order-3">
                         <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-1"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-1" />
                       </div>
                     </div>
                     <small class="text-caption text-truncate d">Campo hermanos suarez</small>
@@ -444,13 +301,7 @@
                     <div class="d-flex">
                       <div class="d-flex justify-center align-center order-1">
                         <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-2"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-2" />
                       </div>
                       <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
                         <v-icon>mdi-soccer</v-icon>
@@ -459,13 +310,7 @@
                       </p>
                       <div class="d-flex justify-center align-center order-3">
                         <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-1"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-1" />
                       </div>
                     </div>
                     <small class="text-caption text-truncate d">Campo hermanos suarez</small>
@@ -479,13 +324,7 @@
                     <div class="d-flex">
                       <div class="d-flex justify-center align-center order-1">
                         <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-2"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-2" />
                       </div>
                       <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
                         <v-icon>mdi-soccer</v-icon>
@@ -494,13 +333,7 @@
                       </p>
                       <div class="d-flex justify-center align-center order-3">
                         <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-1"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-1" />
                       </div>
                     </div>
                     <small class="text-caption text-truncate d">Campo hermanos suarez</small>
@@ -513,13 +346,7 @@
                     <div class="d-flex">
                       <div class="d-flex justify-center align-center order-1">
                         <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-2"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-2" />
                       </div>
                       <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
                         <v-icon>mdi-soccer</v-icon>
@@ -528,13 +355,7 @@
                       </p>
                       <div class="d-flex justify-center align-center order-3">
                         <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-1"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-1" />
                       </div>
                     </div>
                     <small class="text-caption text-truncate d">Campo hermanos suarez</small>
@@ -547,13 +368,7 @@
                     <div class="d-flex">
                       <div class="d-flex justify-center align-center order-1">
                         <p class="order-1 flex-0-1 text-truncate mr-2">Cruz azul</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-2"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-2" />
                       </div>
                       <p class="order-2 mx-2 d-flex justify-center align-center flex-column">
                         <v-icon>mdi-soccer</v-icon>
@@ -562,13 +377,7 @@
                       </p>
                       <div class="d-flex justify-center align-center order-3">
                         <p class="order-2 flex-0-1 text-truncate ml-2">Pachuca</p>
-                        <v-img
-                          width="30"
-                          height="30"
-                          rounded
-                          src="/placeholder.svg"
-                          class="order-1"
-                        ></v-img>
+                        <InitialsAvatar width="30" height="30" rounded="lg" :image="null" name="Equipo" class="order-1" />
                       </div>
                     </div>
                     <small class="text-caption text-truncate d">Campo hermanos suarez</small>

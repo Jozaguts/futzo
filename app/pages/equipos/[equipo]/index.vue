@@ -4,6 +4,7 @@ import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.
 import LinesupContainer from '~/components/pages/calendario/game-report/linesup-container.vue'
 import TournamentShareMenu from '~/components/pages/torneos/tournament-share-menu.vue'
 import KpisMetricsSection from '~/components/shared/kpis-metrics-section.vue'
+import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 import PageLayout from '~/components/shared/PageLayout.vue'
 import {getTeamFormation, getTeamRegistrationQRCode} from '~/http/api/team'
 import type {TeamFormation} from '~/models/Game'
@@ -365,10 +366,15 @@ const downloadQR = () => {
             <Icon name="lucide:arrow-left" size="18" />
           </button>
 
-          <div class="team-detail-header__avatar" :style="{ backgroundColor: teamAvatarColor }">
-            <img v-if="teamAvatarImage" :src="teamAvatarImage" :alt="teamName" />
-            <span v-else>{{ teamShortName }}</span>
-          </div>
+          <InitialsAvatar
+            class="team-detail-header__avatar"
+            size="42"
+            rounded="lg"
+            :image="teamAvatarImage"
+            :name="teamName"
+            :initials="teamShortName"
+            :fallback-color="teamAvatarColor"
+          />
 
           <div class="team-detail-header__meta">
             <h1 class="team-detail-header__title">{{ teamName }}</h1>
@@ -566,11 +572,6 @@ const downloadQR = () => {
     justify-content: center
     flex-shrink: 0
     overflow: hidden
-
-  .team-detail-header__avatar img
-    width: 100%
-    height: 100%
-    object-fit: cover
 
   .team-detail-header__meta
     min-width: 0

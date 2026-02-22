@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+  import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
   const tournamentStore = useTournamentStore()
   const { tournaments, tournament } = storeToRefs(tournamentStore)
   const props = defineProps<{
@@ -32,11 +33,11 @@
               <div class="game-card">
                 <div class="teams">
                   <div class="team home-team">
-                    <v-img width="20" height="20" class="team-img" :src="item.home.img"></v-img>
+                    <InitialsAvatar width="20" height="20" class="team-img" :image="item.home.img" :name="item.home.name" />
                     <span class="team-name">{{ item.home.name }}</span>
                   </div>
                   <div class="team away-team">
-                    <v-img width="20" height="20" class="team-img" :src="item.away.img"></v-img>
+                    <InitialsAvatar width="20" height="20" class="team-img" :image="item.away.img" :name="item.away.name" />
                     <span class="team-name">{{ item.away.name }}</span>
                   </div>
                 </div>
