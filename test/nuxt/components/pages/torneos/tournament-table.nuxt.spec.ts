@@ -54,26 +54,49 @@ const TournamentShareMenuStub = defineComponent({
   },
 })
 
-const EasyDataTableStub = defineComponent({
-  name: 'Vue3EasyDataTable',
+const SharedTableStub = defineComponent({
+  name: 'Table',
   props: {
+    headers: { type: Array, default: () => [] },
     items: { type: Array, default: () => [] },
+    statusHandler: { type: Function, required: false },
   },
   setup(props, { slots }) {
+    const resolveStatus = (status: string) => {
+      if (!props.statusHandler) {
+        return status
+      }
+      const result = props.statusHandler(status)
+      if (typeof result === 'string') {
+        return status
+      }
+      return result?.label ?? status
+    }
+
+    const resolveProgress = (item: any) => {
+      if (item?.games_progress?.label) {
+        return item.games_progress.label
+      }
+      if (item?.progress?.label) {
+        return item.progress.label
+      }
+      return '0/0'
+    }
+
     return () =>
       h(
         'div',
-        { class: 'easy-data-table-stub' },
+        { class: 'shared-table-stub', 'data-testid': 'shared-table-stub' },
         (props.items as any[]).map((item) =>
-          h('div', { class: 'easy-row' }, [
-            slots['item-name']?.(item),
-            slots['item-format_label']?.(item),
-            slots['item-football_type_label']?.(item),
-            slots['item-teams_count']?.(item),
-            slots['item-players_count']?.(item),
-            slots['item-progress']?.(item),
-            slots['item-status']?.(item),
-            slots['item-actions']?.(item),
+          h('div', { class: 'table-row' }, [
+            slots.name?.(item),
+            h('span', item?.format_label ?? '-'),
+            h('span', item?.football_type_label ?? '-'),
+            h('span', String(item?.teams_count ?? 0)),
+            h('span', String(item?.players_count ?? 0)),
+            h('span', resolveProgress(item)),
+            h('span', resolveStatus(item?.status ?? '-')),
+            slots.actions?.({ item }),
           ])
         )
       )
@@ -117,7 +140,7 @@ describe('TournamentTable', () => {
         stubs: {
           ...vuetifyStubs,
           ClientOnly: { template: '<div><slot /></div>' },
-          Vue3EasyDataTable: EasyDataTableStub,
+          Table: SharedTableStub,
           TournamentShareMenu: TournamentShareMenuStub,
           Icon: iconStub,
           'v-tooltip': TooltipStub,
@@ -151,7 +174,7 @@ describe('TournamentTable', () => {
         stubs: {
           ...vuetifyStubs,
           ClientOnly: { template: '<div><slot /></div>' },
-          Vue3EasyDataTable: EasyDataTableStub,
+          Table: SharedTableStub,
           TournamentShareMenu: TournamentShareMenuStub,
           Icon: iconStub,
           'v-tooltip': TooltipStub,
@@ -167,6 +190,6 @@ describe('TournamentTable', () => {
     })
 
     expect(wrapper.find('[data-testid="tournament-table-skeleton"]').exists()).toBe(true)
-    expect(wrapper.find('.easy-data-table-stub').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="shared-table-stub"]').exists()).toBe(false)
   })
 })

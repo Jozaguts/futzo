@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import {Icon} from '#components'
 import AppBar from '~/components/layout/AppBar.vue'
 import CreateTeamDialog from '~/components/pages/equipos/CreateTeamDialog/index.vue'
 import StatsTableContainer from '~/components/pages/equipos/live-games.vue'
 import CreateTournamentDialog from '~/components/pages/torneos/dialog/index.vue'
 import DisciplinePanel from '~/components/pages/torneos/discipline/DisciplinePanel.vue'
 import TournamentCalendarTab from '~/components/pages/torneos/torneo/calendar-tab.vue'
+import TournamentDetailDialogs from '~/components/pages/torneos/torneo/TournamentDetailDialogs.vue'
 import TournamentDetailTopShell from '~/components/pages/torneos/torneo/TournamentDetailTopShell.vue'
 import TournamentStandingsTable from '~/components/pages/torneos/tournament-standings-table.vue'
 import StatsTable from '~/components/pages/torneos/stats-tables/index.vue'
@@ -147,101 +147,30 @@ const {
     </template>
   </PageLayout>
 
-  <v-dialog v-model="share.showQr" max-width="500">
-    <v-card>
-      <v-card-title>{{ share.title || 'Compartir torneo' }}</v-card-title>
-      <v-card-text>
-        <v-alert v-if="share.hasError" type="warning" variant="tonal" class="mb-4">
-          No se pudo generar el código QR.
-        </v-alert>
-        <v-img v-if="share.image" :src="share.image" :aspect-ratio="1" cover></v-img>
-      </v-card-text>
-      <v-card-actions class="justify-end">
-        <v-btn variant="text" @click="share.showQr = false">Cerrar</v-btn>
-        <v-btn color="primary" :disabled="!share.image" @click="downloadQR">Descargar QR</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-
-  <v-dialog v-model="competitionManagementDialog" max-width="560">
-    <v-card v-if="competitionManagementDialog" data-testid="tournament-competition-management-dialog">
-      <v-card-title>Remover equipo de la competencia</v-card-title>
-      <v-card-text>
-        <div class="competition-config__header mb-3">
-          <h3 class="competition-config__title">Configuración del torneo</h3>
-          <p class="competition-config__subtitle">Activa o retira equipos de la competencia.</p>
-        </div>
-
-        <div class="competition-config__context mb-4">
-          <Icon name="lucide:info" size="15" />
-          <span>{{ competitionConfigContext }}</span>
-        </div>
-
-        <v-select
-          v-model="selectedCompetitionTeamId"
-          :items="tournamentTeamOptions"
-          item-title="title"
-          item-value="value"
-          density="compact"
-          variant="outlined"
-          hide-details
-          label="Equipo del torneo"
-          :disabled="!tournamentTeamOptions.length || isUpdatingCompetitionStatus"
-          data-testid="tournament-competition-team-select"
-        />
-
-        <template v-if="tournamentTeamOptions.length">
-          <p class="competition-config__status mt-3">{{ competitionStatusSummary }}</p>
-          <v-btn
-            :color="isSelectedTeamActive ? 'error' : 'success'"
-            variant="tonal"
-            block
-            class="mt-3"
-            :loading="isUpdatingCompetitionStatus"
-            :disabled="!canToggleTeamCompetitionStatus"
-            data-testid="tournament-competition-toggle-btn"
-            @click="requestToggleTeamCompetitionStatus"
-          >
-            {{ competitionActionLabel }}
-          </v-btn>
-        </template>
-      </v-card-text>
-      <v-card-actions class="justify-end">
-        <v-btn variant="text" :disabled="isUpdatingCompetitionStatus" @click="closeCompetitionManagementDialog">
-          Cerrar
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-
-  <v-dialog v-model="retireCompetitionDialog" max-width="520">
-    <v-card v-if="retireCompetitionDialog" data-testid="tournament-competition-confirm-dialog">
-      <v-card-title>Retirar equipo de la competencia</v-card-title>
-      <v-card-text class="text-body-2">
-        Vas a retirar a {{ selectedCompetitionTeamName }} de la competencia. Esta acción lo desactiva desde la
-        siguiente jornada disponible, regenera el calendario pendiente y recalcula la tabla de posiciones. Los
-        partidos ya jugados y los puntos acumulados no se eliminan.
-      </v-card-text>
-      <v-card-actions class="justify-end">
-        <v-btn
-          variant="text"
-          :disabled="isUpdatingCompetitionStatus"
-          data-testid="tournament-competition-confirm-cancel"
-          @click="closeRetireCompetitionDialog"
-        >
-          Cancelar
-        </v-btn>
-        <v-btn
-          color="error"
-          :loading="isUpdatingCompetitionStatus"
-          data-testid="tournament-competition-confirm-submit"
-          @click="confirmRetireCompetitionTeam"
-        >
-          Sí, retirar equipo
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <TournamentDetailDialogs
+    :share-show-qr="share.showQr"
+    :share-title="share.title"
+    :share-image="share.image"
+    :share-has-error="share.hasError"
+    :competition-management-dialog="competitionManagementDialog"
+    :retire-competition-dialog="retireCompetitionDialog"
+    :competition-config-context="competitionConfigContext"
+    :selected-competition-team-id="selectedCompetitionTeamId"
+    :tournament-team-options="tournamentTeamOptions"
+    :is-updating-competition-status="isUpdatingCompetitionStatus"
+    :competition-status-summary="competitionStatusSummary"
+    :is-selected-team-active="isSelectedTeamActive"
+    :competition-action-label="competitionActionLabel"
+    :can-toggle-team-competition-status="canToggleTeamCompetitionStatus"
+    :selected-competition-team-name="selectedCompetitionTeamName"
+    @update:share-show-qr="(value) => (share.showQr = value)"
+    @download-qr="downloadQR"
+    @close-competition-management-dialog="closeCompetitionManagementDialog"
+    @close-retire-competition-dialog="closeRetireCompetitionDialog"
+    @confirm-retire-competition-team="confirmRetireCompetitionTeam"
+    @request-toggle-team-competition-status="requestToggleTeamCompetitionStatus"
+    @update:selected-competition-team-id="(value) => (selectedCompetitionTeamId = value)"
+  />
 </template>
 
 <style lang="sass" scoped>
