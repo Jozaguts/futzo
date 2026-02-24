@@ -63,6 +63,7 @@ export const downloadCredentialsBatchArtifact = async (
     method: 'GET',
     query: variant ? { variant } : undefined,
     responseType: 'blob' as 'json',
+    meta: { toast: false },
   })
 }
 
@@ -146,6 +147,7 @@ export const validateCredential = async (inputCode: string) => {
   return await client<CredentialValidationResponse>(`${CREDENTIALS_BASE_PATH}/validation`, {
     method: 'POST',
     body: { input_code: inputCode },
+    meta: { toast: false },
   })
 }
 
@@ -166,6 +168,7 @@ export const reprintCredentialFromHistory = async (credentialId: number) => {
   const client = useSanctumClient()
   return await client<CredentialBatchCreateResponse>(`${CREDENTIALS_BASE_PATH}/history/${credentialId}/reprint`, {
     method: 'POST',
+    meta: { toast: false },
   })
 }
 

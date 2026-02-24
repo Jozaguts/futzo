@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { ref } from 'vue'
+import { nextTick, ref } from 'vue'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { ensureVuetifyApp, vuetifyStubs } from '../../../utils/vuetify-stubs'
 import CredentialsGenerateView from '~/components/pages/credentials/CredentialsGenerateView.vue'
@@ -142,7 +142,8 @@ describe('CredentialsGenerateView', () => {
 
     expect(wrapper.text()).toContain('Plan Pro requerido')
 
-    await wrapper.find('.credentials-generator__player-item').trigger('click')
+    ;(wrapper.vm as any).selectedPlayerIds = [7]
+    await nextTick()
     await wrapper.find('[data-testid="credentials-generator-create-batch"]').trigger('click')
 
     expect(createBatchMock).toHaveBeenCalledTimes(1)

@@ -58,8 +58,7 @@ const openDetail = async (credentialId: number) => {
   try {
     detail.value = await getCredentialHistoryDetail(credentialId)
     detailOpen.value = true
-  } catch (error: any) {
-    toast({ type: 'error', msg: 'No se pudo obtener el detalle', description: parseError(error).message })
+  } catch {
   }
 }
 
@@ -91,8 +90,7 @@ const confirmInvalidate = async () => {
     toast({ type: 'success', msg: 'Credencial invalidada' })
     invalidateDialog.open = false
     await loadHistory()
-  } catch (error: any) {
-    toast({ type: 'error', msg: 'No se pudo invalidar', description: parseError(error).message })
+  } catch {
   } finally {
     invalidateDialog.saving = false
   }

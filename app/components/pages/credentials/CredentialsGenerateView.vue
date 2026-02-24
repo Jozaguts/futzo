@@ -204,9 +204,6 @@ const createBatch = async () => {
     if (parsed.status === 402) {
       paywallCheckoutUrl.value = parsed.checkoutUrl
     }
-    if (parsed.status === 422) {
-      toast({ type: 'warning', msg: 'Datos inválidos', description: parsed.message })
-    }
   } finally {
     creatingBatch.value = false
   }

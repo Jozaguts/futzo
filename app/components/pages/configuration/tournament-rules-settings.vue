@@ -2,7 +2,6 @@
 import type { TournamentRule, TournamentRulePayload, TournamentRuleTemplate } from '~/models/settings'
 import { useToast } from '~/composables/useToast'
 import { getHttpStatusFromError } from '~/utils/auth-csrf'
-import { notifyApiError } from '~/utils/apiToast'
 import * as settingsAPI from '~/http/api/settings'
 import TournamentRuleFormDialog from '~/components/pages/configuration/tournament-rule-form-dialog.vue'
 
@@ -42,22 +41,9 @@ const parseCollection = <T>(value: unknown): T[] => {
   return []
 }
 
-const parseErrorData = (error: unknown) => {
-  const value = error as {
-    data?: unknown
-    response?: {
-      data?: unknown
-      _data?: unknown
-    }
-  }
-
-  return value?.data ?? value?.response?.data ?? value?.response?._data
-}
-
 const notifyRequestError = (error: unknown, fallbackDescription: string) => {
   const status = getHttpStatusFromError(error)
   if (status) {
-    notifyApiError(status, parseErrorData(error))
     return
   }
 
