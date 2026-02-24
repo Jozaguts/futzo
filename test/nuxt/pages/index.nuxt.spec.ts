@@ -28,6 +28,7 @@ const kickoffPlanRef = vi.hoisted(() => ({ value: null, __v_isRef: true } as any
 const proPlayPlanRef = vi.hoisted(() => ({ value: null, __v_isRef: true } as any))
 const eliteLeaguePlanRef = vi.hoisted(() => ({ value: null, __v_isRef: true } as any))
 const loadingRef = vi.hoisted(() => ({ value: false, __v_isRef: true } as any))
+const errorRef = vi.hoisted(() => ({ value: null, __v_isRef: true } as any))
 const priceModeRef = vi.hoisted(() => ({ value: 'monthly', __v_isRef: true } as any))
 const isAuthenticatedRef = vi.hoisted(() => ({ value: false, __v_isRef: true } as any))
 
@@ -41,6 +42,7 @@ mockNuxtImport('useProductPrices', () => () => ({
   priceMode: priceModeRef,
   setPriceMode: setPriceModeMock,
   loading: loadingRef,
+  error: errorRef,
   kickoffPlan: kickoffPlanRef,
   proPlayPlan: proPlayPlanRef,
   eliteLeaguePlan: eliteLeaguePlanRef,
@@ -57,6 +59,17 @@ mockNuxtImport('useGtag', () => () => ({ gtag: gtagMock }))
 mockNuxtImport('useSanctumAuth', () => () => ({ isAuthenticated: isAuthenticatedRef }))
 mockNuxtImport('useRoute', () => () => ({ name: 'index', path: '/' }))
 
+const globalStubs = {
+  PageLayout: { template: '<div><slot name="default" /></div>' },
+  PlanCard: { template: '<div data-testid="plan-card"></div>' },
+  Icon: { template: '<i></i>' },
+  'client-only': { template: '<div><slot /></div>' },
+  'nuxt-link': NuxtLinkStub,
+  VAppBar: { template: '<header><slot /></header>' },
+  VAppBarNavIcon: { emits: ['click'], template: `<button @click="$emit('click')"></button>` },
+  VNavigationDrawer: { template: '<aside><slot /></aside>' },
+}
+
 describe('Landing page pricing lazy load', () => {
   beforeEach(() => {
     loadPricesMock.mockReset()
@@ -71,6 +84,7 @@ describe('Landing page pricing lazy load', () => {
     proPlayPlanRef.value = null
     eliteLeaguePlanRef.value = null
     loadingRef.value = false
+    errorRef.value = null
     priceModeRef.value = 'monthly'
     isAuthenticatedRef.value = false
 
@@ -83,13 +97,7 @@ describe('Landing page pricing lazy load', () => {
   it('loads product prices only when pricing section intersects', async () => {
     await mountSuspended(IndexPage, {
       global: {
-        stubs: {
-          PageLayout: { template: '<div><slot name="default" /></div>' },
-          PlanCard: { template: '<div data-testid="plan-card"></div>' },
-          Icon: { template: '<i></i>' },
-          'client-only': { template: '<div><slot /></div>' },
-          'nuxt-link': NuxtLinkStub,
-        },
+        stubs: globalStubs,
       },
     })
 
@@ -108,13 +116,7 @@ describe('Landing page pricing lazy load', () => {
   it('fires Meta ViewContent when pricing section intersects (once)', async () => {
     await mountSuspended(IndexPage, {
       global: {
-        stubs: {
-          PageLayout: { template: '<div><slot name="default" /></div>' },
-          PlanCard: { template: '<div data-testid="plan-card"></div>' },
-          Icon: { template: '<i></i>' },
-          'client-only': { template: '<div><slot /></div>' },
-          'nuxt-link': NuxtLinkStub,
-        },
+        stubs: globalStubs,
       },
     })
 
@@ -135,13 +137,7 @@ describe('Landing page pricing lazy load', () => {
   it('fires Meta StartRegistration when clicking both landing CTAs (nav + hero)', async () => {
     const wrapper = await mountSuspended(IndexPage, {
       global: {
-        stubs: {
-          PageLayout: { template: '<div><slot name="default" /></div>' },
-          PlanCard: { template: '<div data-testid="plan-card"></div>' },
-          Icon: { template: '<i></i>' },
-          'client-only': { template: '<div><slot /></div>' },
-          'nuxt-link': NuxtLinkStub,
-        },
+        stubs: globalStubs,
       },
     })
 
@@ -152,5 +148,29 @@ describe('Landing page pricing lazy load', () => {
     expect(
       fbqMock.mock.calls.filter((c) => c?.[0] === 'trackCustom' && c?.[1] === 'StartRegistration').length
     ).toBe(2)
+  })
+
+  it('renders screenshots gallery with product captures', async () => {
+    const wrapper = await mountSuspended(IndexPage, {
+      global: {
+        stubs: globalStubs,
+      },
+    })
+
+    expect(wrapper.text()).toContain('Mira Futzo en acción')
+    expect(wrapper.findAll('figure.screenshot-card').length).toBeGreaterThanOrEqual(6)
+  })
+
+  it('keeps social links in footer', async () => {
+    const wrapper = await mountSuspended(IndexPage, {
+      global: {
+        stubs: globalStubs,
+      },
+    })
+
+    const html = wrapper.html()
+    expect(html).toContain('https://www.facebook.com/futzo.io')
+    expect(html).toContain('https://www.instagram.com/futzo.io/')
+    expect(html).toContain('https://www.youtube.com/@futzo-oficial')
   })
 })
