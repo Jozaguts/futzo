@@ -2,6 +2,9 @@
 import type {TournamentConfigurationSettings} from '~/models/settings'
 import {useToast} from '~/composables/useToast'
 import * as settingsAPI from '~/http/api/settings'
+import TournamentRulesSettings from '~/components/pages/configuration/tournament-rules-settings.vue'
+import { getHttpStatusFromError } from '~/utils/auth-csrf'
+import { notifyApiError } from '~/utils/apiToast'
 
 const { toast } = useToast()
   const tournamentStore = useTournamentStore()
@@ -13,10 +16,11 @@ const { toast } = useToast()
   const loadingTournaments = ref(false)
   const loadingConfig = ref(false)
   const saving = ref(false)
-  const section = ref('base')
+  const section = ref('configuration')
 
   const sections = [
-    { value: 'base', label: 'Reglas base' },
+    { value: 'configuration', label: 'Configuración' },
+    { value: 'rules', label: 'Reglas' },
     { value: 'teams', label: 'Equipos y jugadores' },
     { value: 'format', label: 'Formato y fases' },
     { value: 'verification', label: 'Bloqueo y validación' },
@@ -42,6 +46,31 @@ const { toast } = useToast()
     elimination_round_trip: false,
   })
 
+  const parseErrorData = (error: unknown) => {
+    const value = error as {
+      data?: unknown
+      response?: {
+        data?: unknown
+        _data?: unknown
+      }
+    }
+    return value?.data ?? value?.response?.data ?? value?.response?._data
+  }
+
+  const notifyRequestError = (error: unknown, fallbackDescription: string) => {
+    const status = getHttpStatusFromError(error)
+    if (status) {
+      notifyApiError(status, parseErrorData(error))
+      return
+    }
+
+    toast({
+      type: 'error',
+      msg: 'Error',
+      description: fallbackDescription,
+    })
+  }
+
   const fetchTournaments = async () => {
     loadingTournaments.value = true
     try {
@@ -50,7 +79,8 @@ const { toast } = useToast()
       if (!selectedTournamentId.value && list.length > 0) {
         selectedTournamentId.value = list[0]?.id as number
       }
-    } catch {
+    } catch (error) {
+      notifyRequestError(error, 'No se pudieron cargar los torneos.')
     } finally {
       loadingTournaments.value = false
     }
@@ -71,7 +101,8 @@ const { toast } = useToast()
         group_stage: response.group_stage ?? false,
         elimination_round_trip: response.elimination_round_trip ?? false,
       }
-    } catch {
+    } catch (error) {
+      notifyRequestError(error, 'No se pudo cargar la configuración del torneo.')
       configuration.value = buildEmptyConfiguration(tournamentId)
     } finally {
       loadingConfig.value = false
@@ -92,14 +123,15 @@ const { toast } = useToast()
         msg: 'Configuración guardada',
         description: 'Los ajustes del torneo se actualizaron correctamente.',
       })
-    } catch {
+    } catch (error) {
+      notifyRequestError(error, 'No se pudo guardar la configuración del torneo.')
     } finally {
       saving.value = false
     }
   }
 
   watch(selectedTournamentId, (value) => {
-    section.value = 'base'
+    section.value = 'configuration'
     if (!value) {
       configuration.value = null
       return
@@ -129,7 +161,15 @@ const { toast } = useToast()
         </v-list-item>
       </v-list>
       <template v-slot:append>
-        <v-btn color="primary" variant="elevated" :loading="saving" :disabled="!configuration" @click="saveConfiguration" block>
+        <v-btn
+          v-if="section !== 'rules'"
+          color="primary"
+          variant="elevated"
+          :loading="saving"
+          :disabled="!configuration"
+          @click="saveConfiguration"
+          block
+        >
           Guardar cambios
         </v-btn>
       </template>
@@ -164,7 +204,13 @@ const { toast } = useToast()
             <div class="tournaments-settings__layout">
               <div class="tournaments-settings__content">
                 <TransitionFade group>
-                  <v-form v-if="section ==='base'" class="pa-4">
+                  <TournamentRulesSettings
+                    v-if="section === 'rules'"
+                    :tournament-id="selectedTournamentId"
+                    :key="`rules-${selectedTournamentId || 'none'}`"
+                    class="pa-4"
+                  />
+                  <v-form v-else-if="section ==='configuration'" class="pa-4">
                     <BaseInput label="Formato del torneo" >
                       <template #input>
                         <v-select

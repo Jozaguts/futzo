@@ -61,9 +61,6 @@ watch(
 watch(
   values,
   () => {
-    if (!meta.value.valid) {
-      return
-    }
     playerStoreRequest.value.contact = {
       email: values.email,
       phone: values.phone,

@@ -38,6 +38,39 @@ export type TournamentConfigurationSettings = {
   elimination_round_trip: boolean | null;
 };
 
+export type TournamentRuleType = 'cantidad' | 'edad';
+export type TournamentRuleCondition = 'menores de' | 'mayores de';
+
+export type TournamentRuleTemplate = {
+  id: number;
+  name: string;
+  type: TournamentRuleType;
+  condition: TournamentRuleCondition | null;
+  age: number | null;
+};
+
+export type TournamentRule = {
+  id: number;
+  tournament_id: number;
+  rule_template_id: number | null;
+  name: string;
+  type: TournamentRuleType;
+  condition: TournamentRuleCondition | null;
+  age: number | null;
+  max_players: number;
+  rule_template?: TournamentRuleTemplate | null;
+};
+
+export type TournamentRulePayload = {
+  id?: number;
+  rule_template_id?: number | null;
+  name: string;
+  type: TournamentRuleType;
+  condition: TournamentRuleCondition | null;
+  age: number | null;
+  max_players: number;
+};
+
 export type DisciplinePresetOption = {
   id: string;
   label: string;

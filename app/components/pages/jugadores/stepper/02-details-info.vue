@@ -39,9 +39,6 @@ const { playerStoreRequest, steps } = storeToRefs(usePlayerStore())
   watch(
     values,
     () => {
-      if (!meta.value.valid) {
-        return
-      }
       playerStoreRequest.value.details = { ...values }
     },
     { deep: true, immediate: true }

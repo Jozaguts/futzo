@@ -41,6 +41,7 @@ const { tournamentStoreRequest, steps } = storeToRefs(useTournamentStore())
       })
     ),
     initialValues: tournamentStoreRequest.value.details,
+    validateOnMount: true,
   })
   const [location_ids, location_ids_props] = defineField('location_ids', vuetifyConfig)
   const [prize, prize_props] = defineField('prize', vuetifyConfig)
@@ -71,9 +72,6 @@ const { tournamentStoreRequest, steps } = storeToRefs(useTournamentStore())
   watch(
     values,
     () => {
-      if (!meta.value.valid) {
-        return
-      }
       tournamentStoreRequest.value.details = { ...values }
     },
     { deep: true, immediate: true }

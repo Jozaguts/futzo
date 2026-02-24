@@ -24,7 +24,7 @@ const props = withDefaults(
     wrapperTestId: '',
     rowsPerPage: 0,
     emptyTitle: 'Tabla de posiciones no disponible',
-    emptyText: 'La tabla aún no está lista. Vuelve más tarde.',
+    emptyText: 'Se mostrará cuando se registren los primeros resultados.',
     navigateToTeamOnRowClick: false,
   }
 )
@@ -152,6 +152,7 @@ const handleStandingRowClick = (row: ClickRowArgument) => {
   min-width: 0;
   min-height: 0;
   overflow-x: auto;
+  justify-content: center;
   -webkit-overflow-scrolling: touch;
 }
 

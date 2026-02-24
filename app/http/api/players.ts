@@ -1,4 +1,5 @@
 import type {Player} from '~/models/Player';
+import type {Tag} from "~/types/shared";
 
 export function getPlayers() {}
 export const search = async (search: string) => {
@@ -56,3 +57,14 @@ export const rejectPlayerVerification = async (playerId: number, notes: string) 
     body: { notes },
   });
 };
+export const getPlayerTags = async () =>{
+  const client = useSanctumClient();
+  return await client<Tag[]>('/api/v1/admin/players/tags')
+}
+export const createOrUpdatePlayerTag = async (tag: string) => {
+  const client = useSanctumClient();
+  return await client('/api/v1/admin/players/tags',{
+    method: 'POST',
+    body: JSON.stringify({tag})
+  })
+}

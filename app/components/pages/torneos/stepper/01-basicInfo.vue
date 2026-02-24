@@ -41,6 +41,7 @@ const { footballTypes } = storeToRefs(useLeaguesStore())
       })
     ),
     initialValues: tournamentStoreRequest.value.basic,
+    validateOnMount: true,
   })
   const [id, id_props] = defineField('id', vuetifyConfig)
   const [name, name_props] = defineField('name', vuetifyConfig)
@@ -74,9 +75,6 @@ const { footballTypes } = storeToRefs(useLeaguesStore())
   watch(
     values,
     () => {
-      if (!meta.value.valid) {
-        return
-      }
       tournamentStoreRequest.value.basic = { ...values }
     },
     { deep: true, immediate: true }

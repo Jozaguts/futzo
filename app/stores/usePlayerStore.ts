@@ -3,8 +3,10 @@ import type {FormSteps, Player, PlayerStoreRequest, TeamLineupAvailablePlayers} 
 import prepareForm, {parseBlobResponse} from '~/utils/prepareFormData';
 import type {IPagination} from '~/interfaces';
 import type {Team} from '~/models/Team';
+import type {TournamentRule} from '~/models/settings';
 import * as teamAPI from '~/http/api/team';
 import * as playerAPI from '~/http/api/players';
+import * as settingsAPI from '~/http/api/settings';
 import type {FormationPlayer} from '~/models/Game';
 import {useToast} from '~/composables/useToast';
 import type {TourStep} from '#nuxt-tour/props';
@@ -12,6 +14,11 @@ import {useTourController} from '~/composables/useTourController';
 import {useCategoryStore, useSanctumClient, useTeamStore, useTournamentStore} from '#imports';
 import {ga4Event} from '~/utils/ga4';
 import {sanitizeAvatarImage} from '~/utils/avatar';
+import {
+  extractQuantityRulesIssues,
+  parseTournamentRulesCollection,
+  validateAgeRulesForPlayer,
+} from '~/utils/tournament-rule-validation';
 
 export const usePlayerStore = defineStore('playerStore', () => {
   const { toast } = useToast();
@@ -72,6 +79,18 @@ export const usePlayerStore = defineStore('playerStore', () => {
   const isImporting = ref(false);
   const showAssignTeam = ref(false);
   const player = ref<Player>(null as unknown as Player);
+  const tournamentRulesByTeam = ref<{
+    teamId: number | null;
+    tournamentId: number | null;
+    rules: TournamentRule[];
+    complianceSummary: unknown | null;
+  }>({
+    teamId: null,
+    tournamentId: null,
+    rules: [],
+    complianceSummary: null,
+  });
+  const isTournamentRulesLoading = ref(false);
   const steps = ref<FormSteps>(cloneSteps());
   const tourSteps = ref<TourStep[]>([
     {
@@ -123,6 +142,15 @@ export const usePlayerStore = defineStore('playerStore', () => {
       },
     },
   ]);
+
+  const resetTournamentRulesByTeam = () => {
+    tournamentRulesByTeam.value = {
+      teamId: null,
+      tournamentId: null,
+      rules: [],
+      complianceSummary: null,
+    };
+  };
 
   type PlayerImportResponse = {
     imported_count: number;
@@ -327,6 +355,35 @@ export const usePlayerStore = defineStore('playerStore', () => {
     form.append(key, String(value));
   };
 
+  const normalizePlayerName = (basic: Partial<PlayerStoreRequest['basic']>) => {
+    const sourceName = String(basic?.name ?? '')
+      .trim()
+      .replace(/\s+/g, ' ');
+    const sourceLastName = String(basic?.last_name ?? '')
+      .trim()
+      .replace(/\s+/g, ' ');
+
+    if (!sourceName) {
+      return {
+        name: '',
+        lastName: sourceLastName || null,
+      };
+    }
+
+    const [firstName, ...rest] = sourceName.split(' ');
+    if (rest.length === 0) {
+      return {
+        name: firstName,
+        lastName: sourceLastName || null,
+      };
+    }
+
+    return {
+      name: firstName,
+      lastName: rest.join(' ') || null,
+    };
+  };
+
   const updatePlayer = async (id: number, payload: PlayerUpdatePayload) => {
     if (!id) {
       return null;
@@ -357,13 +414,17 @@ export const usePlayerStore = defineStore('playerStore', () => {
     const contact = playerStoreRequest.value.contact ?? {};
     const guardian = playerStoreRequest.value.guardian ?? {};
 
+    const normalizedIdentity = normalizePlayerName(basic);
+
     const payload: Record<string, any> = {
-      name: basic.name ?? null,
-      last_name: basic.last_name ?? null,
+      name: normalizedIdentity.name ?? null,
+      last_name: normalizedIdentity.lastName ?? null,
       birthdate: basic.birthdate ?? null,
       nationality: basic.nationality ?? null,
       team_id: basic.team_id ?? null,
       category_id: basic.category_id ?? null,
+      tournament_id: basic.tournament_id ?? null,
+      tournament_rule_id: basic.tournament_rule_id ?? null,
       curp: basic.curp ?? null,
       is_minor: basic.is_minor ?? null,
       position_id: details.position_id ?? null,
@@ -443,6 +504,8 @@ export const usePlayerStore = defineStore('playerStore', () => {
         image: sanitizeAvatarImage(playerData.image ?? playerData.user?.image ?? ''),
         team_id: playerData.team?.id ?? null,
         category_id: playerData.category?.id ?? playerData.team?.category?.id ?? null,
+        tournament_id: playerData.team?.tournament?.id ?? playerData.tournament_id ?? null,
+        tournament_rule_id: playerData.tournament_rule_id ?? null,
         curp: playerData.curp ?? null,
         is_minor: playerData.is_minor ?? null,
       },
@@ -469,7 +532,347 @@ export const usePlayerStore = defineStore('playerStore', () => {
     };
     dialog.value = true;
   };
+
+  const resolveTeamTournamentId = async (teamId: number) => {
+    const teamStore = useTeamStore();
+    const teamCollection = Array.isArray((teamStore as any).teams)
+      ? (teamStore as any).teams
+      : Array.isArray((teamStore as any).teams?.value)
+        ? (teamStore as any).teams.value
+        : [];
+
+    const selectedTeam = teamCollection.find((team: Team) => Number((team as Team)?.id ?? 0) === teamId);
+
+    const tournamentIdFromList = Number(
+      (selectedTeam as Team | undefined)?.tournament?.id ?? (selectedTeam as any)?.tournament_id ?? 0
+    );
+    if (Number.isFinite(tournamentIdFromList) && tournamentIdFromList > 0) {
+      return tournamentIdFromList;
+    }
+
+    try {
+      const teamDetail = await teamStore.getTeam(teamId);
+      const tournamentIdFromDetail = Number(
+        (teamDetail as Team | undefined)?.tournament?.id ?? (teamDetail as any)?.tournament_id ?? 0
+      );
+      if (Number.isFinite(tournamentIdFromDetail) && tournamentIdFromDetail > 0) {
+        return tournamentIdFromDetail;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    const tournamentStore = useTournamentStore();
+    const fallbackTournamentId = Number(
+      (tournamentStore as any)?.tournamentId?.value ?? (tournamentStore as any)?.tournamentId ?? 0
+    );
+    if (Number.isFinite(fallbackTournamentId) && fallbackTournamentId > 0) {
+      return fallbackTournamentId;
+    }
+
+    return null;
+  };
+
+  const resolveApplicableQuantityRules = (rules: TournamentRule[]) => {
+    const quantityRules = rules.filter((rule) => {
+      return rule.type === 'cantidad' || (rule as any)?.type === 'boolean';
+    });
+    return quantityRules;
+  };
+
+  const fetchTournamentRulesValidationByTeam = async (
+    teamId: number | null | undefined,
+    options?: { includeCompliance?: boolean }
+  ) => {
+    const normalizedTeamId = Number(teamId ?? 0);
+    if (!Number.isFinite(normalizedTeamId) || normalizedTeamId <= 0) {
+      resetTournamentRulesByTeam();
+      return null;
+    }
+
+    const includeCompliance = options?.includeCompliance !== false;
+
+    if (
+      tournamentRulesByTeam.value.teamId === normalizedTeamId &&
+      tournamentRulesByTeam.value.rules.length > 0 &&
+      (!includeCompliance || tournamentRulesByTeam.value.complianceSummary !== null)
+    ) {
+      return tournamentRulesByTeam.value;
+    }
+
+    isTournamentRulesLoading.value = true;
+    try {
+      const tournamentId = await resolveTeamTournamentId(normalizedTeamId);
+      if (!tournamentId) {
+        resetTournamentRulesByTeam();
+        return null;
+      }
+
+      const rulesResponse = await settingsAPI.getTournamentRules(tournamentId);
+      const tournamentRules = parseTournamentRulesCollection(rulesResponse);
+
+      let complianceSummary: unknown | null = null;
+      const quantityRules = tournamentRules.filter((rule) => {
+        return rule.type === 'cantidad' || (rule as any)?.type === 'boolean';
+      });
+      if (includeCompliance && quantityRules.length > 0) {
+        complianceSummary = await settingsAPI.getTournamentTeamRulesComplianceSummary(tournamentId, normalizedTeamId);
+      }
+
+      tournamentRulesByTeam.value = {
+        teamId: normalizedTeamId,
+        tournamentId,
+        rules: tournamentRules,
+        complianceSummary,
+      };
+
+      return tournamentRulesByTeam.value;
+    } finally {
+      isTournamentRulesLoading.value = false;
+    }
+  };
+
+  const notifyTournamentRuleIssues = (issues: string[]) => {
+    const visibleIssues = issues.filter((item) => item && item.trim().length > 0);
+    if (visibleIssues.length === 0) {
+      return;
+    }
+    toast({
+      type: 'warning',
+      msg: 'No cumple con las reglas del torneo',
+      description: visibleIssues.join(' '),
+    });
+  };
+
+  type TournamentRulesValidationParams = {
+    teamId: number | null | undefined;
+    birthdate: string | Date | null | undefined;
+    tournamentRuleId?: number | null;
+    allowWithoutTeam?: boolean;
+    missingTeamMessage?: string;
+  };
+
+  const validateTournamentRulesForTeam = async ({
+    teamId,
+    birthdate,
+    tournamentRuleId = null,
+    allowWithoutTeam = false,
+    missingTeamMessage = 'Selecciona un equipo válido para validar reglas.',
+  }: TournamentRulesValidationParams): Promise<{ isValid: boolean; tournamentId: number | null }> => {
+    const normalizedTeamId = Number(teamId ?? 0);
+    if (!Number.isFinite(normalizedTeamId) || normalizedTeamId <= 0) {
+      if (allowWithoutTeam) {
+        return { isValid: true, tournamentId: null };
+      }
+      toast({
+        type: 'warning',
+        msg: 'Equipo requerido',
+        description: missingTeamMessage,
+      });
+      return { isValid: false, tournamentId: null };
+    }
+
+    let rulesSnapshot = tournamentRulesByTeam.value;
+    if (rulesSnapshot.teamId !== normalizedTeamId || rulesSnapshot.rules.length === 0) {
+      try {
+        const fetched = await fetchTournamentRulesValidationByTeam(normalizedTeamId, { includeCompliance: false });
+        rulesSnapshot = fetched ?? tournamentRulesByTeam.value;
+      } catch (error) {
+        toast({
+          type: 'error',
+          msg: 'No se pudieron validar las reglas',
+          description: 'Intenta nuevamente para validar las reglas del torneo antes de guardar.',
+        });
+        console.error(error);
+        return { isValid: false, tournamentId: null };
+      }
+    }
+
+    const tournamentId = Number(rulesSnapshot.tournamentId ?? 0);
+    if (!Number.isFinite(tournamentId) || tournamentId <= 0) {
+      toast({
+        type: 'warning',
+        msg: 'No se pudo validar el torneo',
+        description: 'Selecciona un equipo valido para validar reglas antes de registrar al jugador.',
+      });
+      return { isValid: false, tournamentId: null };
+    }
+
+    const tournamentRules = rulesSnapshot.rules;
+    if (!Array.isArray(tournamentRules) || tournamentRules.length === 0) {
+      return { isValid: true, tournamentId };
+    }
+
+    try {
+      const ageIssues = validateAgeRulesForPlayer(tournamentRules, birthdate);
+      if (ageIssues.length > 0) {
+        notifyTournamentRuleIssues(ageIssues);
+        return { isValid: false, tournamentId };
+      }
+    } catch (error) {
+      toast({
+        type: 'error',
+        msg: 'No se pudieron validar las reglas',
+        description: 'Intenta nuevamente para validar las reglas del torneo antes de guardar.',
+      });
+      console.error(error);
+      return { isValid: false, tournamentId };
+    }
+
+    const quantityRules = resolveApplicableQuantityRules(tournamentRules);
+    if (quantityRules.length === 0) {
+      return { isValid: true, tournamentId };
+    }
+
+    const selectedTournamentRuleId = Number(tournamentRuleId ?? 0);
+    if (!Number.isFinite(selectedTournamentRuleId) || selectedTournamentRuleId <= 0) {
+      return { isValid: true, tournamentId };
+    }
+
+    const selectedTournamentRule = quantityRules.find((rule) => Number(rule.id) === selectedTournamentRuleId);
+    if (!selectedTournamentRule) {
+      toast({
+        type: 'warning',
+        msg: 'Regla del torneo inválida',
+        description: 'Selecciona una regla válida de cantidad para este torneo.',
+      });
+      return { isValid: false, tournamentId };
+    }
+
+    let complianceSummary = rulesSnapshot.complianceSummary;
+    try {
+      if (!complianceSummary) {
+        complianceSummary = await settingsAPI.getTournamentTeamRulesComplianceSummary(tournamentId, normalizedTeamId);
+        tournamentRulesByTeam.value = {
+          ...rulesSnapshot,
+          complianceSummary,
+        };
+      }
+
+      const quantityIssues = extractQuantityRulesIssues(complianceSummary, [selectedTournamentRule]);
+      if (quantityIssues.length > 0) {
+        notifyTournamentRuleIssues(quantityIssues);
+        return { isValid: false, tournamentId };
+      }
+    } catch (error) {
+      toast({
+        type: 'error',
+        msg: 'No se pudo validar el cupo del equipo',
+        description: 'Intenta nuevamente antes de registrar al jugador.',
+      });
+      console.error(error);
+      return { isValid: false, tournamentId };
+    }
+
+    return { isValid: true, tournamentId };
+  };
+
+  const validateTournamentRulesBeforeCreate = async () => {
+    //@ts-ignore
+    const isPreRegister = useRoute().name === 'equipos-equipo-jugadores-inscripcion';
+    if (isPreRegister) {
+      return true;
+    }
+
+    const validation = await validateTournamentRulesForTeam({
+      teamId: playerStoreRequest.value.basic?.team_id ?? null,
+      birthdate: playerStoreRequest.value.basic?.birthdate ?? null,
+      tournamentRuleId: playerStoreRequest.value.basic?.tournament_rule_id ?? null,
+      allowWithoutTeam: true,
+    });
+
+    if (!validation.isValid) {
+      return false;
+    }
+
+    if (validation.tournamentId) {
+      playerStoreRequest.value.basic = {
+        ...(playerStoreRequest.value.basic ?? {}),
+        tournament_id: validation.tournamentId,
+      };
+    }
+
+    return true;
+  };
+
+  const assignPlayerToTeam = async ({
+    teamId,
+    playerId,
+    birthdate,
+    tournamentRuleId = null,
+  }: {
+    teamId: number;
+    playerId: number;
+    birthdate: string | Date | null | undefined;
+    tournamentRuleId?: number | null;
+  }) => {
+    const validation = await validateTournamentRulesForTeam({
+      teamId,
+      birthdate,
+      tournamentRuleId,
+      allowWithoutTeam: false,
+      missingTeamMessage: 'Selecciona un equipo antes de asignar al jugador.',
+    });
+
+    if (!validation.isValid || !validation.tournamentId) {
+      return false;
+    }
+
+    const client = useSanctumClient();
+    try {
+      const snapshot = tournamentRulesByTeam.value;
+      const hasTournamentRules = snapshot.teamId === teamId && Array.isArray(snapshot.rules) && snapshot.rules.length > 0;
+      const normalizedTournamentRuleId = Number(tournamentRuleId ?? 0);
+      const payload: Record<string, number> = {};
+
+      if (hasTournamentRules && validation.tournamentId) {
+        payload.tournament_id = validation.tournamentId;
+      }
+      if (Number.isFinite(normalizedTournamentRuleId) && normalizedTournamentRuleId > 0) {
+        payload.tournament_rule_id = normalizedTournamentRuleId;
+      }
+
+      await client(`/api/v1/admin/teams/${teamId}/players/${playerId}/assign`, {
+        method: 'POST',
+        body: payload,
+        meta: { toast: false },
+      });
+
+      toast({
+        type: 'success',
+        msg: 'Equipo asignado',
+        description: 'El jugador se asignó al equipo correctamente.',
+      });
+      await getPlayers();
+      return true;
+    } catch (error: any) {
+      const firstValidationError = Object.values(error?.data?.errors ?? {})
+        .flat()
+        .find((message) => typeof message === 'string') as string | undefined;
+
+      toast({
+        type: 'error',
+        msg: 'No se pudo asignar el equipo',
+        description:
+          firstValidationError ?? error?.data?.message ?? 'Verifica la información e intenta nuevamente.',
+      });
+      return false;
+    }
+  };
+
   const createPlayer = async () => {
+    const canCreatePlayer = await validateTournamentRulesBeforeCreate();
+    if (!canCreatePlayer) {
+      return false;
+    }
+
+    const normalizedIdentity = normalizePlayerName(playerStoreRequest.value.basic ?? {});
+    playerStoreRequest.value.basic = {
+      ...(playerStoreRequest.value.basic ?? {}),
+      name: normalizedIdentity.name,
+      last_name: normalizedIdentity.lastName ?? null,
+    };
+
     const form = prepareForm(playerStoreRequest);
     const client = useSanctumClient();
     //@ts-ignore
@@ -695,6 +1098,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
     steps.value = cloneSteps();
     playerStoreRequest.value = {} as PlayerStoreRequest;
     isEdition.value = false;
+    resetTournamentRulesByTeam();
   };
   const initPlayerForm = async () => {
     await Promise.all([useTeamStore().list(), useCategoryStore().fetchCategories()]);
@@ -717,6 +1121,8 @@ export const usePlayerStore = defineStore('playerStore', () => {
     availableTeams,
     isImporting,
     showAssignTeam,
+    tournamentRulesByTeam,
+    isTournamentRulesLoading,
     player,
     tourSteps: skipHydrate(tourSteps),
     $storeReset,
@@ -739,5 +1145,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
     uploadVerification,
     approveVerification,
     rejectVerification,
+    fetchTournamentRulesValidationByTeam,
+    assignPlayerToTeam,
   };
 });

@@ -10,6 +10,9 @@ import type {
   PlayerVerificationMethod,
   PlayerVerificationSettings,
   TournamentConfigurationSettings,
+  TournamentRule,
+  TournamentRulePayload,
+  TournamentRuleTemplate,
 } from '~/models/settings';
 
 export const getPlayerTransferLocks = async () => {
@@ -92,6 +95,29 @@ export const updateTournamentConfiguration = async (
       body: payload,
     }
   );
+};
+
+export const getTournamentRuleTemplates = async () => {
+  const client = useSanctumClient();
+  return await client<TournamentRuleTemplate[]>('/api/v1/admin/tournaments/rule-templates');
+};
+
+export const getTournamentRules = async (tournamentId: number) => {
+  const client = useSanctumClient();
+  return await client<TournamentRule[]>(`/api/v1/admin/tournaments/${tournamentId}/rules`);
+};
+
+export const syncTournamentRules = async (tournamentId: number, payload: { rules: TournamentRulePayload[] }) => {
+  const client = useSanctumClient();
+  return await client<TournamentRule[]>(`/api/v1/admin/tournaments/${tournamentId}/rules`, {
+    method: 'POST',
+    body: payload,
+  });
+};
+
+export const getTournamentTeamRulesComplianceSummary = async (tournamentId: number, teamId: number) => {
+  const client = useSanctumClient();
+  return await client<unknown>(`/api/v1/admin/tournaments/${tournamentId}/teams/${teamId}/rules/compliance-summary`);
 };
 
 export const getDisciplineViolations = async () => {

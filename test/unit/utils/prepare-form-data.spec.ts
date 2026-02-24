@@ -33,4 +33,39 @@ describe('prepareFormData', () => {
     expect(imageField).toBeInstanceOf(Blob)
     expect(typeof imageField).not.toBe('string')
   })
+
+  it('keeps basic.name and serializes arrays/booleans correctly', () => {
+    const payload = ref({
+      basic: {
+        name: 'Copa Futzo',
+        min_max: [8, 16],
+      },
+      details: {
+        penalty_draw_enabled: false,
+        location_ids: [1, 2],
+      },
+    }) as any
+
+    const form = prepareForm(payload)
+
+    expect(form.get('basic[name]')).toBe('Copa Futzo')
+    expect(form.get('basic[min_max]')).toBe('[8,16]')
+    expect(form.get('details[penalty_draw_enabled]')).toBe('0')
+    expect(form.get('details[location_ids]')).toBe('[1,2]')
+  })
+
+  it('does not mutate source object when skipping empty fields', () => {
+    const payload = ref({
+      basic: {
+        name: 'Apertura',
+        prize: '',
+      },
+    }) as any
+
+    const form = prepareForm(payload)
+
+    expect(form.get('basic[name]')).toBe('Apertura')
+    expect(form.get('basic[prize]')).toBeNull()
+    expect(payload.value.basic).toHaveProperty('prize', '')
+  })
 })

@@ -12,8 +12,9 @@ import * as settingsAPI from '~/http/api/settings'
 import {storeToRefs, toTypedSchema, useCategoryStore, useI18n, usePlayerStore, useTeamStore} from '#imports'
 
 const { t } = useI18n()
+  const playerStore = usePlayerStore()
   const { isTeamScopedRole } = useRoleAccess()
-  const { isEdition, playerStoreRequest, steps } = storeToRefs(usePlayerStore())
+  const { isEdition, playerStoreRequest, steps, tournamentRulesByTeam, isTournamentRulesLoading } = storeToRefs(playerStore)
   const { teams } = storeToRefs(useTeamStore())
   const { categories } = storeToRefs(useCategoryStore())
   //@ts-ignore
@@ -50,6 +51,8 @@ const { t } = useI18n()
         birthdate: date().required(t('forms.required')),
         team_id: number().nullable(),
         category_id: number().nullable(),
+        tournament_id: number().nullable(),
+        tournament_rule_id: number().nullable(),
         is_minor: boolean().nullable(),
         identification_method: string()
           .nullable()
@@ -78,6 +81,8 @@ const { t } = useI18n()
   const [birthdate, birthdate_props] = defineField('birthdate', vuetifyConfig)
   const [team_id, team_id_props] = defineField('team_id', vuetifyConfig)
   const [category_id, category_id_props] = defineField('category_id', vuetifyConfig)
+  const [tournament_id] = defineField('tournament_id', vuetifyConfig)
+  const [tournament_rule_id] = defineField('tournament_rule_id', vuetifyConfig)
   const [is_minor] = defineField('is_minor', vuetifyConfig)
   const [identification_method, identification_method_props] = defineField('identification_method', vuetifyConfig)
   const [identification_document, identification_document_props] = defineField('identification_document', vuetifyConfig)
@@ -107,6 +112,11 @@ const { t } = useI18n()
   const selectedTournamentId = computed(
     () => selectedTeam.value?.tournament?.id ?? (selectedTeam.value as any)?.tournament_id ?? null
   )
+  const quantityRules = computed(() => {
+    const rules = Array.isArray(tournamentRulesByTeam.value?.rules) ? tournamentRulesByTeam.value.rules : []
+    return rules.filter((rule: any) => rule?.type === 'cantidad' || rule?.type === 'boolean')
+  })
+  const hasQuantityRules = computed(() => quantityRules.value.length > 0)
 
   const requiresVerification = computed(() => {
     if (tournamentVerificationOverride.value !== null && tournamentVerificationOverride.value !== undefined) {
@@ -159,9 +169,26 @@ const { t } = useI18n()
     }
   }
 
+  const prefetchTeamTournamentRules = async (nextTeamId: number | null | undefined) => {
+    if (isPreRegister.value || isGuest.value) {
+      return
+    }
+
+    try {
+      const snapshot = await playerStore.fetchTournamentRulesValidationByTeam(nextTeamId)
+      tournament_id.value = snapshot?.tournamentId ?? selectedTournamentId.value ?? null
+    } catch {
+      // La validación final también corre al guardar el jugador.
+    }
+  }
+
+  const toggleTournamentRule = (ruleId: number, enabled: boolean | null) => {
+    tournament_rule_id.value = enabled ? ruleId : null
+  }
+
   onMounted(() => {
     if (!isPreRegister.value) {
-      usePlayerStore().initPlayerForm()
+      playerStore.initPlayerForm()
     }
     fetchVerificationSettings()
   })
@@ -181,6 +208,44 @@ const { t } = useI18n()
   watch(teams, () => {
     syncTeamScopedDefaults()
   }, { immediate: true })
+
+  watch(
+    team_id,
+    (value, previous) => {
+      if (value !== previous) {
+        tournament_rule_id.value = null
+      }
+      prefetchTeamTournamentRules(value)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    selectedTournamentId,
+    (value) => {
+      tournament_id.value = value ?? null
+    },
+    { immediate: true }
+  )
+
+  watch(
+    quantityRules,
+    (rules) => {
+      if (!Array.isArray(rules) || rules.length === 0) {
+        tournament_rule_id.value = null
+        return
+      }
+      const selectedRuleId = Number(tournament_rule_id.value ?? 0)
+      if (!Number.isFinite(selectedRuleId) || selectedRuleId <= 0) {
+        return
+      }
+      const hasSelectedRule = rules.some((rule: any) => Number(rule?.id ?? 0) === selectedRuleId)
+      if (!hasSelectedRule) {
+        tournament_rule_id.value = null
+      }
+    },
+    { immediate: true }
+  )
 
   watch(
     selectedTournamentId,
@@ -247,9 +312,6 @@ const { t } = useI18n()
   watch(
     values,
     () => {
-      if (!meta.value.valid) {
-        return
-      }
       const { firstName, lastName } = splitFullName(values.name)
       playerStoreRequest.value.basic = {
         ...values,
@@ -334,6 +396,28 @@ const { t } = useI18n()
           v-bind="category_id_props"
           :items="categories"
         />
+      </template>
+    </BaseInput>
+    <BaseInput
+      v-if="hasQuantityRules"
+      label="Reglas de cantidad"
+      sublabel="Marca solo si este jugador aplica a una regla de cupo del torneo"
+    >
+      <template #input>
+        <div class="d-flex flex-column ga-2">
+          <v-switch
+            v-for="rule in quantityRules"
+            :key="rule.id"
+            :model-value="Number(tournament_rule_id ?? 0) === Number(rule.id)"
+            :label="rule.name"
+            :disabled="isTournamentRulesLoading"
+            density="comfortable"
+            color="primary"
+            hide-details
+            inset
+            @update:model-value="toggleTournamentRule(Number(rule.id), $event)"
+          />
+        </div>
       </template>
     </BaseInput>
   </v-container>

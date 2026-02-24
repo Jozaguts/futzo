@@ -2,6 +2,7 @@ import type {LocationAvailability} from '~/models/Location';
 import type {League} from '~/models/league';
 import type {Team} from '~/models/Schedule';
 import type {Category} from '~/models/Team';
+import type {Tag} from "~/types/shared";
 
 export type PreRegisterTournamentResponse = {
   category: Category;
@@ -40,15 +41,6 @@ export interface TournamentLocation extends Location {
   };
   tags: Tag[];
 }
-
-export type Tag = {
-  id: number;
-  name: { es: string };
-  slug: { es: string };
-  type: string | null;
-  order_count: number;
-};
-
 export interface Tournament {
   id?: number | null;
   league_id?: number | null;

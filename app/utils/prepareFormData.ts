@@ -29,37 +29,60 @@ const isFileLike = (value: unknown): value is File | Blob => {
 
 const prepareForm = (requestData: Ref): FormData => {
   const form = new FormData();
-  const appendData = (prefix: string, data: any) => {
-    for (const key in data) {
-      const maybeBoolean = coerceBoolean(data[key]);
-      if (maybeBoolean !== null) {
-        form.append(`${prefix}[${key}]`, maybeBoolean ? '1' : '0');
-      } else if (isFileLike(data[key]) && data[key]) {
-        if (data[key] instanceof File) {
-          form.append(`${prefix}[${key}]`, data[key]);
-          continue;
-        }
-        form.append(`${prefix}[${key}]`, data[key], 'upload.bin');
-      } else if (data[key] instanceof Date && data[key]) {
-        const date = data[key].toISOString().split('T')[0];
-        form.append(`${prefix}[${key}]`, date as string);
-      } else if (isProxy(data[key])) {
-        form.append(`${prefix}[${key}]`, JSON.stringify(data[key]));
-      } else {
-        form.append(`${prefix}[${key}]`, data[key]);
+
+  const appendField = (fieldName: string, value: unknown) => {
+    if (value === undefined || value === null || value === '') {
+      return;
+    }
+
+    const maybeBoolean = coerceBoolean(value);
+    if (maybeBoolean !== null) {
+      form.append(fieldName, maybeBoolean ? '1' : '0');
+      return;
+    }
+
+    if (isFileLike(value)) {
+      if (value instanceof File) {
+        form.append(fieldName, value);
+        return;
       }
+      form.append(fieldName, value, 'upload.bin');
+      return;
+    }
+
+    if (value instanceof Date) {
+      const date = value.toISOString().split('T')[0];
+      form.append(fieldName, date as string);
+      return;
+    }
+
+    if (Array.isArray(value)) {
+      form.append(fieldName, JSON.stringify(value));
+      return;
+    }
+
+    if (isProxy(value)) {
+      form.append(fieldName, JSON.stringify(value));
+      return;
+    }
+
+    form.append(fieldName, String(value));
+  };
+
+  const appendData = (prefix: string, data: Record<string, unknown>) => {
+    for (const key in data) {
+      const value = data[key];
+      appendField(`${prefix}[${key}]`, value);
     }
   };
 
-  for (const key in requestData.value) {
-    const data = requestData.value[key];
-    for (const idx in data) {
-      const value = data[idx];
-      if (value === undefined || value === null || value === '') {
-        delete data[idx];
-      }
+  const source = requestData?.value ?? {};
+  for (const key in source) {
+    const data = source[key];
+    if (!data || typeof data !== 'object') {
+      continue;
     }
-    appendData(key, data);
+    appendData(key, data as Record<string, unknown>);
   }
 
   return form;

@@ -114,10 +114,13 @@ export interface BasicInfoForm {
   image?: HTMLImageElement | File | string;
   team_id?: number;
   category_id?: number;
+  tournament_id?: number | null;
+  tournament_rule_id?: number | null;
   curp?: string;
   is_minor?: boolean;
   identification_method?: import('~/models/settings').PlayerVerificationMethod | null;
   identification_document?: File | string | null;
+  tags?: string[]
 }
 
 export interface DetailsInfoForm {
