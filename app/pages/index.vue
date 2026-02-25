@@ -78,10 +78,16 @@ const hasRequestedPrices = ref(false)
 const hasTrackedPricingView = ref(false)
 const hasShownPricingError = ref(false)
 const pricingRef = ref<HTMLElement | null>(null)
+const heroSectionRef = ref<HTMLElement | null>(null)
+const isHeroVisible = ref(true)
+const isMobileViewport = useMediaQuery('(max-width: 599px)')
 
 const { gtag } = useGtag()
 const { isAuthenticated } = useSanctumAuth()
 const textButton = computed(() => (isAuthenticated?.value ? 'Ir al Dashboard' : 'Prueba gratis'))
+const showMobileStickyCta = computed(() => isMobileViewport.value && !isHeroVisible.value && !mobileDrawer.value && !isAuthenticated?.value)
+
+type CtaPlacement = 'hero' | 'nav' | 'steps' | 'final' | 'mobile-sticky'
 
 const {
   priceMode,
@@ -133,7 +139,7 @@ const loadPricesNearViewport = async () => {
   await load()
 }
 
-const trackCta = (placement: 'hero' | 'nav' | 'steps' | 'final') => {
+const trackCta = (placement: CtaPlacement) => {
   if (isAuthenticated?.value) return
   gtag('event', 'sign_up', { method: placement, event_label: 'Prueba gratis' })
 }
@@ -153,7 +159,7 @@ const toInternalUrl = (maybeAbsoluteUrl: string) => {
   }
 }
 
-const trackStartRegistration = (placement: 'hero' | 'nav' | 'steps' | 'final', eventId: string) => {
+const trackStartRegistration = (placement: CtaPlacement, eventId: string) => {
   if (isAuthenticated?.value) return
   const attr = $attribution?.get?.() || (globalThis as any).$attribution?.get?.() || {}
   const fbq = typeof $fbq === 'function' ? $fbq : (globalThis as any).$fbq
@@ -175,7 +181,7 @@ const trackStartRegistration = (placement: 'hero' | 'nav' | 'steps' | 'final', e
   }
 }
 
-const startRegistrationClick = async (placement: 'hero' | 'nav' | 'steps' | 'final') => {
+const startRegistrationClick = async (placement: CtaPlacement) => {
   if (isAuthenticated?.value) {
     await router.push('/dashboard')
     return
@@ -231,6 +237,14 @@ const { stop: stopPricingPixelObserver } = useIntersectionObserver(
   { threshold: 0.2 }
 )
 
+useIntersectionObserver(
+  heroSectionRef,
+  ([entry]) => {
+    isHeroVisible.value = entry?.isIntersecting ?? false
+  },
+  { threshold: 0.05 }
+)
+
 watch(
   error,
   (value) => {
@@ -282,8 +296,8 @@ watch(
         </v-list>
       </v-navigation-drawer>
 
-      <div class="landing-home" role="main">
-        <section class="hero-section">
+      <div class="landing-home" :class="{ 'landing-home--sticky-cta': showMobileStickyCta }" role="main">
+        <section ref="heroSectionRef" class="hero-section">
           <v-container class="hero-grid">
             <div class="hero-copy reveal">
               <h1>Deja de armar tu liga en Excel y WhatsApp</h1>
@@ -517,6 +531,21 @@ watch(
             </v-btn>
           </v-container>
         </section>
+
+        <Transition name="mobile-sticky-cta-fade">
+          <div v-if="showMobileStickyCta" class="mobile-sticky-cta" data-testid="landing-cta-mobile-sticky">
+            <v-btn
+              block
+              color="primary"
+              size="large"
+              rounded="lg"
+              data-testid="landing-cta-mobile-sticky-btn"
+              @click.prevent="startRegistrationClick('mobile-sticky')"
+            >
+              Prueba gratis
+            </v-btn>
+          </div>
+        </Transition>
       </div>
 
       <footer class="landing-footer">

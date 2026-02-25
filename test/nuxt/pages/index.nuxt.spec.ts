@@ -1,5 +1,6 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest'
 import {mockNuxtImport, mountSuspended} from '@nuxt/test-utils/runtime'
+import {nextTick} from 'vue'
 import IndexPage from '~/pages/index.vue'
 
 const loadPricesMock = vi.hoisted(() => vi.fn(async () => undefined))
@@ -31,6 +32,7 @@ const loadingRef = vi.hoisted(() => ({ value: false, __v_isRef: true } as any))
 const errorRef = vi.hoisted(() => ({ value: null, __v_isRef: true } as any))
 const priceModeRef = vi.hoisted(() => ({ value: 'monthly', __v_isRef: true } as any))
 const isAuthenticatedRef = vi.hoisted(() => ({ value: false, __v_isRef: true } as any))
+const isMobileViewportRef = vi.hoisted(() => ({ value: false, __v_isRef: true } as any))
 
 const NuxtLinkStub = {
   props: ['to'],
@@ -57,6 +59,7 @@ mockNuxtImport('useIntersectionObserver', () => (target: any, callback: any, opt
 
 mockNuxtImport('useGtag', () => () => ({ gtag: gtagMock }))
 mockNuxtImport('useSanctumAuth', () => () => ({ isAuthenticated: isAuthenticatedRef }))
+mockNuxtImport('useMediaQuery', () => () => isMobileViewportRef)
 mockNuxtImport('useRoute', () => () => ({ name: 'index', path: '/' }))
 
 const globalStubs = {
@@ -87,6 +90,7 @@ describe('Landing page pricing lazy load', () => {
     errorRef.value = null
     priceModeRef.value = 'monthly'
     isAuthenticatedRef.value = false
+    isMobileViewportRef.value = false
 
     // Provide the fb pixel helpers via globalThis fallbacks (index.vue supports them).
     ;(globalThis as any).$fbq = fbqMock
@@ -148,6 +152,49 @@ describe('Landing page pricing lazy load', () => {
     expect(
       fbqMock.mock.calls.filter((c) => c?.[0] === 'trackCustom' && c?.[1] === 'StartRegistration').length
     ).toBe(2)
+  })
+
+  it('shows sticky CTA in mobile only after leaving hero section', async () => {
+    isMobileViewportRef.value = true
+
+    const wrapper = await mountSuspended(IndexPage, {
+      global: {
+        stubs: globalStubs,
+      },
+    })
+
+    expect(wrapper.find('[data-testid="landing-cta-mobile-sticky"]').exists()).toBe(false)
+
+    const heroObserver = intersectionObservers.find((entry) => entry.options?.threshold === 0.05)
+    expect(heroObserver).toBeTruthy()
+
+    heroObserver?.callback([{ isIntersecting: false }])
+    await nextTick()
+    expect(wrapper.find('[data-testid="landing-cta-mobile-sticky"]').exists()).toBe(true)
+
+    heroObserver?.callback([{ isIntersecting: true }])
+    await nextTick()
+    expect(wrapper.find('[data-testid="landing-cta-mobile-sticky"]').exists()).toBe(false)
+  })
+
+  it('tracks StartRegistration from sticky mobile CTA', async () => {
+    isMobileViewportRef.value = true
+
+    const wrapper = await mountSuspended(IndexPage, {
+      global: {
+        stubs: globalStubs,
+      },
+    })
+
+    const heroObserver = intersectionObservers.find((entry) => entry.options?.threshold === 0.05)
+    heroObserver?.callback([{ isIntersecting: false }])
+    await nextTick()
+
+    await wrapper.find('[data-testid="landing-cta-mobile-sticky-btn"]').trigger('click')
+
+    expect(
+      fbqMock.mock.calls.some((call) => call?.[0] === 'trackCustom' && call?.[1] === 'StartRegistration' && call?.[2]?.placement === 'mobile-sticky')
+    ).toBe(true)
   })
 
   it('renders screenshots gallery with product captures', async () => {
