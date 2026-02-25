@@ -65,6 +65,7 @@ mockNuxtImport('useRoute', () => () => ({ name: 'index', path: '/' }))
 const globalStubs = {
   PageLayout: { template: '<div><slot name="default" /></div>' },
   PlanCard: { template: '<div data-testid="plan-card"></div>' },
+  TestimonialsSection: { template: '<section data-testid="landing-testimonials-section"></section>' },
   Icon: { template: '<i></i>' },
   'client-only': { template: '<div><slot /></div>' },
   'nuxt-link': NuxtLinkStub,
@@ -206,6 +207,16 @@ describe('Landing page pricing lazy load', () => {
 
     expect(wrapper.text()).toContain('Mira Futzo en acción')
     expect(wrapper.findAll('figure.screenshot-card').length).toBeGreaterThanOrEqual(6)
+  })
+
+  it('renders reusable testimonials section', async () => {
+    const wrapper = await mountSuspended(IndexPage, {
+      global: {
+        stubs: globalStubs,
+      },
+    })
+
+    expect(wrapper.find('[data-testid="landing-testimonials-section"]').exists()).toBe(true)
   })
 
   it('keeps social links in footer', async () => {

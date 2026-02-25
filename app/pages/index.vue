@@ -414,24 +414,11 @@ watch(
           </v-container>
         </section>
 
-        <section class="content-section content-section--alt">
-          <v-container>
-            <header class="section-header reveal">
-              <h2>Lo que dicen organizadores que ya usan Futzo</h2>
-            </header>
-
-            <div class="testimonials-grid">
-              <article
-                v-for="(testimonial, index) in testimonials"
-                :key="testimonial.author"
-                class="testimonial-card reveal"
-                :style="{ '--delay': `${index * 80}ms` }"
-              >
-                <blockquote>“{{ testimonial.quote }}”</blockquote>
-                <p>{{ testimonial.author }} · {{ testimonial.role }} · {{ testimonial.city }}</p>
-              </article>
-            </div>
-          </v-container>
+        <section class="content-section testimonials-section-wrap">
+          <TestimonialsSection
+            :items="testimonials"
+            title="Lo que dicen organizadores que ya usan Futzo"
+            />
         </section>
 
         <section class="content-section">

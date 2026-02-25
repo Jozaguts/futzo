@@ -128,6 +128,10 @@
   background: var(--home-muted);
 }
 
+.testimonials-section-wrap {
+  padding: 0;
+}
+
 .content-panel {
   background: #ffffff;
   border: 1px solid var(--home-border);
@@ -149,7 +153,6 @@
 .step-card p,
 .benefit-card p,
 .audience-card p,
-.testimonial-card p,
 .comparison-item span,
 .pricing-fallback-note {
   color: var(--home-text-soft);
@@ -169,7 +172,6 @@
 .steps-grid,
 .benefits-grid,
 .audience-grid,
-.testimonials-grid,
 .pricing-grid,
 .screenshots-grid {
   display: grid;
@@ -179,7 +181,6 @@
 .step-card,
 .benefit-card,
 .audience-card,
-.testimonial-card,
 .screenshot-card {
   background: #ffffff;
   border: 1px solid var(--home-border);
@@ -218,10 +219,6 @@
   margin-top: 18px;
 }
 
-.testimonials-grid {
-  margin-top: 14px;
-}
-
 .screenshots-grid {
   margin-top: 10px;
 }
@@ -245,18 +242,6 @@
   font-size: 0.86rem;
   color: #475467;
   font-weight: 600;
-}
-
-.testimonial-card blockquote {
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #1d2939;
-}
-
-.testimonial-card p {
-  margin: 10px 0 0;
-  font-size: 0.88rem;
 }
 
 .comparison-list {
@@ -462,8 +447,7 @@
   }
 
   .steps-grid,
-  .audience-grid,
-  .testimonials-grid {
+  .audience-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -511,10 +495,6 @@
 
   .audience-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .testimonials-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .screenshots-grid {

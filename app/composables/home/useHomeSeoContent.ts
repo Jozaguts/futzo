@@ -33,6 +33,8 @@ type TestimonialItem = {
   author: string
   role: string
   city: string
+  avatarUrl?: string
+  avatarAlt?: string
 }
 
 type AudienceItem = {
@@ -182,6 +184,8 @@ export const useHomeSeoContent = () => {
       author: 'Alex',
       role: 'Organizador de Liga Ixtapa',
       city: 'Puerto Vallarta',
+      avatarUrl: '/images/testimonials/alex-avatar.svg',
+      avatarAlt: 'Avatar de Alex',
     },
     {
       quote:
@@ -189,6 +193,17 @@ export const useHomeSeoContent = () => {
       author: 'Mónica',
       role: 'Coordinadora de Torneo Bahía',
       city: 'Guadalajara',
+      avatarUrl: '/images/testimonials/monica-avatar.svg',
+      avatarAlt: 'Avatar de Mónica',
+    },
+    {
+      quote:
+        'En el complejo teníamos horarios muertos y cruces entre ligas. Con Futzo ordenamos canchas, llenamos turnos y todo queda publicado al instante.',
+      author: 'Carlos Herrera',
+      role: 'Dueño de Complejo Deportivo Cancha Norte',
+      city: 'Monterrey',
+      avatarUrl: '/images/testimonials/carlos-avatar.svg',
+      avatarAlt: 'Avatar de Carlos Herrera',
     },
   ]
 
