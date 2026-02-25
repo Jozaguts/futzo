@@ -1,5 +1,11 @@
+import { useDebounceFn } from '@vueuse/core';
+import {ensureGoogleMapsApiLoaded} from '~/utils/googleMapsApiLoader'
+
 let sessionToken: google.maps.places.AutocompleteSessionToken | null = null;
 export const getSessionToken = async () => {
+  const isLoaded = await ensureGoogleMapsApiLoaded()
+  if (!isLoaded) return null
+
   if (!sessionToken) {
     const { AutocompleteSessionToken } = (await google.maps.importLibrary('places')) as google.maps.PlacesLibrary;
     sessionToken = new AutocompleteSessionToken();
@@ -8,19 +14,24 @@ export const getSessionToken = async () => {
 };
 
 export const refreshSessionToken = async () => {
+  const isLoaded = await ensureGoogleMapsApiLoaded()
+  if (!isLoaded) return null
+
   const { AutocompleteSessionToken } = (await google.maps.importLibrary('places')) as google.maps.PlacesLibrary;
   sessionToken = new AutocompleteSessionToken();
   return sessionToken;
 };
 
-import { useDebounceFn } from '@vueuse/core';
-
 export const usePlaceSearch = () => {
   const search = useDebounceFn(async (input: string) => {
+    const isLoaded = await ensureGoogleMapsApiLoaded()
+    if (!isLoaded) return []
+
     try {
       const { AutocompleteSuggestion } = (await google.maps.importLibrary('places')) as google.maps.PlacesLibrary;
 
       const sessionToken = await getSessionToken();
+      if (!sessionToken) return []
 
       const { suggestions } = await AutocompleteSuggestion.fetchAutocompleteSuggestions({
         input,
@@ -67,6 +78,12 @@ export const usePlaceSearch = () => {
 };
 
 export const getPlaceDetails = async (placeId: string) => {
+  const isLoaded = await ensureGoogleMapsApiLoaded()
+  if (!isLoaded) {
+    console.error('Google Maps API no está disponible.');
+    return null;
+  }
+
   if (!window.google?.maps?.importLibrary) {
     console.error('Google Maps API no está disponible.');
     return null;

@@ -42,6 +42,14 @@ const softwareJsonLd = {
   applicationCategory: 'BusinessApplication',
   description: seoDescription,
   url: 'https://futzo.io/',
+  offers: pricingPlans.map((plan) => ({
+    '@type': 'Offer',
+    name: plan.fallback.name,
+    price: plan.fallback.price,
+    priceCurrency: 'MXN',
+    availability: 'https://schema.org/InStock',
+    url: 'https://futzo.io/login',
+  })),
 }
 
 const faqJsonLd = {

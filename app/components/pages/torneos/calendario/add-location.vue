@@ -2,6 +2,7 @@
   import type { AutocompletePrediction, Prediction } from '~/interfaces'
   import useSchemas from '~/composables/useSchemas'
   import type { Location, TournamentLocationStoreRequest } from '~/models/tournament'
+  import {ensureGoogleMapsApiLoaded} from '~/utils/googleMapsApiLoader'
 
   const { locationDialog } = storeToRefs(useLocationStore())
   const { tournamentLocationStoreRequest, tournamentId } = storeToRefs(useTournamentStore())
@@ -9,14 +10,15 @@
   const tags = ref<string[]>([])
   const tag = ref<string>()
   let foundedLocations = ref([] as Prediction[])
-  const handleSelectLocation = (place: AutocompletePrediction) => {
+  const handleSelectLocation = async (place: AutocompletePrediction) => {
     const placeId = place?.place_id
     if (!placeId) {
       fields.address.fieldValue = ''
       fields.city.fieldValue = ''
       return
     }
-    if (!window.google || !window.google.maps || !window.google.maps.places) {
+    const isLoaded = await ensureGoogleMapsApiLoaded()
+    if (!isLoaded || !window.google?.maps?.places) {
       console.error('Google Maps JavaScript API library is not loaded.')
       return
     }
@@ -50,7 +52,8 @@
     }
   }
   const search = useDebounceFn(async (place: string): Promise<Prediction[]> => {
-    if (!window.google || !window.google.maps || !window.google.maps.places) {
+    const isLoaded = await ensureGoogleMapsApiLoaded()
+    if (!isLoaded || !window.google?.maps?.places) {
       console.error('Google Maps JavaScript API library is not loaded.')
       return []
     }

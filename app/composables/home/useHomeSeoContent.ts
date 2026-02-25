@@ -146,32 +146,32 @@ export const useHomeSeoContent = () => {
 
   const screenshots: ScreenshotItem[] = [
     {
-      src: '/images/dashboard-desktop.png',
+      src: '/images/dashboard-desktop.webp',
       alt: 'Vista del dashboard principal de Futzo',
       title: 'Dashboard operativo',
     },
     {
-      src: '/images/tournament-desktop.png',
+      src: '/images/tournament-desktop.webp',
       alt: 'Vista de torneos y calendario en Futzo',
       title: 'Torneos y calendario',
     },
     {
-      src: '/images/teams-desktop.png',
+      src: '/images/teams-desktop.webp',
       alt: 'Vista de gestión de equipos en Futzo',
       title: 'Gestión de equipos',
     },
     {
-      src: '/images/players-desktop.png',
+      src: '/images/players-desktop.webp',
       alt: 'Vista de registro y control de jugadores en Futzo',
       title: 'Control de jugadores',
     },
     {
-      src: '/images/location-desktop.png',
+      src: '/images/location-desktop.webp',
       alt: 'Vista de sedes y campos de juego en Futzo',
       title: 'Sedes y canchas',
     },
     {
-      src: '/images/public-view-desktop.png',
+      src: '/images/public-view-desktop.webp',
       alt: 'Vista de flujo de registro de jugadores en Futzo',
       title: 'Registro digital',
     },

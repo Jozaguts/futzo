@@ -207,6 +207,7 @@ describe('Landing page pricing lazy load', () => {
 
     expect(wrapper.text()).toContain('Mira Futzo en acción')
     expect(wrapper.findAll('figure.screenshot-card').length).toBeGreaterThanOrEqual(6)
+    expect(wrapper.find('figure.screenshot-card img').attributes('src')).toContain('.webp')
   })
 
   it('renders reusable testimonials section', async () => {

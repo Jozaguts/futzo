@@ -32,12 +32,6 @@ export default defineNuxtConfig({
           content: '624608699554291',
         },
       ],
-      script: [
-        {
-          src: `https://maps.googleapis.com/maps/api/js?key=${process.env.NUXT_GOOGLE_MAPS_API_KEY}&libraries=places,marker&loading=async`,
-          defer: true,
-        },
-      ],
     },
   },
   components: [
@@ -51,7 +45,7 @@ export default defineNuxtConfig({
   },
   css: ['~/assets/scss/main.scss'],
   build: {
-    transpile: ['@vuepic/vue-datepicker', 'vue-sonner', 'v-phone-input'],
+    transpile: ['@vuepic/vue-datepicker', 'vue-sonner'],
   },
   modules: [
     'vuetify-nuxt-module',

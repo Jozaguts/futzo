@@ -78,4 +78,17 @@ describe('Nuxt SEO config', () => {
 
     expect(sanctum.client.initialRequest).toBe(false)
   })
+
+  it('does not inject Google Maps script globally in app head', () => {
+    const appHead = (nuxtConfig as any).app?.head as { script?: Array<{ src?: string }> } | undefined
+    const hasGoogleMapsScript = Boolean(appHead?.script?.some((script) => script.src?.includes('maps.googleapis.com/maps/api/js')))
+
+    expect(hasGoogleMapsScript).toBe(false)
+  })
+
+  it('avoids transpiling v-phone-input globally', () => {
+    const transpile = ((nuxtConfig as any).build?.transpile ?? []) as string[]
+
+    expect(transpile).not.toContain('v-phone-input')
+  })
 })
