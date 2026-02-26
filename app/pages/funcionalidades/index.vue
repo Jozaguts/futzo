@@ -149,7 +149,6 @@ useHead({
           <v-container class="feature-hub-page__container">
             <div class="feature-hub-page__hero-grid">
               <div class="feature-hub-page__hero-copy">
-                <p class="feature-hub-page__eyebrow">Hub de funcionalidades</p>
                 <h1>Todas las funcionalidades que necesitas para operar tu liga en un solo sistema</h1>
                 <p>
                   Futzo está diseñado para que dejes de coordinar una liga con Excel, capturas y chats sueltos. Aquí puedes ver las funcionalidades clave
@@ -163,7 +162,7 @@ useHead({
               </div>
 
               <div class="feature-hub-page__image-placeholder" data-testid="funcionalidades-hero-placeholder">
-                <p>Placeholder de imagen Hero (mosaico de módulos)</p>
+                <v-img src="/images/functionalities/index/sass-product-marketing.webp" alt="SaaS product marketing hero showing six football league"></v-img>
               </div>
             </div>
           </v-container>
@@ -227,7 +226,7 @@ useHead({
               </article>
 
               <div class="feature-hub-page__image-placeholder" data-testid="funcionalidades-system-placeholder">
-                <p>Placeholder comparativo (sistema integral vs herramientas sueltas)</p>
+               <v-img src="/images/functionalities/index/split-screen.webp" alt="split-screen concept: left side fragmented workflow with spreadsheets"></v-img>
               </div>
             </div>
           </v-container>

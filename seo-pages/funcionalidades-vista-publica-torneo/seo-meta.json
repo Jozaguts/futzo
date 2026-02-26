@@ -1,0 +1,13 @@
+{
+  "slug": "/funcionalidades/vista-publica-torneo",
+  "keyword_principal": "vista pública de torneo de fútbol",
+  "keywords_secundarias": [
+    "tabla de posiciones en línea",
+    "compartir resultados de liga por QR",
+    "calendario de partidos público",
+    "seguimiento de torneo amateur"
+  ],
+  "title": "Vista pública de torneo: resultados, tabla y calendario | Futzo",
+  "meta_description": "Comparte el estado de tu torneo por URL o QR: tabla de posiciones, últimos resultados, próximos partidos y calendario. Sin login para consultar.",
+  "h1": "Comparte tu torneo en vivo con una vista pública por link o QR"
+}

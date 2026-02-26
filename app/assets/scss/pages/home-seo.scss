@@ -462,6 +462,9 @@
 }
 
 @media (min-width: 600px) {
+  .landing-footer__group-title {
+    text-align: end;
+  }
   .landing-home--sticky-cta {
     padding-bottom: 0;
   }

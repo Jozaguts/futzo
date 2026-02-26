@@ -1,0 +1,39 @@
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Funcionalidades para administrar ligas y torneos de fútbol",
+  "url": "https://futzo.io/funcionalidades",
+  "description": "Página índice de funcionalidades de Futzo para operar ligas y torneos de fútbol amateur.",
+  "hasPart": [
+    {
+      "@type": "WebPage",
+      "name": "Calendario automático",
+      "url": "https://futzo.io/funcionalidades/calendario-automatico"
+    },
+    {
+      "@type": "WebPage",
+      "name": "Registro por QR",
+      "url": "https://futzo.io/funcionalidades/registro-equipos-qr"
+    },
+    {
+      "@type": "WebPage",
+      "name": "Verificación de jugadores",
+      "url": "https://futzo.io/funcionalidades/verificacion-jugadores"
+    },
+    {
+      "@type": "WebPage",
+      "name": "Estadísticas de torneos",
+      "url": "https://futzo.io/funcionalidades/estadisticas-torneos"
+    },
+    {
+      "@type": "WebPage",
+      "name": "Gestión de canchas y horarios",
+      "url": "https://futzo.io/funcionalidades/gestion-canchas-horarios"
+    },
+    {
+      "@type": "WebPage",
+      "name": "Vista pública del torneo",
+      "url": "https://futzo.io/funcionalidades/vista-publica-torneo"
+    }
+  ]
+}
