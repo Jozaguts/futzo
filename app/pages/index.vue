@@ -32,6 +32,8 @@ useSeoMeta({
   ogDescription: seoDescription,
   ogType: 'website',
   twitterCard: 'summary_large_image',
+  twitterSite: '@futzoio',
+  twitterCreator: '@futzoio',
 })
 
 const softwareJsonLd = {
