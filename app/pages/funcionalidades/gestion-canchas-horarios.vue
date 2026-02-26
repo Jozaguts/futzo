@@ -80,7 +80,7 @@ useHead({
             </div>
 
             <div class="feature-fields-page__image-placeholder" data-testid="canchas-hero-placeholder">
-              <p>Placeholder de imagen Hero: configuración de canchas y horarios</p>
+            <v-img src="/images/functionalities/locations/admin-locations.webp" alt="gestion de canchas"></v-img>
             </div>
           </div>
         </v-container>
@@ -144,7 +144,7 @@ useHead({
             </article>
 
             <div class="feature-fields-page__image-placeholder" data-testid="canchas-availability-placeholder">
-              <p>Placeholder de imagen: disponibilidad por cancha y reprogramación</p>
+              <v-img src="/images/functionalities/locations/field-availability-panel.webp" alt="disponibilidad de canchas"></v-img>
             </div>
           </div>
         </v-container>
