@@ -79,7 +79,7 @@ useHead({
             </div>
 
             <div class="feature-verification-page__image-placeholder" data-testid="verificacion-hero-placeholder">
-              <p>Placeholder de imagen Hero: panel de verificación y transferencias</p>
+              <v-img src="/images/functionalities/verify-players/admin-verification-player.webp" alt="Panel de verificación y transferencias" contain />
             </div>
           </div>
         </v-container>
@@ -145,7 +145,7 @@ useHead({
             </article>
 
             <div class="feature-verification-page__image-placeholder" data-testid="verificacion-evidence-placeholder">
-              <p>Placeholder de imagen: rechazo con motivo, fecha y revisor</p>
+              <v-img src="/images/functionalities/verify-players/rejection-evidence.webp" alt="Evidencia de rechazo de validación" contain />
             </div>
           </div>
         </v-container>
