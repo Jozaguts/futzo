@@ -105,6 +105,11 @@ const registroQrPageJsonLd = {
     'Registro de equipos y jugadores mediante flujo de dos códigos QR, con validación opcional de identidad y control de cupos.',
   applicationCategory: 'SportsManagementApplication',
   operatingSystem: 'Web',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: 4.6,
+    ratingCount: 8864,
+  },
   featureList: [
     'QR del torneo para alta de equipos',
     'QR del equipo para alta de jugadores',

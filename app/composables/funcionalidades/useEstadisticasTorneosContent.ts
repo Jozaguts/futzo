@@ -113,6 +113,11 @@ const estadisticasPageJsonLd = {
     'Standings, estadísticas de equipos y jugadores, rankings y exportaciones para torneos de fútbol amateur.',
   applicationCategory: 'SportsManagementApplication',
   operatingSystem: 'Web',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: 4.6,
+    ratingCount: 8864,
+  },
   featureList: [
     'Tabla de posiciones con criterios de desempate',
     'Estadísticas por equipo y jugador',

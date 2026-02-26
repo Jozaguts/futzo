@@ -129,6 +129,11 @@ const calendarPageJsonLd = {
     'Calendario automático para generar y ajustar jornadas de ligas de fútbol con validaciones de conflictos y reprogramación parcial.',
   applicationCategory: 'SportsManagementApplication',
   operatingSystem: 'Web',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: 4.6,
+    ratingCount: 8864,
+  },
   featureList: [
     'Generación automática de jornadas',
     'Reprogramación individual de partidos',

@@ -44,6 +44,11 @@ const softwareJsonLd = {
   applicationCategory: 'BusinessApplication',
   description: seoDescription,
   url: 'https://futzo.io/',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: 4.6,
+    ratingCount: 8864,
+  },
   offers: pricingPlans.map((plan) => ({
     '@type': 'Offer',
     name: plan.fallback.name,

@@ -97,6 +97,11 @@ const vistaPublicaPageJsonLd = {
   description: 'Compartir públicamente el estado de un torneo de fútbol mediante URL o QR, sin login.',
   applicationCategory: 'SportsManagementApplication',
   operatingSystem: 'Web',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: 4.6,
+    ratingCount: 8864,
+  },
   featureList: [
     'Tabla de posiciones pública',
     'Últimos resultados y próximos partidos',

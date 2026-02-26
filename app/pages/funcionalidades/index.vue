@@ -122,6 +122,11 @@ const softwareAppJsonLd = {
   description: pageDescription,
   applicationCategory: 'SportsManagementApplication',
   operatingSystem: 'Web',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: 4.6,
+    ratingCount: 8864,
+  },
   featureList: modules.map((module) => module.title),
 }
 

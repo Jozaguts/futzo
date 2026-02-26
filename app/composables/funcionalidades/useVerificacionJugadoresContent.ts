@@ -90,6 +90,11 @@ const verificacionPageJsonLd = {
   description: 'Validación de identidad de jugadores y control de transferencias con reglas configurables por torneo.',
   applicationCategory: 'SportsManagementApplication',
   operatingSystem: 'Web',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: 4.6,
+    ratingCount: 8864,
+  },
   featureList: [
     'Validación opcional de identidad',
     'Bloqueo de transferencias por días',

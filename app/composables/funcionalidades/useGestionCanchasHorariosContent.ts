@@ -90,6 +90,11 @@ const gestionCanchasPageJsonLd = {
   description: 'Configuración de canchas, ventanas horarias y programación de partidos sin choques de cancha y horario.',
   applicationCategory: 'SportsManagementApplication',
   operatingSystem: 'Web',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: 4.6,
+    ratingCount: 8864,
+  },
   featureList: [
     'Configuración de canchas por sede',
     'Ventanas horarias por día',
