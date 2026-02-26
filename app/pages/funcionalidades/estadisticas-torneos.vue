@@ -82,7 +82,7 @@ useHead({
             </div>
 
             <div class="feature-stats-page__image-placeholder" data-testid="estadisticas-hero-placeholder">
-              <p>Placeholder de imagen Hero: tabla de posiciones y rankings</p>
+              <v-img src="/images/functionalities/standing-tournament/standing.webp"  alt="estadisticas del torneo"></v-img>
             </div>
           </div>
         </v-container>
@@ -170,7 +170,7 @@ useHead({
             </article>
 
             <div class="feature-stats-page__image-placeholder" data-testid="estadisticas-public-placeholder">
-              <p>Placeholder de imagen: vista pública + QR del torneo</p>
+             <v-img src="/images/functionalities/standing-tournament/public-view.webp" alt="Vista publica del torneo"> </v-img>
             </div>
           </div>
         </v-container>
