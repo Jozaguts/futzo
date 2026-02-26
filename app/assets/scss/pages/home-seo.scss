@@ -17,6 +17,12 @@
   background: #13203d !important;
 }
 
+.landing-navbar :deep(.v-container),
+.landing-home :deep(.v-container),
+.landing-footer :deep(.v-container) {
+  max-width: 1200px;
+}
+
 .landing-brand {
   display: inline-flex;
   align-items: center;
