@@ -79,7 +79,7 @@ useHead({
             </div>
 
             <div class="feature-calendar-page__image-placeholder" data-testid="calendario-hero-placeholder">
-              <p>Placeholder de imagen Hero: calendario generado automáticamente</p>
+             <v-img src="/images/functionalities/calendario-automatico/calendario-de-partidos.webp" alt="generacion de calenadario"></v-img>
             </div>
           </div>
         </v-container>
@@ -161,7 +161,7 @@ useHead({
             </article>
 
             <div class="feature-calendar-page__image-placeholder" data-testid="calendario-cases-placeholder">
-              <p>Placeholder de imagen: reprogramación y control de conflictos</p>
+             <v-img src="/images/functionalities/calendario-automatico/conflicto-cancha.webp" alt="resolucion de conflictos en calendario"></v-img>
             </div>
           </div>
         </v-container>
