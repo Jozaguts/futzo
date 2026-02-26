@@ -51,13 +51,9 @@ const goToTrial = async () => {
 
 useHead({
   link: [{ rel: 'canonical', href: pageUrl }],
-  script: [
-    {
-      type: 'application/ld+json',
-      children: JSON.stringify(verificacionPageJsonLd),
-    },
-  ],
 })
+
+useSchemaOrg([verificacionPageJsonLd])
 </script>
 
 <template>

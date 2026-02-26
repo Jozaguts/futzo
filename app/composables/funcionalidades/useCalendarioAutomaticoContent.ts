@@ -122,25 +122,20 @@ const keywords = [
 ]
 
 const calendarPageJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  name: 'Calendario automático para liga de fútbol',
+  '@type': 'SoftwareApplication',
+  name: 'Futzo',
   url: pageUrl,
   description:
-    'Funcionalidad de Futzo para generar y ajustar calendarios de ligas de fútbol con validaciones de conflictos y reprogramación parcial.',
-  about: {
-    '@type': 'SoftwareApplication',
-    name: 'Futzo',
-    applicationCategory: 'SportsManagementApplication',
-    operatingSystem: 'Web',
-    featureList: [
-      'Generación automática de jornadas',
-      'Reprogramación individual de partidos',
-      'Regeneración parcial sin perder avance',
-      'Validación de solapes por cancha y horario',
-      'Integración con standings y fases',
-    ],
-  },
+    'Calendario automático para generar y ajustar jornadas de ligas de fútbol con validaciones de conflictos y reprogramación parcial.',
+  applicationCategory: 'SportsManagementApplication',
+  operatingSystem: 'Web',
+  featureList: [
+    'Generación automática de jornadas',
+    'Reprogramación individual de partidos',
+    'Regeneración parcial sin perder avance',
+    'Validación de solapes por cancha y horario',
+    'Integración con standings y fases',
+  ],
 }
 
 export const useCalendarioAutomaticoContent = () => ({

@@ -38,7 +38,6 @@ useSeoMeta({
 })
 
 const softwareJsonLd = {
-  '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: 'Futzo',
   operatingSystem: 'Web',
@@ -56,7 +55,6 @@ const softwareJsonLd = {
 }
 
 const faqJsonLd = {
-  '@context': 'https://schema.org',
   '@type': 'FAQPage',
   mainEntity: faqs.map((faq) => ({
     '@type': 'Question',
@@ -68,18 +66,10 @@ const faqJsonLd = {
   })),
 }
 
+useSchemaOrg([softwareJsonLd, faqJsonLd])
+
 useHead({
   link: [{ rel: 'canonical', href: 'https://futzo.io/' }],
-  script: [
-    {
-      type: 'application/ld+json',
-      children: JSON.stringify(softwareJsonLd),
-    },
-    {
-      type: 'application/ld+json',
-      children: JSON.stringify(faqJsonLd),
-    },
-  ],
 })
 
 const { $buildAppUrl, $fbq, $attribution } = useNuxtApp() as any

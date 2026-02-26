@@ -7,6 +7,7 @@ const loadPricesMock = vi.hoisted(() => vi.fn(async () => undefined))
 const setPriceModeMock = vi.hoisted(() => vi.fn())
 const gtagMock = vi.hoisted(() => vi.fn())
 const fbqMock = vi.hoisted(() => vi.fn())
+const useSchemaOrgMock = vi.hoisted(() => vi.fn())
 const buildAppUrlMock = vi.hoisted(() => vi.fn((baseUrl: string, opts?: { eventId?: string }) => `${baseUrl}?event_id=${opts?.eventId || 'evt'}`))
 const attributionGetMock = vi.hoisted(() =>
   vi.fn(() => ({
@@ -61,6 +62,7 @@ mockNuxtImport('useGtag', () => () => ({ gtag: gtagMock }))
 mockNuxtImport('useSanctumAuth', () => () => ({ isAuthenticated: isAuthenticatedRef }))
 mockNuxtImport('useMediaQuery', () => () => isMobileViewportRef)
 mockNuxtImport('useRoute', () => () => ({ name: 'index', path: '/' }))
+mockNuxtImport('useSchemaOrg', () => useSchemaOrgMock)
 
 const globalStubs = {
   PageLayout: { template: '<div><slot name="default" /></div>' },
@@ -81,6 +83,7 @@ describe('Landing page pricing lazy load', () => {
     setPriceModeMock.mockReset()
     gtagMock.mockReset()
     fbqMock.mockReset()
+    useSchemaOrgMock.mockReset()
     buildAppUrlMock.mockReset()
     attributionGetMock.mockReset()
     intersectionObservers.splice(0, intersectionObservers.length)
@@ -105,6 +108,14 @@ describe('Landing page pricing lazy load', () => {
         stubs: globalStubs,
       },
     })
+
+    const nodes = useSchemaOrgMock.mock.calls.flatMap(([input]) => (Array.isArray(input) ? input : [input]))
+    expect(nodes).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ '@type': 'SoftwareApplication' }),
+        expect.objectContaining({ '@type': 'FAQPage' }),
+      ])
+    )
 
     expect(loadPricesMock).not.toHaveBeenCalled()
 

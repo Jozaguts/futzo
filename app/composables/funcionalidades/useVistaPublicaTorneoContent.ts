@@ -91,24 +91,19 @@ const relatedLinks: RelatedLink[] = [
 ]
 
 const vistaPublicaPageJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  name: 'Vista pública de torneo de fútbol',
+  '@type': 'SoftwareApplication',
+  name: 'Futzo',
   url: pageUrl,
-  description: 'Funcionalidad de Futzo para compartir públicamente el estado de un torneo de fútbol mediante URL o QR, sin login.',
-  about: {
-    '@type': 'SoftwareApplication',
-    name: 'Futzo',
-    applicationCategory: 'SportsManagementApplication',
-    operatingSystem: 'Web',
-    featureList: [
-      'Tabla de posiciones pública',
-      'Últimos resultados y próximos partidos',
-      'Calendario por jornadas',
-      'Compartir por QR y URL',
-      'Consulta sin login',
-    ],
-  },
+  description: 'Compartir públicamente el estado de un torneo de fútbol mediante URL o QR, sin login.',
+  applicationCategory: 'SportsManagementApplication',
+  operatingSystem: 'Web',
+  featureList: [
+    'Tabla de posiciones pública',
+    'Últimos resultados y próximos partidos',
+    'Calendario por jornadas',
+    'Compartir por QR y URL',
+    'Consulta sin login',
+  ],
 }
 
 export const useVistaPublicaTorneoContent = () => ({

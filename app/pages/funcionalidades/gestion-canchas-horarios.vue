@@ -52,13 +52,9 @@ const goToTrial = async () => {
 
 useHead({
   link: [{ rel: 'canonical', href: pageUrl }],
-  script: [
-    {
-      type: 'application/ld+json',
-      children: JSON.stringify(gestionCanchasPageJsonLd),
-    },
-  ],
 })
+
+useSchemaOrg([gestionCanchasPageJsonLd])
 </script>
 
 <template>

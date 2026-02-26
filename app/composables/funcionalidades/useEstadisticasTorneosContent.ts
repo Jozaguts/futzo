@@ -106,25 +106,20 @@ const relatedLinks: RelatedLink[] = [
 ]
 
 const estadisticasPageJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  name: 'Estadísticas y tabla de posiciones para torneos de fútbol',
+  '@type': 'SoftwareApplication',
+  name: 'Futzo',
   url: pageUrl,
   description:
-    'Funcionalidad de Futzo para standings, estadísticas de equipos y jugadores, rankings y exportaciones en torneos de fútbol amateur.',
-  about: {
-    '@type': 'SoftwareApplication',
-    name: 'Futzo',
-    applicationCategory: 'SportsManagementApplication',
-    operatingSystem: 'Web',
-    featureList: [
-      'Tabla de posiciones con criterios de desempate',
-      'Estadísticas por equipo y jugador',
-      'Rankings Top 5 de torneo',
-      'Exportación a imagen y Excel',
-      'Vista pública y QR para compartir',
-    ],
-  },
+    'Standings, estadísticas de equipos y jugadores, rankings y exportaciones para torneos de fútbol amateur.',
+  applicationCategory: 'SportsManagementApplication',
+  operatingSystem: 'Web',
+  featureList: [
+    'Tabla de posiciones con criterios de desempate',
+    'Estadísticas por equipo y jugador',
+    'Rankings Top 5 de torneo',
+    'Exportación a imagen y Excel',
+    'Vista pública y QR para compartir',
+  ],
 }
 
 export const useEstadisticasTorneosContent = () => ({

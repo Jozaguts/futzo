@@ -84,24 +84,19 @@ const relatedLinks: RelatedLink[] = [
 ]
 
 const verificacionPageJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  name: 'Verificación de jugadores y control de transferencias',
+  '@type': 'SoftwareApplication',
+  name: 'Futzo',
   url: pageUrl,
-  description: 'Funcionalidad de Futzo para validar identidad de jugadores y controlar transferencias con reglas configurables por torneo.',
-  about: {
-    '@type': 'SoftwareApplication',
-    name: 'Futzo',
-    applicationCategory: 'SportsManagementApplication',
-    operatingSystem: 'Web',
-    featureList: [
-      'Validación opcional de identidad',
-      'Bloqueo de transferencias por días',
-      'Liberación manual por admin',
-      'Control por cupos y reglas de torneo',
-      'Registro de motivo y revisor en rechazos',
-    ],
-  },
+  description: 'Validación de identidad de jugadores y control de transferencias con reglas configurables por torneo.',
+  applicationCategory: 'SportsManagementApplication',
+  operatingSystem: 'Web',
+  featureList: [
+    'Validación opcional de identidad',
+    'Bloqueo de transferencias por días',
+    'Liberación manual por admin',
+    'Control por cupos y reglas de torneo',
+    'Registro de motivo y revisor en rechazos',
+  ],
 }
 
 export const useVerificacionJugadoresContent = () => ({

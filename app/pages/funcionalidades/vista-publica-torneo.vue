@@ -53,13 +53,9 @@ const goToTrial = async () => {
 
 useHead({
   link: [{ rel: 'canonical', href: pageUrl }],
-  script: [
-    {
-      type: 'application/ld+json',
-      children: JSON.stringify(vistaPublicaPageJsonLd),
-    },
-  ],
 })
+
+useSchemaOrg([vistaPublicaPageJsonLd])
 </script>
 
 <template>

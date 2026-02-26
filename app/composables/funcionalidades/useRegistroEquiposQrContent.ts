@@ -98,25 +98,20 @@ const relatedLinks: RelatedLink[] = [
 ]
 
 const registroQrPageJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  name: 'Registro de equipos y jugadores por QR',
+  '@type': 'SoftwareApplication',
+  name: 'Futzo',
   url: pageUrl,
   description:
-    'Funcionalidad de Futzo para registrar equipos y jugadores mediante flujo de dos códigos QR, con validación opcional de identidad y control de cupos.',
-  about: {
-    '@type': 'SoftwareApplication',
-    name: 'Futzo',
-    applicationCategory: 'SportsManagementApplication',
-    operatingSystem: 'Web',
-    featureList: [
-      'QR del torneo para alta de equipos',
-      'QR del equipo para alta de jugadores',
-      'Campos obligatorios por rol',
-      'Validación opcional de identidad',
-      'Control de cupos y bloqueo por fase',
-    ],
-  },
+    'Registro de equipos y jugadores mediante flujo de dos códigos QR, con validación opcional de identidad y control de cupos.',
+  applicationCategory: 'SportsManagementApplication',
+  operatingSystem: 'Web',
+  featureList: [
+    'QR del torneo para alta de equipos',
+    'QR del equipo para alta de jugadores',
+    'Campos obligatorios por rol',
+    'Validación opcional de identidad',
+    'Control de cupos y bloqueo por fase',
+  ],
 }
 
 export const useRegistroEquiposQrContent = () => ({

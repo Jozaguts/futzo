@@ -4,7 +4,7 @@ const route = useRoute()
 useHead({
   htmlAttrs: { lang: 'es' },
   titleTemplate: (titleChunk) =>
-      titleChunk ? `${titleChunk} | Futzo` : 'Software para Administrar Ligas de Fútbol Online | Futzo',
+      titleChunk ? `${titleChunk}` : 'Software para Administrar Ligas de Fútbol Online | Futzo',
   link: [
     // Canonical dinámico por ruta
     { rel: 'canonical', href: siteUrl + route.path }

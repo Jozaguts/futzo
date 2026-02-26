@@ -84,24 +84,19 @@ const relatedLinks: RelatedLink[] = [
 ]
 
 const gestionCanchasPageJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  name: 'Gestión de canchas y horarios para torneos de fútbol',
+  '@type': 'SoftwareApplication',
+  name: 'Futzo',
   url: pageUrl,
-  description: 'Funcionalidad de Futzo para configurar canchas, ventanas horarias y programar partidos sin choques de cancha y horario.',
-  about: {
-    '@type': 'SoftwareApplication',
-    name: 'Futzo',
-    applicationCategory: 'SportsManagementApplication',
-    operatingSystem: 'Web',
-    featureList: [
-      'Configuración de canchas por sede',
-      'Ventanas horarias por día',
-      'Validación de choques de programación',
-      'Reasignación de partidos por cancha y horario',
-      'Vista de disponibilidad por cancha',
-    ],
-  },
+  description: 'Configuración de canchas, ventanas horarias y programación de partidos sin choques de cancha y horario.',
+  applicationCategory: 'SportsManagementApplication',
+  operatingSystem: 'Web',
+  featureList: [
+    'Configuración de canchas por sede',
+    'Ventanas horarias por día',
+    'Validación de choques de programación',
+    'Reasignación de partidos por cancha y horario',
+    'Vista de disponibilidad por cancha',
+  ],
 }
 
 export const useGestionCanchasHorariosContent = () => ({

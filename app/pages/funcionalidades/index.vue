@@ -104,7 +104,6 @@ useSeoMeta({
 })
 
 const collectionPageJsonLd = {
-  '@context': 'https://schema.org',
   '@type': 'CollectionPage',
   name: 'Funcionalidades para administrar ligas y torneos de fútbol',
   url: pageUrl,
@@ -114,6 +113,16 @@ const collectionPageJsonLd = {
     name: module.title,
     url: `https://futzo.io${module.path}`,
   })),
+}
+
+const softwareAppJsonLd = {
+  '@type': 'SoftwareApplication',
+  name: 'Futzo',
+  url: pageUrl,
+  description: pageDescription,
+  applicationCategory: 'SportsManagementApplication',
+  operatingSystem: 'Web',
+  featureList: modules.map((module) => module.title),
 }
 
 const { isAuthenticated } = useSanctumAuth()
@@ -133,13 +142,9 @@ const goToTrial = async () => {
 
 useHead({
   link: [{ rel: 'canonical', href: pageUrl }],
-  script: [
-    {
-      type: 'application/ld+json',
-      children: JSON.stringify(collectionPageJsonLd),
-    },
-  ],
 })
+
+useSchemaOrg([collectionPageJsonLd, softwareAppJsonLd])
 </script>
 
 <template>

@@ -6,9 +6,11 @@ const isAuthenticatedRef = vi.hoisted(() => ({ value: false, __v_isRef: true } a
 const pushMock = vi.hoisted(() => vi.fn())
 const replaceMock = vi.hoisted(() => vi.fn())
 const resolveMock = vi.hoisted(() => vi.fn((to: string) => ({ href: to })))
+const useSchemaOrgMock = vi.hoisted(() => vi.fn())
 
 mockNuxtImport('useSanctumAuth', () => () => ({ isAuthenticated: isAuthenticatedRef }))
 mockNuxtImport('useRouter', () => () => ({ push: pushMock, replace: replaceMock, resolve: resolveMock }))
+mockNuxtImport('useSchemaOrg', () => useSchemaOrgMock)
 
 describe('/funcionalidades/gestion-canchas-horarios page', () => {
   beforeEach(() => {
@@ -16,6 +18,7 @@ describe('/funcionalidades/gestion-canchas-horarios page', () => {
     pushMock.mockReset()
     replaceMock.mockReset()
     resolveMock.mockReset()
+    useSchemaOrgMock.mockReset()
     replaceMock.mockResolvedValue(undefined)
     resolveMock.mockImplementation((to: string) => ({ href: to }))
   })
@@ -39,6 +42,9 @@ describe('/funcionalidades/gestion-canchas-horarios page', () => {
     expect(html).toContain('/funcionalidades/registro-equipos-qr')
     expect(html).toContain('/funcionalidades/vista-publica-torneo')
     expect(html).toContain('Ver todas las funcionalidades')
+
+    const nodes = useSchemaOrgMock.mock.calls.flatMap(([input]) => (Array.isArray(input) ? input : [input]))
+    expect(nodes).toEqual(expect.arrayContaining([expect.objectContaining({ '@type': 'SoftwareApplication' })]))
   })
 
   it('sends unauthenticated CTA clicks to login', async () => {
