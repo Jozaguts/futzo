@@ -80,7 +80,7 @@ useHead({
             </div>
 
             <div class="feature-qr-page__image-placeholder" data-testid="registro-qr-hero-placeholder">
-              <p>Placeholder de imagen Hero: flujo QR de equipo y jugadores</p>
+              <v-img src="/images/functionalities/registro-equipos-qr/registro-equipos-qr.webp" alt="registro de equipos y jugadores por QR" />
             </div>
           </div>
         </v-container>
@@ -165,7 +165,7 @@ useHead({
             </article>
 
             <div class="feature-qr-page__image-placeholder" data-testid="registro-qr-cases-placeholder">
-              <p>Placeholder de imagen: control de cupos y bloqueo por fase</p>
+              <v-img src="/images/functionalities/registro-equipos-qr/registro-equipos-qr-cases.webp" alt="casos de uso del registro por QR"></v-img>
             </div>
           </div>
         </v-container>

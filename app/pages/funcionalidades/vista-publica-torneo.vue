@@ -81,7 +81,7 @@ useHead({
             </div>
 
             <div class="feature-public-view-page__image-placeholder" data-testid="vista-publica-hero-placeholder">
-              <p>Placeholder de imagen Hero: portal público del torneo</p>
+              <v-img src="/images/functionalities/public-view/vista-publica-hero.webp" alt="Vista previa de la vista pública de un torneo en Futzo" />
             </div>
           </div>
         </v-container>
@@ -138,7 +138,7 @@ useHead({
             </article>
 
             <div class="feature-public-view-page__image-placeholder" data-testid="vista-publica-share-placeholder">
-              <p>Placeholder de imagen: QR y URL pública del torneo</p>
+              <v-img src="/images/functionalities/public-view/vista-publica-share.webp" alt="Ejemplo de compartir la vista pública de un torneo en Futzo por QR y URL" />
             </div>
           </div>
         </v-container>
