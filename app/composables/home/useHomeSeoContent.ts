@@ -20,6 +20,8 @@ type BenefitItem = {
   title: string
   description: string
   icon: string
+  ctaLabel: string
+  ctaHref: string
 }
 
 type ScreenshotItem = {
@@ -52,6 +54,11 @@ type FaqItem = {
   answer: string
 }
 
+type ProductLinkItem = {
+  label: string
+  href: string
+}
+
 type PlanMeta = {
   key: 'kickoff' | 'proPlay' | 'eliteLeague'
   image: string
@@ -67,6 +74,7 @@ export const useHomeSeoContent = () => {
     'Organiza tu liga amateur sin Excel ni caos en WhatsApp. Calendario automático, registro por QR, estadísticas al instante. Prueba gratis 7 días.'
 
   const navLinks: NavLink[] = [
+    { label: 'Funcionalidades', href: '/funcionalidades' },
     { label: 'Cómo funciona', href: '#como-funciona' },
     { label: 'Beneficios', href: '#beneficios' },
     { label: 'Precios', href: '#pricing' },
@@ -111,37 +119,59 @@ export const useHomeSeoContent = () => {
       description:
         'Define canchas, horarios y preferencias de equipo. Futzo genera jornadas sin conflictos y te permite reprogramar al momento.',
       icon: 'lucide:calendar-days',
+      ctaLabel: 'Ver calendario automático',
+      ctaHref: '/funcionalidades/calendario-automatico',
     },
     {
       title: 'Registro de equipos y jugadores por QR',
       description:
         'Comparte un enlace o código QR. El dueño del equipo inscribe a sus jugadores desde el celular y tú apruebas.',
       icon: 'lucide:user-round-check',
+      ctaLabel: 'Ver registro por QR',
+      ctaHref: '/funcionalidades/registro-equipos-qr',
     },
     {
       title: 'Verificación y bloqueo de jugadores',
       description:
         'Si un jugador ya participó con otro equipo, Futzo lo detecta. Configura reglas de transferencia por torneo.',
       icon: 'lucide:shield-check',
+      ctaLabel: 'Ver control de jugadores',
+      ctaHref: '/funcionalidades/verificacion-jugadores',
     },
     {
       title: 'Estadísticas actualizadas al instante',
       description:
         'Goles, tarjetas, tabla de posiciones y rendimiento por jugador se actualizan cuando registras resultados.',
       icon: 'lucide:chart-column-big',
+      ctaLabel: 'Ver estadísticas y tabla',
+      ctaHref: '/funcionalidades/estadisticas-torneos',
     },
     {
       title: 'Control de canchas y horarios',
       description:
         'Registra sedes, define ventanas de disponibilidad y evita rehacer el calendario cuando hay cambios de último minuto.',
       icon: 'lucide:map-pinned',
+      ctaLabel: 'Ver gestión de canchas',
+      ctaHref: '/funcionalidades/gestion-canchas-horarios',
     },
     {
       title: 'Vista pública del torneo',
       description:
         'Tus equipos consultan calendario, resultados y posiciones desde un enlace público, sin pedir capturas por chat.',
       icon: 'lucide:monitor-smartphone',
+      ctaLabel: 'Ver vista pública del torneo',
+      ctaHref: '/funcionalidades/vista-publica-torneo',
     },
+  ]
+
+  const productLinks: ProductLinkItem[] = [
+    { label: 'Funcionalidades', href: '/funcionalidades' },
+    { label: 'Calendario automático', href: '/funcionalidades/calendario-automatico' },
+    { label: 'Registro por QR', href: '/funcionalidades/registro-equipos-qr' },
+    { label: 'Verificación de jugadores', href: '/funcionalidades/verificacion-jugadores' },
+    { label: 'Estadísticas y tabla', href: '/funcionalidades/estadisticas-torneos' },
+    { label: 'Gestión de canchas', href: '/funcionalidades/gestion-canchas-horarios' },
+    { label: 'Vista pública del torneo', href: '/funcionalidades/vista-publica-torneo' },
   ]
 
   const screenshots: ScreenshotItem[] = [
@@ -353,5 +383,6 @@ export const useHomeSeoContent = () => {
     comparisonRows,
     faqs,
     pricingPlans,
+    productLinks,
   }
 }

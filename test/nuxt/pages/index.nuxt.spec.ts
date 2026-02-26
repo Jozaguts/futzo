@@ -220,6 +220,30 @@ describe('Landing page pricing lazy load', () => {
     expect(wrapper.find('[data-testid="landing-testimonials-section"]').exists()).toBe(true)
   })
 
+  it('renders SEO anchor texts to funcionalidades pages', async () => {
+    const wrapper = await mountSuspended(IndexPage, {
+      global: {
+        stubs: globalStubs,
+      },
+    })
+
+    const html = wrapper.html()
+    expect(html).toContain('Funcionalidades')
+    expect(html).toContain('Ver calendario automático')
+    expect(html).toContain('Ver registro por QR')
+    expect(html).toContain('Ver control de jugadores')
+    expect(html).toContain('Ver estadísticas y tabla')
+    expect(html).toContain('Ver gestión de canchas')
+    expect(html).toContain('Ver vista pública del torneo')
+    expect(html).toContain('Ver todas las funcionalidades')
+    expect(html).toContain('/funcionalidades/calendario-automatico')
+    expect(html).toContain('/funcionalidades/registro-equipos-qr')
+    expect(html).toContain('/funcionalidades/verificacion-jugadores')
+    expect(html).toContain('/funcionalidades/estadisticas-torneos')
+    expect(html).toContain('/funcionalidades/gestion-canchas-horarios')
+    expect(html).toContain('/funcionalidades/vista-publica-torneo')
+  })
+
   it('keeps social links in footer', async () => {
     const wrapper = await mountSuspended(IndexPage, {
       global: {

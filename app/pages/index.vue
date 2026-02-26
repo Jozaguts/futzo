@@ -23,6 +23,7 @@ const {
   comparisonRows,
   faqs,
   pricingPlans,
+  productLinks,
 } = useHomeSeoContent()
 
 useSeoMeta({
@@ -398,7 +399,14 @@ watch(
                 </div>
                 <h3>{{ benefit.title }}</h3>
                 <p>{{ benefit.description }}</p>
+                <nuxt-link :to="benefit.ctaHref" class="benefit-card__link">{{ benefit.ctaLabel }}</nuxt-link>
               </article>
+            </div>
+
+            <div class="section-cta reveal">
+              <v-btn variant="outlined" color="primary" rounded="lg" size="large" data-testid="landing-cta-funcionalidades" to="/funcionalidades">
+                Ver todas las funcionalidades
+              </v-btn>
             </div>
           </v-container>
         </section>
@@ -428,6 +436,7 @@ watch(
           <TestimonialsSection
             :items="testimonials"
             title="Lo que dicen organizadores que ya usan Futzo"
+            subtitle="Testimonios reales de organizadores, coordinadoras y dueños de complejos deportivos que ya operan su liga con Futzo."
             />
         </section>
 
@@ -549,9 +558,21 @@ watch(
         <v-container class="landing-footer__content">
           <p>© {{ new Date().getFullYear() }} Futzo.io · Software para administrar ligas de fútbol.</p>
           <div class="landing-footer__meta">
-            <div class="landing-footer__links">
-              <nuxt-link to="/politica-de-privacidad">Política de privacidad</nuxt-link>
-              <nuxt-link to="/terminos-de-servicio">Términos de servicio</nuxt-link>
+            <div class="landing-footer__groups">
+              <div class="landing-footer__group">
+                <p class="landing-footer__group-title">Legal</p>
+                <div class="landing-footer__links landing-footer__links--stack">
+                  <nuxt-link to="/politica-de-privacidad">Política de privacidad</nuxt-link>
+                  <nuxt-link to="/terminos-de-servicio">Términos de servicio</nuxt-link>
+                </div>
+              </div>
+
+              <div class="landing-footer__group">
+                <p class="landing-footer__group-title">Producto</p>
+                <div class="landing-footer__links landing-footer__links--stack">
+                  <nuxt-link v-for="link in productLinks" :key="link.href" :to="link.href">{{ link.label }}</nuxt-link>
+                </div>
+              </div>
             </div>
             <div class="landing-footer__socials">
               <a href="https://www.facebook.com/futzo.io" target="_blank" rel="noopener noreferrer" aria-label="Facebook Futzo">
