@@ -51,6 +51,8 @@ describe('LandingMarketingShell', () => {
     expect(wrapper.find('[data-testid="shell-slot-content"]').exists()).toBe(true)
     expect(html).toContain('Funcionalidades')
     expect(html).toContain('Producto')
+    expect(html).toContain('/blog')
+    expect(html).toContain('/blog/como-organizar-liga-futbol-amateur')
     expect(html).toContain('/funcionalidades/calendario-automatico')
     expect(html).toContain('/funcionalidades/registro-equipos-qr')
     expect(html).toContain('/funcionalidades/verificacion-jugadores')

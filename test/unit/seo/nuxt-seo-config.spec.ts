@@ -60,7 +60,19 @@ describe('Nuxt SEO config', () => {
       sitemaps: boolean
     }
 
-    expect(sitemap.urls).toEqual(['/', '/politica-de-privacidad', '/terminos-de-servicio'])
+    expect(sitemap.urls).toEqual(
+      expect.arrayContaining([
+        '/',
+        '/politica-de-privacidad',
+        '/terminos-de-servicio',
+        '/blog',
+        '/blog/como-organizar-liga-futbol-amateur',
+        '/blog/mejores-apps-para-administrar-torneos-futbol-2026',
+        '/blog/como-hacer-rol-de-juegos-liga-futbol',
+        '/blog/reglamento-liga-futbol-amateur-plantilla',
+        '/blog/como-calcular-tabla-de-posiciones-futbol',
+      ])
+    )
     expect(sitemap.exclude).toEqual(expect.arrayContaining(['/torneos/**', '/dashboard/**', '/login/**']))
     expect(sitemap.excludeAppSources).toBe(true)
     expect(sitemap.sitemaps).toBe(false)

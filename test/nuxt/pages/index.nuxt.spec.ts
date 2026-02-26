@@ -253,6 +253,8 @@ describe('Landing page pricing lazy load', () => {
     expect(html).toContain('/funcionalidades/estadisticas-torneos')
     expect(html).toContain('/funcionalidades/gestion-canchas-horarios')
     expect(html).toContain('/funcionalidades/vista-publica-torneo')
+    expect(html).toContain('/blog')
+    expect(html).toContain('/blog/como-organizar-liga-futbol-amateur')
   })
 
   it('keeps social links in footer', async () => {
