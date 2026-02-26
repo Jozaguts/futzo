@@ -4,6 +4,7 @@ import {fetchTickets, responseTicket} from '~/http/api/support'
 import type {ResponseTicket, Tickets} from '~/models/Support'
 
 const { user } = storeToRefs(useAuthStore())
+  const { toast } = useToast()
   const tickets = ref<Tickets>({} as Tickets)
   const loading = ref(false)
   const { defineField, handleSubmit } = useForm<ResponseTicket>({
@@ -16,30 +17,48 @@ const { user } = storeToRefs(useAuthStore())
   })
   const [ticket_id, ticket_id_props] = defineField('ticket_id', vuetifyConfig)
   const [response_message, response_message_props] = defineField('response_message', vuetifyConfig)
-  const init = async () => {
-    tickets.value = await fetchTickets()
+
+  const isResponseDisabled = (status: string) => status === 'open' || status === 'pending'
+
+  const notifyRequestError = () => {
+    toast({
+      type: 'error',
+      msg: 'No se pudo procesar tu mensaje',
+      description: 'Intenta nuevamente en unos segundos.',
+    })
   }
+
+  const init = async () => {
+    try {
+      tickets.value = await fetchTickets()
+    } catch {
+      tickets.value = { data: [] }
+      notifyRequestError()
+    }
+  }
+
   const responseTicketHandler = handleSubmit(async (values) => {
     loading.value = true
     try {
       await responseTicket(values)
-      useToast().toast({
+      toast({
         type: 'success',
         msg: 'Respuesta enviada',
         description: 'Tu respuesta ha sido enviada correctamente',
       })
       await init()
       ticket_id.value = ''
-    } catch (e) {
-      console.log(e)
+    } catch {
+      notifyRequestError()
     } finally {
       loading.value = false
     }
   })
+
   onMounted(async () => {
     await init()
     if (tickets.value.data.length === 0) {
-      useToast().toast({
+      toast({
         type: 'info',
         msg: 'No tienes tickets abiertos',
         description: 'No tienes tickets abiertos, por favor crea uno para comunicarte con el equipo de soporte',
@@ -69,7 +88,8 @@ const { user } = storeToRefs(useAuthStore())
     max-height="600px"
     min-width="100%"
     max-width="400px"
-    class="mb-4 flex-column d-flex"
+    class="mb-4 flex-column d-flex ticket-list__card"
+    data-testid="support-ticket-card"
   >
     <v-card-item>
       <v-card-title
@@ -87,8 +107,8 @@ const { user } = storeToRefs(useAuthStore())
         <p class="text-body-1 mx-2">{{ ticket.messages_count }}</p>
       </div>
     </v-card-item>
-    <v-card-text>
-      <v-timeline side="end" style="max-height: 300px; overflow-y: scroll" class="pr-2" v-auto-animate>
+    <v-card-text class="ticket-list__content">
+      <v-timeline side="end" class="ticket-list__timeline" data-testid="support-ticket-timeline" v-auto-animate>
         <v-timeline-item
           v-for="message in ticket.public_messages"
           :key="message.id"
@@ -119,26 +139,28 @@ const { user } = storeToRefs(useAuthStore())
         <span>Esperando respuesta del equipo de soporte</span>
       </div>
     </v-card-text>
-    <v-spacer />
-    <v-card-actions>
-      <div class="d-flex flex-column w-100">
+    <v-card-actions class="ticket-list__actions" data-testid="support-ticket-actions">
+      <div class="d-flex flex-column w-100 ticket-list__composer">
         <v-textarea
           variant="outlined"
-          class="mb-4"
+          class="ticket-list__textarea"
+          data-testid="support-ticket-textarea"
           v-bind="response_message_props"
           v-model="response_message"
           density="compact"
+          hide-details="auto"
           placeholder="Cuéntanos qué pasó Si puedes, agrega el nombre de tu liga o torneo."
-          rows="8"
-          :disabled="ticket.status === 'open' || ticket.status === 'pending'"
+          rows="6"
+          :disabled="isResponseDisabled(ticket.status)"
         >
         </v-textarea>
         <PrimaryBtn
           block
+          data-testid="support-ticket-send-btn"
           text="Enviar mensaje"
           icon="mdi-send"
           iconPosition="right"
-          :disabled="ticket.status === 'open' || ticket.status === 'pending'"
+          :disabled="isResponseDisabled(ticket.status)"
           v-bind="ticket_id_props"
           @click="responseTicketHandler"
         />
@@ -148,6 +170,53 @@ const { user } = storeToRefs(useAuthStore())
 </template>
 
 <style scoped>
+  .ticket-list__card {
+    min-height: 500px;
+    height: min(600px, calc(100dvh - 180px));
+    max-height: 600px;
+    max-width: 400px;
+  }
+
+  .ticket-list__content {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+    padding-bottom: 0;
+  }
+
+  .ticket-list__timeline {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 8px;
+  }
+
+  .ticket-list__actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    background: rgb(var(--v-theme-surface));
+    border-top: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+  }
+
+  .ticket-list__composer {
+    gap: 12px;
+  }
+
+  .ticket-list__textarea :deep(textarea) {
+    min-height: 132px;
+  }
+
+  @media (max-height: 760px) {
+    .ticket-list__card {
+      min-height: 460px;
+      height: min(560px, calc(100dvh - 140px));
+    }
+  }
+
   .pulse {
     width: 10px;
     height: 10px;

@@ -75,6 +75,7 @@ export const useHomeSeoContent = () => {
 
   const navLinks: NavLink[] = [
     { label: 'Funcionalidades', href: '/funcionalidades' },
+    { label: 'Blog', href: '/blog' },
     { label: 'Cómo funciona', href: '#como-funciona' },
     { label: 'Beneficios', href: '#beneficios' },
     { label: 'Precios', href: '#pricing' },
@@ -166,6 +167,8 @@ export const useHomeSeoContent = () => {
 
   const productLinks: ProductLinkItem[] = [
     { label: 'Funcionalidades', href: '/funcionalidades' },
+    { label: 'Blog', href: '/blog' },
+    { label: 'Cómo organizar una liga', href: '/blog/como-organizar-liga-futbol-amateur' },
     { label: 'Calendario automático', href: '/funcionalidades/calendario-automatico' },
     { label: 'Registro por QR', href: '/funcionalidades/registro-equipos-qr' },
     { label: 'Verificación de jugadores', href: '/funcionalidades/verificacion-jugadores' },
