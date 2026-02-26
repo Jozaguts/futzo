@@ -152,7 +152,14 @@ export default defineNuxtConfig({
     urls: [
       '/',
       '/politica-de-privacidad',
-      '/terminos-de-servicio'
+      '/terminos-de-servicio',
+      '/funcionalidades',
+      '/funcionalidades/calendario-automatico',
+      '/funcionalidades/registro-equipos-qr',
+      '/funcionalidades/verificacion-jugadores',
+      '/funcionalidades/estadisticas-torneos',
+      '/funcionalidades/gestion-canchas-horarios',
+      '/funcionalidades/vista-publica-torneo',
     ],
     exclude: [
       '/dashboard/**',
@@ -226,7 +233,7 @@ export default defineNuxtConfig({
      // excludeQueryParams: false,
      // domains: ['cool-site.app', 'my-space.site'],
      // customEndpoint: '/my-custom-endpoint',
-     enabled: true,
+     enabled: process.env.NODE_ENV === 'production',
      // logErrors: true,
    },
   sanctum: {
