@@ -184,5 +184,5 @@ const downloadQr = () => emit('downloadQr')
   gap: 8px
   padding: 8px 12px
   font-size: 12px
-  color: #344054
+  color: var(--futzo-on-surface)
 </style>

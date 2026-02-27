@@ -280,7 +280,7 @@ onMounted(() => {
   border-radius: 10px;
   padding: 6px 10px;
   font-size: 12px;
-  color: #344054;
+  color: var(--futzo-on-surface);
   cursor: pointer;
 }
 

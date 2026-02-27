@@ -185,7 +185,7 @@ const emits = defineEmits(["import-players"]);
     line-height: 20px
 
   > .title
-    color: #344054
+    color: var(--futzo-on-surface)
     font-weight: 500
 
   > .subtitle

@@ -1751,7 +1751,7 @@ const props = defineProps<{
 
   .discipline-table__team
     font-weight: 600
-    color: #344054
+    color: var(--futzo-on-surface)
 
   .discipline-table__action
     width: 32px
@@ -1822,7 +1822,7 @@ const props = defineProps<{
   .discipline-empty p
     margin: 0
     font-weight: 600
-    color: #344054
+    color: var(--futzo-on-surface)
 
   .discipline-empty span
     font-size: 12px
@@ -1931,7 +1931,7 @@ const props = defineProps<{
   .discipline-sancion-header
     font-size: 13px
     font-weight: 700
-    color: #344054
+    color: var(--futzo-on-surface)
 
   .discipline-sancion-header p
     margin: 0
@@ -1990,7 +1990,7 @@ const props = defineProps<{
   .discipline-sancion-context p
     margin: 0
     font-size: 12px
-    color: #344054
+    color: var(--futzo-on-surface)
 
   .discipline-sancion-context small
     display: block
@@ -2024,7 +2024,7 @@ const props = defineProps<{
     margin: 0
     font-size: 12px
     font-weight: 600
-    color: #344054
+    color: var(--futzo-on-surface)
 
   .discipline-impact-preview__item span
     font-size: 11px
@@ -2057,7 +2057,7 @@ const props = defineProps<{
   .discipline-audit-header
     font-size: 13px
     font-weight: 700
-    color: #344054
+    color: var(--futzo-on-surface)
 
   .discipline-audit-list
     display: grid
@@ -2080,7 +2080,7 @@ const props = defineProps<{
     margin: 0
     font-size: 12px
     font-weight: 600
-    color: #344054
+    color: var(--futzo-on-surface)
 
   .discipline-audit-list__item p small
     margin-left: 6px

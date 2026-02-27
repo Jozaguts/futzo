@@ -94,7 +94,7 @@
     font-style: normal;
     font-weight: 600;
     line-height: 20px;
-    color: #344054;
+    color: var(--futzo-on-surface);
     display: block;
   }
 

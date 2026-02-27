@@ -379,7 +379,7 @@ const scheduleStore = useScheduleStore()
     gap: 8px
     padding: 0 12px
     font-size: 13px
-    color: #344054
+    color: var(--futzo-on-surface)
 
   .calendar-tab__content
     min-width: 0

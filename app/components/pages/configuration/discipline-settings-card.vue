@@ -677,7 +677,7 @@ onMounted(async () => {
 .discipline-settings__field label {
   font-size: 12px;
   line-height: 18px;
-  color: #344054;
+  color: var(--futzo-on-surface);
   font-weight: 500;
 }
 

@@ -549,7 +549,7 @@ const downloadQR = () => {
     border: 0
     border-radius: 10px
     background: transparent
-    color: #344054
+    color: var(--futzo-on-surface)
     display: inline-flex
     align-items: center
     justify-content: center

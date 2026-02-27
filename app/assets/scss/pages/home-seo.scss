@@ -294,7 +294,7 @@
 
 .comparison-item__before span,
 .comparison-item__after span {
-  color: #344054;
+  color: var(--futzo-on-surface);
 }
 
 .pricing-toggle-wrap {
@@ -374,7 +374,7 @@
 
 .landing-footer__group-title {
   margin: 0;
-  color: #344054;
+  color: var(--futzo-on-surface);
   font-size: 0.88rem;
   font-weight: 700;
 }
@@ -391,7 +391,7 @@
 }
 
 .landing-footer__links a {
-  color: #344054;
+  color: var(--futzo-on-surface);
   text-decoration: none;
   font-size: 0.87rem;
 }

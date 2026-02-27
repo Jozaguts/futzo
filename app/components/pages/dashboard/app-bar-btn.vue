@@ -34,7 +34,7 @@
   .dashboard-app-bar-btn {
     box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
     background: #f9fafb;
-    color: #344054;
+    color: var(--futzo-on-surface);
     font-size: 14px;
     font-style: normal;
     font-weight: 600;

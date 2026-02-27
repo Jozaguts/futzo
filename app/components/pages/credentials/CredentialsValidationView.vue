@@ -175,7 +175,7 @@ onBeforeUnmount(() => {
 .credentials-validation__message,
 .credentials-validation__reason {
   margin: 0;
-  color: #344054;
+  color: var(--futzo-on-surface);
 }
 
 .credentials-validation__timestamp {

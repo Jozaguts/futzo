@@ -122,7 +122,7 @@ const { game } = storeToRefs(useGameStore())
 
   .game-events__state p
     margin: 0
-    color: #344054
+    color: var(--futzo-on-surface)
     font-size: 14px
     font-weight: 600
 

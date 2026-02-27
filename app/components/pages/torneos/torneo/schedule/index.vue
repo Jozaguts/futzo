@@ -350,7 +350,7 @@ const { tournamentId, loading, tournament } = storeToRefs(useTournamentStore())
     min-height: 40px
     border: 1px solid var(--futzo-border)
     background: #f8fafc
-    color: #344054
+    color: var(--futzo-on-surface)
     display: flex
     align-items: center
     justify-content: space-between

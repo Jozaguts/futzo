@@ -223,7 +223,7 @@ const props = defineProps<{
 
   .schedule-match-card__penalties-title
     margin: 0 0 8px
-    color: #344054
+    color: var(--futzo-on-surface)
     font-size: 12px
     font-weight: 600
 
@@ -234,7 +234,7 @@ const props = defineProps<{
     gap: 8px
     margin-bottom: 8px
     font-size: 12px
-    color: #344054
+    color: var(--futzo-on-surface)
 
   .schedule-match-card__penalty-input
     max-width: 88px

@@ -80,7 +80,7 @@
     text-align: center;
     font-size: 16px;
     font-weight: 600;
-    color: #344054;
+    color: var(--futzo-on-surface);
   }
 
   .score-control__value--readonly {
