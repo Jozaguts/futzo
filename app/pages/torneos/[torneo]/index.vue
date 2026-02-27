@@ -86,7 +86,7 @@ const {
               <KpisMetricsSection class="tournament-kpis" :items="tournamentKpiItems" test-id-prefix="tournament-kpis" />
 
               <div class="tournament-resume-top" :class="{ 'tournament-resume-top--split': hasGeneratedSchedule }">
-                <v-card class="tournament-progress-card futzo-rounded">
+                <v-card class="tournament-progress-card futzo-rounded" variant="flat">
                   <div class="progress-header">
                     <p>Progreso</p>
                     <span>{{ gamesProgressPercent }}%</span>

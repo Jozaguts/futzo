@@ -624,15 +624,18 @@ const downloadQR = () => {
     margin: 0
     font-size: 12px
     opacity: .82
+    color: var(--futzo-on-primary)
 
   .team-points-card__content strong
     display: block
     font-size: 34px
     font-weight: 700
     line-height: 1.05
+    color: var(--futzo-on-primary)
 
   .team-points-card__icon
     opacity: .55
+    color: var(--futzo-on-primary)
 
   .team-detail-workspace
     display: grid
