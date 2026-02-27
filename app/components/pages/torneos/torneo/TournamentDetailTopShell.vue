@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type {TournamentShareAction} from '~/models/tournament'
-
+import TournamentShareMenu from '~/components/pages/torneos/tournament-share-menu.vue'
 type SectionItem = {
   value: string
   label: string

@@ -2,6 +2,7 @@
 import {Icon} from '#components'
 import InitialsAvatar from '~/components/shared/InitialsAvatar.vue'
 import Table from '~/components/shared/Table.vue'
+import TournamentShareMenu from '~/components/pages/torneos/tournament-share-menu.vue'
 import type {Header} from '~/interfaces'
 import type {Tournament, TournamentShareAction} from '~/models/tournament'
 import {getTournamentRegistrationQRCode, getTournamentScheduleQRCode} from '~/http/api/tournament'

@@ -111,11 +111,12 @@ const activeDays = computed(() => {
 
       <div class="location-card__content">
         <div class="location-card__header">
-          <h3>{{ location.name }}</h3>
-          <v-chip size="x-small" variant="tonal" color="primary">
-            <Icon name="lucide:grid-2x2" size="12" />
-            {{ fieldsCount }}
-          </v-chip>
+          <div class="d-flex">
+            <h3>{{ location.name }}</h3>
+            <v-badge location="top right" class="ml-2"  :content="fieldsCount"  bordered rounded offset-y="-3" offset-x="-5" v-tooltip:top="'Cantidad de campos'">
+              <Icon name="lucide:grid-2x2" />
+            </v-badge>
+          </div>
         </div>
 
         <p class="location-card__address">
