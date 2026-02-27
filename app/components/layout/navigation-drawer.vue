@@ -193,25 +193,32 @@ const globalStore =  useGlobalStore()
           >
           </v-list-item>
           <v-list-item
-            nav
-            density="compact"
-            key="configuration"
-            link
-            to="/configuracion"
-            :disabled="false"
-            title="Configuración"
-            :prepend-icon="() => h(Icon, { name: 'lucide:monitor-cog', class: 'mr-2 config-icon', mode: 'svg' })"
+              nav
+              density="compact"
+              key="configuration"
+              link
+              to="/configuracion"
+              :disabled="false"
+              title="Configuración"
+              :prepend-icon="() => h(Icon, { name: 'lucide:monitor-cog', class: 'mr-2 config-icon', mode: 'svg' })"
           >
           </v-list-item>
-<!--         <div class="d-flex justify-center align-center">-->
-<!--           <v-switch-->
-<!--               true-value="dark"-->
-<!--               false-value="light"-->
-<!--               :true-icon="() => h(Icon, { name: 'lucide:moon-star', class: 'mr-2 config-icon', mode: 'svg' })"-->
-<!--               :false-icon="() => h(Icon, { name: 'lucide:lightbulb', class: 'mr-2 config-icon', mode: 'svg' })"-->
-<!--               v-model="themeName"-->
-<!--              />-->
-<!--         </div>-->
+          <v-list-item
+              density="compact"
+              key="theme"
+              :disabled="false"
+          >
+            <template #prepend>
+              <v-switch
+                  true-value="dark"
+                  false-value="light"
+                  :false-icon="() => h(Icon, { name: 'lucide:lightbulb', size: 22 })"
+                  :true-icon="()=> h(Icon, { name: 'lucide:moon-star', size: 22 })"
+                  v-model="themeName"
+              >
+              </v-switch>
+            </template>
+          </v-list-item>
         </v-list>
         <v-divider />
         <v-card :loading="!user?.name">

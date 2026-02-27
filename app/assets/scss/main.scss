@@ -41,6 +41,7 @@ html{
   --futzo-text-muted: rgba(var(--v-theme-on-surface), 0.64);
   --futzo-shadow-sm: 0 1px 2px 0 rgba(16, 24, 40, 0.08);
   --futzo-shadow-md: 0 8px 24px rgba(16, 24, 40, 0.1);
+  --futzo-on-surface-muted: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
 
   /* Bridge tokens used across legacy styles */
   --colors-primary-light-mode-500: rgb(var(--v-theme-primary));
