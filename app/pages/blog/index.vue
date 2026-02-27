@@ -77,7 +77,6 @@ const goToTrial = async () => {
         <v-container class="blog-hub-page__container">
           <div class="blog-hub-page__hero-grid">
             <div class="blog-hub-page__hero-copy">
-              <p class="blog-hub-page__eyebrow">Blog Futzo</p>
               <h1>{{ hubTitle }}</h1>
               <p>{{ hubDescription }}</p>
               <div class="blog-hub-page__hero-actions">

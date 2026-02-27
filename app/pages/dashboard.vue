@@ -78,7 +78,7 @@ const activityItems = computed<ActivityItem[]>(() =>
 )
 
 const metrics = computed(() => {
-  const { registeredTeams, activePlayers, completedGames, activeTournaments, matchesThisWeek } = teamStats.value
+  const { registeredTeams, players, completedGames, activeTournaments, matchesThisWeek } = teamStats.value
   const tournamentsValue =
     activeTournaments?.total !== undefined && activeTournaments?.total !== null ? activeTournaments.total : '—'
   const matchesValue =
@@ -102,9 +102,9 @@ const metrics = computed(() => {
     },
     {
       title: 'Jugadores',
-      value: activePlayers.total,
-      trendValue: activePlayers.current,
-      trendLabel: activePlayers.label,
+      value: players.total,
+      trendValue: players.current,
+      trendLabel: players.label,
       icon: 'lucide:users',
       iconTone: 'blue',
     },

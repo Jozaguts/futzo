@@ -31,13 +31,7 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
       dailyData: [],
       label: 'vs último mes',
     },
-    activePlayers: {
-      total: 0,
-      current: 0,
-      dailyData: [],
-      label: 'vs último mes',
-    },
-    completedGames: {
+    players: {
       total: 0,
       current: 0,
       dailyData: [],
@@ -84,8 +78,7 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
       teamStats.value.activeTournaments = parsed.activeTournaments;
       teamStats.value.matchesThisWeek = parsed.matchesThisWeek;
       teamStats.value.registeredTeams = parsed.registeredTeams;
-      teamStats.value.activePlayers = parsed.activePlayers;
-      teamStats.value.completedGames = parsed.completedGames;
+      teamStats.value.players = parsed.players;
     });
   }
 

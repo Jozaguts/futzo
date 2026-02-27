@@ -152,9 +152,8 @@ export type IStatStage = 'last24Hrs' | 'lastWeek' | 'lastMonth' | 'lastYear';
 export type ITeamStats = {
   activeTournaments: IDashboardStatsValues;
   matchesThisWeek: IDashboardStatsValues;
+  players: IDashboardStatsValues;
   registeredTeams: IDashboardStatsValues;
-  activePlayers: IDashboardStatsValues;
-  completedGames: IDashboardStatsValues;
 };
 export type IDashboardStatsValues = {
   total: number;
