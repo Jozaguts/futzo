@@ -16,6 +16,7 @@ const tournamentStoreMock = {
   startTour,
   resetTour,
   recalculateTour,
+  dialog: ref(false),
   tournamentId: ref<number | undefined>(undefined),
   noTournaments: ref(false),
   loading: ref(false),
@@ -34,6 +35,7 @@ describe('Torneos index page', () => {
   beforeEach(() => {
     ensureVuetifyApp()
     loadTournaments.mockClear()
+    tournamentStoreMock.dialog.value = false
   })
 
   it('renders intro layout and loads tournaments', async () => {
@@ -47,6 +49,11 @@ describe('Torneos index page', () => {
           TournamentTable: { template: '<div data-testid="table"></div>' },
           NoTournaments: { template: '<div></div>' },
           TournamentDialog: { template: '<div></div>' },
+          QuickActionsPanel: {
+            props: ['testId'],
+            emits: ['action'],
+            template: '<button :data-testid="testId" @click="$emit(\'action\', \'new_tournament\')">QuickAction</button>',
+          },
           LazyTour: { template: '<div></div>' },
           Tour: { template: '<div></div>' },
         },
@@ -57,8 +64,12 @@ describe('Torneos index page', () => {
     expect(wrapper.find('[data-testid="torneos-page-intro"]').exists()).toBe(true)
     expect(wrapper.text()).toContain('Torneos')
     expect(wrapper.find('[data-testid="torneos-filters-panel"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="torneos-page-actions"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="kpis"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="filters"]').exists()).toBe(true)
     expect(loadTournaments).toHaveBeenCalled()
+
+    await wrapper.find('[data-testid="torneos-page-actions"]').trigger('click')
+    expect(tournamentStoreMock.dialog.value).toBe(true)
   })
 })
