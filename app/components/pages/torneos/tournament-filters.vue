@@ -7,7 +7,7 @@ type StatusFilterKey = 'all' | 'active' | 'upcoming' | 'finished'
   type FormatFilterKey = 'all' | 'liga' | 'eliminatoria' | 'liga_y_eliminatoria'
 
   const tournamentStore = useTournamentStore()
-  const { search, statusFilters, formatFilter, dialog, pagination } = storeToRefs(tournamentStore)
+  const { search, statusFilters, formatFilter, pagination } = storeToRefs(tournamentStore)
 
   const statusMap: Record<Exclude<StatusFilterKey, 'all'>, TournamentStatus[]> = {
     active: ['en curso'],
@@ -119,9 +119,6 @@ type StatusFilterKey = 'all' | 'active' | 'upcoming' | 'finished'
           />
         </div>
       </div>
-      <v-btn color="primary" class="tournament-primary-btn" data-testid="tournament-create-button" @click="dialog = true">
-        + Nuevo Torneo
-      </v-btn>
     </div>
   </div>
 </template>
