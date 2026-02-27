@@ -18,7 +18,7 @@
 </template>
 <style>
   .card-title {
-    color: #111927;
+    color: var(--futzo-on-surface);
     font-size: 20px;
     font-style: normal;
     font-weight: 600;

@@ -285,31 +285,26 @@ const handlePageChange = async (page: number) => {
 
 .player-row__badge--goalkeeper {
   color: #b54708;
-  background: #fff4ed;
   border-color: #fed7aa;
 }
 
 .player-row__badge--defense {
   color: #175cd3;
-  background: #eff4ff;
   border-color: #bfdbfe;
 }
 
 .player-row__badge--midfield {
   color: #027a48;
-  background: #ecfdf3;
   border-color: #a6f4c5;
 }
 
 .player-row__badge--forward {
   color: #b42318;
-  background: #fef3f2;
   border-color: #fecaca;
 }
 
 .player-row__badge--neutral {
   color: var(--futzo-text-muted);
-  background: #f2f4f7;
   border-color: var(--futzo-border-strong);
 }
 
@@ -317,7 +312,7 @@ const handlePageChange = async (page: number) => {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: #344054;
+  color: var(--futzo-on-surface);
 }
 
 .player-row__stat {

@@ -618,7 +618,7 @@ const handlePageChange = async (page: number) => {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: var(--futzo-on-surface-muted);
+  color: var(--futzo-text-muted);
   font-size: 12px;
 }
 

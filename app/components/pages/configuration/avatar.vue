@@ -29,13 +29,11 @@
     <v-btn
       class="image-plus-avatar__btn"
       icon="true"
-      size="x-small"
-      color="background"
       width="28"
       height="28"
       @click="showInput"
     >
-      <Icon class="image-plus-avatar" name="futzo-icon:image-plus-avatar"></Icon>
+      <Icon class="image-plus-avatar" name="lucide:plus" size="16"></Icon>
     </v-btn>
     <v-file-input class="d-none" ref="imageRef" @change="eventHandler"></v-file-input>
   </div>

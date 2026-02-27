@@ -124,7 +124,7 @@ const {
   flex-direction: column;
 }
 .plan-card--featured {
-  border-color: #7f56d9 !important;
+  border-color: var(--futzo-primary) !important;
   box-shadow: 0 12px 24px rgba(127, 86, 217, 0.18);
 }
 .plan-card__badge {
@@ -141,7 +141,7 @@ const {
 .plan-card__price {
   font-size: 22px;
   font-weight: 700;
-  color: #7f56d9;
+  color: var(--futzo-primary);
   margin-bottom: 8px;
 }
 .plan-card__price-amount--muted {
@@ -184,6 +184,7 @@ const {
 }
 .plan-card__feature {
   padding-left: 0;
+  color: var(--futzo-on-surface);
 }
 .plan-card__actions {
   padding: 0;

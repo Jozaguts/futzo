@@ -245,8 +245,9 @@ const type = ref<'yearly' | 'monthly'>('yearly')
   --plan-card-min-height: 580px;
 }
 .plans-toggle {
-  background: #f2f4f7;
+  background: var(--futzo-sruface);
   padding: 4px;
+  border: 1px solid var(--futzo-border);
   margin: 8px 0 0;
 }
 .plans-toggle__btn {
